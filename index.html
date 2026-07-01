@@ -924,9 +924,9 @@
             <div class="flex gap-3 text-xs items-center">
                 <a href="cards/index.html" style="background:#FF6B35;color:#fff;padding:4px 12px;border-radius:6px;text-decoration:none;font-weight:600;font-size:11px;display:flex;align-items:center;gap:4px;"><i class="ri-layout-grid-fill" style="font-size:12px;"></i> Cards</a>
                 <span style="color:#555;">|</span>
-                <span><i data-lucide="circle" style="color:#FF6B35;font-size:8px;"></i> Lucide</span>
-                <span><i class="ri-circle-fill" style="color:#a78bfa;font-size:8px;"></i> Remix</span>
-                <span><i class="ti ti-circle-filled" style="color:#fbbf24;font-size:8px;"></i> Tabler</span>
+                <span> Lucide</span>
+                <span>Remix</span>
+                <span> Tabler</span>
             </div>
         </div>
 
@@ -1979,48 +1979,74 @@
 
         function drawActiveOrderTracker(theme) {
             if (!stateSimulation.orderActive) return '';
+            const foodImg = 'https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=400&q=80';
             if (theme === 'neumorphism') {
                 return `
-                <div style="margin:0 16px 16px;padding:14px;background:#FFFFFF;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);border-left:4px solid #E85D4A;display:flex;align-items:center;justify-content:space-between;">
-                    <div style="display:flex;align-items:center;gap:12px;">
-                        <div style="position:relative;display:flex;width:8px;height:8px;">
-                            <span style="animation:pulse 2s infinite;position:absolute;inset:0;border-radius:50%;background:#E85D4A;opacity:0.4;"></span>
-                            <span style="position:relative;width:8px;height:8px;border-radius:50%;background:#E85D4A;"></span>
-                        </div>
-                        <div>
-                            <div style="font-size:12px;font-weight:700;color:#1A1A1A;display:flex;align-items:center;gap:6px;">${iconFA('truck', 'text-[#E85D4A]')} Order En Route</div>
-                            <div style="font-size:10px;color:#999;">Courier arriving in 12 min</div>
-                        </div>
+                <div style="margin:0 16px 16px;background:#FFFFFF;border-radius:24px;box-shadow:0 4px 20px rgba(0,0,0,0.08);padding:16px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                        <div style="width:32px;height:32px;border-radius:50%;background:#FFF3ED;display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('x', 'text-[#E85D4A]')}</div>
+                        <span style="font-size:14px;font-weight:700;color:#999;">#2145</span>
                     </div>
-                    ${iconFA('chevron-right', 'text-[#CCC]')}
+                    <div style="display:flex;justify-content:center;margin-bottom:20px;">
+                        <img src="${foodImg}" style="width:240px;height:200px;object-fit:cover;border-radius:24px;" alt="food">
+                    </div>
+                    <div style="text-align:center;margin-bottom:16px;">
+                        <div style="font-size:22px;font-weight:700;color:#1a1a1a;">Whipping cream</div>
+                        <div style="font-size:20px;font-weight:700;color:#1a1a1a;margin-top:4px;">$03.99</div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;margin-bottom:16px;padding:0 8px;">
+                        <span style="font-size:13px;color:#999;">Items: <strong style="color:#1a1a1a;">5</strong></span>
+                        <span style="font-size:13px;color:#999;">Delivery time: <strong style="color:#1a1a1a;">20 Min</strong></span>
+                    </div>
+                    <div style="display:flex;gap:12px;">
+                        <button style="flex:1;padding:14px;background:#E85D4A;color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;">Track Order</button>
+                        <button style="flex:1;padding:14px;background:#F5F5F5;color:#666;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;">Cancel</button>
+                    </div>
                 </div>`;
             } else if (theme === 'glassmorphism') {
                 return `
-                <div style="margin:0 16px 16px;padding:14px;background:rgba(30,30,30,0.9);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.06);border-radius:16px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:10;">
-                    <div style="display:flex;align-items:center;gap:12px;">
-                        <div style="position:relative;display:flex;width:8px;height:8px;">
-                            <span style="animation:pulse 2s infinite;position:absolute;inset:0;border-radius:50%;background:#4CAF50;opacity:0.4;"></span>
-                            <span style="position:relative;width:8px;height:8px;border-radius:50%;background:#4CAF50;"></span>
-                        </div>
-                        <div>
-                            <div style="font-size:12px;font-weight:700;color:#fff;display:flex;align-items:center;gap:6px;">${iconMaterial('truck-line', 'color:#4CAF50;')} Order En Route</div>
-                            <div style="font-size:10px;color:rgba(255,255,255,0.5);">Courier arriving in 12 min</div>
-                        </div>
+                <div style="margin:0 16px 16px;background:rgba(30,30,30,0.9);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:16px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                        <div style="width:32px;height:32px;border-radius:50%;background:rgba(76,175,80,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconMaterial('close-line', 'color:#4CAF50;')}</div>
+                        <span style="font-size:14px;font-weight:700;color:rgba(255,255,255,0.5);">#2145</span>
                     </div>
-                    ${iconMaterial('arrow-right-s-line', 'color:rgba(255,255,255,0.3);')}
+                    <div style="display:flex;justify-content:center;margin-bottom:20px;">
+                        <img src="${foodImg}" style="width:240px;height:200px;object-fit:cover;border-radius:24px;filter:saturate(1.2);" alt="food">
+                    </div>
+                    <div style="text-align:center;margin-bottom:16px;">
+                        <div style="font-size:22px;font-weight:700;color:#fff;">Whipping cream</div>
+                        <div style="font-size:20px;font-weight:700;color:#fff;margin-top:4px;">$03.99</div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;margin-bottom:16px;padding:0 8px;">
+                        <span style="font-size:13px;color:rgba(255,255,255,0.4);">Items: <strong style="color:#fff;">5</strong></span>
+                        <span style="font-size:13px;color:rgba(255,255,255,0.4);">Delivery time: <strong style="color:#fff;">20 Min</strong></span>
+                    </div>
+                    <div style="display:flex;gap:12px;">
+                        <button style="flex:1;padding:14px;background:#4CAF50;color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;">Track Order</button>
+                        <button style="flex:1;padding:14px;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.1);border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;">Cancel</button>
+                    </div>
                 </div>`;
             } else {
                 return `
-                <div style="margin:0 16px 16px;">
-                    <div style="background:#FFFFFF;border:1.5px solid #E0E0E0;box-shadow:3px 3px 0px #E0E0E0;border-radius:14px;padding:14px;border-left:4px solid #FF6B35;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-                            <span style="font-size:11px;font-weight:700;color:#1a1a1a;display:flex;align-items:center;gap:6px;">${iconBS('truck', 'text-[#FF6B35]')} Delivery In Progress</span>
-                            <span style="font-size:11px;font-weight:600;color:#FF6B35;">12 min</span>
-                        </div>
-                        <div style="width:100%;height:4px;background:#f0f0f0;border-radius:2px;overflow:hidden;">
-                            <div style="width:65%;height:100%;background:#FF6B35;border-radius:2px;"></div>
-                        </div>
-                        <div style="font-size:10px;color:#999;margin-top:6px;">Your order is on its way</div>
+                <div style="margin:0 16px 16px;background:#FFFFFF;border:2px solid #1a1a1a;box-shadow:4px 4px 0px #1a1a1a;border-radius:20px;padding:16px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                        <div style="width:32px;height:32px;border-radius:50%;background:#FFF3ED;border:1.5px solid #FFE0CC;display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconBS('x', 'text-[#FF6B35]')}</div>
+                        <span style="font-size:14px;font-weight:700;color:#999;">#2145</span>
+                    </div>
+                    <div style="display:flex;justify-content:center;margin-bottom:20px;">
+                        <img src="${foodImg}" style="width:240px;height:200px;object-fit:cover;border-radius:20px;" alt="food">
+                    </div>
+                    <div style="text-align:center;margin-bottom:16px;">
+                        <div style="font-size:22px;font-weight:700;color:#1a1a1a;">Whipping cream</div>
+                        <div style="font-size:20px;font-weight:700;color:#1a1a1a;margin-top:4px;">$03.99</div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;margin-bottom:16px;padding:0 8px;">
+                        <span style="font-size:13px;color:#999;">Items: <strong style="color:#1a1a1a;">5</strong></span>
+                        <span style="font-size:13px;color:#999;">Delivery time: <strong style="color:#1a1a1a;">20 Min</strong></span>
+                    </div>
+                    <div style="display:flex;gap:12px;">
+                        <button style="flex:1;padding:14px;background:#FF6B35;color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;box-shadow:3px 3px 0px #1a1a1a;cursor:pointer;">Track Order</button>
+                        <button style="flex:1;padding:14px;background:#F0F0F0;color:#666;border:1.5px solid #E0E0E0;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;">Cancel</button>
                     </div>
                 </div>`;
             }
@@ -2234,59 +2260,91 @@
             if (theme === 'neumorphism') {
                 return `
                 <div style="padding:0 16px 16px;">
-                    <div style="font-size:10px;font-weight:700;color:#999;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;">Order Again</div>
-                    <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;">
-                        <div style="flex-shrink:0;width:140px;background:#FFFFFF;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
-                            <div style="position:relative;">
-                                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=300&q=80" style="width:100%;height:90px;object-fit:cover;" alt="food">
-                                <div style="position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.1);">${iconFA('heart', 'text-[#CCC]')}</div>
+                    <div style="font-size:20px;font-weight:700;color:#1a1a1a;margin-bottom:12px;">Order Again</div>
+                    <div style="display:flex;flex-direction:column;gap:12px;">
+                        <div style="background:#FFFFFF;border-radius:20px;padding:12px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+                            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80" style="width:80px;height:80px;border-radius:16px;object-fit:cover;" alt="food">
+                            <div style="flex:1;">
+                                <div style="font-size:15px;font-weight:700;color:#1a1a1a;">Fresh Orange Juice</div>
+                                <div style="font-size:12px;color:#999;margin-top:2px;">Fresh orange juice</div>
+                                <div style="font-size:15px;font-weight:700;color:#1a1a1a;margin-top:4px;">$05.99</div>
                             </div>
-                            <div style="padding:10px;">
-                                <div style="font-size:11px;font-weight:700;color:#1A1A1A;">Pepperoni Pizza</div>
-                                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
-                                    <span style="font-size:11px;font-weight:700;color:#E85D4A;">$9.99</span>
-                                    <button style="background:#E85D4A;color:#fff;border:none;border-radius:8px;padding:4px 12px;font-size:10px;font-weight:700;cursor:pointer;">Add</button>
-                                </div>
+                            <div style="display:flex;align-items:center;background:#E85D4A;border-radius:12px;overflow:hidden;">
+                                <button style="width:32px;height:32px;background:transparent;color:#fff;border:none;font-size:16px;cursor:pointer;">-</button>
+                                <span style="width:28px;text-align:center;color:#fff;font-size:14px;font-weight:700;">2</span>
+                                <button style="width:32px;height:32px;background:transparent;color:#fff;border:none;font-size:16px;cursor:pointer;">+</button>
                             </div>
                         </div>
-                        <div style="flex-shrink:0;width:140px;background:#FFFFFF;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
-                            <div style="position:relative;">
-                                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80" style="width:100%;height:90px;object-fit:cover;" alt="food">
-                                <div style="position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.1);">${iconFA('heart', 'text-[#CCC]')}</div>
+                        <div style="background:#FFFFFF;border-radius:20px;padding:12px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+                            <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=200&q=80" style="width:80px;height:80px;border-radius:16px;object-fit:cover;" alt="food">
+                            <div style="flex:1;">
+                                <div style="font-size:15px;font-weight:700;color:#1a1a1a;">Cheesecake With Blueberry</div>
+                                <div style="font-size:12px;color:#999;margin-top:2px;">Fresh orange juice</div>
+                                <div style="font-size:15px;font-weight:700;color:#1a1a1a;margin-top:4px;">$07.99</div>
                             </div>
-                            <div style="padding:10px;">
-                                <div style="font-size:11px;font-weight:700;color:#1A1A1A;">Beef Burger</div>
-                                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
-                                    <span style="font-size:11px;font-weight:700;color:#E85D4A;">$7.99</span>
-                                    <button style="background:#E85D4A;color:#fff;border:none;border-radius:8px;padding:4px 12px;font-size:10px;font-weight:700;cursor:pointer;">Add</button>
-                                </div>
+                            <div style="display:flex;align-items:center;background:#E85D4A;border-radius:12px;overflow:hidden;">
+                                <button style="width:32px;height:32px;background:transparent;color:#fff;border:none;font-size:16px;cursor:pointer;">-</button>
+                                <span style="width:28px;text-align:center;color:#fff;font-size:14px;font-weight:700;">4</span>
+                                <button style="width:32px;height:32px;background:transparent;color:#fff;border:none;font-size:16px;cursor:pointer;">+</button>
+                            </div>
+                        </div>
+                        <div style="background:#FFFFFF;border-radius:20px;padding:12px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+                            <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=200&q=80" style="width:80px;height:80px;border-radius:16px;object-fit:cover;" alt="food">
+                            <div style="flex:1;">
+                                <div style="font-size:15px;font-weight:700;color:#1a1a1a;">Stir-Fried Spicy and Herb</div>
+                                <div style="font-size:12px;color:#999;margin-top:2px;">Fresh orange juice</div>
+                                <div style="font-size:15px;font-weight:700;color:#1a1a1a;margin-top:4px;">$09.00</div>
+                            </div>
+                            <div style="display:flex;align-items:center;background:#E85D4A;border-radius:12px;overflow:hidden;">
+                                <button style="width:32px;height:32px;background:transparent;color:#fff;border:none;font-size:16px;cursor:pointer;">-</button>
+                                <span style="width:28px;text-align:center;color:#fff;font-size:14px;font-weight:700;">3</span>
+                                <button style="width:32px;height:32px;background:transparent;color:#fff;border:none;font-size:16px;cursor:pointer;">+</button>
                             </div>
                         </div>
                     </div>
                 </div>`;
             } else if (theme === 'glassmorphism') {
                 return `
-                <div style="padding:0 16px;margin-bottom:16px;">
-                    <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;">Order Again</div>
-                    <div style="display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;">
-                        <div style="flex-shrink:0;width:140px;background:rgba(30,30,30,0.9);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.06);border-radius:16px;overflow:hidden;">
-                            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=300&q=80" style="width:100%;height:90px;object-fit:cover;" alt="food">
-                            <div style="padding:10px;">
-                                <div style="font-size:11px;font-weight:700;color:#fff;">Pepperoni Pizza</div>
-                                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
-                                    <span style="font-size:11px;font-weight:700;color:#4CAF50;">$9.99</span>
-                                    <div style="width:22px;height:22px;border-radius:8px;background:#4CAF50;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;">+</div>
-                                </div>
+                <div style="padding:0 16px 16px;">
+                    <div style="font-size:20px;font-weight:700;color:#fff;margin-bottom:12px;">Order Again</div>
+                    <div style="display:flex;flex-direction:column;gap:12px;">
+                        <div style="background:rgba(30,30,30,0.9);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:12px;display:flex;align-items:center;gap:12px;">
+                            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80" style="width:80px;height:80px;border-radius:16px;object-fit:cover;filter:saturate(1.2);" alt="food">
+                            <div style="flex:1;">
+                                <div style="font-size:15px;font-weight:700;color:#fff;">Fresh Orange Juice</div>
+                                <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:2px;">Fresh orange juice</div>
+                                <div style="font-size:15px;font-weight:700;color:#fff;margin-top:4px;">$05.99</div>
+                            </div>
+                            <div style="display:flex;align-items:center;background:#4CAF50;border-radius:12px;overflow:hidden;">
+                                <button style="width:32px;height:32px;background:transparent;color:#fff;border:none;font-size:16px;cursor:pointer;">-</button>
+                                <span style="width:28px;text-align:center;color:#fff;font-size:14px;font-weight:700;">2</span>
+                                <button style="width:32px;height:32px;background:transparent;color:#fff;border:none;font-size:16px;cursor:pointer;">+</button>
                             </div>
                         </div>
-                        <div style="flex-shrink:0;width:140px;background:rgba(30,30,30,0.9);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.06);border-radius:16px;overflow:hidden;">
-                            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80" style="width:100%;height:90px;object-fit:cover;" alt="food">
-                            <div style="padding:10px;">
-                                <div style="font-size:11px;font-weight:700;color:#fff;">Beef Burger</div>
-                                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
-                                    <span style="font-size:11px;font-weight:700;color:#4CAF50;">$7.99</span>
-                                    <div style="width:22px;height:22px;border-radius:8px;background:#4CAF50;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;">+</div>
-                                </div>
+                        <div style="background:rgba(30,30,30,0.9);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:12px;display:flex;align-items:center;gap:12px;">
+                            <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=200&q=80" style="width:80px;height:80px;border-radius:16px;object-fit:cover;filter:saturate(1.2);" alt="food">
+                            <div style="flex:1;">
+                                <div style="font-size:15px;font-weight:700;color:#fff;">Cheesecake With Blueberry</div>
+                                <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:2px;">Fresh orange juice</div>
+                                <div style="font-size:15px;font-weight:700;color:#fff;margin-top:4px;">$07.99</div>
+                            </div>
+                            <div style="display:flex;align-items:center;background:#4CAF50;border-radius:12px;overflow:hidden;">
+                                <button style="width:32px;height:32px;background:transparent;color:#fff;border:none;font-size:16px;cursor:pointer;">-</button>
+                                <span style="width:28px;text-align:center;color:#fff;font-size:14px;font-weight:700;">4</span>
+                                <button style="width:32px;height:32px;background:transparent;color:#fff;border:none;font-size:16px;cursor:pointer;">+</button>
+                            </div>
+                        </div>
+                        <div style="background:rgba(30,30,30,0.9);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:12px;display:flex;align-items:center;gap:12px;">
+                            <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=200&q=80" style="width:80px;height:80px;border-radius:16px;object-fit:cover;filter:saturate(1.2);" alt="food">
+                            <div style="flex:1;">
+                                <div style="font-size:15px;font-weight:700;color:#fff;">Stir-Fried Spicy and Herb</div>
+                                <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:2px;">Fresh orange juice</div>
+                                <div style="font-size:15px;font-weight:700;color:#fff;margin-top:4px;">$09.00</div>
+                            </div>
+                            <div style="display:flex;align-items:center;background:#4CAF50;border-radius:12px;overflow:hidden;">
+                                <button style="width:32px;height:32px;background:transparent;color:#fff;border:none;font-size:16px;cursor:pointer;">-</button>
+                                <span style="width:28px;text-align:center;color:#fff;font-size:14px;font-weight:700;">3</span>
+                                <button style="width:32px;height:32px;background:transparent;color:#fff;border:none;font-size:16px;cursor:pointer;">+</button>
                             </div>
                         </div>
                     </div>
@@ -2294,32 +2352,45 @@
             } else {
                 return `
                 <div style="padding:0 16px 16px;">
-                    <div style="font-size:12px;font-weight:700;color:#1a1a1a;margin-bottom:10px;">Order Again</div>
-                    <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;">
-                        <div style="flex-shrink:0;width:140px;background:#FFFFFF;border:1.5px solid #E0E0E0;box-shadow:3px 3px 0px #E0E0E0;border-radius:14px;overflow:hidden;">
-                            <div style="position:relative;">
-                                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=300&q=80" style="width:100%;height:90px;object-fit:cover;border-radius:14px 14px 0 0;" alt="food">
-                                <div style="position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:center;box-shadow:2px 2px 0px rgba(0,0,0,0.08);">${iconBS('heart', 'text-[#CCC]')}</div>
+                    <div style="font-size:20px;font-weight:700;color:#1a1a1a;margin-bottom:12px;">Order Again</div>
+                    <div style="display:flex;flex-direction:column;gap:12px;">
+                        <div style="background:#FFFFFF;border:2px solid #1a1a1a;box-shadow:4px 4px 0px #1a1a1a;border-radius:16px;padding:12px;display:flex;align-items:center;gap:12px;">
+                            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80" style="width:80px;height:80px;border-radius:14px;object-fit:cover;" alt="food">
+                            <div style="flex:1;">
+                                <div style="font-size:15px;font-weight:700;color:#1a1a1a;">Fresh Orange Juice</div>
+                                <div style="font-size:12px;color:#999;margin-top:2px;">Fresh orange juice</div>
+                                <div style="font-size:15px;font-weight:700;color:#1a1a1a;margin-top:4px;">$05.99</div>
                             </div>
-                            <div style="padding:10px;">
-                                <div style="font-size:11px;font-weight:700;color:#1a1a1a;">Pepperoni Pizza</div>
-                                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
-                                    <span style="font-size:11px;font-weight:700;color:#FF6B35;">$9.99</span>
-                                    <button style="background:#FF6B35;color:#fff;border:none;border-radius:8px;padding:4px 12px;font-size:10px;font-weight:700;cursor:pointer;box-shadow:2px 2px 0px #cc5529;">Add</button>
-                                </div>
+                            <div style="display:flex;align-items:center;background:#FF6B35;border-radius:10px;overflow:hidden;box-shadow:3px 3px 0px #1a1a1a;">
+                                <button style="width:32px;height:32px;background:transparent;color:#fff;border:none;font-size:16px;cursor:pointer;">-</button>
+                                <span style="width:28px;text-align:center;color:#fff;font-size:14px;font-weight:700;">2</span>
+                                <button style="width:32px;height:32px;background:transparent;color:#fff;border:none;font-size:16px;cursor:pointer;">+</button>
                             </div>
                         </div>
-                        <div style="flex-shrink:0;width:140px;background:#FFFFFF;border:1.5px solid #E0E0E0;box-shadow:3px 3px 0px #E0E0E0;border-radius:14px;overflow:hidden;">
-                            <div style="position:relative;">
-                                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80" style="width:100%;height:90px;object-fit:cover;border-radius:14px 14px 0 0;" alt="food">
-                                <div style="position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:center;box-shadow:2px 2px 0px rgba(0,0,0,0.08);">${iconBS('heart', 'text-[#CCC]')}</div>
+                        <div style="background:#FFFFFF;border:2px solid #1a1a1a;box-shadow:4px 4px 0px #1a1a1a;border-radius:16px;padding:12px;display:flex;align-items:center;gap:12px;">
+                            <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=200&q=80" style="width:80px;height:80px;border-radius:14px;object-fit:cover;" alt="food">
+                            <div style="flex:1;">
+                                <div style="font-size:15px;font-weight:700;color:#1a1a1a;">Cheesecake With Blueberry</div>
+                                <div style="font-size:12px;color:#999;margin-top:2px;">Fresh orange juice</div>
+                                <div style="font-size:15px;font-weight:700;color:#1a1a1a;margin-top:4px;">$07.99</div>
                             </div>
-                            <div style="padding:10px;">
-                                <div style="font-size:11px;font-weight:700;color:#1a1a1a;">Beef Burger</div>
-                                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
-                                    <span style="font-size:11px;font-weight:700;color:#FF6B35;">$7.99</span>
-                                    <button style="background:#FF6B35;color:#fff;border:none;border-radius:8px;padding:4px 12px;font-size:10px;font-weight:700;cursor:pointer;box-shadow:2px 2px 0px #cc5529;">Add</button>
-                                </div>
+                            <div style="display:flex;align-items:center;background:#FF6B35;border-radius:10px;overflow:hidden;box-shadow:3px 3px 0px #1a1a1a;">
+                                <button style="width:32px;height:32px;background:transparent;color:#fff;border:none;font-size:16px;cursor:pointer;">-</button>
+                                <span style="width:28px;text-align:center;color:#fff;font-size:14px;font-weight:700;">4</span>
+                                <button style="width:32px;height:32px;background:transparent;color:#fff;border:none;font-size:16px;cursor:pointer;">+</button>
+                            </div>
+                        </div>
+                        <div style="background:#FFFFFF;border:2px solid #1a1a1a;box-shadow:4px 4px 0px #1a1a1a;border-radius:16px;padding:12px;display:flex;align-items:center;gap:12px;">
+                            <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=200&q=80" style="width:80px;height:80px;border-radius:14px;object-fit:cover;" alt="food">
+                            <div style="flex:1;">
+                                <div style="font-size:15px;font-weight:700;color:#1a1a1a;">Stir-Fried Spicy and Herb</div>
+                                <div style="font-size:12px;color:#999;margin-top:2px;">Fresh orange juice</div>
+                                <div style="font-size:15px;font-weight:700;color:#1a1a1a;margin-top:4px;">$09.00</div>
+                            </div>
+                            <div style="display:flex;align-items:center;background:#FF6B35;border-radius:10px;overflow:hidden;box-shadow:3px 3px 0px #1a1a1a;">
+                                <button style="width:32px;height:32px;background:transparent;color:#fff;border:none;font-size:16px;cursor:pointer;">-</button>
+                                <span style="width:28px;text-align:center;color:#fff;font-size:14px;font-weight:700;">3</span>
+                                <button style="width:32px;height:32px;background:transparent;color:#fff;border:none;font-size:16px;cursor:pointer;">+</button>
                             </div>
                         </div>
                     </div>
@@ -2640,50 +2711,49 @@
         }
 
         function drawFeaturedItems(theme) {
-            const img = 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=150&q=80';
-            const img2 = 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=150&q=80';
+            const img = 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80';
             if (theme === 'neumorphism') {
                 return `
                 <div style="padding:0 16px 16px;">
-                    <div style="font-size:10px;font-weight:700;color:#999;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;">Featured</div>
-                    <div style="background:#FFFFFF;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+                    <div style="background:#FFFFFF;border-radius:24px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
                         <div style="position:relative;">
-                            <img src="${img}" style="width:100%;height:150px;object-fit:cover;" alt="food">
-                            <div style="position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.1);">${iconFA('bookmark', 'text-[#E85D4A]')}</div>
-                            <div style="position:absolute;top:10px;left:10px;background:#E85D4A;color:#fff;padding:4px 12px;border-radius:9999px;font-size:9px;font-weight:700;">Free Delivery</div>
+                            <img src="${img}" style="width:100%;height:180px;object-fit:cover;" alt="food">
+                            <div style="position:absolute;top:12px;left:12px;background:#E85D4A;color:#fff;padding:6px 14px;border-radius:12px;font-size:12px;font-weight:700;">Free Delivery</div>
+                            <div style="position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.1);">${iconFA('bookmark', 'text-[#E85D4A]')}</div>
                         </div>
-                        <div style="padding:14px;">
-                            <div style="font-size:14px;font-weight:700;color:#1A1A1A;">Burger King</div>
-                            <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
-                                <span style="display:flex;align-items:center;gap:2px;font-size:10px;font-weight:600;color:#FF9800;">${iconFA('star', 'text-[#FF9800]')} 4.9</span>
-                                <span style="display:flex;align-items:center;gap:2px;font-size:10px;color:#999;">${iconFA('clock', 'text-[#999]')} 20-25 min</span>
+                        <div style="padding:16px;">
+                            <div style="font-size:20px;font-weight:700;color:#1a1a1a;">Burger King</div>
+                            <div style="display:flex;align-items:center;gap:10px;margin-top:8px;">
+                                <span style="display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:#FF9800;">${iconFA('star', 'text-[#FF9800]')} 4.9</span>
+                                <span style="display:flex;align-items:center;gap:4px;font-size:13px;color:#999;">${iconFA('clock', 'text-[#999]')} 20-25 Min</span>
                             </div>
-                            <div style="display:flex;gap:6px;margin-top:10px;">
-                                <span style="font-size:9px;font-weight:600;color:#666;background:#F5F5F5;padding:4px 10px;border-radius:9999px;">Burger</span>
-                                <span style="font-size:9px;font-weight:600;color:#666;background:#F5F5F5;padding:4px 10px;border-radius:9999px;">Fast Food</span>
+                            <div style="display:flex;gap:8px;margin-top:12px;">
+                                <span style="font-size:12px;font-weight:600;color:#666;background:#F5F5F5;padding:6px 14px;border-radius:10px;">Burger</span>
+                                <span style="font-size:12px;font-weight:600;color:#666;background:#F5F5F5;padding:6px 14px;border-radius:10px;">Pizza</span>
+                                <span style="font-size:12px;font-weight:600;color:#666;background:#F5F5F5;padding:6px 14px;border-radius:10px;">Fast Food</span>
                             </div>
                         </div>
                     </div>
                 </div>`;
             } else if (theme === 'glassmorphism') {
                 return `
-                <div style="padding:0 16px;margin-bottom:16px;">
-                    <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;">Featured</div>
-                    <div style="background:rgba(30,30,30,0.9);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.06);border-radius:16px;overflow:hidden;">
+                <div style="padding:0 16px 16px;">
+                    <div style="background:rgba(30,30,30,0.9);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.08);border-radius:24px;overflow:hidden;">
                         <div style="position:relative;">
-                            <img src="${img}" style="width:100%;height:150px;object-fit:cover;filter:saturate(1.2);" alt="food">
-                            <div style="position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;background:rgba(26,26,26,0.7);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;">${iconMaterial('bookmark-line', 'color:#FF6B9D;')}</div>
-                            <div style="position:absolute;top:10px;left:10px;background:#4CAF50;color:#fff;padding:4px 12px;border-radius:9999px;font-size:9px;font-weight:700;">Free Delivery</div>
+                            <img src="${img}" style="width:100%;height:180px;object-fit:cover;filter:saturate(1.2);" alt="food">
+                            <div style="position:absolute;top:12px;left:12px;background:#4CAF50;color:#fff;padding:6px 14px;border-radius:12px;font-size:12px;font-weight:700;">Free Delivery</div>
+                            <div style="position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;background:rgba(26,26,26,0.7);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;">${iconMaterial('bookmark-line', 'color:#FF6B9D;')}</div>
                         </div>
-                        <div style="padding:14px;">
-                            <div style="font-size:14px;font-weight:700;color:#fff;">Burger King</div>
-                            <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
-                                <span style="display:flex;align-items:center;gap:2px;font-size:10px;font-weight:600;color:#FFD54F;">${iconMaterial('star-fill', 'color:#FFD54F;')} 4.9</span>
-                                <span style="display:flex;align-items:center;gap:2px;font-size:10px;color:rgba(255,255,255,0.4);">20-25 min</span>
+                        <div style="padding:16px;">
+                            <div style="font-size:20px;font-weight:700;color:#fff;">Burger King</div>
+                            <div style="display:flex;align-items:center;gap:10px;margin-top:8px;">
+                                <span style="display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:#FFD54F;">${iconMaterial('star-fill', 'color:#FFD54F;')} 4.9</span>
+                                <span style="display:flex;align-items:center;gap:4px;font-size:13px;color:rgba(255,255,255,0.4);">20-25 Min</span>
                             </div>
-                            <div style="display:flex;gap:6px;margin-top:10px;">
-                                <span style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);padding:4px 10px;border-radius:9999px;">Burger</span>
-                                <span style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);padding:4px 10px;border-radius:9999px;">Fast Food</span>
+                            <div style="display:flex;gap:8px;margin-top:12px;">
+                                <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);padding:6px 14px;border-radius:10px;">Burger</span>
+                                <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);padding:6px 14px;border-radius:10px;">Pizza</span>
+                                <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);padding:6px 14px;border-radius:10px;">Fast Food</span>
                             </div>
                         </div>
                     </div>
@@ -2691,25 +2761,22 @@
             } else {
                 return `
                 <div style="padding:0 16px 16px;">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-                        <span style="font-size:12px;font-weight:700;color:#1a1a1a;">Featured Items</span>
-                    </div>
-                    <div style="background:#FFFFFF;border:1.5px solid #E0E0E0;box-shadow:3px 3px 0px #E0E0E0;border-radius:14px;overflow:hidden;">
+                    <div style="background:#FFFFFF;border:2px solid #1a1a1a;box-shadow:4px 4px 0px #1a1a1a;border-radius:20px;overflow:hidden;">
                         <div style="position:relative;">
-                            <img src="${img}" style="width:100%;height:140px;object-fit:cover;" alt="food">
-                            <div style="position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:center;box-shadow:2px 2px 0px rgba(0,0,0,0.08);">${iconBS('bookmark', 'text-[#FF6B35]')}</div>
-                            <div style="position:absolute;top:8px;left:8px;background:#FF6B35;color:#fff;padding:4px 10px;border-radius:10px;font-size:10px;font-weight:600;box-shadow:2px 2px 0px #cc5529;">Free Delivery</div>
+                            <img src="${img}" style="width:100%;height:180px;object-fit:cover;" alt="food">
+                            <div style="position:absolute;top:12px;left:12px;background:#FF6B35;color:#fff;padding:6px 14px;border-radius:10px;font-size:12px;font-weight:700;box-shadow:2px 2px 0px #1a1a1a;">Free Delivery</div>
+                            <div style="position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;background:#FF6B35;display:flex;align-items:center;justify-content:center;">${iconBS('bookmark', 'color:#fff;')}</div>
                         </div>
-                        <div style="padding:12px;">
-                            <div style="font-size:14px;font-weight:700;color:#1a1a1a;">Burger King</div>
-                            <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
-                                <span style="display:flex;align-items:center;gap:2px;font-size:11px;font-weight:600;color:#FFD54F;">${iconBS('star', 'text-[#FFD54F]')} 4.9</span>
-                                <span style="display:flex;align-items:center;gap:2px;font-size:11px;color:#4CAF50;">${iconBS('clock', 'text-[#4CAF50]')} 20-25 min</span>
+                        <div style="padding:16px;">
+                            <div style="font-size:20px;font-weight:700;color:#1a1a1a;">Burger King</div>
+                            <div style="display:flex;align-items:center;gap:10px;margin-top:8px;">
+                                <span style="display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:#FFD54F;">${iconBS('star', 'text-[#FFD54F]')} 4.9</span>
+                                <span style="display:flex;align-items:center;gap:4px;font-size:13px;color:#4CAF50;">${iconBS('clock', 'text-[#4CAF50]')} 20-25 Min</span>
                             </div>
-                            <div style="display:flex;gap:6px;margin-top:8px;">
-                                <span style="font-size:10px;color:#666;background:#F0F0F0;border:1.5px solid #E0E0E0;padding:4px 8px;border-radius:10px;">Burger</span>
-                                <span style="font-size:10px;color:#666;background:#F0F0F0;border:1.5px solid #E0E0E0;padding:4px 8px;border-radius:10px;">Pizza</span>
-                                <span style="font-size:10px;color:#666;background:#F0F0F0;border:1.5px solid #E0E0E0;padding:4px 8px;border-radius:10px;">Fast Food</span>
+                            <div style="display:flex;gap:8px;margin-top:12px;">
+                                <span style="font-size:12px;font-weight:600;color:#666;background:#F0F0F0;border:1.5px solid #E0E0E0;padding:6px 14px;border-radius:8px;">Burger</span>
+                                <span style="font-size:12px;font-weight:600;color:#666;background:#F0F0F0;border:1.5px solid #E0E0E0;padding:6px 14px;border-radius:8px;">Pizza</span>
+                                <span style="font-size:12px;font-weight:600;color:#666;background:#F0F0F0;border:1.5px solid #E0E0E0;padding:6px 14px;border-radius:8px;">Fast Food</span>
                             </div>
                         </div>
                     </div>
@@ -2955,29 +3022,42 @@
         }
 
         function drawImageMosaic(theme) {
-            const f1 = 'https://images.unsplash.com/photo-1506084868230-bb9d95c24759?auto=format&fit=crop&w=120&q=80';
-            const f2 = 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=120&q=80';
-            const f3 = 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=120&q=80';
+            const f1 = 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=400&q=80';
+            const f2 = 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80';
+            const f3 = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80';
+            const f4 = 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=400&q=80';
             if (theme === 'neumorphism') {
                 return `
-                <div style="padding:0 16px 16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-                    <div style="height:100px;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);"><img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=300&q=80" style="width:100%;height:100%;object-fit:cover;" alt="food1"></div>
-                    <div style="height:100px;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80" style="width:100%;height:100%;object-fit:cover;" alt="food2"></div>
-                    <div style="height:100px;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80" style="width:100%;height:100%;object-fit:cover;" alt="food3"></div>
+                <div style="padding:0 16px 16px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                    <div style="height:130px;border-radius:20px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.08);"><img src="${f1}" style="width:100%;height:100%;object-fit:cover;" alt="food1"></div>
+                    <div style="height:130px;border-radius:20px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.08);"><img src="${f2}" style="width:100%;height:100%;object-fit:cover;" alt="food2"></div>
+                    <div style="height:130px;border-radius:20px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.08);"><img src="${f3}" style="width:100%;height:100%;object-fit:cover;" alt="food3"></div>
+                    <div style="height:130px;border-radius:20px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.08);position:relative;">
+                        <img src="${f4}" style="width:100%;height:100%;object-fit:cover;" alt="food4">
+                        <div style="position:absolute;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:700;">+19</div>
+                    </div>
                 </div>`;
             } else if (theme === 'glassmorphism') {
                 return `
-                <div style="padding:0 16px;margin-bottom:16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-                    <div style="height:90px;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.06);"><img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=300&q=80" style="width:100%;height:100%;object-fit:cover;filter:saturate(1.2);" alt="food1"></div>
-                    <div style="height:90px;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.06);"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80" style="width:100%;height:100%;object-fit:cover;filter:saturate(1.2);" alt="food2"></div>
-                    <div style="height:90px;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.06);"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80" style="width:100%;height:100%;object-fit:cover;filter:saturate(1.2);" alt="food3"></div>
+                <div style="padding:0 16px 16px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                    <div style="height:130px;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);"><img src="${f1}" style="width:100%;height:100%;object-fit:cover;filter:saturate(1.2);" alt="food1"></div>
+                    <div style="height:130px;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);"><img src="${f2}" style="width:100%;height:100%;object-fit:cover;filter:saturate(1.2);" alt="food2"></div>
+                    <div style="height:130px;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);"><img src="${f3}" style="width:100%;height:100%;object-fit:cover;filter:saturate(1.2);" alt="food3"></div>
+                    <div style="height:130px;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);position:relative;">
+                        <img src="${f4}" style="width:100%;height:100%;object-fit:cover;filter:saturate(1.2);" alt="food4">
+                        <div style="position:absolute;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:700;">+19</div>
+                    </div>
                 </div>`;
             } else {
                 return `
-                <div style="padding:0 16px 16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-                    <div style="height:100px;border-radius:14px;overflow:hidden;border:1.5px solid #E0E0E0;box-shadow:3px 3px 0px #E0E0E0;"><img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=300&q=80" style="width:100%;height:100%;object-fit:cover;" alt="food1"></div>
-                    <div style="height:100px;border-radius:14px;overflow:hidden;border:1.5px solid #E0E0E0;box-shadow:3px 3px 0px #E0E0E0;"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80" style="width:100%;height:100%;object-fit:cover;" alt="food2"></div>
-                    <div style="height:100px;border-radius:14px;overflow:hidden;border:1.5px solid #E0E0E0;box-shadow:3px 3px 0px #E0E0E0;"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80" style="width:100%;height:100%;object-fit:cover;" alt="food3"></div>
+                <div style="padding:0 16px 16px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                    <div style="height:130px;border-radius:16px;overflow:hidden;border:2px solid #1a1a1a;box-shadow:4px 4px 0px #1a1a1a;"><img src="${f1}" style="width:100%;height:100%;object-fit:cover;" alt="food1"></div>
+                    <div style="height:130px;border-radius:16px;overflow:hidden;border:2px solid #1a1a1a;box-shadow:4px 4px 0px #1a1a1a;"><img src="${f2}" style="width:100%;height:100%;object-fit:cover;" alt="food2"></div>
+                    <div style="height:130px;border-radius:16px;overflow:hidden;border:2px solid #1a1a1a;box-shadow:4px 4px 0px #1a1a1a;"><img src="${f3}" style="width:100%;height:100%;object-fit:cover;" alt="food3"></div>
+                    <div style="height:130px;border-radius:16px;overflow:hidden;border:2px solid #1a1a1a;box-shadow:4px 4px 0px #1a1a1a;position:relative;">
+                        <img src="${f4}" style="width:100%;height:100%;object-fit:cover;" alt="food4">
+                        <div style="position:absolute;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:700;">+19</div>
+                    </div>
                 </div>`;
             }
         }
