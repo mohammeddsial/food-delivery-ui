@@ -216,61 +216,59 @@
             overflow: hidden;
         }
 
-        /* --- THEME 3: NEUBRUTALISM (Tabler) --- */
+        /* --- THEME 3: NATURAL/ORGANIC (Tabler) --- */
         .theme-neubrutalism {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: #F8F8F8 !important;
-            color: #1a1a1a !important;
+            background: #FAF7F2 !important;
+            color: #3D3229 !important;
         }
 
         .brutal-card {
             background: #FFFFFF;
-            border: 1.5px solid #E0E0E0;
-            box-shadow: 3px 3px 0px #E0E0E0;
-            border-radius: 14px;
+            border: 1px solid #E8DDD3;
+            box-shadow: 0 2px 12px rgba(61, 50, 41, 0.08);
+            border-radius: 20px;
         }
 
         .brutal-accent-yellow {
-            background-color: #FFD54F;
+            background-color: #D4A574;
         }
 
         .brutal-accent-lime {
-            background-color: #4CAF50;
+            background-color: #7D9B76;
         }
 
         .brutal-accent-pink {
-            background-color: #FF6B35;
+            background-color: #C47D5A;
         }
 
         .brutal-pill {
-            background: #FFFFFF;
-            border: 1.5px solid #E0E0E0;
-            box-shadow: 2px 2px 0px #E0E0E0;
+            background: #F5EDE4;
+            border: 1px solid #E8DDD3;
             border-radius: 9999px;
         }
 
         .brutal-food-card {
             background: #FFFFFF;
-            border: 1.5px solid #E0E0E0;
-            box-shadow: 3px 3px 0px #E0E0E0;
-            border-radius: 14px;
+            border: 1px solid #E8DDD3;
+            box-shadow: 0 4px 16px rgba(61, 50, 41, 0.1);
+            border-radius: 20px;
             overflow: hidden;
         }
 
         .brutal-add-btn {
-            background: #FF6B35;
+            background: #8B6F47;
             color: #fff;
             border: none;
-            border-radius: 10px;
-            box-shadow: 2px 2px 0px #cc5529;
-            padding: 6px 16px;
+            border-radius: 12px;
+            padding: 8px 18px;
             font-size: 12px;
             font-weight: 700;
             cursor: pointer;
         }
 
         .brutal-badge {
-            background: #FF6B35;
+            background: #8B6F47;
             color: #fff;
             font-size: 9px;
             font-weight: 700;
@@ -278,7 +276,7 @@
             border-radius: 8px;
         }
 
-        /* ===== FOOD CARD COMPONENTS (Neubrutalism) ===== */
+        /* ===== FOOD CARD COMPONENTS (Natural/Organic) ===== */
         .fd-card {
             background: #fff;
             border-radius: 20px;
@@ -819,18 +817,22 @@
             color: #fff;
         }
 
-        /* Brutalist theme drawer */
+        /* Brutalist theme drawer - Natural/Organic */
         .theme-neubrutalism .drawer {
-            border: 2px solid #1a1a1a;
-            box-shadow: 4px 4px 0px #1a1a1a;
+            border: 1px solid #E8DDD3;
+            box-shadow: 0 4px 20px rgba(61, 50, 41, 0.15);
         }
         .theme-neubrutalism .drawer .drawer-header .close-btn {
-            border: 1.5px solid #1a1a1a;
+            border: 1px solid #E8DDD3;
+            background: #F5EDE4;
         }
         .theme-neubrutalism .drawer .drawer-nav a:hover {
-            background: #FF6B35;
+            background: #F5EDE4;
+            color: #8B6F47;
+        }
+        .theme-neubrutalism .drawer .drawer-nav a.active {
+            background: #8B6F47;
             color: #fff;
-            box-shadow: 2px 2px 0px #1a1a1a;
         }
 
         /* scrollbar */
@@ -1714,7 +1716,7 @@
         }
         function selectAddress(theme, addr) {
             const el = document.querySelector(`#brandHeader-${theme} [onclick*="toggleAddressDropdown"] div div:last-child`);
-            if (el) { el.innerHTML = addr + (theme === 'glassmorphism' ? ` ${iconMaterial('arrow-drop-down-line', 'color:#FFD54F;')}` : ` ${iconFA('chevron-down', theme === 'neubrutalism' ? 'text-[#FF6B35]' : 'text-[#E85D4A]')}`); }
+            if (el) { el.innerHTML = addr + (theme === 'glassmorphism' ? ` ${iconMaterial('arrow-drop-down-line', 'color:#FFD54F;')}` : ` ${iconFA('chevron-down', theme === 'neubrutalism' ? 'text-[#8B6F47]' : 'text-[#E85D4A]')}`); }
             const dd = document.getElementById('addressDropdown-' + theme);
             if (dd) { dd.style.display = 'none'; }
         }
@@ -1727,8 +1729,8 @@
                     deliveryBtn.style.cssText = 'background:#4CAF50;color:#fff;font-size:9px;font-weight:700;padding:5px 12px;border-radius:9999px;cursor:pointer;';
                     pickupBtn.style.cssText = 'color:rgba(255,255,255,0.4);font-size:9px;font-weight:600;padding:5px 12px;border-radius:9999px;cursor:pointer;';
                 } else {
-                    deliveryBtn.style.cssText = theme === 'neubrutalism' ? 'flex:1;padding:8px 12px;text-align:center;border-radius:8px;background:#FF6B35;color:#fff;font-size:11px;font-weight:700;box-shadow:2px 2px 0px #cc5529;cursor:pointer;' : 'flex:1;padding:8px 12px;text-align:center;border-radius:10px;background:#E85D4A;color:#fff;font-size:11px;font-weight:700;cursor:pointer;';
-                    pickupBtn.style.cssText = theme === 'neubrutalism' ? 'flex:1;padding:8px 12px;text-align:center;border-radius:8px;color:#999;font-size:11px;font-weight:500;cursor:pointer;' : 'flex:1;padding:8px 12px;text-align:center;border-radius:10px;color:#999;font-size:11px;font-weight:500;cursor:pointer;';
+                    deliveryBtn.style.cssText = theme === 'neubrutalism' ? 'flex:1;padding:8px 12px;text-align:center;border-radius:12px;background:#8B6F47;color:#fff;font-size:11px;font-weight:700;cursor:pointer;' : 'flex:1;padding:8px 12px;text-align:center;border-radius:10px;background:#E85D4A;color:#fff;font-size:11px;font-weight:700;cursor:pointer;';
+                    pickupBtn.style.cssText = theme === 'neubrutalism' ? 'flex:1;padding:8px 12px;text-align:center;border-radius:12px;color:#999;font-size:11px;font-weight:500;cursor:pointer;' : 'flex:1;padding:8px 12px;text-align:center;border-radius:10px;color:#999;font-size:11px;font-weight:500;cursor:pointer;';
                 }
                 if (pickupDD) { pickupDD.style.display = 'none'; }
             } else {
@@ -1736,8 +1738,8 @@
                     pickupBtn.style.cssText = 'background:#4CAF50;color:#fff;font-size:9px;font-weight:700;padding:5px 12px;border-radius:9999px;cursor:pointer;';
                     deliveryBtn.style.cssText = 'color:rgba(255,255,255,0.4);font-size:9px;font-weight:600;padding:5px 12px;border-radius:9999px;cursor:pointer;';
                 } else {
-                    pickupBtn.style.cssText = theme === 'neubrutalism' ? 'flex:1;padding:8px 12px;text-align:center;border-radius:8px;background:#FF6B35;color:#fff;font-size:11px;font-weight:700;box-shadow:2px 2px 0px #cc5529;cursor:pointer;' : 'flex:1;padding:8px 12px;text-align:center;border-radius:10px;background:#E85D4A;color:#fff;font-size:11px;font-weight:700;cursor:pointer;';
-                    deliveryBtn.style.cssText = theme === 'neubrutalism' ? 'flex:1;padding:8px 12px;text-align:center;border-radius:8px;color:#999;font-size:11px;font-weight:500;cursor:pointer;' : 'flex:1;padding:8px 12px;text-align:center;border-radius:10px;color:#999;font-size:11px;font-weight:500;cursor:pointer;';
+                    pickupBtn.style.cssText = theme === 'neubrutalism' ? 'flex:1;padding:8px 12px;text-align:center;border-radius:12px;background:#8B6F47;color:#fff;font-size:11px;font-weight:700;cursor:pointer;' : 'flex:1;padding:8px 12px;text-align:center;border-radius:10px;background:#E85D4A;color:#fff;font-size:11px;font-weight:700;cursor:pointer;';
+                    deliveryBtn.style.cssText = theme === 'neubrutalism' ? 'flex:1;padding:8px 12px;text-align:center;border-radius:12px;color:#999;font-size:11px;font-weight:500;cursor:pointer;' : 'flex:1;padding:8px 12px;text-align:center;border-radius:10px;color:#999;font-size:11px;font-weight:500;cursor:pointer;';
                 }
                 if (pickupDD) { pickupDD.style.display = 'block'; }
             }
