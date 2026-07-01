@@ -1065,7 +1065,7 @@
 
         // ─── GLOBAL CARD CONFIG (shared across all viewports) ─────────────────
         // ─── PER-THEME CARD CONFIG ─────────────────────────────────────────────
-        window.cardConfig = {
+        const defaultCardConfig = {
             neumorphism: {
                 borderRadius: 16, borderWidth: 0, borderColor: '#E0E0E0',
                 shadowColor: 'rgba(0,0,0,0.06)', shadowX: 0, shadowY: 2, shadowBlur: 12,
@@ -1085,6 +1085,26 @@
                 heroHeight: 180
             }
         };
+
+        window.cardConfig = JSON.parse(JSON.stringify(defaultCardConfig));
+
+        function loadSavedConfig() {
+            const saved = localStorage.getItem('foodDelivery_cardConfig');
+            if (saved) {
+                try { Object.assign(window.cardConfig, JSON.parse(saved)); } catch(e) {}
+            }
+            const savedPalettes = localStorage.getItem('foodDelivery_colorPalettes');
+            if (savedPalettes) {
+                try { Object.assign(window.colorPalettes, JSON.parse(savedPalettes)); } catch(e) {}
+            }
+        }
+
+        function saveConfig() {
+            localStorage.setItem('foodDelivery_cardConfig', JSON.stringify(window.cardConfig));
+            localStorage.setItem('foodDelivery_colorPalettes', JSON.stringify(window.colorPalettes));
+        }
+
+        loadSavedConfig();
 
         let activeConfigTheme = 'neumorphism';
 
@@ -1112,6 +1132,7 @@
         function updateColor(theme, colorName, newValue) {
             if (!window.colorPalettes[theme]) return;
             window.colorPalettes[theme].colors[colorName] = newValue;
+            saveConfig();
             renderPaletteEditor();
             renderAllViewports();
             applyPaletteToViewport(theme);
@@ -1332,6 +1353,7 @@
             const borderColorEl = document.getElementById('cardInput-borderColor');
             if (shadowColorEl) window.cardConfig[activeConfigTheme].shadowColor = shadowColorEl.value;
             if (borderColorEl) window.cardConfig[activeConfigTheme].borderColor = borderColorEl.value;
+            saveConfig();
             renderAllViewports();
         }
 
