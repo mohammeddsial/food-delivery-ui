@@ -616,10 +616,45 @@
             border-bottom: 1px solid #242424;
             font-size: 12px;
             gap: 6px;
+            transition: background 0.15s, opacity 0.15s;
+        }
+
+        .module-row.dragging {
+            opacity: 0.35;
+        }
+
+        .module-row.drag-over-top {
+            box-shadow: inset 0 2px 0 0 #00615F;
+        }
+
+        .module-row.drag-over-bottom {
+            box-shadow: inset 0 -2px 0 0 #00615F;
         }
 
         .module-row:last-child {
             border-bottom: none;
+        }
+
+        .module-row .drag-handle {
+            cursor: grab;
+            color: #555;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            touch-action: none;
+        }
+
+        .module-row .drag-handle:hover {
+            color: #999;
+        }
+
+        .module-row .drag-handle svg,
+        .module-row .drag-handle i {
+            width: 14px;
+            height: 14px;
         }
 
         .module-row .left {
@@ -662,46 +697,161 @@
             flex-shrink: 0;
         }
 
-        .module-row .actions button {
+        .design-picker-btn {
+            background: #2a2a2a;
+            border: 1px solid #333;
+            color: #ddd;
+            padding: 3px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 9px;
+            font-weight: 600;
+            transition: 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            text-transform: capitalize;
+            white-space: nowrap;
+        }
+
+        .design-picker-btn:hover {
+            background: #3a3a3a;
+            border-color: #00615F;
+            color: #fff;
+        }
+
+        .design-picker-btn .no-variants-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #444;
+            flex-shrink: 0;
+        }
+
+        /* ---- Design Picker Modal ---- */
+        .design-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .design-modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .design-modal {
+            background: #1c1c1c;
+            border: 1px solid #333;
+            border-radius: 14px;
+            padding: 16px;
+            width: 320px;
+            max-width: 90vw;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            transform: translateY(10px) scale(0.97);
+            transition: transform 0.2s ease;
+        }
+
+        .design-modal-overlay.open .design-modal {
+            transform: translateY(0) scale(1);
+        }
+
+        .design-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .design-modal-header .title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .design-modal-header .close-x {
             background: #2a2a2a;
             border: none;
             color: #999;
             width: 22px;
             height: 22px;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 10px;
-            transition: 0.15s;
+            font-size: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .module-row .actions button:hover {
+        .design-modal-header .close-x:hover {
             background: #3a3a3a;
             color: #fff;
         }
 
-        .state-btn {
-            background: #2a2a2a;
-            border: 1px solid #333;
-            color: #ddd;
-            padding: 5px 12px;
-            border-radius: 6px;
-            font-size: 11px;
+        .design-modal-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .design-thumb {
+            background: #141414;
+            border: 2px solid #2a2a2a;
+            border-radius: 10px;
+            padding: 8px 6px 6px;
             cursor: pointer;
             transition: 0.15s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
         }
 
-        .state-btn:hover {
-            background: #3a3a3a;
+        .design-thumb:hover {
+            border-color: #444;
+            background: #191919;
         }
 
-        .state-btn.active {
-            background: #00615F;
-            color: #fff;
+        .design-thumb.selected {
             border-color: #00615F;
+            background: rgba(0, 97, 95, 0.12);
+        }
+
+        .design-thumb .thumb-preview {
+            width: 100%;
+            height: 44px;
+            border-radius: 6px;
+            background: #0d0d0d;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #2a2a2a;
+        }
+
+        .design-thumb .thumb-label {
+            font-size: 9px;
             font-weight: 600;
+            color: #aaa;
+            text-transform: capitalize;
+        }
+
+        .design-thumb.selected .thumb-label {
+            color: #00615F;
+        }
+
+        .design-modal-footer-note {
+            margin-top: 12px;
+            font-size: 9px;
+            color: #555;
+            line-height: 1.4;
+            border-top: 1px solid #262626;
+            padding-top: 10px;
         }
 
         /* ---- Drawer ---- */
@@ -1161,36 +1311,6 @@
             </div>
 
             <div class="ctrl-section">
-                <h3>State Simulation</h3>
-                <div class="ctrl-group">
-                    <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                        <select id="weatherSelect"
-                            style="flex:1;min-width:70px;background:#222;border:1px solid #333;color:#ddd;padding:4px 8px;border-radius:6px;font-size:11px;outline:none;">
-                            <option value="Sunny">Clear</option>
-                            <option value="Rainy">Rain</option>
-                            <option value="Snowy">Snow</option>
-                        </select>
-                        <select id="timeSelect"
-                            style="flex:1;min-width:70px;background:#222;border:1px solid #333;color:#ddd;padding:4px 8px;border-radius:6px;font-size:11px;outline:none;">
-                            <option value="Breakfast">Morning</option>
-                            <option value="Lunch" selected>Lunch</option>
-                            <option value="LateNight">Late Night</option>
-                        </select>
-                    </div>
-                    <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
-                        <button class="state-btn" id="orderToggleBtn"><i class="fas fa-truck"></i> Active Order</button>
-                        <button class="state-btn" id="birthdayToggleBtn"><i class="fas fa-gift"></i> Birthday</button>
-                    </div>
-                    <div style="display:flex;gap:6px;margin-top:6px;align-items:center;">
-                        <span style="font-size:10px;color:#888;">Countdown:</span>
-                        <input type="number" id="countdownInput" value="45"
-                            style="width:50px;background:#222;border:1px solid #333;color:#ddd;padding:3px 6px;border-radius:6px;font-size:12px;outline:none;" />
-                        <span style="font-size:10px;color:#666;">min</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ctrl-section">
                 <h3>Card Settings</h3>
                 <div class="ctrl-group" id="cardSettingsContainer"></div>
             </div>
@@ -1275,10 +1395,13 @@
         </div>
     </div>
 
+    <!-- DESIGN PICKER MODAL (global, shared by all module rows) -->
+    <div class="design-modal-overlay" id="designModalOverlay" onclick="closeDesignPicker()"></div>
+
     <script>
         // ─── MASTER CONFIG (default module set, cloned per view) ──────────
         const defaultModulesConfig = [
-            { id: 'announcement-strip', name: 'Announcement Strip', core: false, enabled: true, style: 'default', styles: ['default', 'minimal', 'bold'] },
+            { id: 'announcement-strip', name: 'Announcement Strip', core: false, enabled: true, style: 'default', styles: ['default', 'icon-headline', 'deadline-tag', 'image-side'] },
             { id: 'brand-header', name: 'Brand Header Base', core: true, enabled: true, style: 'default', styles: ['default', 'compact', 'spacious'] },
             { id: 'video-reel-hero', name: 'Video Reel Hero Layer', core: true, enabled: true, style: 'default', styles: ['default', 'card', 'fullscreen'] },
             { id: 'active-order-tracker', name: 'Active Order Tracker', core: true, enabled: true, style: 'default', styles: ['default', 'compact', 'detailed'] },
@@ -1288,7 +1411,7 @@
             { id: 'order-again', name: 'Order Again Rail', core: true, enabled: true, style: 'default', styles: ['default', 'grid', 'list'] },
             { id: 'recommended-for-you', name: 'Recommended For You Grid', core: true, enabled: true, style: 'default', styles: ['default', 'horizontal', 'masonry'] },
             { id: 'deals-promos', name: 'Deals/Promotions Gateway', core: true, enabled: true, style: 'default', styles: ['default', 'banner', 'cards'] },
-            { id: 'birthday-reward-banner', name: 'Birthday Reward Banner', core: false, enabled: true, style: 'default', styles: ['default', 'subtle', 'celebration'] },
+            { id: 'birthday-reward-banner', name: 'Birthday Reward Banner', core: false, enabled: false, style: 'default', styles: ['default', 'subtle', 'celebration'] },
             { id: 'category-tiles', name: 'Category Navigation Grid', core: true, enabled: true, style: 'default', styles: ['default', 'icons', 'cards'] },
             { id: 'meal-deal-combo', name: 'Meal-Deal Combo Builder', core: true, enabled: true, style: 'default', styles: ['default', 'compact', 'detailed'] },
             { id: 'featured-items', name: 'Featured Items Slider', core: true, enabled: true, style: 'default', styles: ['default', 'hero', 'minimal'] },
@@ -1306,25 +1429,11 @@
             neubrutalism: JSON.parse(JSON.stringify(defaultModulesConfig))
         };
 
-        const defaultStateSimulation = {
-            weather: 'Sunny',
-            time: 'Lunch',
-            countdown: 45,
-            orderActive: true,
-            birthday: false
+        // Fixed defaults previously driven by the removed "State Simulation" panel.
+        // Kept as constants so dependent draw functions keep working unmodified.
+        const stateSimulation = {
+            countdown: 45
         };
-
-        // Each of the 3 viewports keeps its OWN independent state simulation
-        let stateSimulationByTheme = {
-            neumorphism: JSON.parse(JSON.stringify(defaultStateSimulation)),
-            glassmorphism: JSON.parse(JSON.stringify(defaultStateSimulation)),
-            neubrutalism: JSON.parse(JSON.stringify(defaultStateSimulation))
-        };
-
-        // Transient pointer used while rendering a single viewport - always aliases
-        // stateSimulationByTheme[<theme currently being rendered>]. Draw functions
-        // read this directly so they stay agnostic of the per-view refactor.
-        let stateSimulation = stateSimulationByTheme.neumorphism;
 
         // ─── BRAND INFO PER THEME ──────────────────────────────────────────────
         const brandInfo = {
@@ -1426,17 +1535,12 @@
             if (savedModules) {
                 try { Object.assign(modulesConfigByTheme, JSON.parse(savedModules)); } catch(e) {}
             }
-            const savedStateSim = localStorage.getItem('foodDelivery_stateSimByTheme');
-            if (savedStateSim) {
-                try { Object.assign(stateSimulationByTheme, JSON.parse(savedStateSim)); } catch(e) {}
-            }
         }
 
         function saveConfig() {
             localStorage.setItem('foodDelivery_cardConfig', JSON.stringify(window.cardConfig));
             localStorage.setItem('foodDelivery_colorPalettes', JSON.stringify(window.colorPalettes));
             localStorage.setItem('foodDelivery_modulesByTheme', JSON.stringify(modulesConfigByTheme));
-            localStorage.setItem('foodDelivery_stateSimByTheme', JSON.stringify(stateSimulationByTheme));
         }
 
         loadSavedConfig();
@@ -1453,7 +1557,6 @@
             activeViewTheme = theme;
             renderViewSwitcher();
             buildControllerList();
-            syncStateSimUI();
             renderCardSettings();
             renderPaletteEditor();
         }
@@ -1582,33 +1685,25 @@
             return iconFA(name, extra);
         }
 
-        // ─── SIMULATED FOOD DATA ─────────────────────────────────────────
+        // ─── SIMULATED FOOD DATA (fixed - weather simulation removed) ──────
         function getSimulatedItems() {
-            if (stateSimulation.weather === 'Sunny') {
-                return {
-                    rec: ['Artisanal Mango Gelato Bowl', 'Cold Brew Nitro Craft Soda'],
-                    desc: 'Beat the heat with clean, crisp refreshing formulas.',
-                    img1: 'https://images.unsplash.com/photo-1506084868230-bb9d95c24759?auto=format&fit=crop&w=300&q=80',
-                    img2: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=300&q=80'
-                };
-            } else if (stateSimulation.weather === 'Rainy') {
-                return {
-                    rec: ['Truffle Grilled Cheese Sandwich', 'Roasted Tomato Basil Soup Box'],
-                    desc: 'Warm comfort pairings optimized for wet climates.',
-                    img1: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=300&q=80',
-                    img2: 'https://images.unsplash.com/photo-1547592165-e1d17fed6005?auto=format&fit=crop&w=300&q=80'
-                };
-            } else {
-                return {
-                    rec: ['White Chocolate Skillet Cookie', 'Gourmet Cinnamon Roll Glaze'],
-                    desc: 'High-density comfort carbs designed for cold days.',
-                    img1: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=300&q=80',
-                    img2: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=300&q=80'
-                };
-            }
+            return {
+                rec: ['Artisanal Mango Gelato Bowl', 'Cold Brew Nitro Craft Soda'],
+                desc: 'Beat the heat with clean, crisp refreshing formulas.',
+                img1: 'https://images.unsplash.com/photo-1506084868230-bb9d95c24759?auto=format&fit=crop&w=300&q=80',
+                img2: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=300&q=80'
+            };
         }
 
         // ─── CONTROLLER UI ───────────────────────────────────────────────
+        // Modules whose drawXXX() function actually implements more than one
+        // visual layout (checked against the render functions below). All other
+        // modules currently only render their "default" look regardless of the
+        // style picked - the picker still works, it's flagged with a dim dot.
+        const MODULES_WITH_REAL_VARIANTS = ['announcement-strip', 'video-reel-hero', 'limited-time-deal', 'order-again', 'recommended-for-you'];
+
+        let dragSourceIndex = null;
+
         function buildControllerList() {
             const container = document.getElementById('moduleListContainer');
             if (!container) return;
@@ -1617,29 +1712,70 @@
             modulesConfig.forEach((mod, index) => {
                 const row = document.createElement('div');
                 row.className = 'module-row';
+                row.draggable = true;
+                row.dataset.index = index;
+                const hasVariants = MODULES_WITH_REAL_VARIANTS.includes(mod.id);
                 row.innerHTML = `
+                    <div class="drag-handle" title="Drag to reorder">${iconFA('grip-vertical')}</div>
                     <div class="left">
                         <input type="checkbox" ${mod.enabled ? 'checked' : ''} onchange="toggleModule('${mod.id}')">
                         ${mod.core ? '<span class="core-badge">core</span>' : ''}
                         <span class="mod-label">${mod.name}</span>
                     </div>
-                    <div class="actions" style="display:flex;align-items:center;gap:6px;">
-                        <select onchange="setModuleStyle('${mod.id}', this.value)" style="width:70px;background:#222;border:1px solid #333;color:#ddd;padding:3px 4px;border-radius:4px;font-size:9px;cursor:pointer;">
-                            ${mod.styles.map(s => `<option value="${s}" ${s === mod.style ? 'selected' : ''}>${s}</option>`).join('')}
-                        </select>
-                        <button onclick="moveModule(${index}, -1)" ${index === 0 ? 'disabled' : ''}><i data-lucide="chevron-up" style="font-size:8px;"></i></button>
-                        <button onclick="moveModule(${index}, 1)" ${index === modulesConfig.length - 1 ? 'disabled' : ''}><i data-lucide="chevron-down" style="font-size:8px;"></i></button>
+                    <div class="actions">
+                        <button class="design-picker-btn" onclick="openDesignPicker('${mod.id}')" title="${hasVariants ? 'Choose card design' : 'This module has no alternate designs yet'}">
+                            ${!hasVariants ? '<span class="no-variants-dot"></span>' : ''}${mod.style}${iconFA('chevron-down')}
+                        </button>
                     </div>
                 `;
                 container.appendChild(row);
+
+                row.addEventListener('dragstart', function() {
+                    dragSourceIndex = index;
+                    row.classList.add('dragging');
+                });
+                row.addEventListener('dragend', function() {
+                    row.classList.remove('dragging');
+                    container.querySelectorAll('.module-row').forEach(r => r.classList.remove('drag-over-top', 'drag-over-bottom'));
+                    dragSourceIndex = null;
+                });
+                row.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    if (dragSourceIndex === null || dragSourceIndex === index) return;
+                    const rect = row.getBoundingClientRect();
+                    const isAfter = (e.clientY - rect.top) > rect.height / 2;
+                    row.classList.toggle('drag-over-bottom', isAfter);
+                    row.classList.toggle('drag-over-top', !isAfter);
+                });
+                row.addEventListener('dragleave', function() {
+                    row.classList.remove('drag-over-top', 'drag-over-bottom');
+                });
+                row.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    if (dragSourceIndex === null || dragSourceIndex === index) return;
+                    const rect = row.getBoundingClientRect();
+                    const isAfter = (e.clientY - rect.top) > rect.height / 2;
+                    reorderModule(dragSourceIndex, isAfter ? index + 1 : index);
+                });
             });
             if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function reorderModule(fromIndex, toIndex) {
+            const modulesConfig = modulesConfigByTheme[activeViewTheme];
+            const [item] = modulesConfig.splice(fromIndex, 1);
+            const insertAt = fromIndex < toIndex ? toIndex - 1 : toIndex;
+            modulesConfig.splice(insertAt, 0, item);
+            saveConfig();
+            buildControllerList();
+            renderAllViewports();
         }
 
         function setModuleStyle(id, style) {
             const mod = modulesConfigByTheme[activeViewTheme].find(m => m.id === id);
             if (mod) mod.style = style;
             saveConfig();
+            buildControllerList();
             renderAllViewports();
         }
 
@@ -1650,18 +1786,78 @@
             renderAllViewports();
         }
 
-        function moveModule(index, direction) {
-            const modulesConfig = modulesConfigByTheme[activeViewTheme];
-            const target = index + direction;
-            if (target >= 0 && target < modulesConfig.length) {
-                const temp = modulesConfig[index];
-                modulesConfig[index] = modulesConfig[target];
-                modulesConfig[target] = temp;
-                saveConfig();
-                buildControllerList();
-                renderAllViewports();
+        // ─── DESIGN PICKER (visual thumbnail popup) ─────────────────────
+        // Abstract layout diagrams per style keyword - gives a genuine visual
+        // difference to pick from without needing a full live-rendered preview.
+        function getStyleThumbHTML(styleName) {
+            const s = styleName.toLowerCase();
+            const img = 'position:absolute;background:#3a3a3a;border-radius:3px;';
+            const line = 'position:absolute;background:#333;border-radius:2px;';
+            if (s === 'default') {
+                return `<div style="${img}top:4px;left:4px;width:16px;height:16px;"></div><div style="${line}top:6px;left:24px;width:14px;height:3px;"></div><div style="${line}top:12px;left:24px;width:10px;height:3px;"></div><div style="${line}bottom:4px;left:4px;width:30px;height:5px;background:#00615F;border-radius:6px;"></div>`;
             }
+            if (['minimal', 'subtle', 'compact'].includes(s)) {
+                return `<div style="${line}top:16px;left:6px;width:32px;height:3px;"></div><div style="${line}top:23px;left:6px;width:20px;height:3px;"></div>`;
+            }
+            if (['bold', 'celebration', 'banner', 'spacious'].includes(s)) {
+                return `<div style="position:absolute;inset:6px;background:#00615F;border-radius:5px;opacity:0.35;"></div><div style="${line}top:18px;left:10px;width:24px;height:4px;background:#00615F;"></div>`;
+            }
+            if (['card', 'popup', 'detailed'].includes(s)) {
+                return `<div style="position:absolute;top:5px;left:8px;right:8px;bottom:5px;border:1.5px solid #444;border-radius:6px;"></div><div style="${img}top:8px;left:11px;width:14px;height:10px;"></div><div style="${line}top:9px;left:28px;width:10px;height:3px;"></div>`;
+            }
+            if (['fullscreen', 'hero'].includes(s)) {
+                return `<div style="position:absolute;inset:2px;background:linear-gradient(135deg,#2a2a2a,#3a3a3a);border-radius:4px;"></div><div style="${line}bottom:6px;left:6px;width:24px;height:4px;background:#00615F;"></div>`;
+            }
+            if (['grid', 'icons', 'cards'].includes(s)) {
+                return `<div style="${img}top:5px;left:5px;width:14px;height:14px;"></div><div style="${img}top:5px;left:22px;width:14px;height:14px;"></div><div style="${img}top:22px;left:5px;width:14px;height:14px;"></div><div style="${img}top:22px;left:22px;width:14px;height:14px;"></div>`;
+            }
+            if (['list', 'horizontal'].includes(s)) {
+                return `<div style="${img}top:5px;left:5px;width:10px;height:10px;"></div><div style="${line}top:6px;left:18px;width:20px;height:3px;"></div><div style="${img}top:19px;left:5px;width:10px;height:10px;"></div><div style="${line}top:20px;left:18px;width:20px;height:3px;"></div>`;
+            }
+            if (s === 'masonry') {
+                return `<div style="${img}top:5px;left:5px;width:12px;height:20px;"></div><div style="${img}top:5px;left:20px;width:12px;height:10px;"></div><div style="${img}top:18px;left:20px;width:12px;height:8px;"></div>`;
+            }
+            // fallback generic
+            return `<div style="${line}top:18px;left:6px;width:32px;height:3px;"></div><div style="${line}top:24px;left:6px;width:22px;height:3px;"></div>`;
         }
+
+        function openDesignPicker(moduleId) {
+            const mod = modulesConfigByTheme[activeViewTheme].find(m => m.id === moduleId);
+            if (!mod) return;
+            const overlay = document.getElementById('designModalOverlay');
+            const hasVariants = MODULES_WITH_REAL_VARIANTS.includes(mod.id);
+            overlay.innerHTML = `
+                <div class="design-modal" onclick="event.stopPropagation()">
+                    <div class="design-modal-header">
+                        <span class="title">${mod.name} · Card Design</span>
+                        <button class="close-x" onclick="closeDesignPicker()">${iconFA('x')}</button>
+                    </div>
+                    <div class="design-modal-grid">
+                        ${mod.styles.map(s => `
+                            <div class="design-thumb ${s === mod.style ? 'selected' : ''}" onclick="pickModuleStyle('${moduleId}','${s}')">
+                                <div class="thumb-preview">${getStyleThumbHTML(s)}</div>
+                                <span class="thumb-label">${s}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    ${!hasVariants ? `<div class="design-modal-footer-note">${iconFA('info')} These design variants are placeholders for this module - it currently always renders its default layout.</div>` : ''}
+                </div>
+            `;
+            overlay.classList.add('open');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function closeDesignPicker() {
+            const overlay = document.getElementById('designModalOverlay');
+            if (overlay) overlay.classList.remove('open');
+        }
+
+        function pickModuleStyle(moduleId, style) {
+            setModuleStyle(moduleId, style);
+            closeDesignPicker();
+        }
+
+
 
         // ─── CARD SETTINGS RENDERER (scoped to activeViewTheme via outer switcher) ──
         function renderCardSettings() {
@@ -1725,31 +1921,6 @@
             renderAllViewports();
         }
 
-        function updateSimulations() {
-            const s = stateSimulationByTheme[activeViewTheme];
-            s.weather = document.getElementById('weatherSelect').value;
-            s.time = document.getElementById('timeSelect').value;
-            s.countdown = parseInt(document.getElementById('countdownInput').value) || 0;
-            saveConfig();
-            renderAllViewports();
-        }
-
-        // Syncs the State Simulation controls (selects/buttons/input) to reflect
-        // the currently active view's stored state - called on boot and on switchView().
-        function syncStateSimUI() {
-            const s = stateSimulationByTheme[activeViewTheme];
-            const weatherEl = document.getElementById('weatherSelect');
-            const timeEl = document.getElementById('timeSelect');
-            const countdownEl = document.getElementById('countdownInput');
-            const orderBtn = document.getElementById('orderToggleBtn');
-            const birthdayBtn = document.getElementById('birthdayToggleBtn');
-            if (weatherEl) weatherEl.value = s.weather;
-            if (timeEl) timeEl.value = s.time;
-            if (countdownEl) countdownEl.value = s.countdown;
-            if (orderBtn) orderBtn.classList.toggle('active', s.orderActive);
-            if (birthdayBtn) birthdayBtn.classList.toggle('active', s.birthday);
-        }
-
         function attachDrawerEvents() {
             document.querySelectorAll('[data-drawer-toggle]').forEach(el => {
                 el.addEventListener('click', function() {
@@ -1777,33 +1948,6 @@
                     if (drawer) drawer.classList.remove('open');
                 });
             });
-        }
-
-        function initControllerEvents() {
-            const orderBtn = document.getElementById('orderToggleBtn');
-            const birthdayBtn = document.getElementById('birthdayToggleBtn');
-            if (orderBtn) {
-                orderBtn.addEventListener('click', function() {
-                    const s = stateSimulationByTheme[activeViewTheme];
-                    s.orderActive = !s.orderActive;
-                    this.classList.toggle('active', s.orderActive);
-                    saveConfig();
-                    renderAllViewports();
-                });
-            }
-            if (birthdayBtn) {
-                birthdayBtn.addEventListener('click', function() {
-                    const s = stateSimulationByTheme[activeViewTheme];
-                    s.birthday = !s.birthday;
-                    this.classList.toggle('active', s.birthday);
-                    saveConfig();
-                    renderAllViewports();
-                });
-            }
-            document.getElementById('weatherSelect').addEventListener('change', updateSimulations);
-            document.getElementById('timeSelect').addEventListener('change', updateSimulations);
-            document.getElementById('countdownInput').addEventListener('input', updateSimulations);
-            syncStateSimUI();
         }
 
         // ─── CART POPUP FUNCTIONS ────────────────────────────────────────
@@ -1882,10 +2026,6 @@
                 const container = document.getElementById(`viewport-${theme}`);
                 container.innerHTML = '';
 
-                // Alias the transient global so every drawXXX() function (which reads
-                // `stateSimulation` directly) automatically sees THIS viewport's own
-                // independent state while it is being built.
-                stateSimulation = stateSimulationByTheme[theme];
                 const modulesConfig = modulesConfigByTheme[theme];
 
                 applyPaletteToViewport(theme);
@@ -2057,9 +2197,6 @@
                     </div>
                 `;
             });
-
-            // Restore transient alias to the view currently being edited in the panel
-            stateSimulation = stateSimulationByTheme[activeViewTheme];
 
             if (typeof lucide !== 'undefined') lucide.createIcons();
             attachDrawerEvents();
@@ -2473,7 +2610,6 @@
         }
 
         function drawActiveOrderTracker(theme) {
-            if (!stateSimulation.orderActive) return '';
             const foodImg = 'https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=400&q=80';
             if (theme === 'neumorphism') {
                 return `
@@ -3208,7 +3344,7 @@
                 <div style="padding:0 16px 16px;">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
                         <span style="font-size:12px;font-weight:700;color:#3D3229;">Recommended</span>
-                        <span style="font-size:10px;color:#00615F;font-weight:600;">${stateSimulation.weather}</span>
+                        <span style="font-size:10px;color:#00615F;font-weight:600;">For You</span>
                     </div>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                         <div style="background:#FFFFFF;border:1px solid #E8DDD3;border-radius:20px;overflow:hidden;box-shadow:0 2px 8px rgba(61,50,41,0.06);">
@@ -3289,7 +3425,6 @@
         }
 
         function drawBirthdayBanner(theme) {
-            if (!stateSimulation.birthday) return '';
             if (theme === 'neumorphism') {
                 return `
                 <div style="margin:0 16px 16px;padding:14px;background:#FFFFFF;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;">
@@ -3953,7 +4088,6 @@
             renderViewSwitcher();
             buildControllerList();
             renderAllViewports();
-            initControllerEvents();
             renderPaletteEditor();
             renderCardSettings();
             applyAllPalettes();

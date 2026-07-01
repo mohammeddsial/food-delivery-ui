@@ -28,33 +28,38 @@
         /* V1: Image Top */
         .v1-nav { padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; }
         .v1-left { display: flex; align-items: center; gap: 10px; }
-        .v1-hamburger { width: 32px; height: 32px; border-radius: 10px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
+        .v1-hamburger { width: 32px; height: 32px; border-radius: 10px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; flex-shrink: 0; }
         .v1-hamburger i { font-size: 16px; color: #333; }
+        .v1-logo { width: 32px; height: 32px; border-radius: 9px; background: #00615F; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 11px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
         .v1-brand { font-size: 14px; font-weight: 800; color: #1a1a1a; letter-spacing: 0.5px; }
-        .v1-cart { width: 36px; height: 36px; border-radius: 12px; background: #00615F; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; border: none; }
+        .v1-right { display: flex; align-items: center; gap: 6px; }
+        .v1-icon-btn { width: 32px; height: 32px; border-radius: 10px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
+        .v1-icon-btn i { font-size: 15px; color: #333; }
+        .v1-cart { width: 36px; height: 36px; border-radius: 12px; background: #00615F; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; border: none; flex-shrink: 0; }
         .v1-cart i { color: #fff; font-size: 18px; }
         .v1-badge { position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; background: #1a1a1a; color: #fff; font-size: 9px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
 
         /* V2: Image Left */
         .v2-nav { padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; background: #1a1a1a; }
         .v2-left { display: flex; align-items: center; gap: 10px; }
-        .v2-hamburger { width: 32px; height: 32px; border-radius: 10px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
+        .v2-hamburger { width: 32px; height: 32px; border-radius: 10px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; flex-shrink: 0; }
         .v2-hamburger i { font-size: 16px; color: #fff; }
+        .v2-logo { width: 32px; height: 32px; border-radius: 9px; background: #00615F; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 11px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
         .v2-brand { font-size: 14px; font-weight: 800; color: #fff; }
-        .v2-right { display: flex; align-items: center; gap: 10px; }
-        .v2-search { width: 32px; height: 32px; border-radius: 10px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
-        .v2-search i { font-size: 16px; color: #fff; }
-        .v2-cart { width: 36px; height: 36px; border-radius: 12px; background: #00615F; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; border: none; }
+        .v2-right { display: flex; align-items: center; gap: 6px; }
+        .v2-icon-btn { width: 32px; height: 32px; border-radius: 10px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
+        .v2-icon-btn i { font-size: 15px; color: #fff; }
+        .v2-cart { width: 36px; height: 36px; border-radius: 12px; background: #00615F; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; border: none; flex-shrink: 0; }
         .v2-cart i { color: #fff; font-size: 18px; }
         .v2-badge { position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; background: #00615F; color: #fff; font-size: 9px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #1a1a1a; }
 
         /* V3: Minimal */
         .v3-nav { padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; background: linear-gradient(180deg, #FFF3ED, #fff); }
-        .v3-left { display: flex; align-items: center; gap: 10px; }
-        .v3-avatar { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; flex-shrink: 0; }
-        .v3-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .v3-greeting { font-size: 10px; color: #999; }
-        .v3-name { font-size: 14px; font-weight: 800; color: #1a1a1a; }
+        .v3-left { display: flex; align-items: center; gap: 8px; }
+        .v3-hamburger { width: 34px; height: 34px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #eee; box-shadow: 0 2px 8px rgba(0,0,0,0.06); flex-shrink: 0; }
+        .v3-hamburger i { font-size: 15px; color: #333; }
+        .v3-logo { width: 34px; height: 34px; border-radius: 50%; background: #00615F; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 11px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
+        .v3-brand { font-size: 14px; font-weight: 800; color: #1a1a1a; }
         .v3-right { display: flex; align-items: center; gap: 8px; }
         .v3-icon { width: 36px; height: 36px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #eee; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
         .v3-icon i { font-size: 16px; color: #333; }
@@ -80,12 +85,17 @@
             <div class="v1-nav">
                 <div class="v1-left">
                     <button class="v1-hamburger"><i class="ri-menu-2-fill"></i></button>
+                    <div class="v1-logo">FH</div>
                     <span class="v1-brand">Food Hub</span>
                 </div>
-                <button class="v1-cart">
-                    <i class="ri-shopping-bag-3-fill"></i>
-                    <span class="v1-badge">2</span>
-                </button>
+                <div class="v1-right">
+                    <button class="v1-icon-btn"><i class="ri-heart-line"></i></button>
+                    <button class="v1-icon-btn"><i class="ri-notification-3-line"></i></button>
+                    <button class="v1-cart">
+                        <i class="ri-shopping-bag-3-fill"></i>
+                        <span class="v1-badge">2</span>
+                    </button>
+                </div>
             </div>
             <div class="content">Page Content</div>
         </div>
@@ -102,10 +112,12 @@
             <div class="v2-nav">
                 <div class="v2-left">
                     <button class="v2-hamburger"><i class="ri-menu-2-fill"></i></button>
+                    <div class="v2-logo">FH</div>
                     <span class="v2-brand">Food Hub</span>
                 </div>
                 <div class="v2-right">
-                    <button class="v2-search"><i class="ri-search-line"></i></button>
+                    <button class="v2-icon-btn"><i class="ri-heart-line"></i></button>
+                    <button class="v2-icon-btn"><i class="ri-notification-3-line"></i></button>
                     <button class="v2-cart">
                         <i class="ri-shopping-bag-3-fill"></i>
                         <span class="v2-badge">2</span>
@@ -126,15 +138,12 @@
             </div>
             <div class="v3-nav">
                 <div class="v3-left">
-                    <div class="v3-avatar">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=60&q=80" alt="avatar">
-                    </div>
-                    <div>
-                        <div class="v3-greeting">Good evening</div>
-                        <div class="v3-name">Sarah</div>
-                    </div>
+                    <button class="v3-hamburger"><i class="ri-menu-2-fill"></i></button>
+                    <div class="v3-logo">FH</div>
+                    <span class="v3-brand">Food Hub</span>
                 </div>
                 <div class="v3-right">
+                    <button class="v3-icon"><i class="ri-heart-line"></i></button>
                     <button class="v3-icon"><i class="ri-notification-3-line"></i></button>
                     <button class="v3-icon v3-cart">
                         <i class="ri-shopping-bag-3-line"></i>
@@ -145,6 +154,7 @@
             <div class="content">Page Content</div>
         </div>
     </div>
+
 
     <script>
         function switchTab(id) {
