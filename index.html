@@ -1300,7 +1300,7 @@
                     <span style="font-size:10px;color:#888;">${s.label}</span>
                     <div style="display:flex;align-items:center;gap:4px;">
                         <input type="number" min="${s.min}" max="${s.max}" step="${s.step}" value="${c[s.key]}"
-                            onchange="updateCardConfig('${s.key}', parseFloat(this.value))"
+                            id="cardInput-${s.key}"
                             style="width:56px;background:#222;border:1px solid #333;color:#ddd;padding:4px 6px;border-radius:6px;font-size:11px;text-align:center;">
                         <span style="font-size:9px;color:#666;">${s.unit}</span>
                     </div>
@@ -1309,16 +1309,30 @@
             html += `
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
                     <span style="font-size:10px;color:#888;">Shadow Color</span>
-                    <input type="text" value="${c.shadowColor}" onchange="updateCardConfig('shadowColor', this.value)"
+                    <input type="text" value="${c.shadowColor}" id="cardInput-shadowColor"
                         style="width:100px;background:#222;border:1px solid #333;color:#ddd;padding:3px 6px;border-radius:6px;font-size:10px;">
                 </div>
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
                     <span style="font-size:10px;color:#888;">Border Color</span>
-                    <input type="text" value="${c.borderColor}" onchange="updateCardConfig('borderColor', this.value)"
+                    <input type="text" value="${c.borderColor}" id="cardInput-borderColor"
                         style="width:100px;background:#222;border:1px solid #333;color:#ddd;padding:3px 6px;border-radius:6px;font-size:10px;">
                 </div>
+                <button onclick="applyCardSettings()" style="width:100%;padding:8px;background:${themeColors[activeConfigTheme]};color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;margin-top:4px;">Apply</button>
             `;
             container.innerHTML = html;
+        }
+
+        function applyCardSettings() {
+            const settings = ['borderRadius','borderWidth','shadowX','shadowY','shadowBlur','padding','imageBorderRadius','gap','fontSize','lineHeight','heroHeight'];
+            settings.forEach(key => {
+                const el = document.getElementById('cardInput-' + key);
+                if (el) window.cardConfig[activeConfigTheme][key] = parseFloat(el.value);
+            });
+            const shadowColorEl = document.getElementById('cardInput-shadowColor');
+            const borderColorEl = document.getElementById('cardInput-borderColor');
+            if (shadowColorEl) window.cardConfig[activeConfigTheme].shadowColor = shadowColorEl.value;
+            if (borderColorEl) window.cardConfig[activeConfigTheme].borderColor = borderColorEl.value;
+            renderAllViewports();
         }
 
         function updateSimulations() {
