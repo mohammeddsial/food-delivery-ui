@@ -1294,6 +1294,15 @@
         function selectBranch(theme, branch) {
             const pickupDD = document.getElementById('pickupDropdown-' + theme);
             if (pickupDD) { pickupDD.style.display = 'none'; }
+            // Update address text in header
+            const header = document.getElementById('brandHeader-' + theme);
+            if (header) {
+                const addrDiv = header.querySelector('[onclick*="toggleAddressDropdown"] div div:last-child');
+                if (addrDiv) {
+                    const arrow = theme === 'glassmorphism' ? iconMaterial('arrow-drop-down-line', 'color:#FFD54F;') : (theme === 'neubrutalism' ? iconBS('chevron-down', 'text-[#FF6B35]') : iconFA('chevron-down', 'text-[#E85D4A]'));
+                    addrDiv.innerHTML = branch + ' ' + arrow;
+                }
+            }
         }
 
         // ─── RENDER ALL VIEWPORTS ────────────────────────────────────────
