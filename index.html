@@ -92,6 +92,19 @@
             font-family: 'Inter', sans-serif;
             background: #FFFFFF !important;
             color: #1A1A1A !important;
+            --accent: #1A1A1A;
+            --accent-light: #F7F7F7;
+            --accent-text: #1A1A1A;
+            --card-bg: #FFFFFF;
+            --card-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            --text-primary: #1A1A1A;
+            --text-secondary: #999;
+            --border-color: #F0F0F0;
+            --badge-bg: #1A1A1A;
+            --badge-text: #FFFFFF;
+            --pill-bg: #F7F7F7;
+            --btn-radius: 9999px;
+            --card-radius: 20px;
         }
 
         .neu-flat {
@@ -1136,6 +1149,12 @@
             </div>
             <div style="font-size:11px;color:#666;margin-bottom:12px;">19 components · 3 design systems · 3 icon libs</div>
 
+            <!-- PER-VIEW WRAPPER: controls which viewport's settings the panel below edits -->
+            <div class="ctrl-section" style="margin-top:0;">
+                <h3>Editing View</h3>
+                <div class="ctrl-group" id="viewSwitcherContainer" style="display:flex;gap:4px;padding:6px;"></div>
+            </div>
+
             <div class="ctrl-section">
                 <h3>Module Orchestrator</h3>
                 <div class="ctrl-group" id="moduleListContainer"></div>
@@ -1177,7 +1196,7 @@
             </div>
 
             <div style="font-size:9px;color:#444;margin-top:10px;border-top:1px solid #1a1a1a;padding-top:8px;text-align:center;">
-                <i class="fas fa-sync-alt" style="margin-right:4px;"></i> Real-time · all viewports sync
+                <i class="fas fa-sync-alt" style="margin-right:4px;"></i> Modules/State/Cards/Palette are per-view
             </div>
             <div style="font-size:8px;color:#333;margin-top:4px;text-align:center;border-top:1px solid #1a1a1a;padding-top:6px;">
                 <span style="background:#1a1a1a;padding:2px 8px;border-radius:4px;">Lucide</span>
@@ -1257,8 +1276,8 @@
     </div>
 
     <script>
-        // ─── MASTER CONFIG ────────────────────────────────────────────────
-        let modulesConfig = [
+        // ─── MASTER CONFIG (default module set, cloned per view) ──────────
+        const defaultModulesConfig = [
             { id: 'announcement-strip', name: 'Announcement Strip', core: false, enabled: true, style: 'default', styles: ['default', 'minimal', 'bold'] },
             { id: 'brand-header', name: 'Brand Header Base', core: true, enabled: true, style: 'default', styles: ['default', 'compact', 'spacious'] },
             { id: 'video-reel-hero', name: 'Video Reel Hero Layer', core: true, enabled: true, style: 'default', styles: ['default', 'card', 'fullscreen'] },
@@ -1278,16 +1297,34 @@
             { id: 'offers-feed', name: 'Offers Comprehensive Feed', core: false, enabled: true, style: 'default', styles: ['default', 'list', 'cards'] },
             { id: 'image-mosaic', name: 'Image Mosaic Lookbook', core: false, enabled: true, style: 'default', styles: ['default', 'grid', 'masonry'] },
             { id: 'stories', name: 'Stories Loop Tickers', core: false, enabled: true, style: 'default', styles: ['default', 'minimal', 'circles'] },
-           
         ];
 
-        let stateSimulation = {
+        // Each of the 3 viewports keeps its OWN independent module list (enable/order/style)
+        let modulesConfigByTheme = {
+            neumorphism: JSON.parse(JSON.stringify(defaultModulesConfig)),
+            glassmorphism: JSON.parse(JSON.stringify(defaultModulesConfig)),
+            neubrutalism: JSON.parse(JSON.stringify(defaultModulesConfig))
+        };
+
+        const defaultStateSimulation = {
             weather: 'Sunny',
             time: 'Lunch',
             countdown: 45,
             orderActive: true,
             birthday: false
         };
+
+        // Each of the 3 viewports keeps its OWN independent state simulation
+        let stateSimulationByTheme = {
+            neumorphism: JSON.parse(JSON.stringify(defaultStateSimulation)),
+            glassmorphism: JSON.parse(JSON.stringify(defaultStateSimulation)),
+            neubrutalism: JSON.parse(JSON.stringify(defaultStateSimulation))
+        };
+
+        // Transient pointer used while rendering a single viewport - always aliases
+        // stateSimulationByTheme[<theme currently being rendered>]. Draw functions
+        // read this directly so they stay agnostic of the per-view refactor.
+        let stateSimulation = stateSimulationByTheme.neumorphism;
 
         // ─── BRAND INFO PER THEME ──────────────────────────────────────────────
         const brandInfo = {
@@ -1385,19 +1422,53 @@
             if (savedPalettes) {
                 try { Object.assign(window.colorPalettes, JSON.parse(savedPalettes)); } catch(e) {}
             }
+            const savedModules = localStorage.getItem('foodDelivery_modulesByTheme');
+            if (savedModules) {
+                try { Object.assign(modulesConfigByTheme, JSON.parse(savedModules)); } catch(e) {}
+            }
+            const savedStateSim = localStorage.getItem('foodDelivery_stateSimByTheme');
+            if (savedStateSim) {
+                try { Object.assign(stateSimulationByTheme, JSON.parse(savedStateSim)); } catch(e) {}
+            }
         }
 
         function saveConfig() {
             localStorage.setItem('foodDelivery_cardConfig', JSON.stringify(window.cardConfig));
             localStorage.setItem('foodDelivery_colorPalettes', JSON.stringify(window.colorPalettes));
+            localStorage.setItem('foodDelivery_modulesByTheme', JSON.stringify(modulesConfigByTheme));
+            localStorage.setItem('foodDelivery_stateSimByTheme', JSON.stringify(stateSimulationByTheme));
         }
 
         loadSavedConfig();
 
-        let activeConfigTheme = 'neumorphism';
+        // ─── PER-VIEW WRAPPER: single source of truth for which viewport's ──────
+        // ─── settings (Modules, State Sim, Card Settings, Palette) are shown ────
+        const VIEW_THEMES = ['neumorphism', 'glassmorphism', 'neubrutalism'];
+        const VIEW_NAMES = { neumorphism: 'Light', glassmorphism: 'Dark', neubrutalism: 'Modern' };
+        const VIEW_COLORS = { neumorphism: '#1A1A1A', glassmorphism: '#4CAF50', neubrutalism: '#00615F' };
+
+        let activeViewTheme = 'neumorphism';
+
+        function switchView(theme) {
+            activeViewTheme = theme;
+            renderViewSwitcher();
+            buildControllerList();
+            syncStateSimUI();
+            renderCardSettings();
+            renderPaletteEditor();
+        }
+
+        function renderViewSwitcher() {
+            const container = document.getElementById('viewSwitcherContainer');
+            if (!container) return;
+            container.innerHTML = VIEW_THEMES.map(t => {
+                const isActive = t === activeViewTheme;
+                return `<button onclick="switchView('${t}')" style="flex:1;padding:7px 4px;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;transition:0.15s;${isActive ? 'background:' + VIEW_COLORS[t] + ';color:#fff;' : 'background:#222;color:#888;'}">${VIEW_NAMES[t]}</button>`;
+            }).join('');
+        }
 
         function updateCardConfig(key, value) {
-            window.cardConfig[activeConfigTheme][key] = value;
+            window.cardConfig[activeViewTheme][key] = value;
             renderCardSettings();
             renderAllViewports();
         }
@@ -1540,7 +1611,9 @@
         // ─── CONTROLLER UI ───────────────────────────────────────────────
         function buildControllerList() {
             const container = document.getElementById('moduleListContainer');
+            if (!container) return;
             container.innerHTML = '';
+            const modulesConfig = modulesConfigByTheme[activeViewTheme];
             modulesConfig.forEach((mod, index) => {
                 const row = document.createElement('div');
                 row.className = 'module-row';
@@ -1560,45 +1633,43 @@
                 `;
                 container.appendChild(row);
             });
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
         function setModuleStyle(id, style) {
-            const mod = modulesConfig.find(m => m.id === id);
+            const mod = modulesConfigByTheme[activeViewTheme].find(m => m.id === id);
             if (mod) mod.style = style;
+            saveConfig();
             renderAllViewports();
         }
 
         function toggleModule(id) {
-            const mod = modulesConfig.find(m => m.id === id);
+            const mod = modulesConfigByTheme[activeViewTheme].find(m => m.id === id);
             if (mod) mod.enabled = !mod.enabled;
+            saveConfig();
             renderAllViewports();
         }
 
         function moveModule(index, direction) {
+            const modulesConfig = modulesConfigByTheme[activeViewTheme];
             const target = index + direction;
             if (target >= 0 && target < modulesConfig.length) {
                 const temp = modulesConfig[index];
                 modulesConfig[index] = modulesConfig[target];
                 modulesConfig[target] = temp;
+                saveConfig();
                 buildControllerList();
                 renderAllViewports();
             }
         }
 
-        // ─── CARD SETTINGS RENDERER ────────────────────────────────────────────
+        // ─── CARD SETTINGS RENDERER (scoped to activeViewTheme via outer switcher) ──
         function renderCardSettings() {
             const container = document.getElementById('cardSettingsContainer');
             if (!container) return;
-            const c = window.cardConfig[activeConfigTheme];
-            const themeNames = { neumorphism: 'Light', glassmorphism: 'Dark', neubrutalism: 'Modern' };
-            const themeColors = { neumorphism: '#00615F', glassmorphism: '#4CAF50', neubrutalism: '#00615F' };
+            const c = window.cardConfig[activeViewTheme];
 
-            let html = `<div style="display:flex;gap:4px;margin-bottom:12px;">`;
-            Object.keys(themeNames).forEach(t => {
-                const isActive = t === activeConfigTheme;
-                html += `<button onclick="activeConfigTheme='${t}';renderCardSettings();" style="flex:1;padding:6px;border:none;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;${isActive ? 'background:' + themeColors[t] + ';color:#fff;' : 'background:#222;color:#888;'}">${themeNames[t]}</button>`;
-            });
-            html += `</div>`;
+            let html = `<div style="font-size:9px;color:#666;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;">Editing <strong style="color:${VIEW_COLORS[activeViewTheme]};">${VIEW_NAMES[activeViewTheme]}</strong> view cards</div>`;
 
             const settings = [
                 { key: 'borderRadius', label: 'Corner Radius', min: 0, max: 32, step: 1, unit: 'px' },
@@ -1635,7 +1706,7 @@
                     <input type="text" value="${c.borderColor}" id="cardInput-borderColor"
                         style="width:100px;background:#222;border:1px solid #333;color:#ddd;padding:3px 6px;border-radius:6px;font-size:10px;">
                 </div>
-                <button onclick="applyCardSettings()" style="width:100%;padding:8px;background:${themeColors[activeConfigTheme]};color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;margin-top:4px;">Apply</button>
+                <button onclick="applyCardSettings()" style="width:100%;padding:8px;background:${VIEW_COLORS[activeViewTheme]};color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;margin-top:4px;">Apply</button>
             `;
             container.innerHTML = html;
         }
@@ -1644,21 +1715,39 @@
             const settings = ['borderRadius','borderWidth','shadowX','shadowY','shadowBlur','padding','imageBorderRadius','gap','fontSize','lineHeight','heroHeight'];
             settings.forEach(key => {
                 const el = document.getElementById('cardInput-' + key);
-                if (el) window.cardConfig[activeConfigTheme][key] = parseFloat(el.value);
+                if (el) window.cardConfig[activeViewTheme][key] = parseFloat(el.value);
             });
             const shadowColorEl = document.getElementById('cardInput-shadowColor');
             const borderColorEl = document.getElementById('cardInput-borderColor');
-            if (shadowColorEl) window.cardConfig[activeConfigTheme].shadowColor = shadowColorEl.value;
-            if (borderColorEl) window.cardConfig[activeConfigTheme].borderColor = borderColorEl.value;
+            if (shadowColorEl) window.cardConfig[activeViewTheme].shadowColor = shadowColorEl.value;
+            if (borderColorEl) window.cardConfig[activeViewTheme].borderColor = borderColorEl.value;
             saveConfig();
             renderAllViewports();
         }
 
         function updateSimulations() {
-            stateSimulation.weather = document.getElementById('weatherSelect').value;
-            stateSimulation.time = document.getElementById('timeSelect').value;
-            stateSimulation.countdown = parseInt(document.getElementById('countdownInput').value) || 0;
+            const s = stateSimulationByTheme[activeViewTheme];
+            s.weather = document.getElementById('weatherSelect').value;
+            s.time = document.getElementById('timeSelect').value;
+            s.countdown = parseInt(document.getElementById('countdownInput').value) || 0;
+            saveConfig();
             renderAllViewports();
+        }
+
+        // Syncs the State Simulation controls (selects/buttons/input) to reflect
+        // the currently active view's stored state - called on boot and on switchView().
+        function syncStateSimUI() {
+            const s = stateSimulationByTheme[activeViewTheme];
+            const weatherEl = document.getElementById('weatherSelect');
+            const timeEl = document.getElementById('timeSelect');
+            const countdownEl = document.getElementById('countdownInput');
+            const orderBtn = document.getElementById('orderToggleBtn');
+            const birthdayBtn = document.getElementById('birthdayToggleBtn');
+            if (weatherEl) weatherEl.value = s.weather;
+            if (timeEl) timeEl.value = s.time;
+            if (countdownEl) countdownEl.value = s.countdown;
+            if (orderBtn) orderBtn.classList.toggle('active', s.orderActive);
+            if (birthdayBtn) birthdayBtn.classList.toggle('active', s.birthday);
         }
 
         function attachDrawerEvents() {
@@ -1694,23 +1783,27 @@
             const orderBtn = document.getElementById('orderToggleBtn');
             const birthdayBtn = document.getElementById('birthdayToggleBtn');
             if (orderBtn) {
-                orderBtn.classList.add('active');
                 orderBtn.addEventListener('click', function() {
-                    stateSimulation.orderActive = !stateSimulation.orderActive;
-                    this.classList.toggle('active');
+                    const s = stateSimulationByTheme[activeViewTheme];
+                    s.orderActive = !s.orderActive;
+                    this.classList.toggle('active', s.orderActive);
+                    saveConfig();
                     renderAllViewports();
                 });
             }
             if (birthdayBtn) {
                 birthdayBtn.addEventListener('click', function() {
-                    stateSimulation.birthday = !stateSimulation.birthday;
-                    this.classList.toggle('active');
+                    const s = stateSimulationByTheme[activeViewTheme];
+                    s.birthday = !s.birthday;
+                    this.classList.toggle('active', s.birthday);
+                    saveConfig();
                     renderAllViewports();
                 });
             }
             document.getElementById('weatherSelect').addEventListener('change', updateSimulations);
             document.getElementById('timeSelect').addEventListener('change', updateSimulations);
             document.getElementById('countdownInput').addEventListener('input', updateSimulations);
+            syncStateSimUI();
         }
 
         // ─── CART POPUP FUNCTIONS ────────────────────────────────────────
@@ -1788,6 +1881,12 @@
             views.forEach(theme => {
                 const container = document.getElementById(`viewport-${theme}`);
                 container.innerHTML = '';
+
+                // Alias the transient global so every drawXXX() function (which reads
+                // `stateSimulation` directly) automatically sees THIS viewport's own
+                // independent state while it is being built.
+                stateSimulation = stateSimulationByTheme[theme];
+                const modulesConfig = modulesConfigByTheme[theme];
 
                 applyPaletteToViewport(theme);
                 applyCardConfigToViewport(theme);
@@ -1958,6 +2057,9 @@
                     </div>
                 `;
             });
+
+            // Restore transient alias to the view currently being edited in the panel
+            stateSimulation = stateSimulationByTheme[activeViewTheme];
 
             if (typeof lucide !== 'undefined') lucide.createIcons();
             attachDrawerEvents();
@@ -3766,32 +3868,30 @@
             const container = document.getElementById('paletteEditorContainer');
             if (!container) return;
 
-            const themes = ['neumorphism', 'glassmorphism', 'neubrutalism'];
-            let html = '';
+            // Scoped to the active view (set via the top Editing View switcher)
+            const theme = activeViewTheme;
+            const p = window.colorPalettes[theme];
+            if (!p) { container.innerHTML = ''; return; }
 
-            themes.forEach(theme => {
-                const p = window.colorPalettes[theme];
-                if (!p) return;
-                html += `<div style="margin-bottom:20px; background:#222; border-radius:8px; padding:12px;">`;
-                html += `<div style="color:#fff; font-size:11px; font-weight:600; margin-bottom:8px;">${p.name}</div>`;
-                html += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">`;
+            let html = `<div style="background:#222; border-radius:8px; padding:12px;">`;
+            html += `<div style="color:${VIEW_COLORS[theme]}; font-size:11px; font-weight:600; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">${p.name} palette</div>`;
+            html += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">`;
 
-                Object.entries(p.colors).forEach(([name, value]) => {
-                    const isGradient = value.includes('linear-gradient');
-                    const bgStyle = isGradient ? `background-image: ${value};` : `background: ${value};`;
-                    const extraStyle = name === 'Glass' ?
-                        'background-color: rgba(255,255,255,0.06); backdrop-filter: blur(4px);' : '';
+            Object.entries(p.colors).forEach(([name, value]) => {
+                const isGradient = value.includes('linear-gradient');
+                const bgStyle = isGradient ? `background-image: ${value};` : `background: ${value};`;
+                const extraStyle = name === 'Glass' ?
+                    'background-color: rgba(255,255,255,0.06); backdrop-filter: blur(4px);' : '';
 
-                    html += `
-                        <div style="display:flex; align-items:center; gap:6px; cursor:pointer;" onclick="editColor('${theme}', '${name}')">
-                            <div style="width:28px; height:28px; border-radius:4px; ${bgStyle} ${extraStyle} border:1px solid rgba(255,255,255,0.1); flex-shrink:0;"></div>
-                            <span style="font-size:9px; color:#aaa; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${name}</span>
-                        </div>
-                    `;
-                });
-
-                html += `</div></div>`;
+                html += `
+                    <div style="display:flex; align-items:center; gap:6px; cursor:pointer;" onclick="editColor('${theme}', '${name}')">
+                        <div style="width:28px; height:28px; border-radius:4px; ${bgStyle} ${extraStyle} border:1px solid rgba(255,255,255,0.1); flex-shrink:0;"></div>
+                        <span style="font-size:9px; color:#aaa; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${name}</span>
+                    </div>
+                `;
             });
+
+            html += `</div></div>`;
 
             container.innerHTML = html;
         }
@@ -3850,6 +3950,7 @@
 
         // ─── BOOT ──────────────────────────────────────────────────────────
         window.onload = function() {
+            renderViewSwitcher();
             buildControllerList();
             renderAllViewports();
             initControllerEvents();
