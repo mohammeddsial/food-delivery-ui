@@ -1354,13 +1354,21 @@
         }
 
         // ─── BOTTOM BAR – SHARED COMPONENT ──────────────────────────────
+        // ─── ACTIVE NAV STATE ─────────────────────────────────────────────
+        let activeNavIndex = 0;
+
+        function setActiveNav(index) {
+            activeNavIndex = index;
+            renderAllViewports();
+        }
+
         function generateBottomBar(theme) {
             const pal = window.colorPalettes[theme]?.colors || window.colorPalettes.neumorphism.colors;
             const navItems = [
                 { icon: 'home', label: 'Home' },
                 { icon: 'menu', label: 'Menu' },
                 { icon: 'gift', label: 'Rewards' },
-                { icon: 'tag', label: 'Promotions' },
+                { icon: 'cart', label: 'Cart', badge: 2 },
                 { icon: 'user', label: 'Profile' }
             ];
 
@@ -1369,56 +1377,89 @@
                     home: 'home',
                     menu: 'utensils',
                     gift: 'gift',
-                    tag: 'tag',
+                    cart: 'shopping-bag',
                     user: 'user'
                 },
                 glassmorphism: {
                     home: 'home-line',
                     menu: 'restaurant-line',
                     gift: 'gift-line',
-                    tag: 'price-tag-line',
+                    cart: 'shopping-cart-line',
                     user: 'user-line'
                 },
                 neubrutalism: {
                     home: 'home',
                     menu: 'tools-kitchen-2',
                     gift: 'gift',
-                    tag: 'discount',
+                    cart: 'shopping-bag',
                     user: 'user'
                 }
             };
 
             const mapped = iconMap[theme] || iconMap.neumorphism;
 
-            const itemsHtml = navItems.map(item => {
+            const itemsHtml = navItems.map((item, index) => {
                 const iconName = mapped[item.icon] || item.icon;
-                const iconHtml = iconFor(theme, iconName, 'icon-md');
+                const isActive = index === activeNavIndex;
 
-                const btnClass = theme === 'neumorphism' ?
-                    'flex flex-col items-center justify-center text-teal-600 font-bold' :
-                    theme === 'glassmorphism' ?
-                    'text-pink-400 flex flex-col items-center' :
-                    'flex flex-col items-center gap-1 text-xs font-medium text-[#FF6B35] cursor-pointer';
+                let iconHtml;
+                if (isActive) {
+                    iconHtml = iconFor(theme, iconName, 'icon-md');
+                } else {
+                    iconHtml = iconFor(theme, iconName, 'icon-md');
+                }
 
-                const labelClass = theme === 'neumorphism' ?
-                    'text-[9px] mt-0.5' :
-                    theme === 'glassmorphism' ?
-                    'text-[9px] font-medium tracking-wide' :
-                    'text-[10px]';
+                let btnStyle = '';
+                let labelStyle = '';
+                let dotHtml = '';
 
-                return `<button class="${btnClass}" aria-label="${item.label}">${iconHtml}<span class="${labelClass}">${item.label}</span></button>`;
+                if (theme === 'neumorphism') {
+                    if (isActive) {
+                        btnStyle = 'color:#0d9488; font-weight:700;';
+                        labelStyle = 'color:#0d9488;';
+                        dotHtml = '<div style="width:4px;height:4px;border-radius:50%;background:#0d9488;margin-top:2px;"></div>';
+                    } else {
+                        btnStyle = 'color:#999;';
+                        labelStyle = 'color:#999;';
+                        dotHtml = '<div style="height:6px;"></div>';
+                    }
+                } else if (theme === 'glassmorphism') {
+                    if (isActive) {
+                        btnStyle = 'color:#ec4899;';
+                        labelStyle = 'color:#ec4899; font-weight:600;';
+                        dotHtml = '<div style="width:4px;height:4px;border-radius:50%;background:#ec4899;margin-top:2px;"></div>';
+                    } else {
+                        btnStyle = 'color:rgba(255,255,255,0.4);';
+                        labelStyle = 'color:rgba(255,255,255,0.4);';
+                        dotHtml = '<div style="height:6px;"></div>';
+                    }
+                } else {
+                    if (isActive) {
+                        btnStyle = `color:${pal.Primary}; font-weight:700;`;
+                        labelStyle = `color:${pal.Primary};`;
+                        dotHtml = `<div style="width:4px;height:4px;border-radius:50%;background:${pal.Primary};margin-top:2px;"></div>`;
+                    } else {
+                        btnStyle = 'color:#999;';
+                        labelStyle = 'color:#999;';
+                        dotHtml = '<div style="height:6px;"></div>';
+                    }
+                }
+
+                const badgeHtml = item.badge ? `<span style="position:absolute;top:-4px;right:-8px;min-width:16px;height:16px;background:${pal.Primary || '#FF6B35'};color:#fff;font-size:8px;font-weight:700;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid ${theme === 'glassmorphism' ? 'rgba(15,23,42,0.8)' : '#fff'};">${item.badge}</span>` : '';
+
+                return `<button onclick="setActiveNav(${index})" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;cursor:pointer;padding:6px 8px;position:relative;transition:transform 0.15s;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform='scale(1)'" onmouseleave="this.style.transform='scale(1)'">${iconHtml}<span style="font-size:10px;${labelStyle}">${item.label}</span>${dotHtml}${badgeHtml}</button>`;
             }).join('');
 
             let containerStyle;
             if (theme === 'neumorphism') {
                 containerStyle =
-                    `background:${pal.Background}; border-top:1px solid ${pal['Shadow Dark']}; position:absolute; bottom:0; left:0; right:0; height:64px; display:flex; align-items:center; justify-content:space-between; padding:0 24px; z-index:30; box-shadow:0 -4px 12px rgba(0,0,0,0.05);`;
+                    `background:${pal.Background}; border-top:1px solid ${pal['Shadow Dark']}; position:absolute; bottom:0; left:0; right:0; height:64px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; z-index:30; box-shadow:0 -4px 12px rgba(0,0,0,0.05);`;
             } else if (theme === 'glassmorphism') {
                 containerStyle =
-                    `position:absolute; bottom:12px; left:16px; right:16px; height:64px; background:${pal.Glass}; backdrop-filter:blur(12px); border:1px solid ${pal.Border}; border-radius:20px; display:flex; align-items:center; justify-content:space-between; padding:0 24px; z-index:30;`;
+                    `position:absolute; bottom:12px; left:16px; right:16px; height:64px; background:${pal.Glass}; backdrop-filter:blur(12px); border:1px solid ${pal.Border}; border-radius:20px; display:flex; align-items:center; justify-content:space-between; padding:0 12px; z-index:30;`;
             } else {
                 containerStyle =
-                    `background:${pal.Background}; border-top:1px solid ${pal.Border}; height:64px; display:flex; align-items:center; justify-content:space-around; padding:0 16px; z-index:30;`;
+                    `background:${pal.Background}; border-top:1px solid ${pal.Border}; height:64px; display:flex; align-items:center; justify-content:space-around; padding:0 8px; z-index:30;`;
             }
 
             return `<div style="${containerStyle}">${itemsHtml}</div>`;
