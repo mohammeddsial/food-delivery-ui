@@ -1298,12 +1298,11 @@
             html += settings.map(s => `
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
                     <span style="font-size:10px;color:#888;">${s.label}</span>
-                    <div style="display:flex;align-items:center;gap:6px;">
-                        <input type="range" min="${s.min}" max="${s.max}" step="${s.step}" value="${c[s.key]}"
+                    <div style="display:flex;align-items:center;gap:4px;">
+                        <input type="number" min="${s.min}" max="${s.max}" step="${s.step}" value="${c[s.key]}"
                             onchange="updateCardConfig('${s.key}', parseFloat(this.value))"
-                            oninput="updateCardConfig('${s.key}', parseFloat(this.value))"
-                            style="width:80px;height:4px;accent-color:${themeColors[activeConfigTheme]};">
-                        <span style="font-size:10px;color:#aaa;min-width:36px;text-align:right;">${c[s.key]}${s.unit}</span>
+                            style="width:56px;background:#222;border:1px solid #333;color:#ddd;padding:4px 6px;border-radius:6px;font-size:11px;text-align:center;">
+                        <span style="font-size:9px;color:#666;">${s.unit}</span>
                     </div>
                 </div>
             `).join('');
