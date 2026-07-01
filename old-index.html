@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,13 +13,16 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;800&family=Space+Grotesk:wght@400;700&family=Outfit:wght@300;600;900&display=swap" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;800&family=Space+Grotesk:wght@400;700&family=Outfit:wght@300;600;900&display=swap"
+        rel="stylesheet" />
 
     <!-- ===== ICON LIBRARY 1: FONT AWESOME (Neumorphism) ===== -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
     <!-- ===== ICON LIBRARY 2: MATERIAL SYMBOLS (Glassmorphism) ===== -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
     <!-- ===== ICON LIBRARY 3: BOOTSTRAP ICONS (Neubrutalism) ===== -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
@@ -58,16 +62,19 @@
             color: #333333 !important;
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
+
         .neu-flat {
             background: #e0e0e0;
             box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
             border-radius: 16px;
         }
+
         .neu-inset {
             background: #e0e0e0;
             box-shadow: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff;
             border-radius: 12px;
         }
+
         .neu-pill {
             background: #e0e0e0;
             box-shadow: 3px 3px 6px #bebebe, -3px -3px 6px #ffffff;
@@ -80,6 +87,7 @@
             color: #ffffff !important;
             font-family: 'Outfit', sans-serif;
         }
+
         .theme-glassmorphism::before {
             content: '';
             position: absolute;
@@ -93,6 +101,7 @@
             z-index: 0;
             pointer-events: none;
         }
+
         .theme-glassmorphism::after {
             content: '';
             position: absolute;
@@ -106,6 +115,7 @@
             z-index: 0;
             pointer-events: none;
         }
+
         .glass-panel {
             background: rgba(255, 255, 255, 0.06);
             backdrop-filter: blur(20px);
@@ -114,6 +124,7 @@
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
             border-radius: 20px;
         }
+
         .glass-pill {
             background: rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(8px);
@@ -127,21 +138,26 @@
             color: #000000 !important;
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
+
         .brutal-card {
             background: #ffffff;
             border: 1px solid #f0f0f0;
             box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
             border-radius: 16px;
         }
+
         .brutal-accent-yellow {
             background-color: #ffde4d;
         }
+
         .brutal-accent-lime {
             background-color: #ccff00;
         }
+
         .brutal-accent-pink {
             background-color: #ff6ea7;
         }
+
         .brutal-pill {
             background: #ffffff;
             border: 2px solid #000000;
@@ -162,12 +178,15 @@
             flex-shrink: 0;
             height: 100vh;
         }
+
         .controller::-webkit-scrollbar {
             width: 2px;
         }
+
         .controller::-webkit-scrollbar-thumb {
             background: #333;
         }
+
         .controller .panel-title {
             font-size: 16px;
             font-weight: 700;
@@ -178,6 +197,7 @@
             gap: 8px;
             letter-spacing: -0.3px;
         }
+
         .controller .panel-title span {
             font-size: 9px;
             background: #2a2a2a;
@@ -186,9 +206,11 @@
             color: #888;
             font-weight: 400;
         }
+
         .ctrl-section {
             margin-top: 14px;
         }
+
         .ctrl-section h3 {
             font-size: 10px;
             text-transform: uppercase;
@@ -197,6 +219,7 @@
             font-weight: 600;
             margin-bottom: 8px;
         }
+
         .ctrl-group {
             background: #1c1c1c;
             border-radius: 10px;
@@ -204,6 +227,7 @@
             margin-bottom: 8px;
             border: 1px solid #262626;
         }
+
         .module-row {
             display: flex;
             align-items: center;
@@ -213,9 +237,11 @@
             font-size: 12px;
             gap: 6px;
         }
+
         .module-row:last-child {
             border-bottom: none;
         }
+
         .module-row .left {
             display: flex;
             align-items: center;
@@ -223,6 +249,7 @@
             flex: 1;
             min-width: 0;
         }
+
         .module-row .left input[type="checkbox"] {
             accent-color: #FF6B35;
             width: 14px;
@@ -230,6 +257,7 @@
             flex-shrink: 0;
             cursor: pointer;
         }
+
         .module-row .left .core-badge {
             font-size: 7px;
             background: #2a2a2a;
@@ -240,17 +268,20 @@
             letter-spacing: 0.3px;
             flex-shrink: 0;
         }
+
         .module-row .left .mod-label {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             color: #ccc;
         }
+
         .module-row .actions {
             display: flex;
             gap: 2px;
             flex-shrink: 0;
         }
+
         .module-row .actions button {
             background: #2a2a2a;
             border: none;
@@ -265,10 +296,12 @@
             align-items: center;
             justify-content: center;
         }
+
         .module-row .actions button:hover {
             background: #3a3a3a;
             color: #fff;
         }
+
         .state-btn {
             background: #2a2a2a;
             border: 1px solid #333;
@@ -279,9 +312,11 @@
             cursor: pointer;
             transition: 0.15s;
         }
+
         .state-btn:hover {
             background: #3a3a3a;
         }
+
         .state-btn.active {
             background: #FF6B35;
             color: #fff;
@@ -300,10 +335,12 @@
             z-index: 15;
             border-radius: 24px;
         }
+
         .drawer-overlay.open {
             opacity: 1;
             pointer-events: auto;
         }
+
         .drawer {
             position: absolute;
             top: 0;
@@ -313,21 +350,24 @@
             background: #fff;
             transform: translateX(-100%);
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 20;
+            z-index: 40;
             border-radius: 24px 0 0 24px;
             overflow-y: auto;
             padding: 20px 16px;
             box-shadow: 4px 0 24px rgba(0, 0, 0, 0.2);
         }
+
         .drawer.open {
             transform: translateX(0);
         }
+
         .drawer .drawer-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 24px;
         }
+
         .drawer .drawer-header .close-btn {
             background: none;
             border: none;
@@ -335,11 +375,13 @@
             cursor: pointer;
             padding: 4px 8px;
         }
+
         .drawer .drawer-nav {
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
+
         .drawer .drawer-nav a {
             display: flex;
             align-items: center;
@@ -352,9 +394,11 @@
             transition: 0.15s;
             color: #333;
         }
+
         .drawer .drawer-nav a:hover {
             background: #f0f0f0;
         }
+
         .drawer .drawer-nav a i {
             width: 20px;
             text-align: center;
@@ -365,9 +409,11 @@
             width: 4px;
             height: 4px;
         }
+
         ::-webkit-scrollbar-track {
             background: transparent;
         }
+
         ::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 2px;
@@ -378,6 +424,7 @@
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
             user-select: none;
         }
+
         .theme-glassmorphism .material-symbols-outlined {
             font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 24;
         }
@@ -388,6 +435,7 @@
         }
     </style>
 </head>
+
 <body class="p-6 h-screen w-screen flex overflow-hidden">
 
     <!-- LEFT CONTROLLER -->
@@ -407,12 +455,14 @@
             <h3>State Simulation</h3>
             <div class="ctrl-group">
                 <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                    <select id="weatherSelect" style="flex:1;min-width:70px;background:#222;border:1px solid #333;color:#ddd;padding:4px 8px;border-radius:6px;font-size:11px;outline:none;">
+                    <select id="weatherSelect"
+                        style="flex:1;min-width:70px;background:#222;border:1px solid #333;color:#ddd;padding:4px 8px;border-radius:6px;font-size:11px;outline:none;">
                         <option value="Sunny">Clear</option>
                         <option value="Rainy">Rain</option>
                         <option value="Snowy">Snow</option>
                     </select>
-                    <select id="timeSelect" style="flex:1;min-width:70px;background:#222;border:1px solid #333;color:#ddd;padding:4px 8px;border-radius:6px;font-size:11px;outline:none;">
+                    <select id="timeSelect"
+                        style="flex:1;min-width:70px;background:#222;border:1px solid #333;color:#ddd;padding:4px 8px;border-radius:6px;font-size:11px;outline:none;">
                         <option value="Breakfast">Morning</option>
                         <option value="Lunch" selected>Lunch</option>
                         <option value="LateNight">Late Night</option>
@@ -424,16 +474,19 @@
                 </div>
                 <div style="display:flex;gap:6px;margin-top:6px;align-items:center;">
                     <span style="font-size:10px;color:#888;">Countdown:</span>
-                    <input type="number" id="countdownInput" value="45" style="width:50px;background:#222;border:1px solid #333;color:#ddd;padding:3px 6px;border-radius:6px;font-size:12px;outline:none;" />
+                    <input type="number" id="countdownInput" value="45"
+                        style="width:50px;background:#222;border:1px solid #333;color:#ddd;padding:3px 6px;border-radius:6px;font-size:12px;outline:none;" />
                     <span style="font-size:10px;color:#666;">min</span>
                 </div>
             </div>
         </div>
 
-        <div style="font-size:9px;color:#444;margin-top:10px;border-top:1px solid #1a1a1a;padding-top:8px;text-align:center;">
+        <div
+            style="font-size:9px;color:#444;margin-top:10px;border-top:1px solid #1a1a1a;padding-top:8px;text-align:center;">
             <i class="fas fa-sync-alt" style="margin-right:4px;"></i> Real-time · all viewports sync
         </div>
-        <div style="font-size:8px;color:#333;margin-top:4px;text-align:center;border-top:1px solid #1a1a1a;padding-top:6px;">
+        <div
+            style="font-size:8px;color:#333;margin-top:4px;text-align:center;border-top:1px solid #1a1a1a;padding-top:6px;">
             <span style="background:#1a1a1a;padding:2px 8px;border-radius:4px;">FA</span>
             <span style="background:#1a1a1a;padding:2px 8px;border-radius:4px;margin-left:4px;">Material</span>
             <span style="background:#1a1a1a;padding:2px 8px;border-radius:4px;margin-left:4px;">Bootstrap</span>
@@ -446,7 +499,8 @@
             <div class="text-sm font-bold text-slate-300">HIGH-FIDELITY DESIGN STRATIFICATION WORKBENCH</div>
             <div class="flex gap-3 text-xs text-slate-500">
                 <span><i class="fas fa-circle" style="color:#FF6B35;font-size:8px;"></i> FA</span>
-                <span><i class="material-symbols-outlined" style="font-size:14px;color:#a78bfa;">circle</i> Material</span>
+                <span><i class="material-symbols-outlined" style="font-size:14px;color:#a78bfa;">circle</i>
+                    Material</span>
                 <span><i class="bi bi-circle-fill" style="color:#fbbf24;font-size:8px;"></i> Bootstrap</span>
             </div>
         </div>
@@ -456,27 +510,33 @@
             <!-- VIEWPORT 1: NEUMORPHISM · Font Awesome -->
             <div class="flex flex-col items-center">
                 <span class="text-xs font-bold text-slate-400 mb-1 tracking-wider uppercase flex items-center gap-2">
-                    <i class="fas fa-cube"></i> Neumorphism <span class="text-[8px] bg-slate-800 px-2 py-0.5 rounded-full text-slate-400">Font Awesome</span>
+                    <i class="fas fa-cube"></i> Neumorphism <span
+                        class="text-[8px] bg-slate-800 px-2 py-0.5 rounded-full text-slate-400">Font Awesome</span>
                 </span>
-                <div id="viewport-neumorphism" class="phone-viewport theme-neumorphism rounded-[40px] border-[10px] border-slate-950 shadow-2xl">
+                <div id="viewport-neumorphism"
+                    class="phone-viewport theme-neumorphism rounded-[40px] border-[10px] border-slate-950 shadow-2xl">
                 </div>
             </div>
 
             <!-- VIEWPORT 2: GLASSMORPHISM · Material Symbols -->
             <div class="flex flex-col items-center">
                 <span class="text-xs font-bold text-indigo-400 mb-1 tracking-wider uppercase flex items-center gap-2">
-                    <i class="material-symbols-outlined" style="font-size:16px;">lens</i> Glassmorphism <span class="text-[8px] bg-slate-800 px-2 py-0.5 rounded-full text-indigo-400">Material</span>
+                    <i class="material-symbols-outlined" style="font-size:16px;">lens</i> Glassmorphism <span
+                        class="text-[8px] bg-slate-800 px-2 py-0.5 rounded-full text-indigo-400">Material</span>
                 </span>
-                <div id="viewport-glassmorphism" class="phone-viewport theme-glassmorphism rounded-[40px] border-[10px] border-slate-950 shadow-2xl">
+                <div id="viewport-glassmorphism"
+                    class="phone-viewport theme-glassmorphism rounded-[40px] border-[10px] border-slate-950 shadow-2xl">
                 </div>
             </div>
 
             <!-- VIEWPORT 3: NEUBRUTALISM · Bootstrap Icons -->
             <div class="flex flex-col items-center">
                 <span class="text-xs font-bold text-yellow-500 mb-1 tracking-wider uppercase flex items-center gap-2">
-                    <i class="bi bi-cube"></i> Neubrutalism <span class="text-[8px] bg-slate-800 px-2 py-0.5 rounded-full text-yellow-500">Bootstrap</span>
+                    <i class="bi bi-cube"></i> Neubrutalism <span
+                        class="text-[8px] bg-slate-800 px-2 py-0.5 rounded-full text-yellow-500">Bootstrap</span>
                 </span>
-                <div id="viewport-neubrutalism" class="phone-viewport theme-neubrutalism rounded-[40px] border-[10px] border-slate-950 shadow-2xl">
+                <div id="viewport-neubrutalism"
+                    class="phone-viewport theme-neubrutalism rounded-[40px] border-[10px] border-slate-950 shadow-2xl">
                 </div>
             </div>
 
@@ -514,7 +574,21 @@
             orderActive: true,
             birthday: false
         };
-
+        // ─── BRAND INFO PER THEME ──────────────────────────────────────────────
+        const brandInfo = {
+            neumorphism: {
+                name: 'CRUMBL&CO',
+                topBarHTML: `<span class="font-extrabold text-sm text-gray-700 tracking-wider">CRUMBL&CO</span>`
+            },
+            glassmorphism: {
+                name: 'NEXT_EATS',
+                topBarHTML: `<span class="font-black text-sm tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400">NEXT_EATS</span>`
+            },
+            neubrutalism: {
+                name: 'Food Hub',
+                topBarHTML: `<span class="font-black text-sm tracking-widest" style="color:#333;">Food Hub</span>`
+            }
+        };
         // ─── ICON HELPERS per theme ──────────────────────────────────────
         function iconFA(name, cls = '') {
             return `<i class="fas fa-${name} ${cls}"></i>`;
@@ -609,7 +683,7 @@
 
         function attachDrawerEvents() {
             document.querySelectorAll('[data-drawer-toggle]').forEach(el => {
-                el.addEventListener('click', function() {
+                el.addEventListener('click', function () {
                     const vpId = this.dataset.drawerToggle;
                     const overlay = document.querySelector(`[data-drawer-overlay="${vpId}"]`);
                     const drawer = document.querySelector(`[data-drawer="${vpId}"]`);
@@ -618,7 +692,7 @@
                 });
             });
             document.querySelectorAll('[data-drawer-close]').forEach(el => {
-                el.addEventListener('click', function() {
+                el.addEventListener('click', function () {
                     const vpId = this.dataset.drawerClose;
                     const overlay = document.querySelector(`[data-drawer-overlay="${vpId}"]`);
                     const drawer = document.querySelector(`[data-drawer="${vpId}"]`);
@@ -627,7 +701,7 @@
                 });
             });
             document.querySelectorAll('[data-drawer-overlay]').forEach(el => {
-                el.addEventListener('click', function() {
+                el.addEventListener('click', function () {
                     this.classList.remove('open');
                     const vpId = this.dataset.drawerOverlay;
                     const drawer = document.querySelector(`[data-drawer="${vpId}"]`);
@@ -641,14 +715,14 @@
             const birthdayBtn = document.getElementById('birthdayToggleBtn');
             if (orderBtn) {
                 orderBtn.classList.add('active');
-                orderBtn.addEventListener('click', function() {
+                orderBtn.addEventListener('click', function () {
                     stateSimulation.orderActive = !stateSimulation.orderActive;
                     this.classList.toggle('active');
                     renderAllViewports();
                 });
             }
             if (birthdayBtn) {
-                birthdayBtn.addEventListener('click', function() {
+                birthdayBtn.addEventListener('click', function () {
                     stateSimulation.birthday = !stateSimulation.birthday;
                     this.classList.toggle('active');
                     renderAllViewports();
@@ -744,14 +818,19 @@
                 container.innerHTML += generateBottomBar(theme);
 
                 // Drawer
+                const restaurantNames = {
+                    neumorphism: 'CRUMBL&CO',
+                    glassmorphism: 'NEXT_EATS',
+                    neubrutalism: 'Food Hub'  // or your brand name
+                };
                 container.innerHTML += `
                     <div class="drawer-overlay" data-drawer-overlay="vp-${theme}"></div>
                     <div class="drawer" data-drawer="vp-${theme}">
                         <div class="drawer-header">
-                            <div style="font-size:16px;font-weight:700;">Menu</div>
+                            ${brandInfo[theme].topBarHTML}
                             <button class="close-btn" data-drawer-close="vp-${theme}"><i class="fas fa-times"></i></button>
                         </div>
-                        <div class="drawer-nav">
+                        <div class="drawer-nav">renderAllViewports
                             <a href="#">${iconFor(theme, 'house', 'mr-2')} Home</a>
                             <a href="#">${iconFor(theme, 'search', 'mr-2')} Search</a>
                             <a href="#">${iconFor(theme, 'heart', 'mr-2')} Favorites</a>
@@ -781,7 +860,7 @@
                 <div style="padding:8px 16px;display:flex;align-items:center;justify-content:space-between;background:#e0e0e0;border-bottom:1px solid #ccc;z-index:30;">
                     <div style="display:flex;align-items:center;gap:10px;">
                         <i class="fas fa-bars" data-drawer-toggle="vp-neumorphism" style="cursor:pointer;font-size:16px;color:#555;"></i>
-                        <span class="font-extrabold text-sm text-gray-700 tracking-wider">CRUMBL&CO</span>
+                        ${brandInfo.neumorphism.topBarHTML}
                     </div>
                     <button class="w-8 h-8 neu-flat flex items-center justify-center text-gray-600 relative"><i class="fas fa-shopping-bag"></i></button>
                 </div>`;
@@ -795,7 +874,7 @@
                 <div style="padding:8px 16px;display:flex;align-items:center;justify-content:space-between;background:rgba(15,23,42,0.4);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.08);z-index:30;">
                     <div style="display:flex;align-items:center;gap:10px;">
                         <i class="material-symbols-outlined" data-drawer-toggle="vp-glassmorphism" style="cursor:pointer;font-size:20px;color:#c7d2fe;">menu</i>
-                        <span class="font-black text-sm tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400">NEXT_EATS</span>
+                         ${brandInfo.glassmorphism.topBarHTML}
                     </div>
                     <div style="position:relative;"><span class="material-symbols-outlined" style="font-size:22px;color:#a5b4fc;">shopping_cart</span><span style="position:absolute;top:-6px;right:-6px;background:#ec4899;font-size:8px;font-weight:700;padding:1px 5px;border-radius:50%;color:#fff;">2</span></div>
                 </div>`;
@@ -809,13 +888,12 @@
                 <div style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid #f0f0f0;">
                     <div style="display:flex;align-items:center;gap:8px;">
                         <i class="bi bi-list" data-drawer-toggle="vp-neubrutalism" style="cursor:pointer;font-size:20px;color:#333;"></i>
-                        <div>
-                            <div style="font-size:10px;color:#999;">Deliver to</div>
-                            <div style="font-size:13px;font-weight:700;color:#333;">2715 Ash Dr. San Jose...</div>
-                        </div>
+                        ${brandInfo.neubrutalism.topBarHTML}
+
+                        
                     </div>
                     <div style="width:36px;height:36px;border-radius:12px;background:#FF6B35;display:flex;align-items:center;justify-content:center;color:#fff;position:relative;">
-                        <i class="bi bi-bell"></i>
+                        <i class="bi bi-bag-check"></i>
                         <span style="position:absolute;top:-3px;right:-3px;width:14px;height:14px;background:#FF6B35;color:#fff;font-size:8px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #fff;">2</span>
                     </div>
                 </div>`;
@@ -854,11 +932,11 @@
         // ─── COMPONENT DRAWERS ───────────────────────────────────────────
         function drawAnnouncementStrip(theme) {
             if (theme === 'neumorphism') {
-                return `<div class="m-2 p-2 neu-inset flex items-center gap-2 justify-center text-[10px] text-gray-600 font-bold tracking-wide">${iconFA('info-circle','text-orange-500')} KITCHENS CLOSE EARLY AT 9PM TONIGHT</div>`;
+                return `<div class="m-2 p-2 neu-inset flex items-center gap-2 justify-center text-[10px] text-gray-600 font-bold tracking-wide">${iconFA('info-circle', 'text-orange-500')} KITCHENS CLOSE EARLY AT 9PM TONIGHT</div>`;
             } else if (theme === 'glassmorphism') {
-                return `<div class="w-full bg-pink-500/20 backdrop-blur-sm py-1.5 px-3 text-[9px] text-pink-200 flex items-center justify-center gap-1.5 border-b border-pink-500/15 tracking-wider">${iconMaterial('warning','text-pink-400 animate-pulse')} HIGH DEMAND METRICS: EXTENDED COURIER ROUTING LOGISTICS</div>`;
+                return `<div class="w-full bg-pink-500/20 backdrop-blur-sm py-1.5 px-3 text-[9px] text-pink-200 flex items-center justify-center gap-1.5 border-b border-pink-500/15 tracking-wider">${iconMaterial('warning', 'text-pink-400 animate-pulse')} HIGH DEMAND METRICS: EXTENDED COURIER ROUTING LOGISTICS</div>`;
             } else {
-                return `<div style="background:#FFF3ED;padding:8px 16px;text-align:center;font-size:11px;font-weight:500;color:#FF6B35;display:flex;align-items:center;justify-content:center;gap:6px;">${iconBS('lightning','')} Free delivery on orders over $25</div>`;
+                return `<div style="background:#FFF3ED;padding:8px 16px;text-align:center;font-size:11px;font-weight:500;color:#FF6B35;display:flex;align-items:center;justify-content:center;gap:6px;">${iconBS('lightning', '')} Free delivery on orders over $25</div>`;
             }
         }
 
@@ -867,7 +945,7 @@
                 return `
                 <div class="p-4 flex flex-col gap-3">
                     <div class="flex justify-between items-center">
-                        <div class="neu-pill px-3 py-1.5 text-xs font-semibold text-gray-600 flex items-center gap-1.5">${iconFA('map-pin','text-teal-600')} Manhattan West, NY ${iconFA('chevron-down')}</div>
+                        <div class="neu-pill px-3 py-1.5 text-xs font-semibold text-gray-600 flex items-center gap-1.5">${iconFA('map-pin', 'text-teal-600')} Manhattan West, NY ${iconFA('chevron-down')}</div>
                     </div>
                     <div class="grid grid-cols-2 p-1.5 neu-inset">
                         <div class="neu-flat py-1.5 text-center text-xs font-bold text-gray-800">Fulfillment Delivery</div>
@@ -878,10 +956,10 @@
                 return `
                 <div class="p-4 flex justify-between items-center z-10 relative">
                     <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">${iconMaterial('location_on','text-cyan-400')}</div>
+                        <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">${iconMaterial('location_on', 'text-cyan-400')}</div>
                         <div>
                             <div class="text-[9px] text-indigo-300 tracking-widest font-light uppercase">DELIVER TO</div>
-                            <div class="text-xs font-bold flex items-center gap-0.5">Corporate Loft, Plaza Floor ${iconMaterial('expand_more','text-indigo-400')}</div>
+                            <div class="text-xs font-bold flex items-center gap-0.5">Corporate Loft, Plaza Floor ${iconMaterial('expand_more', 'text-indigo-400')}</div>
                         </div>
                     </div>
                     <div class="glass-pill p-0.5 flex w-28 justify-between">
@@ -893,7 +971,7 @@
                 return `
                 <div class="p-3 bg-white border-b border-gray-100 flex flex-col gap-2">
                     <div class="flex justify-between items-center">
-                        <div style="font-size:13px;font-weight:700;color:#333;display:flex;align-items:center;gap:6px;">${iconBS('geo-alt-fill','text-[#FF6B35]')} 2715 Ash Dr. San Jose...</div>
+                        <div style="font-size:13px;font-weight:700;color:#333;display:flex;align-items:center;gap:6px;">${iconBS('geo-alt-fill', 'text-[#FF6B35]')} 2715 Ash Dr. San Jose...</div>
                     </div>
                     <div style="display:flex;gap:6px;">
                         <div style="flex:1;padding:8px 12px;border-radius:10px;background:#FF6B35;color:#fff;font-size:12px;font-weight:600;text-align:center;">Delivery</div>
@@ -917,7 +995,7 @@
                 return `
                 <div class="px-4 mb-4">
                     <div class="h-60 w-full glass-panel relative overflow-hidden flex flex-col justify-end p-4 bg-cover bg-center" style="background-image: linear-gradient(rgba(0,0,0,0) 40%, rgba(15,23,42,0.9) 100%), url('https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=400&q=80')">
-                        <div class="absolute top-3 right-3 glass-pill px-2.5 py-0.5 text-[8px] font-bold tracking-widest text-cyan-300 border-cyan-500/30 flex items-center gap-1 uppercase">${iconMaterial('visibility','animate-pulse')} LIVE STREAMS</div>
+                        <div class="absolute top-3 right-3 glass-pill px-2.5 py-0.5 text-[8px] font-bold tracking-widest text-cyan-300 border-cyan-500/30 flex items-center gap-1 uppercase">${iconMaterial('visibility', 'animate-pulse')} LIVE STREAMS</div>
                         <h2 class="text-xl font-black tracking-tight mb-1 bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent">BAKED FLUIDITY</h2>
                         <p class="text-[11px] text-indigo-200 font-light leading-tight">Watch luxury glaze application loops run fresh in the main production kitchens.</p>
                     </div>
@@ -927,7 +1005,7 @@
                 <div class="p-3">
                     <div style="height:180px;width:100%;border-radius:16px;overflow:hidden;position:relative;background:linear-gradient(rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%),url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=400&q=80');background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;">
                         <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
-                            <div style="width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;">${iconBS('play-fill','text-[#333]')}</div>
+                            <div style="width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;">${iconBS('play-fill', 'text-[#333]')}</div>
                             <span style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:1px;">Featured Video</span>
                         </div>
                         <h3 style="font-size:18px;font-weight:700;color:#fff;line-height:1.1;">Premium Heavy Interface Concept</h3>
@@ -942,7 +1020,7 @@
                 return `
                 <div class="mx-4 my-2 p-3 neu-inset flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <div class="w-7 h-7 rounded-full bg-teal-50 flex items-center justify-center shadow-inner">${iconFA('utensils','text-teal-600')}</div>
+                        <div class="w-7 h-7 rounded-full bg-teal-50 flex items-center justify-center shadow-inner">${iconFA('utensils', 'text-teal-600')}</div>
                         <div>
                             <div class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Active Fulfillment Pipeline</div>
                             <div class="text-xs font-black text-teal-600">Kitchen processing array active...</div>
@@ -958,17 +1036,17 @@
                             <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                         </div>
                         <div>
-                            <div class="text-xs font-bold text-white flex items-center gap-1">${iconMaterial('local_shipping','text-cyan-400')} Transit Operations</div>
+                            <div class="text-xs font-bold text-white flex items-center gap-1">${iconMaterial('local_shipping', 'text-cyan-400')} Transit Operations</div>
                             <div class="text-[10px] text-indigo-200">Courier assigned • Intersecting destination within 12M</div>
                         </div>
                     </div>
-                    ${iconMaterial('chevron_right','text-indigo-400')}
+                    ${iconMaterial('chevron_right', 'text-indigo-400')}
                 </div>`;
             } else {
                 return `
                 <div class="mx-3 my-2 p-3 rounded-2xl flex justify-between items-center" style="background:#FFF3ED;border:1px solid #FFE0D0;">
                     <div style="display:flex;align-items:center;gap:10px;">
-                        <div style="width:32px;height:32px;border-radius:10px;background:#FF6B35;display:flex;align-items:center;justify-content:center;">${iconBS('truck','text-white')}</div>
+                        <div style="width:32px;height:32px;border-radius:10px;background:#FF6B35;display:flex;align-items:center;justify-content:center;">${iconBS('truck', 'text-white')}</div>
                         <div>
                             <div style="font-size:11px;font-weight:600;color:#333;">Active Order</div>
                             <div style="font-size:10px;color:#999;">Arriving in 12 min</div>
@@ -985,7 +1063,7 @@
                 <div class="p-4">
                     <div class="p-4 neu-flat flex flex-col gap-2">
                         <div class="flex justify-between items-center text-[10px] text-gray-500 font-bold">
-                            <span class="flex items-center gap-1">${iconFA('award','text-orange-500')} REWARDS PASS</span>
+                            <span class="flex items-center gap-1">${iconFA('award', 'text-orange-500')} REWARDS PASS</span>
                             <span class="text-gray-700">420 CREDIT BAL</span>
                         </div>
                         <div class="h-2 w-full bg-gray-300 rounded-full overflow-hidden shadow-inner">
@@ -1000,7 +1078,7 @@
                     <div class="glass-panel p-3.5 bg-gradient-to-br from-white/10 to-transparent">
                         <div class="flex justify-between items-start mb-2">
                             <div class="flex items-center gap-2">
-                                <div class="w-7 h-7 rounded-lg bg-pink-500/20 flex items-center justify-center">${iconMaterial('credit_card','text-pink-400')}</div>
+                                <div class="w-7 h-7 rounded-lg bg-pink-500/20 flex items-center justify-center">${iconMaterial('credit_card', 'text-pink-400')}</div>
                                 <div>
                                     <span class="text-[9px] text-pink-300 font-semibold tracking-widest uppercase">TIER STATUS</span>
                                     <h4 class="text-xs font-bold text-white">Gold Tier VIP Elite</h4>
@@ -1019,7 +1097,7 @@
                     <div style="background:#fff;border-radius:16px;padding:14px;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
                             <div style="display:flex;align-items:center;gap:8px;">
-                                <div style="width:28px;height:28px;border-radius:8px;background:#FFF3ED;display:flex;align-items:center;justify-content:center;">${iconBS('award','text-[#FF6B35]')}</div>
+                                <div style="width:28px;height:28px;border-radius:8px;background:#FFF3ED;display:flex;align-items:center;justify-content:center;">${iconBS('award', 'text-[#FF6B35]')}</div>
                                 <div>
                                     <div style="font-size:10px;color:#999;">Rewards</div>
                                     <div style="font-size:12px;font-weight:700;color:#333;">420 pts</div>
@@ -1052,19 +1130,19 @@
                 return `
                 <div class="mx-4 mb-4 p-3 glass-panel border-pink-500/25 bg-gradient-to-r from-pink-500/15 to-transparent flex justify-between items-center z-10 relative">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-lg bg-pink-500/20 flex items-center justify-center">${iconMaterial('shopping_bag','text-pink-400')}</div>
+                        <div class="w-8 h-8 rounded-lg bg-pink-500/20 flex items-center justify-center">${iconMaterial('shopping_bag', 'text-pink-400')}</div>
                         <div>
                             <div class="text-xs font-bold text-pink-200">Cart Abandonment Detected</div>
                             <div class="text-[10px] text-indigo-200">Recover and execute 1-Tap conversion checkout</div>
                         </div>
                     </div>
-                    <button class="bg-pink-500 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg shadow-lg shadow-pink-500/20">${iconMaterial('arrow_forward','')}</button>
+                    <button class="bg-pink-500 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg shadow-lg shadow-pink-500/20">${iconMaterial('arrow_forward', '')}</button>
                 </div>`;
             } else {
                 return `
                 <div class="mx-3 my-2 p-3 rounded-2xl flex items-center justify-between" style="background:#FFF8E1;border:1px solid #FFE082;">
                     <div style="display:flex;align-items:center;gap:10px;">
-                        <div style="width:32px;height:32px;border-radius:10px;background:#FFB300;display:flex;align-items:center;justify-content:center;">${iconBS('cart','text-white')}</div>
+                        <div style="width:32px;height:32px;border-radius:10px;background:#FFB300;display:flex;align-items:center;justify-content:center;">${iconBS('cart', 'text-white')}</div>
                         <div>
                             <div style="font-size:11px;font-weight:600;color:#333;">Cart waiting</div>
                             <div style="font-size:10px;color:#999;">2 items in your cart</div>
@@ -1090,7 +1168,7 @@
                 <div class="px-4 mb-4">
                     <div class="glass-panel p-3 bg-red-500/10 border-red-500/25 flex justify-between items-center">
                         <div class="flex items-center gap-2">
-                            ${iconMaterial('hourglass','text-red-400 animate-spin')}
+                            ${iconMaterial('hourglass', 'text-red-400 animate-spin')}
                             <span class="text-[10px] text-red-200 uppercase tracking-widest font-bold">FOMO ACCELERATION</span>
                         </div>
                         <span class="font-mono text-base font-black text-red-400 bg-black/40 px-2.5 py-0.5 rounded-lg border border-red-500/20">${val}</span>
@@ -1100,7 +1178,7 @@
                 return `
                 <div class="p-3">
                     <div style="background:#fff;border-radius:16px;padding:12px 14px;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:space-between;">
-                        <div style="display:flex;align-items:center;gap:8px;">${iconBS('clock','text-[#FF6B35]')}<span style="font-size:12px;font-weight:600;color:#333;">Deal ends in</span></div>
+                        <div style="display:flex;align-items:center;gap:8px;">${iconBS('clock', 'text-[#FF6B35]')}<span style="font-size:12px;font-weight:600;color:#333;">Deal ends in</span></div>
                         <span style="font-size:13px;font-weight:700;color:#FF6B35;background:#FFF3ED;padding:4px 10px;border-radius:8px;">${val}m</span>
                     </div>
                 </div>`;
@@ -1113,8 +1191,8 @@
                 <div class="p-4 flex flex-col gap-2">
                     <span class="text-[10px] font-bold text-gray-400 tracking-wider uppercase px-1">RAPID POWER-USER FAST TRACK</span>
                     <div class="flex gap-3 overflow-x-auto pb-1.5">
-                        <div class="w-32 flex-shrink-0 p-2.5 neu-flat text-xs text-gray-700 font-bold flex items-center gap-1.5">${iconFA('undo','text-gray-500')} Friday Night Combo</div>
-                        <div class="w-32 flex-shrink-0 p-2.5 neu-flat text-xs text-gray-700 font-bold flex items-center gap-1.5">${iconFA('undo','text-gray-500')} Standard Fuel Run</div>
+                        <div class="w-32 flex-shrink-0 p-2.5 neu-flat text-xs text-gray-700 font-bold flex items-center gap-1.5">${iconFA('undo', 'text-gray-500')} Friday Night Combo</div>
+                        <div class="w-32 flex-shrink-0 p-2.5 neu-flat text-xs text-gray-700 font-bold flex items-center gap-1.5">${iconFA('undo', 'text-gray-500')} Standard Fuel Run</div>
                     </div>
                 </div>`;
             } else if (theme === 'glassmorphism') {
@@ -1123,11 +1201,11 @@
                     <span class="text-[10px] font-bold tracking-widest text-indigo-300 uppercase">HIGH FREQUENCY ROUTING LOOPS</span>
                     <div class="flex gap-3 overflow-x-auto pb-1 pr-4">
                         <div class="w-32 flex-shrink-0 glass-panel p-2.5 bg-white/5 flex flex-col gap-0.5">
-                            <span class="text-xs font-bold text-white truncate flex items-center gap-1">${iconMaterial('history','text-cyan-400')} The Usual Box</span>
+                            <span class="text-xs font-bold text-white truncate flex items-center gap-1">${iconMaterial('history', 'text-cyan-400')} The Usual Box</span>
                             <span class="text-[9px] text-indigo-300">Ordered 14x frequency</span>
                         </div>
                         <div class="w-32 flex-shrink-0 glass-panel p-2.5 bg-white/5 flex flex-col gap-0.5">
-                            <span class="text-xs font-bold text-white truncate flex items-center gap-1">${iconMaterial('history','text-cyan-400')} Morning Double</span>
+                            <span class="text-xs font-bold text-white truncate flex items-center gap-1">${iconMaterial('history', 'text-cyan-400')} Morning Double</span>
                             <span class="text-[9px] text-indigo-300">Ordered 8x frequency</span>
                         </div>
                     </div>
@@ -1138,10 +1216,10 @@
                     <div style="font-size:14px;font-weight:700;color:#333;margin-bottom:10px;">Order Again</div>
                     <div class="flex gap-3 overflow-x-auto pb-2">
                         <div style="flex-shrink:0;width:140px;background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-                            <div style="font-size:12px;font-weight:600;color:#333;display:flex;align-items:center;gap:6px;">${iconBS('arrow-repeat','text-[#999]')} Friday Night Combo</div>
+                            <div style="font-size:12px;font-weight:600;color:#333;display:flex;align-items:center;gap:6px;">${iconBS('arrow-repeat', 'text-[#999]')} Friday Night Combo</div>
                         </div>
                         <div style="flex-shrink:0;width:140px;background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-                            <div style="font-size:12px;font-weight:600;color:#333;display:flex;align-items:center;gap:6px;">${iconBS('arrow-repeat','text-[#999]')} Morning Double</div>
+                            <div style="font-size:12px;font-weight:600;color:#333;display:flex;align-items:center;gap:6px;">${iconBS('arrow-repeat', 'text-[#999]')} Morning Double</div>
                         </div>
                     </div>
                 </div>`;
@@ -1154,7 +1232,7 @@
                 return `
                 <div class="p-4 flex flex-col gap-3">
                     <div>
-                        <h4 class="text-xs font-black text-gray-500 tracking-wider uppercase flex items-center gap-1">${iconFA('sparkles','text-teal-600')} PERSONALIZED ARCHETYPE</h4>
+                        <h4 class="text-xs font-black text-gray-500 tracking-wider uppercase flex items-center gap-1">${iconFA('sparkles', 'text-teal-600')} PERSONALIZED ARCHETYPE</h4>
                         <p class="text-[9px] text-gray-400 leading-tight mt-0.5">${d.desc}</p>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
@@ -1172,7 +1250,7 @@
                 return `
                 <div class="px-4 mb-4">
                     <div class="mb-2">
-                        <span class="text-[9px] text-pink-300 font-bold tracking-widest uppercase flex items-center gap-1">${iconMaterial('memory','text-pink-400')} PROBABILISTIC CONTEXT TARGETING</span>
+                        <span class="text-[9px] text-pink-300 font-bold tracking-widest uppercase flex items-center gap-1">${iconMaterial('memory', 'text-pink-400')} PROBABILISTIC CONTEXT TARGETING</span>
                         <h4 class="text-xs text-white opacity-80 mt-0.5">${d.desc}</h4>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
@@ -1197,7 +1275,7 @@
                         <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
                             <div style="position:relative;">
                                 <img src="${d.img1}" style="width:100%;height:120px;object-fit:cover;" alt="food">
-                                <div style="position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;">${iconBS('heart','text-[#ccc]')}</div>
+                                <div style="position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;">${iconBS('heart', 'text-[#ccc]')}</div>
                             </div>
                             <div style="padding:10px;">
                                 <div style="font-size:12px;font-weight:600;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.rec[0]}</div>
@@ -1214,7 +1292,7 @@
                         <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
                             <div style="position:relative;">
                                 <img src="${d.img2}" style="width:100%;height:120px;object-fit:cover;" alt="food">
-                                <div style="position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;">${iconBS('heart','text-[#ccc]')}</div>
+                                <div style="position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;">${iconBS('heart', 'text-[#ccc]')}</div>
                             </div>
                             <div style="padding:10px;">
                                 <div style="font-size:12px;font-weight:600;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.rec[1]}</div>
@@ -1242,7 +1320,7 @@
                             <span class="text-[9px] font-black tracking-widest opacity-80 uppercase flex items-center gap-1">${iconFA('tag')} REDUCTION INTERFACE</span>
                             <h3 class="text-sm font-black leading-tight mt-0.5">30% BASE COST REDUCTION ON ENTRYS</h3>
                         </div>
-                        ${iconFA('percent','opacity-30 text-2xl')}
+                        ${iconFA('percent', 'opacity-30 text-2xl')}
                     </div>
                 </div>`;
             } else if (theme === 'glassmorphism') {
@@ -1253,7 +1331,7 @@
                             <span class="text-[9px] text-cyan-300 font-mono font-black tracking-widest uppercase flex items-center gap-1">${iconMaterial('confirmation_number')} CONCESSION ROUTER</span>
                             <h4 class="text-xs font-bold text-white mt-0.5">Initialize Premium Free Delivery Pass</h4>
                         </div>
-                        ${iconMaterial('sparkles','text-cyan-400')}
+                        ${iconMaterial('sparkles', 'text-cyan-400')}
                     </div>
                 </div>`;
             } else {
@@ -1261,11 +1339,11 @@
                 <div class="p-3">
                     <div style="background:linear-gradient(135deg,#FF6B35,#FF8F65);border-radius:16px;padding:16px;color:#fff;display:flex;align-items:center;justify-content:space-between;">
                         <div>
-                            <div style="font-size:10px;font-weight:600;opacity:0.8;display:flex;align-items:center;gap:4px;">${iconBS('tag','')} LIMITED OFFER</div>
+                            <div style="font-size:10px;font-weight:600;opacity:0.8;display:flex;align-items:center;gap:4px;">${iconBS('tag', '')} LIMITED OFFER</div>
                             <div style="font-size:15px;font-weight:700;margin-top:4px;">30% OFF First Order</div>
                             <div style="font-size:10px;opacity:0.7;margin-top:2px;">Use code SAVE30 at checkout</div>
                         </div>
-                        <div style="width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;">${iconBS('arrow-right','text-lg')}</div>
+                        <div style="width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;">${iconBS('arrow-right', 'text-lg')}</div>
                     </div>
                 </div>`;
             }
@@ -1276,18 +1354,18 @@
             if (theme === 'neumorphism') {
                 return `
                 <div class="mx-4 my-2 p-3 text-center rounded-xl bg-purple-50 text-purple-700 border border-purple-200/40 font-bold text-[10px] flex items-center justify-center gap-1.5 shadow-inner">
-                    ${iconFA('gift','text-purple-500')} Milestone Cycle Valid: Free Glazed Shell Unlocked
+                    ${iconFA('gift', 'text-purple-500')} Milestone Cycle Valid: Free Glazed Shell Unlocked
                 </div>`;
             } else if (theme === 'glassmorphism') {
                 return `
                 <div class="mx-4 mb-4 p-3 glass-panel bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-center border-purple-400/30 flex items-center justify-center gap-2 z-10 relative">
-                    ${iconMaterial('cake','text-pink-400 animate-bounce')}
+                    ${iconMaterial('cake', 'text-pink-400 animate-bounce')}
                     <div class="text-[11px] font-bold text-white tracking-wide">Personal Milestone Anniversary Complementary Asset Valid</div>
                 </div>`;
             } else {
                 return `
                 <div class="mx-3 my-2 p-3 rounded-2xl text-center" style="background:#FFF3ED;border:1px solid #FFE0D0;">
-                    <div style="font-size:11px;font-weight:600;color:#FF6B35;display:flex;align-items:center;justify-content:center;gap:6px;">${iconBS('gift','')} Happy Birthday! Free treat unlocked</div>
+                    <div style="font-size:11px;font-weight:600;color:#FF6B35;display:flex;align-items:center;justify-content:center;gap:6px;">${iconBS('gift', '')} Happy Birthday! Free treat unlocked</div>
                 </div>`;
             }
         }
@@ -1304,7 +1382,7 @@
                 <div class="p-4 flex flex-col gap-2">
                     <span class="text-[10px] font-bold text-gray-400 tracking-wider uppercase px-1">ANCHOR NAVIGATION ARCHITECTURE</span>
                     <div class="grid grid-cols-4 gap-2">
-                        ${cats.map(c => `<div class="py-2.5 flex flex-col items-center justify-center gap-1 neu-flat text-[10px] font-bold text-gray-600">${iconFA(c.icon,'text-gray-500')}<span>${c.name}</span></div>`).join('')}
+                        ${cats.map(c => `<div class="py-2.5 flex flex-col items-center justify-center gap-1 neu-flat text-[10px] font-bold text-gray-600">${iconFA(c.icon, 'text-gray-500')}<span>${c.name}</span></div>`).join('')}
                     </div>
                 </div>`;
             } else if (theme === 'glassmorphism') {
@@ -1312,14 +1390,14 @@
                 <div class="px-4 mb-4 flex flex-col gap-2">
                     <span class="text-[9px] text-indigo-300 font-bold tracking-widest uppercase">Deep-Link Grid Modifiers</span>
                     <div class="grid grid-cols-4 gap-2">
-                        ${cats.map(c => `<div class="py-2 flex flex-col items-center justify-center gap-1 glass-pill text-[10px] text-white font-medium">${iconMaterial(c.icon,'text-cyan-400')}<span>${c.name}</span></div>`).join('')}
+                        ${cats.map(c => `<div class="py-2 flex flex-col items-center justify-center gap-1 glass-pill text-[10px] text-white font-medium">${iconMaterial(c.icon, 'text-cyan-400')}<span>${c.name}</span></div>`).join('')}
                     </div>
                 </div>`;
             } else {
                 return `
                 <div class="p-3 flex flex-col gap-2">
                     <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;">
-                        ${cats.map(c => `<div style="flex-shrink:0;padding:8px 16px;border-radius:20px;background:#f5f5f5;font-size:12px;font-weight:500;color:#333;display:flex;align-items:center;gap:6px;cursor:pointer;">${iconBS(c.icon,'text-[#FF6B35]')}<span>${c.name}</span></div>`).join('')}
+                        ${cats.map(c => `<div style="flex-shrink:0;padding:8px 16px;border-radius:20px;background:#f5f5f5;font-size:12px;font-weight:500;color:#333;display:flex;align-items:center;gap:6px;cursor:pointer;">${iconBS(c.icon, 'text-[#FF6B35]')}<span>${c.name}</span></div>`).join('')}
                     </div>
                 </div>`;
             }
@@ -1330,7 +1408,7 @@
                 return `
                 <div class="p-4">
                     <div class="p-3.5 neu-flat flex flex-col gap-2">
-                        <div class="text-xs font-bold text-gray-700 flex items-center gap-1">${iconFA('layer-group','text-teal-600')} COMPOSITE PIPELINE UPGRADE</div>
+                        <div class="text-xs font-bold text-gray-700 flex items-center gap-1">${iconFA('layer-group', 'text-teal-600')} COMPOSITE PIPELINE UPGRADE</div>
                         <div class="p-2 neu-inset bg-gray-50 flex justify-between items-center text-[11px]">
                             <span class="text-gray-500 font-medium">Bundle with Artisan Drip + Spread</span>
                             <span class="text-teal-600 font-bold font-mono">+$4.50</span>
@@ -1341,7 +1419,7 @@
                 return `
                 <div class="px-4 mb-4">
                     <div class="glass-panel p-3.5 bg-gradient-to-tr from-indigo-500/10 to-transparent z-10 relative">
-                        <h5 class="text-xs font-bold text-white mb-2 flex items-center gap-1.5">${iconMaterial('layers','text-pink-400')} Contextual Meal Configurator</h5>
+                        <h5 class="text-xs font-bold text-white mb-2 flex items-center gap-1.5">${iconMaterial('layers', 'text-pink-400')} Contextual Meal Configurator</h5>
                         <div class="glass-pill py-2 px-3 flex justify-between items-center text-[10px] text-indigo-100">
                             <span>Inject Complete Pastry Pairing Array</span>
                             <span class="text-cyan-400 font-mono font-bold">+$6.00</span>
@@ -1352,7 +1430,7 @@
                 return `
                 <div class="p-3">
                     <div style="background:#fff;border-radius:16px;padding:14px;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
-                        <div style="font-size:12px;font-weight:600;color:#333;display:flex;align-items:center;gap:6px;margin-bottom:10px;">${iconBS('layers','text-[#FF6B35]')} Meal Deal</div>
+                        <div style="font-size:12px;font-weight:600;color:#333;display:flex;align-items:center;gap:6px;margin-bottom:10px;">${iconBS('layers', 'text-[#FF6B35]')} Meal Deal</div>
                         <div style="background:#f9f9f9;border-radius:10px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;">
                             <span style="font-size:11px;color:#666;">Bundle with drink + dessert</span>
                             <span style="font-size:12px;font-weight:700;color:#FF6B35;">+$4.50</span>
@@ -1379,7 +1457,7 @@
             } else if (theme === 'glassmorphism') {
                 return `
                 <div class="px-4 mb-4 flex flex-col gap-2">
-                    <span class="text-[9px] text-indigo-300 font-bold tracking-widest uppercase flex items-center gap-1">${iconMaterial('star','text-pink-400')} HIGH-TIER COLLABORATIONS</span>
+                    <span class="text-[9px] text-indigo-300 font-bold tracking-widest uppercase flex items-center gap-1">${iconMaterial('star', 'text-pink-400')} HIGH-TIER COLLABORATIONS</span>
                     <div class="glass-panel p-2.5 flex items-center gap-3 bg-white/5 z-10 relative">
                         <img src="${img}" class="w-12 h-12 object-cover rounded-lg flex-shrink-0 filter saturate-120" alt="food">
                         <div>
@@ -1433,14 +1511,14 @@
             } else if (theme === 'glassmorphism') {
                 return `
                 <div class="pl-4 mb-4 flex flex-col gap-2">
-                    <span class="text-[9px] text-pink-300 font-bold tracking-widest uppercase flex items-center gap-1">${iconMaterial('trending_up','text-pink-400')} METRIC SOCIAL PROOF DRIVERS</span>
+                    <span class="text-[9px] text-pink-300 font-bold tracking-widest uppercase flex items-center gap-1">${iconMaterial('trending_up', 'text-pink-400')} METRIC SOCIAL PROOF DRIVERS</span>
                     <div class="flex gap-3 overflow-x-auto pb-1.5 pr-4">
                         <div class="w-36 flex-shrink-0 glass-panel p-2 bg-white/5 flex flex-col">
                             <img src="${a}" class="w-full h-16 object-cover rounded-lg mb-2 filter saturate-120" alt="food">
                             <div class="text-[11px] font-medium text-white truncate px-0.5">Salted Foam Velvet</div>
                             <div class="flex justify-between items-center mt-2 px-0.5">
                                 <span class="text-xs text-cyan-400 font-mono font-bold">$5.25</span>
-                                <button class="bg-gradient-to-r from-pink-500 to-indigo-500 p-1 rounded-md text-white">${iconMaterial('add','')}</button>
+                                <button class="bg-gradient-to-r from-pink-500 to-indigo-500 p-1 rounded-md text-white">${iconMaterial('add', '')}</button>
                             </div>
                         </div>
                         <div class="w-36 flex-shrink-0 glass-panel p-2 bg-white/5 flex flex-col">
@@ -1448,7 +1526,7 @@
                             <div class="text-[11px] font-medium text-white truncate px-0.5">Red Velvet Crumb</div>
                             <div class="flex justify-between items-center mt-2 px-0.5">
                                 <span class="text-xs text-cyan-400 font-mono font-bold">$6.00</span>
-                                <button class="bg-gradient-to-r from-pink-500 to-indigo-500 p-1 rounded-md text-white">${iconMaterial('add','')}</button>
+                                <button class="bg-gradient-to-r from-pink-500 to-indigo-500 p-1 rounded-md text-white">${iconMaterial('add', '')}</button>
                             </div>
                         </div>
                     </div>
@@ -1461,7 +1539,7 @@
                         <div style="flex-shrink:0;width:150px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
                             <div style="position:relative;">
                                 <img src="${a}" style="width:100%;height:100px;object-fit:cover;" alt="food">
-                                <div style="position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;">${iconBS('heart','text-[#ccc]')}</div>
+                                <div style="position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;">${iconBS('heart', 'text-[#ccc]')}</div>
                             </div>
                             <div style="padding:8px 10px;">
                                 <div style="font-size:11px;font-weight:600;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Street Taco Pack</div>
@@ -1474,7 +1552,7 @@
                         <div style="flex-shrink:0;width:150px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
                             <div style="position:relative;">
                                 <img src="${b}" style="width:100%;height:100px;object-fit:cover;" alt="food">
-                                <div style="position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;">${iconBS('heart','text-[#ccc]')}</div>
+                                <div style="position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;">${iconBS('heart', 'text-[#ccc]')}</div>
                             </div>
                             <div style="padding:8px 10px;">
                                 <div style="font-size:11px;font-weight:600;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Crisp Chip Unit</div>
@@ -1494,24 +1572,24 @@
                 return `
                 <div class="p-4 overflow-hidden">
                     <div class="flex gap-3 overflow-x-auto pb-1">
-                        <div class="w-56 flex-shrink-0 p-3 rounded-xl bg-indigo-50/60 border border-indigo-100 text-[11px] text-indigo-800 font-bold flex items-center gap-1.5">${iconFA('ticket','text-indigo-500')} Save $5 on First 3 Digital Checks</div>
-                        <div class="w-56 flex-shrink-0 p-3 rounded-xl bg-teal-50/60 border border-teal-100 text-[11px] text-teal-800 font-bold flex items-center gap-1.5">${iconFA('ticket','text-teal-500')} Complimentary Routing Waiver</div>
+                        <div class="w-56 flex-shrink-0 p-3 rounded-xl bg-indigo-50/60 border border-indigo-100 text-[11px] text-indigo-800 font-bold flex items-center gap-1.5">${iconFA('ticket', 'text-indigo-500')} Save $5 on First 3 Digital Checks</div>
+                        <div class="w-56 flex-shrink-0 p-3 rounded-xl bg-teal-50/60 border border-teal-100 text-[11px] text-teal-800 font-bold flex items-center gap-1.5">${iconFA('ticket', 'text-teal-500')} Complimentary Routing Waiver</div>
                     </div>
                 </div>`;
             } else if (theme === 'glassmorphism') {
                 return `
                 <div class="pl-4 mb-4">
                     <div class="flex gap-3 overflow-x-auto pb-1 pr-4">
-                        <div class="w-48 flex-shrink-0 glass-panel p-2.5 border-cyan-500/25 text-[10px] text-cyan-200 flex items-center gap-2 z-10 relative">${iconMaterial('verified','text-cyan-400')} Premium Pass Status Active</div>
-                        <div class="w-48 flex-shrink-0 glass-panel p-2.5 border-pink-500/25 text-[10px] text-pink-200 flex items-center gap-2 z-10 relative">${iconMaterial('bolt','text-pink-400')} Multiplier Token Applied</div>
+                        <div class="w-48 flex-shrink-0 glass-panel p-2.5 border-cyan-500/25 text-[10px] text-cyan-200 flex items-center gap-2 z-10 relative">${iconMaterial('verified', 'text-cyan-400')} Premium Pass Status Active</div>
+                        <div class="w-48 flex-shrink-0 glass-panel p-2.5 border-pink-500/25 text-[10px] text-pink-200 flex items-center gap-2 z-10 relative">${iconMaterial('bolt', 'text-pink-400')} Multiplier Token Applied</div>
                     </div>
                 </div>`;
             } else {
                 return `
                 <div class="p-3">
                     <div class="flex gap-3 overflow-x-auto pb-2">
-                        <div style="flex-shrink:0;width:180px;background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;align-items:center;gap:8px;">${iconBS('ticket','text-[#FF6B35]')}<span style="font-size:11px;font-weight:500;color:#333;">Free delivery on first order</span></div>
-                        <div style="flex-shrink:0;width:180px;background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;align-items:center;gap:8px;">${iconBS('ticket','text-[#FF6B35]')}<span style="font-size:11px;font-weight:500;color:#333;">20% off weekend orders</span></div>
+                        <div style="flex-shrink:0;width:180px;background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;align-items:center;gap:8px;">${iconBS('ticket', 'text-[#FF6B35]')}<span style="font-size:11px;font-weight:500;color:#333;">Free delivery on first order</span></div>
+                        <div style="flex-shrink:0;width:180px;background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;align-items:center;gap:8px;">${iconBS('ticket', 'text-[#FF6B35]')}<span style="font-size:11px;font-weight:500;color:#333;">20% off weekend orders</span></div>
                     </div>
                 </div>`;
             }
@@ -1521,17 +1599,17 @@
             if (theme === 'neumorphism') {
                 return `
                 <div class="p-4 flex flex-col gap-2">
-                    <div class="p-2.5 neu-flat text-[11px] text-gray-600 font-medium flex items-center gap-2">${iconFA('check-circle','text-teal-600')} Free beverage upgrades valid for pastry items.</div>
-                    <div class="p-2.5 neu-flat text-[11px] text-gray-600 font-medium flex items-center gap-2">${iconFA('check-circle','text-teal-600')} Double loyalty tokens activated on midnight loops.</div>
+                    <div class="p-2.5 neu-flat text-[11px] text-gray-600 font-medium flex items-center gap-2">${iconFA('check-circle', 'text-teal-600')} Free beverage upgrades valid for pastry items.</div>
+                    <div class="p-2.5 neu-flat text-[11px] text-gray-600 font-medium flex items-center gap-2">${iconFA('check-circle', 'text-teal-600')} Double loyalty tokens activated on midnight loops.</div>
                 </div>`;
             } else if (theme === 'glassmorphism') {
                 return `
                 <div class="px-4 mb-4 flex flex-col gap-2">
                     <div class="glass-panel p-3 text-[10px] text-indigo-100/90 border-dashed z-10 relative">
-                        <div class="font-bold text-pink-400 mb-1.5 flex items-center gap-1">${iconMaterial('layers','')} Active Coupon System Core</div>
+                        <div class="font-bold text-pink-400 mb-1.5 flex items-center gap-1">${iconMaterial('layers', '')} Active Coupon System Core</div>
                         <div class="space-y-1.5 px-0.5">
-                            <div class="flex items-center gap-1.5">${iconMaterial('add','text-cyan-400')} Complementary processing handler access keys.</div>
-                            <div class="flex items-center gap-1.5">${iconMaterial('add','text-cyan-400')} Weekend fulfillment routing premium fee waivers.</div>
+                            <div class="flex items-center gap-1.5">${iconMaterial('add', 'text-cyan-400')} Complementary processing handler access keys.</div>
+                            <div class="flex items-center gap-1.5">${iconMaterial('add', 'text-cyan-400')} Weekend fulfillment routing premium fee waivers.</div>
                         </div>
                     </div>
                 </div>`;
@@ -1539,12 +1617,12 @@
                 return `
                 <div class="p-3">
                     <div style="background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-                        <span style="font-size:11px;color:#333;display:flex;align-items:center;gap:6px;">${iconBS('check-circle','text-[#4CAF50]')} Free upgrades on pastry items</span>
-                        ${iconBS('arrow-up-right','text-[#999]')}
+                        <span style="font-size:11px;color:#333;display:flex;align-items:center;gap:6px;">${iconBS('check-circle', 'text-[#4CAF50]')} Free upgrades on pastry items</span>
+                        ${iconBS('arrow-up-right', 'text-[#999]')}
                     </div>
                     <div style="background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;align-items:center;justify-content:space-between;">
-                        <span style="font-size:11px;color:#333;display:flex;align-items:center;gap:6px;">${iconBS('check-circle','text-[#4CAF50]')} Double points on midnight orders</span>
-                        ${iconBS('arrow-up-right','text-[#999]')}
+                        <span style="font-size:11px;color:#333;display:flex;align-items:center;gap:6px;">${iconBS('check-circle', 'text-[#4CAF50]')} Double points on midnight orders</span>
+                        ${iconBS('arrow-up-right', 'text-[#999]')}
                     </div>
                 </div>`;
             }
@@ -1590,23 +1668,24 @@
                 return `
                 <div class="pl-4 mb-4 flex gap-3 overflow-x-auto z-10 relative">
                     <div class="w-13 h-13 rounded-full p-0.5 border-2 border-pink-500 flex-shrink-0"><img src="${av}" class="w-full h-full rounded-full object-cover" alt="avatar"></div>
-                    <div class="w-13 h-13 rounded-full p-0.5 border-2 border-dashed border-indigo-400/40 flex-shrink-0 flex items-center justify-center bg-white/5">${iconMaterial('add','text-indigo-300')}</div>
+                    <div class="w-13 h-13 rounded-full p-0.5 border-2 border-dashed border-indigo-400/40 flex-shrink-0 flex items-center justify-center bg-white/5">${iconMaterial('add', 'text-indigo-300')}</div>
                 </div>`;
             } else {
                 return `
                 <div class="p-3 flex gap-2 overflow-x-auto font-mono">
-                    <div class="w-14 h-14 border-3 border-black brutal-accent-yellow flex-shrink-0 flex flex-col items-center justify-center text-[10px] font-black">${iconBS('camera-reels','mb-0.5')} LIVE</div>
-                    <div class="w-14 h-14 border-3 border-black bg-white flex-shrink-0 flex flex-col items-center justify-center text-[10px] font-black text-gray-400">${iconBS('plus','')} ADD</div>
+                    <div class="w-14 h-14 border-3 border-black brutal-accent-yellow flex-shrink-0 flex flex-col items-center justify-center text-[10px] font-black">${iconBS('camera-reels', 'mb-0.5')} LIVE</div>
+                    <div class="w-14 h-14 border-3 border-black bg-white flex-shrink-0 flex flex-col items-center justify-center text-[10px] font-black text-gray-400">${iconBS('plus', '')} ADD</div>
                 </div>`;
             }
         }
 
         // ─── BOOT ──────────────────────────────────────────────────────────
-        window.onload = function() {
+        window.onload = function () {
             buildControllerList();
             renderAllViewports();
             initControllerEvents();
         };
     </script>
 </body>
+
 </html>

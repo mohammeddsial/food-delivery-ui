@@ -17,19 +17,15 @@
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;800&family=Space+Grotesk:wght@400;700&family=Outfit:wght@300;600;900&display=swap"
         rel="stylesheet" />
 
-    <!-- ===== ICON LIBRARY 1: FONT AWESOME (Neumorphism) ===== -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
-    <!-- ===== ICON LIBRARY 2: MATERIAL SYMBOLS (Glassmorphism) ===== -->
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-
-    <!-- ===== ICON LIBRARY 3: BOOTSTRAP ICONS (Neubrutalism) ===== -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-
-    <!-- Lucide (fallback for structural elements) -->
+    <!-- ===== ICON LIBRARY 1: LUCIDE (Neumorphism) ===== -->
     <script src="https://unpkg.com/lucide@latest">
     </script>
+
+    <!-- ===== ICON LIBRARY 2: REMIX ICON (Glassmorphism) ===== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" />
+
+    <!-- ===== ICON LIBRARY 3: TABLER (Neubrutalism) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.30.0/tabler-icons.min.css" />
 
     <style>
         /* base reset */
@@ -47,6 +43,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            transition: background 0.3s, color 0.3s;
         }
 
         .scrollable-content {
@@ -56,35 +53,34 @@
             padding-bottom: 80px;
         }
 
-        /* --- THEME 1: NEUMORPHISM (Font Awesome) --- */
+        /* --- THEME 1: NEUMORPHISM (Lucide) --- */
         .theme-neumorphism {
-            background-color: #e0e0e0 !important;
-            color: #333333 !important;
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         .neu-flat {
-            background: #e0e0e0;
-            box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
+            background: var(--neu-card-bg, #e0e0e0);
+            box-shadow: 6px 6px 12px var(--neu-shadow-dark, #bebebe),
+                -6px -6px 12px var(--neu-shadow-light, #ffffff);
             border-radius: 16px;
         }
 
         .neu-inset {
-            background: #e0e0e0;
-            box-shadow: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff;
+            background: var(--neu-card-bg, #e0e0e0);
+            box-shadow: inset 4px 4px 8px var(--neu-shadow-dark, #bebebe),
+                inset -4px -4px 8px var(--neu-shadow-light, #ffffff);
             border-radius: 12px;
         }
 
         .neu-pill {
-            background: #e0e0e0;
-            box-shadow: 3px 3px 6px #bebebe, -3px -3px 6px #ffffff;
+            background: var(--neu-card-bg, #e0e0e0);
+            box-shadow: 3px 3px 6px var(--neu-shadow-dark, #bebebe),
+                -3px -3px 6px var(--neu-shadow-light, #ffffff);
             border-radius: 9999px;
         }
 
-        /* --- THEME 2: GLASSMORPHISM (Material Symbols) --- */
+        /* --- THEME 2: GLASSMORPHISM (Remix Icon) --- */
         .theme-glassmorphism {
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%) !important;
-            color: #ffffff !important;
             font-family: 'Outfit', sans-serif;
         }
 
@@ -117,54 +113,303 @@
         }
 
         .glass-panel {
-            background: rgba(255, 255, 255, 0.06);
+            background: var(--glass-glass, rgba(255, 255, 255, 0.06));
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
             border-radius: 20px;
         }
 
         .glass-pill {
-            background: rgba(255, 255, 255, 0.12);
+            background: var(--glass-glass, rgba(255, 255, 255, 0.12));
             backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.18));
             border-radius: 9999px;
         }
 
-        /* --- THEME 3: NEUBRUTALISM (Bootstrap Icons) --- */
+        /* --- THEME 3: NEUBRUTALISM (Tabler) --- */
         .theme-neubrutalism {
-            background-color: #FFFFFF !important;
-            color: #000000 !important;
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         .brutal-card {
-            background: #ffffff;
-            border: 1px solid #f0f0f0;
+            background: var(--brutal-card-bg, #ffffff);
+            border: 1px solid var(--brutal-border, #000000);
             box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
             border-radius: 16px;
         }
 
         .brutal-accent-yellow {
-            background-color: #ffde4d;
+            background-color: var(--brutal-secondary, #ffde4d);
         }
 
         .brutal-accent-lime {
-            background-color: #ccff00;
+            background-color: var(--brutal-accent, #ccff00);
         }
 
         .brutal-accent-pink {
-            background-color: #ff6ea7;
+            background-color: var(--brutal-pink, #ff6ea7);
         }
 
         .brutal-pill {
-            background: #ffffff;
-            border: 2px solid #000000;
-            box-shadow: 2px 2px 0px #000000;
+            background: var(--brutal-card-bg, #ffffff);
+            border: 2px solid var(--brutal-border, #000000);
+            box-shadow: 2px 2px 0px var(--brutal-border, #000000);
             border-radius: 9999px;
         }
 
+        /* ===== FOOD CARD COMPONENTS (Neubrutalism) ===== */
+        .fd-card {
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            flex-shrink: 0;
+        }
+        .fd-card-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+        }
+        .fd-card-body {
+            padding: 14px;
+        }
+        .fd-price-badge {
+            position: absolute;
+            bottom: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #FF6B35;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 800;
+            padding: 6px 18px;
+            border-radius: 14px;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(255,107,53,0.35);
+            z-index: 2;
+        }
+        .fd-heart {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.92);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            z-index: 2;
+            cursor: pointer;
+        }
+        .fd-heart i { color: #ccc; font-size: 14px; }
+        .fd-heart.active i { color: #FF6B35; }
+        .fd-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .fd-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            color: #888;
+            font-weight: 600;
+        }
+        .fd-meta-item i { font-size: 13px; color: #FF6B35; }
+        .fd-meta-item .star { color: #FFD700; }
+        .fd-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-top: 6px;
+            line-height: 1.2;
+        }
+        .fd-subtitle {
+            font-size: 11px;
+            color: #999;
+            margin-top: 2px;
+        }
+        .fd-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        .fd-tag {
+            font-size: 9px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 8px;
+            background: #f5f5f5;
+            color: #666;
+        }
+        .fd-tag.green { background: #E8F5E9; color: #2E7D32; }
+        .fd-tag.orange { background: #FFF3E0; color: #E65100; }
+        .fd-add-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #FF6B35;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 6px 14px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .fd-delivery-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #FF6B35;
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 8px;
+            z-index: 2;
+        }
+        .fd-bookmark {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.92);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            z-index: 2;
+            cursor: pointer;
+        }
+        .fd-bookmark i { color: #FF6B35; font-size: 14px; }
+        .fd-countdown-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            padding: 24px 12px 10px;
+            text-align: center;
+        }
+        .fd-countdown-pill {
+            background: rgba(255,255,255,0.92);
+            color: #333;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        .fd-qty-stepper {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            background: #FF6B35;
+            border-radius: 24px;
+            overflow: hidden;
+        }
+        .fd-qty-btn {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+        }
+        .fd-qty-num {
+            width: 24px;
+            text-align: center;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 800;
+        }
+        .fd-category-card {
+            background: #fff;
+            border-radius: 18px;
+            padding: 14px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: relative;
+            overflow: hidden;
+            min-height: 140px;
+        }
+        .fd-category-card .cat-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #1a1a1a;
+        }
+        .fd-category-card .cat-desc {
+            font-size: 10px;
+            color: #888;
+            line-height: 1.3;
+        }
+        .fd-category-card .cat-badge {
+            font-size: 9px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 8px;
+            background: #FFF3E0;
+            color: #FF6B35;
+            display: inline-block;
+            width: fit-content;
+        }
+        .fd-category-card .cat-img {
+            position: absolute;
+            bottom: -8px;
+            right: -8px;
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+        .fd-mosaic-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            grid-template-rows: 100px 100px;
+            gap: 6px;
+        }
+        .fd-mosaic-grid .mosaic-item {
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+        .fd-mosaic-grid .mosaic-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .fd-mosaic-grid .mosaic-item .mosaic-count {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 800;
+        }
+        .fd-mosaic-grid .mosaic-item:first-child {
+            grid-row: 1 / 3;
+        }
         /* ---- Controller ---- */
         .controller {
             width: 28%;
@@ -374,6 +619,7 @@
             font-size: 20px;
             cursor: pointer;
             padding: 4px 8px;
+            color: #333;
         }
 
         .drawer .drawer-nav {
@@ -419,77 +665,131 @@
             border-radius: 2px;
         }
 
-        /* material icons helper */
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            user-select: none;
+        /* Remix icons helper – ensure they're visible */
+        .theme-glassmorphism [class^="ri-"] {
+            font-size: inherit;
         }
 
-        .theme-glassmorphism .material-symbols-outlined {
-            font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        /* ===== SHARED ICON SIZE ===== */
+        .icon-md {
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* bootstrap icons helper */
-        .theme-neubrutalism .bi {
-            vertical-align: middle;
+        .icon-md[data-lucide] {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* ---- Color Palette Editor ---- */
+        .palette-swatch {
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+
+        .palette-swatch:hover {
+            transform: scale(1.1);
+        }
+
+        .export-btn {
+            background: #2a2a2a;
+            border: none;
+            color: #ccc;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .export-btn:hover {
+            background: #3a3a3a;
+            color: #fff;
         }
     </style>
 </head>
 
 <body class="p-6 h-screen w-screen flex overflow-hidden">
 
-    <!-- LEFT CONTROLLER -->
-    <div class="controller" id="controllerPanel">
-        <div class="panel-title">
-            <i class="fas fa-sliders-h" style="color:#FF6B35;font-size:14px;"></i> Module Engine
-            <span>v1.0</span>
-        </div>
-        <div style="font-size:11px;color:#666;margin-bottom:12px;">19 components · 3 design systems · 3 icon libs</div>
+    <!-- LEFT PANEL: Controller + Palette Editor -->
+    <div class="flex flex-col h-full" style="width:28%; min-width:300px; max-width:400px; background:#141414; border-right:1px solid #2a2a2a; overflow-y:auto;">
 
-        <div class="ctrl-section">
-            <h3>Module Orchestrator</h3>
-            <div class="ctrl-group" id="moduleListContainer"></div>
-        </div>
+        <!-- CONTROLLER -->
+        <div class="controller" id="controllerPanel" style="width:100%; border-right:none; height:auto; flex-shrink:0;">
+            <div class="panel-title">
+                <i class="fas fa-sliders-h" style="color:#FF6B35;font-size:14px;"></i> Module Engine
+                <span>v1.0</span>
+            </div>
+            <div style="font-size:11px;color:#666;margin-bottom:12px;">19 components · 3 design systems · 3 icon libs</div>
 
-        <div class="ctrl-section">
-            <h3>State Simulation</h3>
-            <div class="ctrl-group">
-                <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                    <select id="weatherSelect"
-                        style="flex:1;min-width:70px;background:#222;border:1px solid #333;color:#ddd;padding:4px 8px;border-radius:6px;font-size:11px;outline:none;">
-                        <option value="Sunny">Clear</option>
-                        <option value="Rainy">Rain</option>
-                        <option value="Snowy">Snow</option>
-                    </select>
-                    <select id="timeSelect"
-                        style="flex:1;min-width:70px;background:#222;border:1px solid #333;color:#ddd;padding:4px 8px;border-radius:6px;font-size:11px;outline:none;">
-                        <option value="Breakfast">Morning</option>
-                        <option value="Lunch" selected>Lunch</option>
-                        <option value="LateNight">Late Night</option>
-                    </select>
+            <div class="ctrl-section">
+                <h3>Module Orchestrator</h3>
+                <div class="ctrl-group" id="moduleListContainer"></div>
+            </div>
+
+            <div class="ctrl-section">
+                <h3>State Simulation</h3>
+                <div class="ctrl-group">
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                        <select id="weatherSelect"
+                            style="flex:1;min-width:70px;background:#222;border:1px solid #333;color:#ddd;padding:4px 8px;border-radius:6px;font-size:11px;outline:none;">
+                            <option value="Sunny">Clear</option>
+                            <option value="Rainy">Rain</option>
+                            <option value="Snowy">Snow</option>
+                        </select>
+                        <select id="timeSelect"
+                            style="flex:1;min-width:70px;background:#222;border:1px solid #333;color:#ddd;padding:4px 8px;border-radius:6px;font-size:11px;outline:none;">
+                            <option value="Breakfast">Morning</option>
+                            <option value="Lunch" selected>Lunch</option>
+                            <option value="LateNight">Late Night</option>
+                        </select>
+                    </div>
+                    <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
+                        <button class="state-btn" id="orderToggleBtn"><i class="fas fa-truck"></i> Active Order</button>
+                        <button class="state-btn" id="birthdayToggleBtn"><i class="fas fa-gift"></i> Birthday</button>
+                    </div>
+                    <div style="display:flex;gap:6px;margin-top:6px;align-items:center;">
+                        <span style="font-size:10px;color:#888;">Countdown:</span>
+                        <input type="number" id="countdownInput" value="45"
+                            style="width:50px;background:#222;border:1px solid #333;color:#ddd;padding:3px 6px;border-radius:6px;font-size:12px;outline:none;" />
+                        <span style="font-size:10px;color:#666;">min</span>
+                    </div>
                 </div>
-                <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
-                    <button class="state-btn" id="orderToggleBtn"><i class="fas fa-truck"></i> Active Order</button>
-                    <button class="state-btn" id="birthdayToggleBtn"><i class="fas fa-gift"></i> Birthday</button>
-                </div>
-                <div style="display:flex;gap:6px;margin-top:6px;align-items:center;">
-                    <span style="font-size:10px;color:#888;">Countdown:</span>
-                    <input type="number" id="countdownInput" value="45"
-                        style="width:50px;background:#222;border:1px solid #333;color:#ddd;padding:3px 6px;border-radius:6px;font-size:12px;outline:none;" />
-                    <span style="font-size:10px;color:#666;">min</span>
-                </div>
+            </div>
+
+            <div style="font-size:9px;color:#444;margin-top:10px;border-top:1px solid #1a1a1a;padding-top:8px;text-align:center;">
+                <i class="fas fa-sync-alt" style="margin-right:4px;"></i> Real-time · all viewports sync
+            </div>
+            <div style="font-size:8px;color:#333;margin-top:4px;text-align:center;border-top:1px solid #1a1a1a;padding-top:6px;">
+                <span style="background:#1a1a1a;padding:2px 8px;border-radius:4px;">Lucide</span>
+                <span style="background:#1a1a1a;padding:2px 8px;border-radius:4px;margin-left:4px;">Remix</span>
+                <span style="background:#1a1a1a;padding:2px 8px;border-radius:4px;margin-left:4px;">Tabler</span>
             </div>
         </div>
 
-        <div
-            style="font-size:9px;color:#444;margin-top:10px;border-top:1px solid #1a1a1a;padding-top:8px;text-align:center;">
-            <i class="fas fa-sync-alt" style="margin-right:4px;"></i> Real-time · all viewports sync
-        </div>
-        <div
-            style="font-size:8px;color:#333;margin-top:4px;text-align:center;border-top:1px solid #1a1a1a;padding-top:6px;">
-            <span style="background:#1a1a1a;padding:2px 8px;border-radius:4px;">FA</span>
-            <span style="background:#1a1a1a;padding:2px 8px;border-radius:4px;margin-left:4px;">Material</span>
-            <span style="background:#1a1a1a;padding:2px 8px;border-radius:4px;margin-left:4px;">Bootstrap</span>
+        <!-- COLOR PALETTE EDITOR -->
+        <div class="color-palette-editor" style="padding:16px; border-top:1px solid #2a2a2a; flex-shrink:0;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                <h3 style="color:#fff; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Color Palettes</h3>
+                <div>
+                    <button class="export-btn" onclick="exportPalette('css')">CSS</button>
+                    <button class="export-btn" onclick="exportPalette('tailwind')">TW</button>
+                    <button class="export-btn" onclick="exportPalette('json')">JSON</button>
+                </div>
+            </div>
+            <div id="paletteEditorContainer">
+                <!-- Rendered by JavaScript -->
+            </div>
         </div>
     </div>
 
@@ -498,42 +798,41 @@
         <div class="flex items-center justify-between mb-4 bg-slate-900 border border-slate-800 rounded-xl px-4 py-2">
             <div class="text-sm font-bold text-slate-300">HIGH-FIDELITY DESIGN STRATIFICATION WORKBENCH</div>
             <div class="flex gap-3 text-xs text-slate-500">
-                <span><i class="fas fa-circle" style="color:#FF6B35;font-size:8px;"></i> FA</span>
-                <span><i class="material-symbols-outlined" style="font-size:14px;color:#a78bfa;">circle</i>
-                    Material</span>
-                <span><i class="bi bi-circle-fill" style="color:#fbbf24;font-size:8px;"></i> Bootstrap</span>
+                <span><i data-lucide="circle" style="color:#FF6B35;font-size:8px;"></i> Lucide</span>
+                <span><i class="ri-circle-fill" style="color:#a78bfa;font-size:8px;"></i> Remix</span>
+                <span><i class="ti ti-circle-filled" style="color:#fbbf24;font-size:8px;"></i> Tabler</span>
             </div>
         </div>
 
         <div class="flex-1 flex gap-4 overflow-x-auto justify-start items-center pb-4">
 
-            <!-- VIEWPORT 1: NEUMORPHISM · Font Awesome -->
+            <!-- VIEWPORT 1: NEUMORPHISM · Lucide -->
             <div class="flex flex-col items-center">
                 <span class="text-xs font-bold text-slate-400 mb-1 tracking-wider uppercase flex items-center gap-2">
-                    <i class="fas fa-cube"></i> Neumorphism <span
-                        class="text-[8px] bg-slate-800 px-2 py-0.5 rounded-full text-slate-400">Font Awesome</span>
+                    <i data-lucide="cube"></i> Neumorphism <span
+                        class="text-[8px] bg-slate-800 px-2 py-0.5 rounded-full text-slate-400">Lucide</span>
                 </span>
                 <div id="viewport-neumorphism"
                     class="phone-viewport theme-neumorphism rounded-[40px] border-[10px] border-slate-950 shadow-2xl">
                 </div>
             </div>
 
-            <!-- VIEWPORT 2: GLASSMORPHISM · Material Symbols -->
+            <!-- VIEWPORT 2: GLASSMORPHISM · Remix Icon -->
             <div class="flex flex-col items-center">
                 <span class="text-xs font-bold text-indigo-400 mb-1 tracking-wider uppercase flex items-center gap-2">
-                    <i class="material-symbols-outlined" style="font-size:16px;">lens</i> Glassmorphism <span
-                        class="text-[8px] bg-slate-800 px-2 py-0.5 rounded-full text-indigo-400">Material</span>
+                    <i class="ri-circle-line"></i> Glassmorphism <span
+                        class="text-[8px] bg-slate-800 px-2 py-0.5 rounded-full text-indigo-400">Remix</span>
                 </span>
                 <div id="viewport-glassmorphism"
                     class="phone-viewport theme-glassmorphism rounded-[40px] border-[10px] border-slate-950 shadow-2xl">
                 </div>
             </div>
 
-            <!-- VIEWPORT 3: NEUBRUTALISM · Bootstrap Icons -->
+            <!-- VIEWPORT 3: NEUBRUTALISM · Tabler -->
             <div class="flex flex-col items-center">
                 <span class="text-xs font-bold text-yellow-500 mb-1 tracking-wider uppercase flex items-center gap-2">
-                    <i class="bi bi-cube"></i> Neubrutalism <span
-                        class="text-[8px] bg-slate-800 px-2 py-0.5 rounded-full text-yellow-500">Bootstrap</span>
+                    <i class="ti ti-cube"></i> Neubrutalism <span
+                        class="text-[8px] bg-slate-800 px-2 py-0.5 rounded-full text-yellow-500">Tabler</span>
                 </span>
                 <div id="viewport-neubrutalism"
                     class="phone-viewport theme-neubrutalism rounded-[40px] border-[10px] border-slate-950 shadow-2xl">
@@ -564,7 +863,8 @@
             { id: 'offers-carousel', name: 'Offers Carousel Deck', core: false, enabled: true },
             { id: 'offers-feed', name: 'Offers Comprehensive Feed', core: false, enabled: true },
             { id: 'image-mosaic', name: 'Image Mosaic Lookbook', core: false, enabled: true },
-            { id: 'stories', name: 'Stories Loop Tickers', core: false, enabled: true }
+            { id: 'stories', name: 'Stories Loop Tickers', core: false, enabled: true },
+           
         ];
 
         let stateSimulation = {
@@ -574,6 +874,7 @@
             orderActive: true,
             birthday: false
         };
+
         // ─── BRAND INFO PER THEME ──────────────────────────────────────────────
         const brandInfo = {
             neumorphism: {
@@ -589,23 +890,144 @@
                 topBarHTML: `<span class="font-black text-sm tracking-widest" style="color:#333;">Food Hub</span>`
             }
         };
-        // ─── ICON HELPERS per theme ──────────────────────────────────────
+
+        // ─── GLOBAL COLOR PALETTES (editable) ──────────────────────────────────
+        window.colorPalettes = {
+            neumorphism: {
+                name: 'Neumorphism',
+                colors: {
+                    Background: '#e0e0e0',
+                    'Card BG': '#e0e0e0',
+                    'Shadow Dark': '#bebebe',
+                    'Shadow Light': '#ffffff',
+                    Text: '#333333',
+                    Primary: '#2d2d2d',
+                    Accent: '#0d9488',
+                    Secondary: '#FF6B35'
+                }
+            },
+            glassmorphism: {
+                name: 'Glassmorphism',
+                colors: {
+                    Background: 'linear-gradient(135deg, #0f172a, #1e1b4b, #311042)',
+                    Glass: 'rgba(255,255,255,0.06)',
+                    Border: 'rgba(255,255,255,0.12)',
+                    Text: '#ffffff',
+                    Primary: '#ec4899',
+                    Accent: '#22d3ee',
+                    Secondary: '#a78bfa'
+                }
+            },
+            neubrutalism: {
+                name: 'Neubrutalism',
+                colors: {
+                    Background: '#f5f5f5',
+                    'Card BG': '#ffffff',
+                    Border: '#e0e0e0',
+                    Text: '#1a1a1a',
+                    Primary: '#FF6B35',
+                    Secondary: '#ffde4d',
+                    Accent: '#ccff00',
+                    Pink: '#ff6ea7',
+                    'Price BG': '#FF6B35',
+                    'Star': '#FFD700',
+                    'Delivery': '#FF4444',
+                    'Discount BG': '#FFF3ED'
+                }
+            }
+        };
+
+        // ─── UPDATE COLOR AND REFRESH ──────────────────────────────────────────
+        function updateColor(theme, colorName, newValue) {
+            if (!window.colorPalettes[theme]) return;
+            window.colorPalettes[theme].colors[colorName] = newValue;
+            renderPaletteEditor();
+            renderAllViewports();
+            applyPaletteToViewport(theme);
+        }
+
+        function applyPaletteToViewport(theme) {
+            const container = document.getElementById(`viewport-${theme}`);
+            if (!container) return;
+            const pal = window.colorPalettes[theme]?.colors;
+            if (!pal) return;
+
+            if (theme === 'neumorphism') {
+                container.style.setProperty('--neu-card-bg', pal['Card BG'] || pal.Background);
+                container.style.setProperty('--neu-shadow-dark', pal['Shadow Dark']);
+                container.style.setProperty('--neu-shadow-light', pal['Shadow Light']);
+                container.style.setProperty('--neu-text', pal.Text);
+                container.style.color = pal.Text;
+                container.style.backgroundColor = pal.Background;
+            } else if (theme === 'glassmorphism') {
+                container.style.setProperty('--glass-glass', pal.Glass);
+                container.style.setProperty('--glass-border', pal.Border);
+                container.style.color = pal.Text;
+                container.style.background = pal.Background;
+            } else if (theme === 'neubrutalism') {
+                container.style.setProperty('--brutal-card-bg', pal['Card BG'] || pal.Background);
+                container.style.setProperty('--brutal-border', pal.Border);
+                container.style.setProperty('--brutal-text', pal.Text);
+                container.style.color = pal.Text;
+                container.style.backgroundColor = pal.Background;
+            }
+        }
+
+        function applyAllPalettes() {
+            const themes = ['neumorphism', 'glassmorphism', 'neubrutalism'];
+            themes.forEach(theme => applyPaletteToViewport(theme));
+        }
+
+        // ─── ICON HELPERS ───────────────────────────────────────────────────────
         function iconFA(name, cls = '') {
-            return `<i class="fas fa-${name} ${cls}"></i>`;
+            return `<i data-lucide="${name}" class="${cls}"></i>`;
         }
 
         function iconMaterial(name, cls = '') {
-            return `<span class="material-symbols-outlined ${cls}">${name}</span>`;
+            return `<i class="ri-${name} ${cls}"></i>`;
         }
 
         function iconBS(name, cls = '') {
-            return `<i class="bi bi-${name} ${cls}"></i>`;
+            return `<i class="ti ti-${name} ${cls}"></i>`;
         }
 
         function iconFor(theme, name, extra = '') {
-            if (theme === 'neumorphism') return iconFA(name, extra);
-            if (theme === 'glassmorphism') return iconMaterial(name, extra);
-            if (theme === 'neubrutalism') return iconBS(name, extra);
+            const lucideMap = {
+                'close-line': 'x',
+                'home-line': 'home',
+                'search-line': 'search',
+                'heart-line': 'heart',
+                'shopping-bag-line': 'shopping-bag',
+                'user-line': 'user',
+                'settings-line': 'settings',
+                'menu-line': 'menu',
+                'shopping-cart-line': 'shopping-cart',
+                'notification-3-line': 'bell',
+                'close': 'x'
+            };
+            const tablerMap = {
+                'close-line': 'x',
+                'home-line': 'home',
+                'search-line': 'search',
+                'heart-line': 'heart',
+                'shopping-bag-line': 'shopping-bag',
+                'user-line': 'user',
+                'settings-line': 'settings',
+                'menu-line': 'menu-2',
+                'shopping-cart-line': 'shopping-cart',
+                'notification-3-line': 'bell',
+                'close': 'x'
+            };
+
+            if (theme === 'neumorphism') {
+                const mappedName = lucideMap[name] || name;
+                return iconFA(mappedName, extra);
+            } else if (theme === 'glassmorphism') {
+                return iconMaterial(name, extra);
+            } else if (theme === 'neubrutalism') {
+                const mappedName = tablerMap[name] || name;
+                return iconBS(mappedName, extra);
+            }
             return iconFA(name, extra);
         }
 
@@ -649,8 +1071,8 @@
                         <span class="mod-label">${mod.name}</span>
                     </div>
                     <div class="actions">
-                        <button onclick="moveModule(${index}, -1)" ${index === 0 ? 'disabled' : ''}><i class="fas fa-chevron-up" style="font-size:8px;"></i></button>
-                        <button onclick="moveModule(${index}, 1)" ${index === modulesConfig.length - 1 ? 'disabled' : ''}><i class="fas fa-chevron-down" style="font-size:8px;"></i></button>
+                        <button onclick="moveModule(${index}, -1)" ${index === 0 ? 'disabled' : ''}><i data-lucide="chevron-up" style="font-size:8px;"></i></button>
+                        <button onclick="moveModule(${index}, 1)" ${index === modulesConfig.length - 1 ? 'disabled' : ''}><i data-lucide="chevron-down" style="font-size:8px;"></i></button>
                     </div>
                 `;
                 container.appendChild(row);
@@ -683,7 +1105,7 @@
 
         function attachDrawerEvents() {
             document.querySelectorAll('[data-drawer-toggle]').forEach(el => {
-                el.addEventListener('click', function () {
+                el.addEventListener('click', function() {
                     const vpId = this.dataset.drawerToggle;
                     const overlay = document.querySelector(`[data-drawer-overlay="${vpId}"]`);
                     const drawer = document.querySelector(`[data-drawer="${vpId}"]`);
@@ -692,7 +1114,7 @@
                 });
             });
             document.querySelectorAll('[data-drawer-close]').forEach(el => {
-                el.addEventListener('click', function () {
+                el.addEventListener('click', function() {
                     const vpId = this.dataset.drawerClose;
                     const overlay = document.querySelector(`[data-drawer-overlay="${vpId}"]`);
                     const drawer = document.querySelector(`[data-drawer="${vpId}"]`);
@@ -701,7 +1123,7 @@
                 });
             });
             document.querySelectorAll('[data-drawer-overlay]').forEach(el => {
-                el.addEventListener('click', function () {
+                el.addEventListener('click', function() {
                     this.classList.remove('open');
                     const vpId = this.dataset.drawerOverlay;
                     const drawer = document.querySelector(`[data-drawer="${vpId}"]`);
@@ -715,14 +1137,14 @@
             const birthdayBtn = document.getElementById('birthdayToggleBtn');
             if (orderBtn) {
                 orderBtn.classList.add('active');
-                orderBtn.addEventListener('click', function () {
+                orderBtn.addEventListener('click', function() {
                     stateSimulation.orderActive = !stateSimulation.orderActive;
                     this.classList.toggle('active');
                     renderAllViewports();
                 });
             }
             if (birthdayBtn) {
-                birthdayBtn.addEventListener('click', function () {
+                birthdayBtn.addEventListener('click', function() {
                     stateSimulation.birthday = !stateSimulation.birthday;
                     this.classList.toggle('active');
                     renderAllViewports();
@@ -740,7 +1162,9 @@
                 const container = document.getElementById(`viewport-${theme}`);
                 container.innerHTML = '';
 
-                // Top Nav
+                applyPaletteToViewport(theme);
+
+                // Top Nav – shared
                 container.innerHTML += generateTopNav(theme);
 
                 // Scrollable content
@@ -808,135 +1232,202 @@
                         case 'stories':
                             html = drawStories(theme);
                             break;
+                        case 'color-palette':
+                            html = drawColorPalette(theme);
+                            break;
                     }
                     scrollWrapper.innerHTML += html;
                 });
 
                 container.appendChild(scrollWrapper);
 
-                // Bottom Bar
+                // Bottom Bar – shared
                 container.innerHTML += generateBottomBar(theme);
 
-                // Drawer
-                const restaurantNames = {
-                    neumorphism: 'CRUMBL&CO',
-                    glassmorphism: 'NEXT_EATS',
-                    neubrutalism: 'Food Hub'  // or your brand name
-                };
+                // Drawer – shared template
                 container.innerHTML += `
                     <div class="drawer-overlay" data-drawer-overlay="vp-${theme}"></div>
                     <div class="drawer" data-drawer="vp-${theme}">
                         <div class="drawer-header">
                             ${brandInfo[theme].topBarHTML}
-                            <button class="close-btn" data-drawer-close="vp-${theme}"><i class="fas fa-times"></i></button>
+                            <button class="close-btn" data-drawer-close="vp-${theme}">${iconFor(theme, 'close-line')}</button>
                         </div>
-                        <div class="drawer-nav">renderAllViewports
-                            <a href="#">${iconFor(theme, 'house', 'mr-2')} Home</a>
-                            <a href="#">${iconFor(theme, 'search', 'mr-2')} Search</a>
-                            <a href="#">${iconFor(theme, 'heart', 'mr-2')} Favorites</a>
-                            <a href="#">${iconFor(theme, 'bag', 'mr-2')} Orders</a>
-                            <a href="#">${iconFor(theme, 'person', 'mr-2')} Profile</a>
-                            <a href="#">${iconFor(theme, 'gear', 'mr-2')} Settings</a>
+                        <div class="drawer-nav">
+                            <a href="#">${iconFor(theme, 'home-line')} Home</a>
+                            <a href="#">${iconFor(theme, 'search-line')} Search</a>
+                            <a href="#">${iconFor(theme, 'heart-line')} Favorites</a>
+                            <a href="#">${iconFor(theme, 'shopping-bag-line')} Orders</a>
+                            <a href="#">${iconFor(theme, 'user-line')} Profile</a>
+                            <a href="#">${iconFor(theme, 'settings-line')} Settings</a>
                         </div>
                     </div>
                 `;
             });
 
-            // re-init Lucide for any remaining data-lucide attributes
             if (typeof lucide !== 'undefined') lucide.createIcons();
             attachDrawerEvents();
         }
 
-        // ─── NAVIGATION BARS ─────────────────────────────────────────────
+        // ─── SHARED TOP NAVIGATION ──────────────────────────────────────
         function generateTopNav(theme) {
-            const t = theme;
-            if (t === 'neumorphism') {
-                return `
-                <div style="position:relative;min-height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 16px 8px;background:#e0e0e0;z-index:30;border-bottom:1px solid #ccc;">
-                    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:28px;background:#000;border-radius:0 0 20px 20px;"></div>
-                    <span style="font-size:15px;font-weight:700;color:#333;">19:02</span>
-                    <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:#555;"><i class="fas fa-signal"></i> <i class="fas fa-wifi"></i> <i class="fas fa-battery-full"></i></span>
-                </div>
-                <div style="padding:8px 16px;display:flex;align-items:center;justify-content:space-between;background:#e0e0e0;border-bottom:1px solid #ccc;z-index:30;">
-                    <div style="display:flex;align-items:center;gap:10px;">
-                        <i class="fas fa-bars" data-drawer-toggle="vp-neumorphism" style="cursor:pointer;font-size:16px;color:#555;"></i>
-                        ${brandInfo.neumorphism.topBarHTML}
-                    </div>
-                    <button class="w-8 h-8 neu-flat flex items-center justify-center text-gray-600 relative"><i class="fas fa-shopping-bag"></i></button>
-                </div>`;
-            } else if (t === 'glassmorphism') {
-                return `
-                <div style="position:relative;min-height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 16px 8px;background:rgba(15,23,42,0.6);backdrop-filter:blur(12px);z-index:30;border-bottom:1px solid rgba(255,255,255,0.08);">
-                    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:28px;background:#000;border-radius:0 0 20px 20px;"></div>
-                    <span style="font-size:15px;font-weight:700;color:#e2e8f0;">19:02</span>
-                    <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:#94a3b8;"><i class="fas fa-signal"></i> <i class="fas fa-wifi"></i> <i class="fas fa-battery-full"></i></span>
-                </div>
-                <div style="padding:8px 16px;display:flex;align-items:center;justify-content:space-between;background:rgba(15,23,42,0.4);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.08);z-index:30;">
-                    <div style="display:flex;align-items:center;gap:10px;">
-                        <i class="material-symbols-outlined" data-drawer-toggle="vp-glassmorphism" style="cursor:pointer;font-size:20px;color:#c7d2fe;">menu</i>
-                         ${brandInfo.glassmorphism.topBarHTML}
-                    </div>
-                    <div style="position:relative;"><span class="material-symbols-outlined" style="font-size:22px;color:#a5b4fc;">shopping_cart</span><span style="position:absolute;top:-6px;right:-6px;background:#ec4899;font-size:8px;font-weight:700;padding:1px 5px;border-radius:50%;color:#fff;">2</span></div>
-                </div>`;
-            } else {
-                return `
-                <div style="height:54px;min-height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 8px;background:#fff;position:relative;z-index:10;">
-                    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:28px;background:#000;border-radius:0 0 20px 20px;"></div>
-                    <span style="font-size:15px;font-weight:700;color:#000;">19:02</span>
-                    <span style="display:flex;align-items:center;gap:6px;font-size:11px;"><i class="fas fa-signal"></i> <i class="fas fa-wifi"></i> <i class="fas fa-battery-full"></i></span>
-                </div>
-                <div style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid #f0f0f0;">
-                    <div style="display:flex;align-items:center;gap:8px;">
-                        <i class="bi bi-list" data-drawer-toggle="vp-neubrutalism" style="cursor:pointer;font-size:20px;color:#333;"></i>
-                        ${brandInfo.neubrutalism.topBarHTML}
+            const pal = window.colorPalettes[theme]?.colors || window.colorPalettes.neumorphism.colors;
 
-                        
-                    </div>
-                    <div style="width:36px;height:36px;border-radius:12px;background:#FF6B35;display:flex;align-items:center;justify-content:center;color:#fff;position:relative;">
-                        <i class="bi bi-bag-check"></i>
-                        <span style="position:absolute;top:-3px;right:-3px;width:14px;height:14px;background:#FF6B35;color:#fff;font-size:8px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #fff;">2</span>
-                    </div>
-                </div>`;
+            const statusIcons = {
+                neumorphism: ['signal', 'wifi', 'battery'],
+                glassmorphism: ['signal-wifi-line', 'wifi-line', 'battery-2-fill'],
+                neubrutalism: ['signal', 'wifi', 'battery']
+            };
+
+            const [signal, wifi, battery] = statusIcons[theme] || statusIcons.neumorphism;
+
+            let topBarStyle, timeColor, statusColor, secondRowStyle, rightIconColor, rightIconBg;
+
+            if (theme === 'neumorphism') {
+                topBarStyle =
+                    `position:relative;min-height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 16px 8px;background:${pal.Background};z-index:30;border-bottom:1px solid ${pal['Shadow Dark']};`;
+                timeColor = `color:${pal.Text};`;
+                statusColor = `color:${pal['Shadow Dark']};`;
+                secondRowStyle =
+                    `padding:8px 16px;display:flex;align-items:center;justify-content:space-between;background:${pal.Background};border-bottom:1px solid ${pal['Shadow Dark']};z-index:30;`;
+                rightIconColor = 'text-gray-600';
+                rightIconBg = 'neu-flat';
+            } else if (theme === 'glassmorphism') {
+                topBarStyle =
+                    `position:relative;min-height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 16px 8px;background:rgba(15,23,42,0.6);backdrop-filter:blur(12px);z-index:30;border-bottom:1px solid ${pal.Border};`;
+                timeColor = `color:${pal.Text};`;
+                statusColor = `color:#94a3b8;`;
+                secondRowStyle =
+                    `padding:8px 16px;display:flex;align-items:center;justify-content:space-between;background:rgba(15,23,42,0.4);backdrop-filter:blur(12px);border-bottom:1px solid ${pal.Border};z-index:30;`;
+                rightIconColor = 'text-indigo-200';
+                rightIconBg = '';
+            } else {
+                topBarStyle =
+                    `height:54px;min-height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 8px;background:${pal.Background};position:relative;z-index:10;border-bottom:1px solid ${pal.Border};`;
+                timeColor = `color:${pal.Text};`;
+                statusColor = ``;
+                secondRowStyle =
+                    `padding:12px 16px;display:flex;align-items:center;justify-content:space-between;background:${pal.Background};border-bottom:1px solid ${pal.Border};`;
+                rightIconColor = 'text-white';
+                rightIconBg = 'brutal-card';
             }
+
+            const menuIconName = theme === 'neumorphism' ? 'menu' :
+                theme === 'glassmorphism' ? 'menu-line' : 'menu-2';
+            const rightIconName = theme === 'glassmorphism' ? 'shopping-cart-line' : 'shopping-bag';
+
+            let menuIconHtml;
+            if (theme === 'neumorphism') {
+                menuIconHtml = `<i data-lucide="${menuIconName}" data-drawer-toggle="vp-${theme}" style="cursor:pointer;font-size:16px;color:${pal.Text};"></i>`;
+            } else if (theme === 'glassmorphism') {
+                menuIconHtml = `<i class="ri-${menuIconName}" data-drawer-toggle="vp-${theme}" style="cursor:pointer;font-size:20px;color:#c7d2fe;"></i>`;
+            } else {
+                menuIconHtml = `<i class="ti ti-${menuIconName}" data-drawer-toggle="vp-${theme}" style="cursor:pointer;font-size:20px;color:${pal.Text};"></i>`;
+            }
+
+            const secondRow = `
+                <div style="${secondRowStyle}">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        ${menuIconHtml}
+                        ${brandInfo[theme].topBarHTML}
+                    </div>
+                    <div style="${theme === 'neumorphism' ? 'position:relative;' : theme === 'glassmorphism' ? 'position:relative;' : `width:36px;height:36px;border-radius:12px;background:${pal.Primary};display:flex;align-items:center;justify-content:center;color:#fff;position:relative;`}">
+                        ${theme === 'neumorphism' ?
+                            `<button class="w-8 h-8 neu-flat flex items-center justify-center ${rightIconColor} relative">${iconFor(theme, rightIconName)}</button>` :
+                            theme === 'glassmorphism' ?
+                            `${iconFor(theme, rightIconName, 'text-indigo-200 text-xl')}<span style="position:absolute;top:-6px;right:-6px;background:#ec4899;font-size:8px;font-weight:700;padding:1px 5px;border-radius:50%;color:#fff;">2</span>` :
+                            `${iconFor(theme, rightIconName, 'text-white text-lg')}<span style="position:absolute;top:-3px;right:-3px;width:14px;height:14px;background:${pal.Primary};color:#fff;font-size:8px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #fff;">2</span>`
+                        }
+                    </div>
+                </div>
+            `;
+
+            return `
+                <div style="${topBarStyle}">
+                    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:28px;background:#000;border-radius:0 0 20px 20px;"></div>
+                    <span style="font-size:15px;font-weight:700;${timeColor}">19:02</span>
+                    <span style="display:flex;align-items:center;gap:6px;font-size:11px;${statusColor}">
+                        ${iconFor(theme, signal)} ${iconFor(theme, wifi)} ${iconFor(theme, battery)}
+                    </span>
+                </div>
+                ${secondRow}
+            `;
         }
 
+        // ─── BOTTOM BAR – SHARED COMPONENT ──────────────────────────────
         function generateBottomBar(theme) {
-            const t = theme;
-            if (t === 'neumorphism') {
-                return `
-                <div class="absolute bottom-0 left-0 right-0 h-16 bg-[#e0e0e0] border-t border-gray-300 px-6 flex items-center justify-between z-30 shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
-                    <button class="flex flex-col items-center justify-center text-teal-600 font-bold"><i class="fas fa-home text-lg"></i><span class="text-[9px] mt-0.5">Home</span></button>
-                    <button class="flex flex-col items-center justify-center text-gray-500"><i class="fas fa-search text-lg"></i><span class="text-[9px] mt-0.5">Search</span></button>
-                    <button class="flex flex-col items-center justify-center text-gray-500"><i class="fas fa-clock text-lg"></i><span class="text-[9px] mt-0.5">Orders</span></button>
-                    <button class="flex flex-col items-center justify-center text-gray-500"><i class="fas fa-user text-lg"></i><span class="text-[9px] mt-0.5">Profile</span></button>
-                </div>`;
-            } else if (t === 'glassmorphism') {
-                return `
-                <div class="absolute bottom-3 left-4 right-4 h-16 glass-panel border-white/20 bg-slate-900/60 backdrop-blur-xl px-6 flex items-center justify-between z-30">
-                    <button class="text-pink-400 flex flex-col items-center"><span class="material-symbols-outlined" style="font-size:22px;">home</span><span class="text-[9px] font-medium tracking-wide">Discovery</span></button>
-                    <button class="text-indigo-200 opacity-60 flex flex-col items-center"><span class="material-symbols-outlined" style="font-size:22px;">explore</span><span class="text-[9px]">Explore</span></button>
-                    <button class="text-indigo-200 opacity-60 flex flex-col items-center"><span class="material-symbols-outlined" style="font-size:22px;">trending_up</span><span class="text-[9px]">Status</span></button>
-                    <button class="text-indigo-200 opacity-60 flex flex-col items-center"><span class="material-symbols-outlined" style="font-size:22px;">person</span><span class="text-[9px]">Vault</span></button>
-                </div>`;
+            const pal = window.colorPalettes[theme]?.colors || window.colorPalettes.neumorphism.colors;
+            const navItems = [
+                { icon: 'home', label: 'Home' },
+                { icon: 'search', label: 'Search' },
+                { icon: 'heart', label: 'Favorites' },
+                { icon: 'user', label: 'Profile' }
+            ];
+
+            const iconMap = {
+                neumorphism: {
+                    home: 'home',
+                    search: 'search',
+                    heart: 'heart',
+                    user: 'user'
+                },
+                glassmorphism: {
+                    home: 'home-line',
+                    search: 'search-line',
+                    heart: 'heart-line',
+                    user: 'user-line'
+                },
+                neubrutalism: {
+                    home: 'home',
+                    search: 'search',
+                    heart: 'heart',
+                    user: 'user'
+                }
+            };
+
+            const mapped = iconMap[theme] || iconMap.neumorphism;
+
+            const itemsHtml = navItems.map(item => {
+                const iconName = mapped[item.icon] || item.icon;
+                const iconHtml = iconFor(theme, iconName, 'icon-md');
+
+                const btnClass = theme === 'neumorphism' ?
+                    'flex flex-col items-center justify-center text-teal-600 font-bold' :
+                    theme === 'glassmorphism' ?
+                    'text-pink-400 flex flex-col items-center' :
+                    'flex flex-col items-center gap-1 text-xs font-medium text-[#FF6B35] cursor-pointer';
+
+                const labelClass = theme === 'neumorphism' ?
+                    'text-[9px] mt-0.5' :
+                    theme === 'glassmorphism' ?
+                    'text-[9px] font-medium tracking-wide' :
+                    'text-[10px]';
+
+                return `<button class="${btnClass}" aria-label="${item.label}">${iconHtml}<span class="${labelClass}">${item.label}</span></button>`;
+            }).join('');
+
+            let containerStyle;
+            if (theme === 'neumorphism') {
+                containerStyle =
+                    `background:${pal.Background}; border-top:1px solid ${pal['Shadow Dark']}; position:absolute; bottom:0; left:0; right:0; height:64px; display:flex; align-items:center; justify-content:space-between; padding:0 24px; z-index:30; box-shadow:0 -4px 12px rgba(0,0,0,0.05);`;
+            } else if (theme === 'glassmorphism') {
+                containerStyle =
+                    `position:absolute; bottom:12px; left:16px; right:16px; height:64px; background:${pal.Glass}; backdrop-filter:blur(12px); border:1px solid ${pal.Border}; border-radius:20px; display:flex; align-items:center; justify-content:space-between; padding:0 24px; z-index:30;`;
             } else {
-                return `
-                <div style="height:64px;min-height:64px;display:flex;align-items:center;justify-content:space-around;padding:0 16px 4px;background:#fff;border-top:1px solid #f0f0f0;position:relative;z-index:10;">
-                    <button style="display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;font-weight:500;color:#FF6B35;cursor:pointer;padding:6px 12px;border-radius:12px;"><i class="bi bi-house-fill" style="font-size:20px;"></i><span>Home</span></button>
-                    <button style="display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;font-weight:500;color:#999;cursor:pointer;padding:6px 12px;border-radius:12px;"><i class="bi bi-search" style="font-size:20px;"></i><span>Search</span></button>
-                    <button style="display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;font-weight:500;color:#999;cursor:pointer;padding:6px 12px;border-radius:12px;"><i class="bi bi-heart" style="font-size:20px;"></i><span>Favorites</span></button>
-                    <button style="display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;font-weight:500;color:#999;cursor:pointer;padding:6px 12px;border-radius:12px;"><i class="bi bi-person" style="font-size:20px;"></i><span>Profile</span></button>
-                </div>`;
+                containerStyle =
+                    `background:${pal.Background}; border-top:1px solid ${pal.Border}; height:64px; display:flex; align-items:center; justify-content:space-around; padding:0 16px; z-index:30;`;
             }
+
+            return `<div style="${containerStyle}">${itemsHtml}</div>`;
         }
 
-        // ─── COMPONENT DRAWERS ───────────────────────────────────────────
+        // ─── ALL COMPONENT DRAW FUNCTIONS ──────────────────────────────
         function drawAnnouncementStrip(theme) {
             if (theme === 'neumorphism') {
-                return `<div class="m-2 p-2 neu-inset flex items-center gap-2 justify-center text-[10px] text-gray-600 font-bold tracking-wide">${iconFA('info-circle', 'text-orange-500')} KITCHENS CLOSE EARLY AT 9PM TONIGHT</div>`;
+                return `<div class="m-2 p-2 neu-inset flex items-center gap-2 justify-center text-[10px] text-gray-600 font-bold tracking-wide">${iconFA('info', 'text-orange-500')} KITCHENS CLOSE EARLY AT 9PM TONIGHT</div>`;
             } else if (theme === 'glassmorphism') {
-                return `<div class="w-full bg-pink-500/20 backdrop-blur-sm py-1.5 px-3 text-[9px] text-pink-200 flex items-center justify-center gap-1.5 border-b border-pink-500/15 tracking-wider">${iconMaterial('warning', 'text-pink-400 animate-pulse')} HIGH DEMAND METRICS: EXTENDED COURIER ROUTING LOGISTICS</div>`;
+                return `<div class="w-full bg-pink-500/20 backdrop-blur-sm py-1.5 px-3 text-[9px] text-pink-200 flex items-center justify-center gap-1.5 border-b border-pink-500/15 tracking-wider">${iconMaterial('alert-line', 'text-pink-400 animate-pulse')} HIGH DEMAND METRICS: EXTENDED COURIER ROUTING LOGISTICS</div>`;
             } else {
-                return `<div style="background:#FFF3ED;padding:8px 16px;text-align:center;font-size:11px;font-weight:500;color:#FF6B35;display:flex;align-items:center;justify-content:center;gap:6px;">${iconBS('lightning', '')} Free delivery on orders over $25</div>`;
+                return `<div style="background:#1a1a1a;padding:10px 16px;text-align:center;font-size:11px;font-weight:700;color:#FFD700;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:0.5px;">${iconBS('bolt', 'text-[#FFD700]')} FREE DELIVERY ON ORDERS OVER $25</div>`;
             }
         }
 
@@ -956,10 +1447,10 @@
                 return `
                 <div class="p-4 flex justify-between items-center z-10 relative">
                     <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">${iconMaterial('location_on', 'text-cyan-400')}</div>
+                        <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">${iconMaterial('map-pin-2-line', 'text-cyan-400')}</div>
                         <div>
                             <div class="text-[9px] text-indigo-300 tracking-widest font-light uppercase">DELIVER TO</div>
-                            <div class="text-xs font-bold flex items-center gap-0.5">Corporate Loft, Plaza Floor ${iconMaterial('expand_more', 'text-indigo-400')}</div>
+                            <div class="text-xs font-bold flex items-center gap-0.5">Corporate Loft, Plaza Floor ${iconMaterial('arrow-drop-down-line', 'text-indigo-400')}</div>
                         </div>
                     </div>
                     <div class="glass-pill p-0.5 flex w-28 justify-between">
@@ -969,13 +1460,16 @@
                 </div>`;
             } else {
                 return `
-                <div class="p-3 bg-white border-b border-gray-100 flex flex-col gap-2">
+                <div class="p-3 bg-white flex flex-col gap-2">
                     <div class="flex justify-between items-center">
-                        <div style="font-size:13px;font-weight:700;color:#333;display:flex;align-items:center;gap:6px;">${iconBS('geo-alt-fill', 'text-[#FF6B35]')} 2715 Ash Dr. San Jose...</div>
+                        <div style="font-size:13px;font-weight:700;color:#1a1a1a;display:flex;align-items:center;gap:6px;">${iconBS('map-pin', 'text-[#FF6B35]')} 2715 Ash Dr. San Jose, South Dakota</div>
+                        <div style="width:28px;height:28px;border-radius:50%;overflow:hidden;">
+                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&q=80" style="width:100%;height:100%;object-fit:cover;" alt="avatar">
+                        </div>
                     </div>
                     <div style="display:flex;gap:6px;">
-                        <div style="flex:1;padding:8px 12px;border-radius:10px;background:#FF6B35;color:#fff;font-size:12px;font-weight:600;text-align:center;">Delivery</div>
-                        <div style="flex:1;padding:8px 12px;border-radius:10px;background:#f5f5f5;color:#666;font-size:12px;font-weight:500;text-align:center;">Pickup</div>
+                        <div style="flex:1;padding:8px 12px;border-radius:10px;border:2px solid #1a1a1a;background:#1a1a1a;color:#fff;font-size:11px;font-weight:700;text-align:center;">Delivery</div>
+                        <div style="flex:1;padding:8px 12px;border-radius:10px;border:2px solid #e0e0e0;background:#fff;color:#999;font-size:11px;font-weight:500;text-align:center;">Pickup</div>
                     </div>
                 </div>`;
             }
@@ -995,7 +1489,7 @@
                 return `
                 <div class="px-4 mb-4">
                     <div class="h-60 w-full glass-panel relative overflow-hidden flex flex-col justify-end p-4 bg-cover bg-center" style="background-image: linear-gradient(rgba(0,0,0,0) 40%, rgba(15,23,42,0.9) 100%), url('https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=400&q=80')">
-                        <div class="absolute top-3 right-3 glass-pill px-2.5 py-0.5 text-[8px] font-bold tracking-widest text-cyan-300 border-cyan-500/30 flex items-center gap-1 uppercase">${iconMaterial('visibility', 'animate-pulse')} LIVE STREAMS</div>
+                        <div class="absolute top-3 right-3 glass-pill px-2.5 py-0.5 text-[8px] font-bold tracking-widest text-cyan-300 border-cyan-500/30 flex items-center gap-1 uppercase">${iconMaterial('play-circle-line', 'animate-pulse')} LIVE STREAMS</div>
                         <h2 class="text-xl font-black tracking-tight mb-1 bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent">BAKED FLUIDITY</h2>
                         <p class="text-[11px] text-indigo-200 font-light leading-tight">Watch luxury glaze application loops run fresh in the main production kitchens.</p>
                     </div>
@@ -1005,7 +1499,7 @@
                 <div class="p-3">
                     <div style="height:180px;width:100%;border-radius:16px;overflow:hidden;position:relative;background:linear-gradient(rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%),url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=400&q=80');background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;">
                         <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
-                            <div style="width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;">${iconBS('play-fill', 'text-[#333]')}</div>
+                            <div style="width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;">${iconBS('player-play', 'text-[#333]')}</div>
                             <span style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:1px;">Featured Video</span>
                         </div>
                         <h3 style="font-size:18px;font-weight:700;color:#fff;line-height:1.1;">Premium Heavy Interface Concept</h3>
@@ -1036,23 +1530,25 @@
                             <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                         </div>
                         <div>
-                            <div class="text-xs font-bold text-white flex items-center gap-1">${iconMaterial('local_shipping', 'text-cyan-400')} Transit Operations</div>
+                            <div class="text-xs font-bold text-white flex items-center gap-1">${iconMaterial('truck-line', 'text-cyan-400')} Transit Operations</div>
                             <div class="text-[10px] text-indigo-200">Courier assigned • Intersecting destination within 12M</div>
                         </div>
                     </div>
-                    ${iconMaterial('chevron_right', 'text-indigo-400')}
+                    ${iconMaterial('arrow-right-s-line', 'text-indigo-400')}
                 </div>`;
             } else {
                 return `
-                <div class="mx-3 my-2 p-3 rounded-2xl flex justify-between items-center" style="background:#FFF3ED;border:1px solid #FFE0D0;">
-                    <div style="display:flex;align-items:center;gap:10px;">
-                        <div style="width:32px;height:32px;border-radius:10px;background:#FF6B35;display:flex;align-items:center;justify-content:center;">${iconBS('truck', 'text-white')}</div>
-                        <div>
-                            <div style="font-size:11px;font-weight:600;color:#333;">Active Order</div>
-                            <div style="font-size:10px;color:#999;">Arriving in 12 min</div>
+                <div class="p-3">
+                    <div style="background:#fff;border-radius:16px;padding:14px;box-shadow:0 2px 12px rgba(0,0,0,0.06);border-left:4px solid #FF6B35;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                            <span style="font-size:11px;font-weight:700;color:#333;display:flex;align-items:center;gap:6px;">${iconBS('truck', 'text-[#FF6B35]')} Delivery In Progress</span>
+                            <span style="font-size:11px;font-weight:600;color:#FF6B35;">12 min</span>
                         </div>
+                        <div style="width:100%;height:4px;background:#f0f0f0;border-radius:2px;overflow:hidden;">
+                            <div style="width:65%;height:100%;background:#FF6B35;border-radius:2px;"></div>
+                        </div>
+                        <div style="font-size:10px;color:#999;margin-top:6px;">Your order is being prepared</div>
                     </div>
-                    <span style="font-size:10px;font-weight:700;background:#FF6B35;padding:4px 10px;border-radius:8px;color:#fff;">Track</span>
                 </div>`;
             }
         }
@@ -1078,7 +1574,7 @@
                     <div class="glass-panel p-3.5 bg-gradient-to-br from-white/10 to-transparent">
                         <div class="flex justify-between items-start mb-2">
                             <div class="flex items-center gap-2">
-                                <div class="w-7 h-7 rounded-lg bg-pink-500/20 flex items-center justify-center">${iconMaterial('credit_card', 'text-pink-400')}</div>
+                                <div class="w-7 h-7 rounded-lg bg-pink-500/20 flex items-center justify-center">${iconMaterial('bank-card-line', 'text-pink-400')}</div>
                                 <div>
                                     <span class="text-[9px] text-pink-300 font-semibold tracking-widest uppercase">TIER STATUS</span>
                                     <h4 class="text-xs font-bold text-white">Gold Tier VIP Elite</h4>
@@ -1094,21 +1590,28 @@
             } else {
                 return `
                 <div class="p-3">
-                    <div style="background:#fff;border-radius:16px;padding:14px;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                            <div style="display:flex;align-items:center;gap:8px;">
-                                <div style="width:28px;height:28px;border-radius:8px;background:#FFF3ED;display:flex;align-items:center;justify-content:center;">${iconBS('award', 'text-[#FF6B35]')}</div>
-                                <div>
-                                    <div style="font-size:10px;color:#999;">Rewards</div>
-                                    <div style="font-size:12px;font-weight:700;color:#333;">420 pts</div>
-                                </div>
+                    <div style="background:linear-gradient(135deg,#1a1a1a,#333);border-radius:16px;padding:16px;color:#fff;position:relative;overflow:hidden;">
+                        <div style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;border-radius:50%;background:rgba(255,107,53,0.15);"></div>
+                        <div style="position:absolute;bottom:-30px;left:-10px;width:80px;height:80px;border-radius:50%;background:rgba(255,107,53,0.1);"></div>
+                        <div style="display:flex;justify-content:space-between;align-items:start;position:relative;z-index:1;">
+                            <div>
+                                <div style="font-size:9px;color:#aaa;letter-spacing:1px;text-transform:uppercase;">MEMBERSHIP TIER</div>
+                                <div style="font-size:16px;font-weight:900;margin-top:2px;">Gold Member</div>
                             </div>
-                            <span style="font-size:10px;font-weight:600;color:#FF6B35;">View All</span>
+                            <div style="font-size:10px;color:#FF8F65;background:rgba(255,107,53,0.2);padding:4px 10px;border-radius:20px;">420 pts</div>
                         </div>
-                        <div style="height:6px;background:#f5f5f5;border-radius:3px;overflow:hidden;">
-                            <div style="height:100%;background:linear-gradient(90deg,#FF6B35,#FF8F65);border-radius:3px;width:75%;"></div>
+                        <div style="margin-top:16px;position:relative;z-index:1;">
+                            <div style="display:flex;justify-content:space-between;font-size:9px;color:#aaa;margin-bottom:4px;">
+                                <span>Progress to Platinum</span><span>80 pts away</span>
+                            </div>
+                            <div style="height:4px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;">
+                                <div style="height:100%;width:75%;background:linear-gradient(90deg,#FF6B35,#FFD700);border-radius:2px;"></div>
+                            </div>
                         </div>
-                        <div style="font-size:10px;color:#999;margin-top:6px;">80 pts to next reward</div>
+                        <div style="margin-top:14px;display:flex;gap:6px;position:relative;z-index:1;">
+                            <span style="font-size:9px;background:rgba(255,255,255,0.08);padding:4px 10px;border-radius:8px;color:#ccc;">5% Cashback</span>
+                            <span style="font-size:9px;background:rgba(255,255,255,0.08);padding:4px 10px;border-radius:8px;color:#ccc;">Free Delivery</span>
+                        </div>
                     </div>
                 </div>`;
             }
@@ -1130,25 +1633,27 @@
                 return `
                 <div class="mx-4 mb-4 p-3 glass-panel border-pink-500/25 bg-gradient-to-r from-pink-500/15 to-transparent flex justify-between items-center z-10 relative">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-lg bg-pink-500/20 flex items-center justify-center">${iconMaterial('shopping_bag', 'text-pink-400')}</div>
+                        <div class="w-8 h-8 rounded-lg bg-pink-500/20 flex items-center justify-center">${iconMaterial('shopping-bag-line', 'text-pink-400')}</div>
                         <div>
                             <div class="text-xs font-bold text-pink-200">Cart Abandonment Detected</div>
                             <div class="text-[10px] text-indigo-200">Recover and execute 1-Tap conversion checkout</div>
                         </div>
                     </div>
-                    <button class="bg-pink-500 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg shadow-lg shadow-pink-500/20">${iconMaterial('arrow_forward', '')}</button>
+                    <button class="bg-pink-500 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg shadow-lg shadow-pink-500/20">${iconMaterial('arrow-right-line')}</button>
                 </div>`;
             } else {
                 return `
-                <div class="mx-3 my-2 p-3 rounded-2xl flex items-center justify-between" style="background:#FFF8E1;border:1px solid #FFE082;">
-                    <div style="display:flex;align-items:center;gap:10px;">
-                        <div style="width:32px;height:32px;border-radius:10px;background:#FFB300;display:flex;align-items:center;justify-content:center;">${iconBS('cart', 'text-white')}</div>
-                        <div>
-                            <div style="font-size:11px;font-weight:600;color:#333;">Cart waiting</div>
-                            <div style="font-size:10px;color:#999;">2 items in your cart</div>
+                <div class="p-3">
+                    <div style="background:#FFF8E1;border:2px dashed #FFB300;border-radius:16px;padding:14px;display:flex;align-items:center;justify-content:space-between;">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <div style="width:36px;height:36px;border-radius:10px;background:#FFB300;display:flex;align-items:center;justify-content:center;">${iconBS('shopping-cart', 'text-white')}</div>
+                            <div>
+                                <div style="font-size:12px;font-weight:700;color:#333;">Cart Waiting</div>
+                                <div style="font-size:10px;color:#999;">2 items in your cart</div>
+                            </div>
                         </div>
+                        <button style="background:#FF6B35;color:#fff;font-size:10px;font-weight:700;padding:8px 16px;border-radius:10px;border:none;cursor:pointer;">Checkout</button>
                     </div>
-                    <button style="background:#FFB300;color:#fff;font-size:10px;font-weight:600;padding:6px 14px;border-radius:8px;border:none;cursor:pointer;">Checkout</button>
                 </div>`;
             }
         }
@@ -1168,7 +1673,7 @@
                 <div class="px-4 mb-4">
                     <div class="glass-panel p-3 bg-red-500/10 border-red-500/25 flex justify-between items-center">
                         <div class="flex items-center gap-2">
-                            ${iconMaterial('hourglass', 'text-red-400 animate-spin')}
+                            ${iconMaterial('time-line', 'text-red-400 animate-spin')}
                             <span class="text-[10px] text-red-200 uppercase tracking-widest font-bold">FOMO ACCELERATION</span>
                         </div>
                         <span class="font-mono text-base font-black text-red-400 bg-black/40 px-2.5 py-0.5 rounded-lg border border-red-500/20">${val}</span>
@@ -1177,9 +1682,16 @@
             } else {
                 return `
                 <div class="p-3">
-                    <div style="background:#fff;border-radius:16px;padding:12px 14px;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:space-between;">
-                        <div style="display:flex;align-items:center;gap:8px;">${iconBS('clock', 'text-[#FF6B35]')}<span style="font-size:12px;font-weight:600;color:#333;">Deal ends in</span></div>
-                        <span style="font-size:13px;font-weight:700;color:#FF6B35;background:#FFF3ED;padding:4px 10px;border-radius:8px;">${val}m</span>
+                    <div class="fd-card" style="position:relative;max-width:220px;margin:0 auto;">
+                        <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=400&q=80" class="fd-card-img" style="height:200px;" alt="chocolate cake">
+                        <div class="fd-heart" style="top:10px;right:10px;"><i class="ri-add-line"></i></div>
+                        <div class="fd-countdown-bar">
+                            <div class="fd-countdown-pill">Limited Offer ${val}</div>
+                        </div>
+                        <div class="fd-card-body" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;">
+                            <span class="fd-title" style="margin:0;">Chocolate Dream</span>
+                            <span style="font-size:15px;font-weight:800;color:#1a1a1a;">$5.50</span>
+                        </div>
                     </div>
                 </div>`;
             }
@@ -1201,11 +1713,11 @@
                     <span class="text-[10px] font-bold tracking-widest text-indigo-300 uppercase">HIGH FREQUENCY ROUTING LOOPS</span>
                     <div class="flex gap-3 overflow-x-auto pb-1 pr-4">
                         <div class="w-32 flex-shrink-0 glass-panel p-2.5 bg-white/5 flex flex-col gap-0.5">
-                            <span class="text-xs font-bold text-white truncate flex items-center gap-1">${iconMaterial('history', 'text-cyan-400')} The Usual Box</span>
+                            <span class="text-xs font-bold text-white truncate flex items-center gap-1">${iconMaterial('history-line', 'text-cyan-400')} The Usual Box</span>
                             <span class="text-[9px] text-indigo-300">Ordered 14x frequency</span>
                         </div>
                         <div class="w-32 flex-shrink-0 glass-panel p-2.5 bg-white/5 flex flex-col gap-0.5">
-                            <span class="text-xs font-bold text-white truncate flex items-center gap-1">${iconMaterial('history', 'text-cyan-400')} Morning Double</span>
+                            <span class="text-xs font-bold text-white truncate flex items-center gap-1">${iconMaterial('history-line', 'text-cyan-400')} Morning Double</span>
                             <span class="text-[9px] text-indigo-300">Ordered 8x frequency</span>
                         </div>
                     </div>
@@ -1215,11 +1727,25 @@
                 <div class="p-3">
                     <div style="font-size:14px;font-weight:700;color:#333;margin-bottom:10px;">Order Again</div>
                     <div class="flex gap-3 overflow-x-auto pb-2">
-                        <div style="flex-shrink:0;width:140px;background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-                            <div style="font-size:12px;font-weight:600;color:#333;display:flex;align-items:center;gap:6px;">${iconBS('arrow-repeat', 'text-[#999]')} Friday Night Combo</div>
+                        <div style="flex-shrink:0;width:120px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+                            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=150&q=80" style="width:100%;height:80px;object-fit:cover;" alt="food">
+                            <div style="padding:8px;">
+                                <div style="font-size:10px;font-weight:600;color:#333;">Pepperoni Pizza</div>
+                                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">
+                                    <span style="font-size:10px;font-weight:700;color:#FF6B35;">$9.99</span>
+                                    <div style="width:18px;height:18px;border-radius:50%;background:#FF6B35;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;">+</div>
+                                </div>
+                            </div>
                         </div>
-                        <div style="flex-shrink:0;width:140px;background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-                            <div style="font-size:12px;font-weight:600;color:#333;display:flex;align-items:center;gap:6px;">${iconBS('arrow-repeat', 'text-[#999]')} Morning Double</div>
+                        <div style="flex-shrink:0;width:120px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+                            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=150&q=80" style="width:100%;height:80px;object-fit:cover;" alt="food">
+                            <div style="padding:8px;">
+                                <div style="font-size:10px;font-weight:600;color:#333;">Beef Burger</div>
+                                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">
+                                    <span style="font-size:10px;font-weight:700;color:#FF6B35;">$7.99</span>
+                                    <div style="width:18px;height:18px;border-radius:50%;background:#FF6B35;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;">+</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>`;
@@ -1250,7 +1776,7 @@
                 return `
                 <div class="px-4 mb-4">
                     <div class="mb-2">
-                        <span class="text-[9px] text-pink-300 font-bold tracking-widest uppercase flex items-center gap-1">${iconMaterial('memory', 'text-pink-400')} PROBABILISTIC CONTEXT TARGETING</span>
+                        <span class="text-[9px] text-pink-300 font-bold tracking-widest uppercase flex items-center gap-1">${iconMaterial('cpu-line', 'text-pink-400')} PROBABILISTIC CONTEXT TARGETING</span>
                         <h4 class="text-xs text-white opacity-80 mt-0.5">${d.desc}</h4>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
@@ -1268,41 +1794,37 @@
                 return `
                 <div class="p-3">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-                        <span style="font-size:14px;font-weight:700;color:#333;">Recommended</span>
+                        <span style="font-size:14px;font-weight:700;color:#1a1a1a;">Recommended</span>
                         <span style="font-size:10px;color:#999;">${stateSimulation.weather}</span>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
-                        <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+                        <div class="fd-card">
                             <div style="position:relative;">
-                                <img src="${d.img1}" style="width:100%;height:120px;object-fit:cover;" alt="food">
-                                <div style="position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;">${iconBS('heart', 'text-[#ccc]')}</div>
+                                <img src="${d.img1}" class="fd-card-img" style="height:130px;" alt="food">
+                                <div class="fd-heart"><i class="ri-heart-line"></i></div>
+                                <div class="fd-price-badge">$9.99</div>
                             </div>
-                            <div style="padding:10px;">
-                                <div style="font-size:12px;font-weight:600;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.rec[0]}</div>
-                                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
-                                    <span style="font-size:13px;font-weight:700;color:#FF6B35;">$12.99</span>
-                                    <div style="display:flex;align-items:center;gap:8px;">
-                                        <div style="width:24px;height:24px;border-radius:8px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:12px;color:#999;cursor:pointer;">-</div>
-                                        <span style="font-size:12px;font-weight:600;">1</span>
-                                        <div style="width:24px;height:24px;border-radius:8px;background:#FF6B35;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;cursor:pointer;">+</div>
-                                    </div>
+                            <div class="fd-card-body" style="padding:12px;">
+                                <div class="fd-title" style="font-size:13px;">${d.rec[0]}</div>
+                                <div class="fd-subtitle">Herb with grouper fish</div>
+                                <div class="fd-meta">
+                                    <span class="fd-meta-item"><i class="ri-star-fill star"></i> 4.9</span>
+                                    <span class="fd-meta-item"><i class="ri-time-line" style="color:#FF4444;"></i> 20-25 Min</span>
                                 </div>
                             </div>
                         </div>
-                        <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+                        <div class="fd-card">
                             <div style="position:relative;">
-                                <img src="${d.img2}" style="width:100%;height:120px;object-fit:cover;" alt="food">
-                                <div style="position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;">${iconBS('heart', 'text-[#ccc]')}</div>
+                                <img src="${d.img2}" class="fd-card-img" style="height:130px;" alt="food">
+                                <div class="fd-heart"><i class="ri-heart-line"></i></div>
+                                <div class="fd-price-badge">$12.99</div>
                             </div>
-                            <div style="padding:10px;">
-                                <div style="font-size:12px;font-weight:600;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.rec[1]}</div>
-                                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
-                                    <span style="font-size:13px;font-weight:700;color:#FF6B35;">$9.99</span>
-                                    <div style="display:flex;align-items:center;gap:8px;">
-                                        <div style="width:24px;height:24px;border-radius:8px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:12px;color:#999;cursor:pointer;">-</div>
-                                        <span style="font-size:12px;font-weight:600;">1</span>
-                                        <div style="width:24px;height:24px;border-radius:8px;background:#FF6B35;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;cursor:pointer;">+</div>
-                                    </div>
+                            <div class="fd-card-body" style="padding:12px;">
+                                <div class="fd-title" style="font-size:13px;">${d.rec[1]}</div>
+                                <div class="fd-subtitle">Asian noodles with chicken</div>
+                                <div class="fd-meta">
+                                    <span class="fd-meta-item"><i class="ri-star-fill star"></i> 4.9</span>
+                                    <span class="fd-meta-item"><i class="ri-time-line" style="color:#FF4444;"></i> 20-25 Min</span>
                                 </div>
                             </div>
                         </div>
@@ -1328,22 +1850,25 @@
                 <div class="px-4 mb-4">
                     <div class="glass-panel p-4 bg-gradient-to-r from-cyan-500/15 to-blue-500/15 border-cyan-400/25 flex justify-between items-center z-10 relative">
                         <div>
-                            <span class="text-[9px] text-cyan-300 font-mono font-black tracking-widest uppercase flex items-center gap-1">${iconMaterial('confirmation_number')} CONCESSION ROUTER</span>
+                            <span class="text-[9px] text-cyan-300 font-mono font-black tracking-widest uppercase flex items-center gap-1">${iconMaterial('price-tag-line')} CONCESSION ROUTER</span>
                             <h4 class="text-xs font-bold text-white mt-0.5">Initialize Premium Free Delivery Pass</h4>
                         </div>
-                        ${iconMaterial('sparkles', 'text-cyan-400')}
+                        ${iconMaterial('sparkle-line', 'text-cyan-400')}
                     </div>
                 </div>`;
             } else {
                 return `
                 <div class="p-3">
-                    <div style="background:linear-gradient(135deg,#FF6B35,#FF8F65);border-radius:16px;padding:16px;color:#fff;display:flex;align-items:center;justify-content:space-between;">
-                        <div>
-                            <div style="font-size:10px;font-weight:600;opacity:0.8;display:flex;align-items:center;gap:4px;">${iconBS('tag', '')} LIMITED OFFER</div>
-                            <div style="font-size:15px;font-weight:700;margin-top:4px;">30% OFF First Order</div>
-                            <div style="font-size:10px;opacity:0.7;margin-top:2px;">Use code SAVE30 at checkout</div>
+                    <div style="background:linear-gradient(135deg,#FF6B35,#FF8F65);border-radius:16px;padding:20px;color:#fff;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden;">
+                        <div style="z-index:1;">
+                            <div style="font-size:12px;font-weight:600;opacity:0.9;">Food Package</div>
+                            <div style="font-size:12px;font-weight:600;opacity:0.9;">Offer</div>
+                            <div style="font-size:32px;font-weight:900;margin-top:4px;">25%</div>
+                            <div style="font-size:10px;font-weight:600;opacity:0.8;">DISCOUNT</div>
                         </div>
-                        <div style="width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;">${iconBS('arrow-right', 'text-lg')}</div>
+                        <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);width:120px;height:80px;display:flex;align-items:center;justify-content:center;">
+                            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80" style="width:100%;height:100%;object-fit:cover;border-radius:12px;opacity:0.9;" alt="food">
+                        </div>
                     </div>
                 </div>`;
             }
@@ -1359,23 +1884,23 @@
             } else if (theme === 'glassmorphism') {
                 return `
                 <div class="mx-4 mb-4 p-3 glass-panel bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-center border-purple-400/30 flex items-center justify-center gap-2 z-10 relative">
-                    ${iconMaterial('cake', 'text-pink-400 animate-bounce')}
+                    ${iconMaterial('cake-2-line', 'text-pink-400 animate-bounce')}
                     <div class="text-[11px] font-bold text-white tracking-wide">Personal Milestone Anniversary Complementary Asset Valid</div>
                 </div>`;
             } else {
                 return `
                 <div class="mx-3 my-2 p-3 rounded-2xl text-center" style="background:#FFF3ED;border:1px solid #FFE0D0;">
-                    <div style="font-size:11px;font-weight:600;color:#FF6B35;display:flex;align-items:center;justify-content:center;gap:6px;">${iconBS('gift', '')} Happy Birthday! Free treat unlocked</div>
+                    <div style="font-size:11px;font-weight:600;color:#FF6B35;display:flex;align-items:center;justify-content:center;gap:6px;">${iconBS('gift')} Happy Birthday! Free treat unlocked</div>
                 </div>`;
             }
         }
 
         function drawCategoryTiles(theme) {
             const cats = [
-                { name: 'Bakery', icon: 'cookie' },
-                { name: 'Brew', icon: 'coffee' },
-                { name: 'Sweets', icon: 'ice-cream' },
-                { name: 'Bundles', icon: 'package' }
+                { name: 'Bakery', icon: 'cookie', img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=100&q=80' },
+                { name: 'Brew', icon: 'coffee', img: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=100&q=80' },
+                { name: 'Sweets', icon: 'ice-cream', img: 'https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=100&q=80' },
+                { name: 'Bundles', icon: 'package', img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=100&q=80' }
             ];
             if (theme === 'neumorphism') {
                 return `
@@ -1390,14 +1915,23 @@
                 <div class="px-4 mb-4 flex flex-col gap-2">
                     <span class="text-[9px] text-indigo-300 font-bold tracking-widest uppercase">Deep-Link Grid Modifiers</span>
                     <div class="grid grid-cols-4 gap-2">
-                        ${cats.map(c => `<div class="py-2 flex flex-col items-center justify-center gap-1 glass-pill text-[10px] text-white font-medium">${iconMaterial(c.icon, 'text-cyan-400')}<span>${c.name}</span></div>`).join('')}
+                        ${cats.map(c => `<div class="py-2 flex flex-col items-center justify-center gap-1 glass-pill text-[10px] text-white font-medium">${iconMaterial(c.icon + '-line', 'text-cyan-400')}<span>${c.name}</span></div>`).join('')}
                     </div>
                 </div>`;
             } else {
                 return `
-                <div class="p-3 flex flex-col gap-2">
+                <div class="p-3">
+                    <div style="margin-bottom:10px;">
+                        <span style="font-size:14px;font-weight:700;color:#333;">Categories</span>
+                        <div style="font-size:10px;color:#999;margin-top:2px;">Find all your favorite items in one place.</div>
+                    </div>
                     <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;">
-                        ${cats.map(c => `<div style="flex-shrink:0;padding:8px 16px;border-radius:20px;background:#f5f5f5;font-size:12px;font-weight:500;color:#333;display:flex;align-items:center;gap:6px;cursor:pointer;">${iconBS(c.icon, 'text-[#FF6B35]')}<span>${c.name}</span></div>`).join('')}
+                        ${cats.map(c => `<div style="flex-shrink:0;width:80px;background:#fff;border-radius:16px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+                            <div style="width:48px;height:48px;border-radius:12px;overflow:hidden;">
+                                <img src="${c.img}" style="width:100%;height:100%;object-fit:cover;" alt="${c.name}">
+                            </div>
+                            <span style="font-size:10px;font-weight:600;color:#333;text-align:center;">${c.name}</span>
+                        </div>`).join('')}
                     </div>
                 </div>`;
             }
@@ -1408,7 +1942,7 @@
                 return `
                 <div class="p-4">
                     <div class="p-3.5 neu-flat flex flex-col gap-2">
-                        <div class="text-xs font-bold text-gray-700 flex items-center gap-1">${iconFA('layer-group', 'text-teal-600')} COMPOSITE PIPELINE UPGRADE</div>
+                        <div class="text-xs font-bold text-gray-700 flex items-center gap-1">${iconFA('layers', 'text-teal-600')} COMPOSITE PIPELINE UPGRADE</div>
                         <div class="p-2 neu-inset bg-gray-50 flex justify-between items-center text-[11px]">
                             <span class="text-gray-500 font-medium">Bundle with Artisan Drip + Spread</span>
                             <span class="text-teal-600 font-bold font-mono">+$4.50</span>
@@ -1419,7 +1953,7 @@
                 return `
                 <div class="px-4 mb-4">
                     <div class="glass-panel p-3.5 bg-gradient-to-tr from-indigo-500/10 to-transparent z-10 relative">
-                        <h5 class="text-xs font-bold text-white mb-2 flex items-center gap-1.5">${iconMaterial('layers', 'text-pink-400')} Contextual Meal Configurator</h5>
+                        <h5 class="text-xs font-bold text-white mb-2 flex items-center gap-1.5">${iconMaterial('stack-line', 'text-pink-400')} Contextual Meal Configurator</h5>
                         <div class="glass-pill py-2 px-3 flex justify-between items-center text-[10px] text-indigo-100">
                             <span>Inject Complete Pastry Pairing Array</span>
                             <span class="text-cyan-400 font-mono font-bold">+$6.00</span>
@@ -1430,10 +1964,22 @@
                 return `
                 <div class="p-3">
                     <div style="background:#fff;border-radius:16px;padding:14px;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
-                        <div style="font-size:12px;font-weight:600;color:#333;display:flex;align-items:center;gap:6px;margin-bottom:10px;">${iconBS('layers', 'text-[#FF6B35]')} Meal Deal</div>
-                        <div style="background:#f9f9f9;border-radius:10px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;">
-                            <span style="font-size:11px;color:#666;">Bundle with drink + dessert</span>
-                            <span style="font-size:12px;font-weight:700;color:#FF6B35;">+$4.50</span>
+                        <div style="font-size:13px;font-weight:700;color:#333;margin-bottom:10px;">Complete the Meal</div>
+                        <div style="display:flex;flex-direction:column;gap:8px;">
+                            <div style="background:#f9f9f9;border-radius:12px;padding:10px;display:flex;align-items:center;justify-content:space-between;">
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=60&q=80" style="width:36px;height:36px;border-radius:8px;object-fit:cover;" alt="drink">
+                                    <span style="font-size:11px;font-weight:600;color:#333;">Add Craft Latte</span>
+                                </div>
+                                <span style="font-size:11px;font-weight:700;color:#FF6B35;">+$3.50</span>
+                            </div>
+                            <div style="background:#f9f9f9;border-radius:12px;padding:10px;display:flex;align-items:center;justify-content:space-between;">
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=60&q=80" style="width:36px;height:36px;border-radius:8px;object-fit:cover;" alt="dessert">
+                                    <span style="font-size:11px;font-weight:600;color:#333;">Add Croissant</span>
+                                </div>
+                                <span style="font-size:11px;font-weight:700;color:#FF6B35;">+$2.50</span>
+                            </div>
                         </div>
                     </div>
                 </div>`;
@@ -1442,6 +1988,7 @@
 
         function drawFeaturedItems(theme) {
             const img = 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=150&q=80';
+            const img2 = 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=150&q=80';
             if (theme === 'neumorphism') {
                 return `
                 <div class="p-4 flex flex-col gap-2">
@@ -1457,7 +2004,7 @@
             } else if (theme === 'glassmorphism') {
                 return `
                 <div class="px-4 mb-4 flex flex-col gap-2">
-                    <span class="text-[9px] text-indigo-300 font-bold tracking-widest uppercase flex items-center gap-1">${iconMaterial('star', 'text-pink-400')} HIGH-TIER COLLABORATIONS</span>
+                    <span class="text-[9px] text-indigo-300 font-bold tracking-widest uppercase flex items-center gap-1">${iconMaterial('star-line', 'text-pink-400')} HIGH-TIER COLLABORATIONS</span>
                     <div class="glass-panel p-2.5 flex items-center gap-3 bg-white/5 z-10 relative">
                         <img src="${img}" class="w-12 h-12 object-cover rounded-lg flex-shrink-0 filter saturate-120" alt="food">
                         <div>
@@ -1469,13 +2016,26 @@
             } else {
                 return `
                 <div class="p-3">
-                    <div style="font-size:14px;font-weight:700;color:#333;margin-bottom:10px;">Featured</div>
-                    <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;gap:12px;padding:12px;">
-                        <img src="${img}" style="width:64px;height:64px;border-radius:12px;object-fit:cover;flex-shrink:0;" alt="food">
-                        <div>
-                            <div style="font-size:13px;font-weight:600;color:#333;">Spiced Cinnamon Cruffin</div>
-                            <div style="font-size:10px;color:#999;margin-top:2px;">Limited seasonal launch</div>
-                            <div style="font-size:13px;font-weight:700;color:#FF6B35;margin-top:6px;">$5.50</div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                        <span style="font-size:14px;font-weight:700;color:#333;">Featured Items</span>
+                    </div>
+                    <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+                        <div style="position:relative;">
+                            <img src="${img}" style="width:100%;height:140px;object-fit:cover;" alt="food">
+                            <div style="position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;">${iconBS('bookmark', 'text-[#FF6B35]')}</div>
+                            <div style="position:absolute;top:8px;left:8px;background:#FF6B35;color:#fff;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:600;">Free Delivery</div>
+                        </div>
+                        <div style="padding:12px;">
+                            <div style="font-size:16px;font-weight:700;color:#333;">Burger King</div>
+                            <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
+                                <span style="display:flex;align-items:center;gap:2px;font-size:11px;font-weight:600;color:#FFD700;">${iconBS('star', 'text-[#FFD700]')} 4.9</span>
+                                <span style="display:flex;align-items:center;gap:2px;font-size:11px;color:#FF4444;">${iconBS('clock', 'text-[#FF4444]')} 20-25 Min</span>
+                            </div>
+                            <div style="display:flex;gap:6px;margin-top:8px;">
+                                <span style="font-size:10px;color:#666;background:#f5f5f5;padding:4px 8px;border-radius:12px;">Burger</span>
+                                <span style="font-size:10px;color:#666;background:#f5f5f5;padding:4px 8px;border-radius:12px;">Pizza</span>
+                                <span style="font-size:10px;color:#666;background:#f5f5f5;padding:4px 8px;border-radius:12px;">Fast Food</span>
+                            </div>
                         </div>
                     </div>
                 </div>`;
@@ -1511,14 +2071,14 @@
             } else if (theme === 'glassmorphism') {
                 return `
                 <div class="pl-4 mb-4 flex flex-col gap-2">
-                    <span class="text-[9px] text-pink-300 font-bold tracking-widest uppercase flex items-center gap-1">${iconMaterial('trending_up', 'text-pink-400')} METRIC SOCIAL PROOF DRIVERS</span>
+                    <span class="text-[9px] text-pink-300 font-bold tracking-widest uppercase flex items-center gap-1">${iconMaterial('trending-up-line', 'text-pink-400')} METRIC SOCIAL PROOF DRIVERS</span>
                     <div class="flex gap-3 overflow-x-auto pb-1.5 pr-4">
                         <div class="w-36 flex-shrink-0 glass-panel p-2 bg-white/5 flex flex-col">
                             <img src="${a}" class="w-full h-16 object-cover rounded-lg mb-2 filter saturate-120" alt="food">
                             <div class="text-[11px] font-medium text-white truncate px-0.5">Salted Foam Velvet</div>
                             <div class="flex justify-between items-center mt-2 px-0.5">
                                 <span class="text-xs text-cyan-400 font-mono font-bold">$5.25</span>
-                                <button class="bg-gradient-to-r from-pink-500 to-indigo-500 p-1 rounded-md text-white">${iconMaterial('add', '')}</button>
+                                <button class="bg-gradient-to-r from-pink-500 to-indigo-500 p-1 rounded-md text-white">${iconMaterial('add-line')}</button>
                             </div>
                         </div>
                         <div class="w-36 flex-shrink-0 glass-panel p-2 bg-white/5 flex flex-col">
@@ -1526,7 +2086,7 @@
                             <div class="text-[11px] font-medium text-white truncate px-0.5">Red Velvet Crumb</div>
                             <div class="flex justify-between items-center mt-2 px-0.5">
                                 <span class="text-xs text-cyan-400 font-mono font-bold">$6.00</span>
-                                <button class="bg-gradient-to-r from-pink-500 to-indigo-500 p-1 rounded-md text-white">${iconMaterial('add', '')}</button>
+                                <button class="bg-gradient-to-r from-pink-500 to-indigo-500 p-1 rounded-md text-white">${iconMaterial('add-line')}</button>
                             </div>
                         </div>
                     </div>
@@ -1534,18 +2094,22 @@
             } else {
                 return `
                 <div class="p-3">
-                    <div style="font-size:14px;font-weight:700;color:#333;margin-bottom:10px;">Popular Items</div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                        <span style="font-size:14px;font-weight:700;color:#333;">Popular Foods</span>
+                        <span style="font-size:10px;color:#FF6B35;font-weight:600;">View All</span>
+                    </div>
                     <div class="flex gap-3 overflow-x-auto pb-2">
                         <div style="flex-shrink:0;width:150px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
                             <div style="position:relative;">
                                 <img src="${a}" style="width:100%;height:100px;object-fit:cover;" alt="food">
                                 <div style="position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;">${iconBS('heart', 'text-[#ccc]')}</div>
+                                <div style="position:absolute;bottom:8px;left:8px;background:#FF6B35;color:#fff;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;">$09.99</div>
                             </div>
                             <div style="padding:8px 10px;">
-                                <div style="font-size:11px;font-weight:600;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Street Taco Pack</div>
-                                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
-                                    <span style="font-size:12px;font-weight:700;color:#FF6B35;">$11.00</span>
-                                    <div style="width:22px;height:22px;border-radius:6px;background:#FF6B35;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;cursor:pointer;">+</div>
+                                <div style="font-size:11px;font-weight:600;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Stir-Fried Spicy</div>
+                                <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
+                                    <span style="display:flex;align-items:center;gap:2px;font-size:9px;font-weight:600;color:#FFD700;">${iconBS('star', 'text-[#FFD700]')} 4.9</span>
+                                    <span style="display:flex;align-items:center;gap:2px;font-size:9px;color:#FF4444;">${iconBS('clock', 'text-[#FF4444]')} 20-25 Min</span>
                                 </div>
                             </div>
                         </div>
@@ -1553,12 +2117,13 @@
                             <div style="position:relative;">
                                 <img src="${b}" style="width:100%;height:100px;object-fit:cover;" alt="food">
                                 <div style="position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;">${iconBS('heart', 'text-[#ccc]')}</div>
+                                <div style="position:absolute;bottom:8px;left:8px;background:#FF6B35;color:#fff;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;">$12.99</div>
                             </div>
                             <div style="padding:8px 10px;">
-                                <div style="font-size:11px;font-weight:600;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Crisp Chip Unit</div>
-                                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
-                                    <span style="font-size:12px;font-weight:700;color:#FF6B35;">$4.50</span>
-                                    <div style="width:22px;height:22px;border-radius:6px;background:#FF6B35;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;cursor:pointer;">+</div>
+                                <div style="font-size:11px;font-weight:600;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Noodles With Chicken</div>
+                                <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
+                                    <span style="display:flex;align-items:center;gap:2px;font-size:9px;font-weight:600;color:#FFD700;">${iconBS('star', 'text-[#FFD700]')} 4.9</span>
+                                    <span style="display:flex;align-items:center;gap:2px;font-size:9px;color:#FF4444;">${iconBS('clock', 'text-[#FF4444]')} 20-25 Min</span>
                                 </div>
                             </div>
                         </div>
@@ -1580,16 +2145,30 @@
                 return `
                 <div class="pl-4 mb-4">
                     <div class="flex gap-3 overflow-x-auto pb-1 pr-4">
-                        <div class="w-48 flex-shrink-0 glass-panel p-2.5 border-cyan-500/25 text-[10px] text-cyan-200 flex items-center gap-2 z-10 relative">${iconMaterial('verified', 'text-cyan-400')} Premium Pass Status Active</div>
-                        <div class="w-48 flex-shrink-0 glass-panel p-2.5 border-pink-500/25 text-[10px] text-pink-200 flex items-center gap-2 z-10 relative">${iconMaterial('bolt', 'text-pink-400')} Multiplier Token Applied</div>
+                        <div class="w-48 flex-shrink-0 glass-panel p-2.5 border-cyan-500/25 text-[10px] text-cyan-200 flex items-center gap-2 z-10 relative">${iconMaterial('check-line', 'text-cyan-400')} Premium Pass Status Active</div>
+                        <div class="w-48 flex-shrink-0 glass-panel p-2.5 border-pink-500/25 text-[10px] text-pink-200 flex items-center gap-2 z-10 relative">${iconMaterial('flashlight-line', 'text-pink-400')} Multiplier Token Applied</div>
                     </div>
                 </div>`;
             } else {
                 return `
-                <div class="p-3">
+                <div class="p-3 overflow-hidden">
                     <div class="flex gap-3 overflow-x-auto pb-2">
-                        <div style="flex-shrink:0;width:180px;background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;align-items:center;gap:8px;">${iconBS('ticket', 'text-[#FF6B35]')}<span style="font-size:11px;font-weight:500;color:#333;">Free delivery on first order</span></div>
-                        <div style="flex-shrink:0;width:180px;background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;align-items:center;gap:8px;">${iconBS('ticket', 'text-[#FF6B35]')}<span style="font-size:11px;font-weight:500;color:#333;">20% off weekend orders</span></div>
+                        <div style="flex-shrink:0;width:200px;background:linear-gradient(135deg,#1a1a1a,#333);border-radius:16px;padding:14px;color:#fff;border:2px solid #FF6B35;display:flex;flex-direction:column;justify-content:space-between;">
+                            <div>
+                                <div style="font-size:9px;color:#aaa;letter-spacing:1px;">EXCLUSIVE OFFER</div>
+                                <div style="font-size:18px;font-weight:900;margin-top:4px;">$5 OFF</div>
+                                <div style="font-size:10px;color:#ccc;margin-top:2px;">First 3 orders</div>
+                            </div>
+                            <div style="font-size:9px;color:#FF6B35;margin-top:8px;">Use code: WELCOME5</div>
+                        </div>
+                        <div style="flex-shrink:0;width:200px;background:#fff;border-radius:16px;padding:14px;border:2px solid #e0e0e0;display:flex;flex-direction:column;justify-content:space-between;">
+                            <div>
+                                <div style="font-size:9px;color:#999;letter-spacing:1px;">WEEKEND DEAL</div>
+                                <div style="font-size:18px;font-weight:900;margin-top:4px;color:#333;">20% OFF</div>
+                                <div style="font-size:10px;color:#666;margin-top:2px;">Sat & Sun orders</div>
+                            </div>
+                            <div style="font-size:9px;color:#FF6B35;margin-top:8px;">Use code: WEEKEND20</div>
+                        </div>
                     </div>
                 </div>`;
             }
@@ -1599,30 +2178,40 @@
             if (theme === 'neumorphism') {
                 return `
                 <div class="p-4 flex flex-col gap-2">
-                    <div class="p-2.5 neu-flat text-[11px] text-gray-600 font-medium flex items-center gap-2">${iconFA('check-circle', 'text-teal-600')} Free beverage upgrades valid for pastry items.</div>
-                    <div class="p-2.5 neu-flat text-[11px] text-gray-600 font-medium flex items-center gap-2">${iconFA('check-circle', 'text-teal-600')} Double loyalty tokens activated on midnight loops.</div>
+                    <div class="p-2.5 neu-flat text-[11px] text-gray-600 font-medium flex items-center gap-2">${iconFA('check', 'text-teal-600')} Free beverage upgrades valid for pastry items.</div>
+                    <div class="p-2.5 neu-flat text-[11px] text-gray-600 font-medium flex items-center gap-2">${iconFA('check', 'text-teal-600')} Double loyalty tokens activated on midnight loops.</div>
                 </div>`;
             } else if (theme === 'glassmorphism') {
                 return `
                 <div class="px-4 mb-4 flex flex-col gap-2">
                     <div class="glass-panel p-3 text-[10px] text-indigo-100/90 border-dashed z-10 relative">
-                        <div class="font-bold text-pink-400 mb-1.5 flex items-center gap-1">${iconMaterial('layers', '')} Active Coupon System Core</div>
+                        <div class="font-bold text-pink-400 mb-1.5 flex items-center gap-1">${iconMaterial('stack-line')} Active Coupon System Core</div>
                         <div class="space-y-1.5 px-0.5">
-                            <div class="flex items-center gap-1.5">${iconMaterial('add', 'text-cyan-400')} Complementary processing handler access keys.</div>
-                            <div class="flex items-center gap-1.5">${iconMaterial('add', 'text-cyan-400')} Weekend fulfillment routing premium fee waivers.</div>
+                            <div class="flex items-center gap-1.5">${iconMaterial('add-line', 'text-cyan-400')} Complementary processing handler access keys.</div>
+                            <div class="flex items-center gap-1.5">${iconMaterial('add-line', 'text-cyan-400')} Weekend fulfillment routing premium fee waivers.</div>
                         </div>
                     </div>
                 </div>`;
             } else {
                 return `
-                <div class="p-3">
-                    <div style="background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-                        <span style="font-size:11px;color:#333;display:flex;align-items:center;gap:6px;">${iconBS('check-circle', 'text-[#4CAF50]')} Free upgrades on pastry items</span>
-                        ${iconBS('arrow-up-right', 'text-[#999]')}
+                <div class="p-3 flex flex-col gap-2">
+                    <div style="background:#fff;border-radius:16px;padding:14px;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:space-between;">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <div style="width:36px;height:36px;border-radius:10px;background:#E8F5E9;display:flex;align-items:center;justify-content:center;">${iconBS('check-circle', 'text-[#4CAF50]')}</div>
+                            <div>
+                                <div style="font-size:12px;font-weight:600;color:#333;">Free beverage upgrade</div>
+                                <div style="font-size:10px;color:#999;">Valid with any pastry item</div>
+                            </div>
+                        </div>
                     </div>
-                    <div style="background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;align-items:center;justify-content:space-between;">
-                        <span style="font-size:11px;color:#333;display:flex;align-items:center;gap:6px;">${iconBS('check-circle', 'text-[#4CAF50]')} Double points on midnight orders</span>
-                        ${iconBS('arrow-up-right', 'text-[#999]')}
+                    <div style="background:#fff;border-radius:16px;padding:14px;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:space-between;">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <div style="width:36px;height:36px;border-radius:10px;background:#FFF3E0;display:flex;align-items:center;justify-content:center;">${iconBS('star', 'text-[#FF6B35]')}</div>
+                            <div>
+                                <div style="font-size:12px;font-weight:600;color:#333;">Double loyalty points</div>
+                                <div style="font-size:10px;color:#999;">On orders after 10 PM</div>
+                            </div>
+                        </div>
                     </div>
                 </div>`;
             }
@@ -1649,9 +2238,9 @@
             } else {
                 return `
                 <div class="p-3 grid grid-cols-3 gap-2">
-                    <img src="${f1}" style="height:64px;width:100%;object-fit:cover;border-radius:12px;" alt="mosaic">
-                    <img src="${f2}" style="height:64px;width:100%;object-fit:cover;border-radius:12px;" alt="mosaic">
-                    <img src="${f3}" style="height:64px;width:100%;object-fit:cover;border-radius:12px;" alt="mosaic">
+                    <div style="height:100px;border-radius:16px;overflow:hidden;border:3px solid #1a1a1a;"><img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=150&q=80" style="width:100%;height:100%;object-fit:cover;" alt="food1"></div>
+                    <div style="height:100px;border-radius:16px;overflow:hidden;border:3px solid #1a1a1a;"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=150&q=80" style="width:100%;height:100%;object-fit:cover;" alt="food2"></div>
+                    <div style="height:100px;border-radius:16px;overflow:hidden;border:3px solid #1a1a1a;"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=150&q=80" style="width:100%;height:100%;object-fit:cover;" alt="food3"></div>
                 </div>`;
             }
         }
@@ -1668,22 +2257,156 @@
                 return `
                 <div class="pl-4 mb-4 flex gap-3 overflow-x-auto z-10 relative">
                     <div class="w-13 h-13 rounded-full p-0.5 border-2 border-pink-500 flex-shrink-0"><img src="${av}" class="w-full h-full rounded-full object-cover" alt="avatar"></div>
-                    <div class="w-13 h-13 rounded-full p-0.5 border-2 border-dashed border-indigo-400/40 flex-shrink-0 flex items-center justify-center bg-white/5">${iconMaterial('add', 'text-indigo-300')}</div>
+                    <div class="w-13 h-13 rounded-full p-0.5 border-2 border-dashed border-indigo-400/40 flex-shrink-0 flex items-center justify-center bg-white/5">${iconMaterial('add-line', 'text-indigo-300')}</div>
                 </div>`;
             } else {
                 return `
-                <div class="p-3 flex gap-2 overflow-x-auto font-mono">
-                    <div class="w-14 h-14 border-3 border-black brutal-accent-yellow flex-shrink-0 flex flex-col items-center justify-center text-[10px] font-black">${iconBS('camera-reels', 'mb-0.5')} LIVE</div>
-                    <div class="w-14 h-14 border-3 border-black bg-white flex-shrink-0 flex flex-col items-center justify-center text-[10px] font-black text-gray-400">${iconBS('plus', '')} ADD</div>
+                <div class="p-3 flex gap-3 overflow-x-auto">
+                    <div style="width:56px;height:56px;border-radius:50%;border:3px solid #1a1a1a;overflow:hidden;flex-shrink:0;">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80" style="width:100%;height:100%;object-fit:cover;" alt="story">
+                    </div>
+                    <div style="width:56px;height:56px;border-radius:50%;border:3px dashed #ccc;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#f9f9f9;">
+                        <span style="font-size:18px;color:#ccc;">+</span>
+                    </div>
                 </div>`;
             }
         }
 
+        // ─── COLOR PALETTE COMPONENT ──────────────────────────────────────────
+        function drawColorPalette(theme) {
+            const p = window.colorPalettes[theme]?.colors || window.colorPalettes.neumorphism.colors;
+
+            const swatches = Object.entries(p).map(([key, value]) => {
+                const isGradient = value.includes('linear-gradient');
+                const style = isGradient ? `background-image: ${value};` : `background: ${value};`;
+                return `
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                        <div style="width:32px;height:32px;border-radius:4px;${style} border:1px solid rgba(0,0,0,0.1);"></div>
+                        <span style="font-size:8px;color:${theme === 'neumorphism' ? '#555' : theme === 'glassmorphism' ? '#aaa' : '#999'};text-transform:capitalize;">${key}</span>
+                    </div>
+                `;
+            }).join('');
+
+            let containerStyle = '';
+            let textColor = '';
+            if (theme === 'neumorphism') {
+                containerStyle =
+                    `padding:10px; background:${p.Background}; border-radius:12px; box-shadow: inset 2px 2px 4px ${p['Shadow Dark']}, inset -2px -2px 4px ${p['Shadow Light']};`;
+                textColor = p.Text;
+            } else if (theme === 'glassmorphism') {
+                containerStyle =
+                    `padding:10px; background:${p.Glass}; backdrop-filter:blur(8px); border-radius:12px; border:1px solid ${p.Border};`;
+                textColor = p.Text;
+            } else {
+                containerStyle =
+                    `padding:10px; background:${p.Background}; border-radius:8px; border:2px solid ${p.Border};`;
+                textColor = p.Text;
+            }
+
+            return `
+                <div style="margin:8px; ${containerStyle}">
+                    <div style="font-size:10px; font-weight:600; color:${textColor}; margin-bottom:6px;">Theme Colors</div>
+                    <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center;">
+                        ${swatches}
+                    </div>
+                </div>
+            `;
+        }
+
+        // ─── PALETTE EDITOR ──────────────────────────────────────────────
+        function renderPaletteEditor() {
+            const container = document.getElementById('paletteEditorContainer');
+            if (!container) return;
+
+            const themes = ['neumorphism', 'glassmorphism', 'neubrutalism'];
+            let html = '';
+
+            themes.forEach(theme => {
+                const p = window.colorPalettes[theme];
+                if (!p) return;
+                html += `<div style="margin-bottom:20px; background:#222; border-radius:8px; padding:12px;">`;
+                html += `<div style="color:#fff; font-size:11px; font-weight:600; margin-bottom:8px;">${p.name}</div>`;
+                html += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">`;
+
+                Object.entries(p.colors).forEach(([name, value]) => {
+                    const isGradient = value.includes('linear-gradient');
+                    const bgStyle = isGradient ? `background-image: ${value};` : `background: ${value};`;
+                    const extraStyle = name === 'Glass' ?
+                        'background-color: rgba(255,255,255,0.06); backdrop-filter: blur(4px);' : '';
+
+                    html += `
+                        <div style="display:flex; align-items:center; gap:6px; cursor:pointer;" onclick="editColor('${theme}', '${name}')">
+                            <div style="width:28px; height:28px; border-radius:4px; ${bgStyle} ${extraStyle} border:1px solid rgba(255,255,255,0.1); flex-shrink:0;"></div>
+                            <span style="font-size:9px; color:#aaa; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${name}</span>
+                        </div>
+                    `;
+                });
+
+                html += `</div></div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // ─── EDIT COLOR ──────────────────────────────────────────────────
+        function editColor(theme, colorName) {
+            const currentColor = window.colorPalettes[theme]?.colors[colorName] || '#000000';
+            const input = document.createElement('input');
+            input.type = 'color';
+            input.value = currentColor.startsWith('#') ? currentColor : '#000000';
+            input.addEventListener('input', function(e) {
+                const newColor = e.target.value;
+                updateColor(theme, colorName, newColor);
+            });
+            input.click();
+        }
+
+        // ─── EXPORT PALETTES ─────────────────────────────────────────────
+        function exportPalette(format) {
+            const palettes = window.colorPalettes;
+            let output = '';
+
+            if (format === 'css') {
+                let css = ':root {\n';
+                Object.entries(palettes).forEach(([theme, data]) => {
+                    Object.entries(data.colors).forEach(([key, value]) => {
+                        const varName = `--${theme}-${key.toLowerCase().replace(/ /g, '-')}`;
+                        css += `  ${varName}: ${value};\n`;
+                    });
+                });
+                css += '}';
+                output = css;
+            } else if (format === 'tailwind') {
+                let tw = 'module.exports = {\n  theme: {\n    extend: {\n      colors: {\n';
+                Object.entries(palettes).forEach(([theme, data]) => {
+                    tw += `        ${theme}: {\n`;
+                    Object.entries(data.colors).forEach(([key, value]) => {
+                        const k = key.toLowerCase().replace(/ /g, '-');
+                        tw += `          ${k}: '${value}',\n`;
+                    });
+                    tw += `        },\n`;
+                });
+                tw += '      }\n    }\n  }\n}';
+                output = tw;
+            } else if (format === 'json') {
+                output = JSON.stringify(palettes, null, 2);
+            }
+
+            navigator.clipboard.writeText(output).then(() => {
+                alert(`Palette exported as ${format.toUpperCase()} and copied to clipboard!`);
+            }).catch(() => {
+                console.log(output);
+                alert(`Check console for ${format.toUpperCase()} export.`);
+            });
+        }
+
         // ─── BOOT ──────────────────────────────────────────────────────────
-        window.onload = function () {
+        window.onload = function() {
             buildControllerList();
             renderAllViewports();
             initControllerEvents();
+            renderPaletteEditor();
+            applyAllPalettes();
         };
     </script>
 </body>
