@@ -5,27 +5,136 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stories</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .stories { max-width: 360px; width: 100%; display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; }
-        .stories::-webkit-scrollbar { display: none; }
-        .story { width: 60px; height: 60px; border-radius: 50%; border: 3px solid #1a1a1a; overflow: hidden; flex-shrink: 0; cursor: pointer; }
-        .story img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .story-add { width: 60px; height: 60px; border-radius: 50%; border: 3px dashed #ccc; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: #f9f9f9; cursor: pointer; }
-        .story-add span { font-size: 20px; color: #ccc; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; background: #fff; padding: 6px; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        .tab { padding: 10px 18px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: #999; transition: all 0.2s; }
+        .tab.active { background: #FF6B35; color: #fff; }
+        .tab:hover:not(.active) { background: #f5f5f5; }
+        .variant { display: none; }
+        .variant.active { display: block; }
+
+        /* V1: Image Top */
+        .v1-stories { max-width: 360px; width: 100%; display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; }
+        .v1-stories::-webkit-scrollbar { display: none; }
+        .v1-story { width: 60px; height: 60px; border-radius: 50%; border: 3px solid #FF6B35; overflow: hidden; flex-shrink: 0; cursor: pointer; }
+        .v1-story img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .v1-story-add { width: 60px; height: 60px; border-radius: 50%; border: 3px dashed #ccc; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: #f9f9f9; cursor: pointer; }
+        .v1-story-add span { font-size: 20px; color: #ccc; }
+
+        /* V2: Image Left */
+        .v2-stories { max-width: 360px; width: 100%; display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
+        .v2-stories::-webkit-scrollbar { display: none; }
+        .v2-story { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; cursor: pointer; }
+        .v2-avatar { width: 56px; height: 56px; border-radius: 16px; border: 3px solid #FF6B35; overflow: hidden; }
+        .v2-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .v2-name { font-size: 10px; font-weight: 600; color: #333; text-align: center; max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .v2-story-add { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; cursor: pointer; }
+        .v2-add-circle { width: 56px; height: 56px; border-radius: 16px; border: 2px dashed #FF6B35; display: flex; align-items: center; justify-content: center; background: #FFF3ED; }
+        .v2-add-circle i { color: #FF6B35; font-size: 20px; }
+        .v2-add-label { font-size: 10px; font-weight: 600; color: #FF6B35; }
+
+        /* V3: Minimal */
+        .v3-stories { max-width: 360px; width: 100%; display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; }
+        .v3-stories::-webkit-scrollbar { display: none; }
+        .v3-story { display: flex; align-items: center; gap: 8px; background: #fff; border-radius: 12px; padding: 8px 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); flex-shrink: 0; cursor: pointer; }
+        .v3-avatar { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; flex-shrink: 0; }
+        .v3-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .v3-name { font-size: 11px; font-weight: 600; color: #333; }
+        .v3-story-add { display: flex; align-items: center; gap: 8px; background: #fff; border-radius: 12px; padding: 8px 12px; border: 1px dashed #FF6B35; flex-shrink: 0; cursor: pointer; }
+        .v3-add-icon { width: 32px; height: 32px; border-radius: 50%; background: #FFF3ED; display: flex; align-items: center; justify-content: center; }
+        .v3-add-icon i { color: #FF6B35; font-size: 14px; }
+        .v3-add-label { font-size: 11px; font-weight: 600; color: #FF6B35; }
     </style>
 </head>
 <body>
-    <!-- MODULE: drawStories -->
-    <!-- IMAGE: photo-1534528741775 (avatar) -->
-    <div class="stories">
-        <div class="story">
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80" alt="story">
-        </div>
-        <div class="story-add">
-            <span>+</span>
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('v1')">Image Top</button>
+        <button class="tab" onclick="switchTab('v2')">Image Left</button>
+        <button class="tab" onclick="switchTab('v3')">Minimal</button>
+    </div>
+
+    <!-- V1: Image Top -->
+    <div class="variant active" id="v1">
+        <div class="v1-stories">
+            <div class="v1-story">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80" alt="story">
+            </div>
+            <div class="v1-story">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&q=80" alt="story">
+            </div>
+            <div class="v1-story">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&q=80" alt="story">
+            </div>
+            <div class="v1-story-add"><span>+</span></div>
         </div>
     </div>
+
+    <!-- V2: Image Left -->
+    <div class="variant" id="v2">
+        <div class="v2-stories">
+            <div class="v2-story">
+                <div class="v2-avatar">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80" alt="story">
+                </div>
+                <span class="v2-name">Sarah</span>
+            </div>
+            <div class="v2-story">
+                <div class="v2-avatar">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&q=80" alt="story">
+                </div>
+                <span class="v2-name">Mike</span>
+            </div>
+            <div class="v2-story">
+                <div class="v2-avatar">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&q=80" alt="story">
+                </div>
+                <span class="v2-name">Emma</span>
+            </div>
+            <div class="v2-story-add">
+                <div class="v2-add-circle"><i class="ri-add-fill"></i></div>
+                <span class="v2-add-label">Add</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- V3: Minimal -->
+    <div class="variant" id="v3">
+        <div class="v3-stories">
+            <div class="v3-story">
+                <div class="v3-avatar">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=60&q=80" alt="story">
+                </div>
+                <span class="v3-name">Sarah</span>
+            </div>
+            <div class="v3-story">
+                <div class="v3-avatar">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=60&q=80" alt="story">
+                </div>
+                <span class="v3-name">Mike</span>
+            </div>
+            <div class="v3-story">
+                <div class="v3-avatar">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=60&q=80" alt="story">
+                </div>
+                <span class="v3-name">Emma</span>
+            </div>
+            <div class="v3-story-add">
+                <div class="v3-add-icon"><i class="ri-add-fill"></i></div>
+                <span class="v3-add-label">Add</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(id) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.variant').forEach(v => v.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
 </body>
 </html>

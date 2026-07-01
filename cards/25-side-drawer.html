@@ -8,7 +8,14 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; background: #fff; padding: 6px; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        .tab { padding: 10px 18px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: #999; transition: all 0.2s; }
+        .tab.active { background: #FF6B35; color: #fff; }
+        .tab:hover:not(.active) { background: #f5f5f5; }
+        .variant { display: none; }
+        .variant.active { display: block; }
+
         .phone { width: 375px; height: 600px; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.12); position: relative; }
         .status-bar { height: 44px; background: #fff; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 24px 8px; position: relative; z-index: 60; }
         .notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 120px; height: 28px; background: #000; border-radius: 0 0 20px 20px; }
@@ -29,69 +36,200 @@
         .drawer-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); z-index: 70; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
         .drawer-overlay.open { opacity: 1; pointer-events: auto; }
 
-        /* Drawer */
-        .drawer { position: absolute; top: 0; left: 0; width: 280px; height: 100%; background: #fff; z-index: 80; transform: translateX(-100%); transition: transform 0.3s ease; display: flex; flex-direction: column; box-shadow: 4px 0 20px rgba(0,0,0,0.1); }
-        .drawer.open { transform: translateX(0); }
-        .drawer-header { padding: 60px 20px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; }
-        .drawer-brand { font-size: 16px; font-weight: 800; color: #1a1a1a; }
-        .drawer-close { width: 32px; height: 32px; border-radius: 50%; background: #f5f5f5; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
-        .drawer-close i { font-size: 16px; color: #333; }
-        .drawer-nav { flex: 1; padding: 16px 0; }
-        .drawer-nav a { display: flex; align-items: center; gap: 12px; padding: 14px 24px; font-size: 14px; font-weight: 600; color: #333; text-decoration: none; transition: background 0.2s; }
-        .drawer-nav a:hover { background: #f5f5f5; }
-        .drawer-nav a i { font-size: 20px; color: #FF6B35; width: 24px; text-align: center; }
-        .drawer-footer { padding: 16px 24px; border-top: 1px solid #eee; }
-        .drawer-footer-btn { width: 100%; padding: 12px; border-radius: 12px; background: #FF6B35; color: #fff; font-size: 13px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        /* V1: Standard Drawer */
+        .v1-drawer { position: absolute; top: 0; left: 0; width: 280px; height: 100%; background: #fff; z-index: 80; transform: translateX(-100%); transition: transform 0.3s ease; display: flex; flex-direction: column; box-shadow: 4px 0 20px rgba(0,0,0,0.1); }
+        .v1-drawer.open { transform: translateX(0); }
+        .v1-drawer-header { padding: 60px 20px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; background: linear-gradient(180deg, #FFF3ED, #fff); }
+        .v1-drawer-brand { font-size: 16px; font-weight: 800; color: #1a1a1a; }
+        .v1-drawer-close { width: 32px; height: 32px; border-radius: 50%; background: #f5f5f5; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
+        .v1-drawer-close i { font-size: 16px; color: #333; }
+        .v1-drawer-nav { flex: 1; padding: 16px 0; }
+        .v1-drawer-nav a { display: flex; align-items: center; gap: 12px; padding: 14px 24px; font-size: 14px; font-weight: 600; color: #333; text-decoration: none; transition: all 0.2s; }
+        .v1-drawer-nav a:hover, .v1-drawer-nav a.active { background: #FFF3ED; color: #FF6B35; }
+        .v1-drawer-nav a i { font-size: 20px; color: #FF6B35; width: 24px; text-align: center; }
+        .v1-drawer-footer { padding: 16px 24px; border-top: 1px solid #eee; }
+        .v1-drawer-footer-btn { width: 100%; padding: 12px; border-radius: 12px; background: #FF6B35; color: #fff; font-size: 13px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+        /* V2: Compact Drawer */
+        .v2-drawer { position: absolute; top: 0; left: 0; width: 260px; height: 100%; background: #1a1a1a; z-index: 80; transform: translateX(-100%); transition: transform 0.3s ease; display: flex; flex-direction: column; }
+        .v2-drawer.open { transform: translateX(0); }
+        .v2-drawer-header { padding: 60px 20px 24px; display: flex; align-items: center; justify-content: space-between; }
+        .v2-drawer-brand { font-size: 16px; font-weight: 800; color: #fff; }
+        .v2-drawer-close { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
+        .v2-drawer-close i { font-size: 14px; color: #fff; }
+        .v2-drawer-nav { flex: 1; padding: 8px 12px; }
+        .v2-drawer-nav a { display: flex; align-items: center; gap: 12px; padding: 12px 14px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.6); text-decoration: none; border-radius: 10px; transition: all 0.2s; margin-bottom: 2px; }
+        .v2-drawer-nav a:hover, .v2-drawer-nav a.active { background: rgba(255,107,53,0.15); color: #FF6B35; }
+        .v2-drawer-nav a i { font-size: 18px; width: 24px; text-align: center; }
+        .v2-drawer-nav a.active i { color: #FF6B35; }
+        .v2-drawer-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 12px 14px; }
+        .v2-drawer-footer { padding: 16px; }
+        .v2-drawer-footer-btn { width: 100%; padding: 12px; border-radius: 12px; background: transparent; border: 1px solid rgba(255,107,53,0.3); color: #FF6B35; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+        /* V3: Icon-focused Drawer */
+        .v3-drawer { position: absolute; top: 0; left: 0; width: 280px; height: 100%; background: #fff; z-index: 80; transform: translateX(-100%); transition: transform 0.3s ease; display: flex; flex-direction: column; box-shadow: 4px 0 20px rgba(0,0,0,0.1); }
+        .v3-drawer.open { transform: translateX(0); }
+        .v3-drawer-header { padding: 60px 20px 20px; display: flex; align-items: center; justify-content: space-between; }
+        .v3-drawer-close { width: 32px; height: 32px; border-radius: 50%; background: #f5f5f5; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
+        .v3-drawer-close i { font-size: 16px; color: #333; }
+        .v3-drawer-profile { padding: 0 20px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #eee; }
+        .v3-avatar { width: 48px; height: 48px; border-radius: 50%; overflow: hidden; border: 2px solid #FF6B35; }
+        .v3-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .v3-profile-name { font-size: 14px; font-weight: 700; color: #1a1a1a; }
+        .v3-profile-email { font-size: 11px; color: #999; }
+        .v3-drawer-nav { flex: 1; padding: 16px 0; }
+        .v3-drawer-nav a { display: flex; align-items: center; gap: 12px; padding: 12px 24px; font-size: 13px; font-weight: 600; color: #333; text-decoration: none; transition: all 0.2s; }
+        .v3-drawer-nav a:hover, .v3-drawer-nav a.active { background: #FFF3ED; }
+        .v3-drawer-nav a i { font-size: 20px; width: 24px; text-align: center; color: #999; }
+        .v3-drawer-nav a.active i { color: #FF6B35; }
+        .v3-drawer-nav a.active { color: #FF6B35; font-weight: 700; }
+        .v3-drawer-footer { padding: 16px 24px; border-top: 1px solid #eee; }
+        .v3-drawer-footer-btn { width: 100%; padding: 12px; border-radius: 12px; background: #FF6B35; color: #fff; font-size: 13px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
     </style>
 </head>
 <body>
-    <!-- MODULE: Side Drawer -->
-    <div class="phone">
-        <div class="status-bar">
-            <div class="notch"></div>
-            <span class="time">19:02</span>
-            <span class="icons"><i class="ri-signal-wifi-fill"></i><i class="ri-wifi-fill"></i><i class="ri-battery-2-fill"></i></span>
-        </div>
-        <div class="nav-row">
-            <div class="nav-left">
-                <button class="hamburger" id="openDrawer"><i class="ri-menu-2-fill"></i></button>
-                <span class="brand">Food Hub</span>
-            </div>
-            <button class="cart-btn"><i class="ri-shopping-bag-3-fill"></i><span class="cart-badge">2</span></button>
-        </div>
-        <div class="content">Tap hamburger to open drawer</div>
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('v1')">Image Top</button>
+        <button class="tab" onclick="switchTab('v2')">Image Left</button>
+        <button class="tab" onclick="switchTab('v3')">Minimal</button>
+    </div>
 
-        <div class="drawer-overlay" id="overlay"></div>
-        <div class="drawer" id="drawer">
-            <div class="drawer-header">
-                <span class="drawer-brand">Food Hub</span>
-                <button class="drawer-close" id="closeDrawer"><i class="ri-close-fill"></i></button>
+    <!-- V1: Standard Drawer -->
+    <div class="variant active" id="v1">
+        <div class="phone">
+            <div class="status-bar">
+                <div class="notch"></div>
+                <span class="time">19:02</span>
+                <span class="icons"><i class="ri-signal-wifi-fill"></i><i class="ri-wifi-fill"></i><i class="ri-battery-2-fill"></i></span>
             </div>
-            <div class="drawer-nav">
-                <a href="#"><i class="ri-home-5-fill"></i> Home</a>
-                <a href="#"><i class="ri-search-line"></i> Search</a>
-                <a href="#"><i class="ri-heart-3-line"></i> Favorites</a>
-                <a href="#"><i class="ri-shopping-bag-3-line"></i> Orders</a>
-                <a href="#"><i class="ri-user-3-line"></i> Profile</a>
-                <a href="#"><i class="ri-settings-3-line"></i> Settings</a>
+            <div class="nav-row">
+                <div class="nav-left">
+                    <button class="hamburger" onclick="openDrawer('v1-drawer')"><i class="ri-menu-2-fill"></i></button>
+                    <span class="brand">Food Hub</span>
+                </div>
+                <button class="cart-btn"><i class="ri-shopping-bag-3-fill"></i><span class="cart-badge">2</span></button>
             </div>
-            <div class="drawer-footer">
-                <button class="drawer-footer-btn"><i class="ri-logout-box-r-line"></i> Log Out</button>
+            <div class="content">Tap hamburger to open drawer</div>
+            <div class="drawer-overlay" onclick="closeDrawer('v1-drawer')"></div>
+            <div class="v1-drawer" id="v1-drawer">
+                <div class="v1-drawer-header">
+                    <span class="v1-drawer-brand">Food Hub</span>
+                    <button class="v1-drawer-close" onclick="closeDrawer('v1-drawer')"><i class="ri-close-fill"></i></button>
+                </div>
+                <div class="v1-drawer-nav">
+                    <a href="#" class="active"><i class="ri-home-5-fill"></i> Home</a>
+                    <a href="#"><i class="ri-search-line"></i> Search</a>
+                    <a href="#"><i class="ri-heart-3-line"></i> Favorites</a>
+                    <a href="#"><i class="ri-shopping-bag-3-line"></i> Orders</a>
+                    <a href="#"><i class="ri-user-3-line"></i> Profile</a>
+                    <a href="#"><i class="ri-settings-3-line"></i> Settings</a>
+                </div>
+                <div class="v1-drawer-footer">
+                    <button class="v1-drawer-footer-btn"><i class="ri-logout-box-r-line"></i> Log Out</button>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- V2: Compact Dark Drawer -->
+    <div class="variant" id="v2">
+        <div class="phone">
+            <div class="status-bar">
+                <div class="notch"></div>
+                <span class="time">19:02</span>
+                <span class="icons"><i class="ri-signal-wifi-fill"></i><i class="ri-wifi-fill"></i><i class="ri-battery-2-fill"></i></span>
+            </div>
+            <div class="nav-row">
+                <div class="nav-left">
+                    <button class="hamburger" onclick="openDrawer('v2-drawer')"><i class="ri-menu-2-fill"></i></button>
+                    <span class="brand">Food Hub</span>
+                </div>
+                <button class="cart-btn"><i class="ri-shopping-bag-3-fill"></i><span class="cart-badge">2</span></button>
+            </div>
+            <div class="content">Tap hamburger to open drawer</div>
+            <div class="drawer-overlay" onclick="closeDrawer('v2-drawer')"></div>
+            <div class="v2-drawer" id="v2-drawer">
+                <div class="v2-drawer-header">
+                    <span class="v2-drawer-brand">Food Hub</span>
+                    <button class="v2-drawer-close" onclick="closeDrawer('v2-drawer')"><i class="ri-close-fill"></i></button>
+                </div>
+                <div class="v2-drawer-nav">
+                    <a href="#" class="active"><i class="ri-home-5-fill"></i> Home</a>
+                    <a href="#"><i class="ri-search-line"></i> Search</a>
+                    <a href="#"><i class="ri-heart-3-line"></i> Favorites</a>
+                    <a href="#"><i class="ri-shopping-bag-3-line"></i> Orders</a>
+                    <div class="v2-drawer-divider"></div>
+                    <a href="#"><i class="ri-user-3-line"></i> Profile</a>
+                    <a href="#"><i class="ri-settings-3-line"></i> Settings</a>
+                </div>
+                <div class="v2-drawer-footer">
+                    <button class="v2-drawer-footer-btn"><i class="ri-logout-box-r-line"></i> Log Out</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- V3: Profile Drawer -->
+    <div class="variant" id="v3">
+        <div class="phone">
+            <div class="status-bar">
+                <div class="notch"></div>
+                <span class="time">19:02</span>
+                <span class="icons"><i class="ri-signal-wifi-fill"></i><i class="ri-wifi-fill"></i><i class="ri-battery-2-fill"></i></span>
+            </div>
+            <div class="nav-row">
+                <div class="nav-left">
+                    <button class="hamburger" onclick="openDrawer('v3-drawer')"><i class="ri-menu-2-fill"></i></button>
+                    <span class="brand">Food Hub</span>
+                </div>
+                <button class="cart-btn"><i class="ri-shopping-bag-3-fill"></i><span class="cart-badge">2</span></button>
+            </div>
+            <div class="content">Tap hamburger to open drawer</div>
+            <div class="drawer-overlay" onclick="closeDrawer('v3-drawer')"></div>
+            <div class="v3-drawer" id="v3-drawer">
+                <div class="v3-drawer-header">
+                    <span class="brand" style="font-size:16px;font-weight:800;">Food Hub</span>
+                    <button class="v3-drawer-close" onclick="closeDrawer('v3-drawer')"><i class="ri-close-fill"></i></button>
+                </div>
+                <div class="v3-drawer-profile">
+                    <div class="v3-avatar">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80" alt="avatar">
+                    </div>
+                    <div>
+                        <div class="v3-profile-name">Sarah Johnson</div>
+                        <div class="v3-profile-email">sarah@email.com</div>
+                    </div>
+                </div>
+                <div class="v3-drawer-nav">
+                    <a href="#" class="active"><i class="ri-home-5-fill"></i> Home</a>
+                    <a href="#"><i class="ri-search-line"></i> Search</a>
+                    <a href="#"><i class="ri-heart-3-line"></i> Favorites</a>
+                    <a href="#"><i class="ri-shopping-bag-3-line"></i> Orders</a>
+                    <a href="#"><i class="ri-user-3-line"></i> Profile</a>
+                    <a href="#"><i class="ri-settings-3-line"></i> Settings</a>
+                </div>
+                <div class="v3-drawer-footer">
+                    <button class="v3-drawer-footer-btn"><i class="ri-logout-box-r-line"></i> Log Out</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        const openBtn = document.getElementById('openDrawer');
-        const closeBtn = document.getElementById('closeDrawer');
-        const overlay = document.getElementById('overlay');
-        const drawer = document.getElementById('drawer');
-
-        function open() { overlay.classList.add('open'); drawer.classList.add('open'); }
-        function close() { overlay.classList.remove('open'); drawer.classList.remove('open'); }
-
-        openBtn.addEventListener('click', open);
-        closeBtn.addEventListener('click', close);
-        overlay.addEventListener('click', close);
+        function switchTab(id) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.variant').forEach(v => v.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.target.classList.add('active');
+        }
+        function openDrawer(id) {
+            document.getElementById(id).classList.add('open');
+            document.getElementById(id).previousElementSibling.classList.add('open');
+        }
+        function closeDrawer(id) {
+            document.getElementById(id).classList.remove('open');
+            document.getElementById(id).previousElementSibling.classList.remove('open');
+        }
     </script>
 </body>
 </html>

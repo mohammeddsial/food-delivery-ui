@@ -8,40 +8,141 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .feed { max-width: 360px; width: 100%; display: flex; flex-direction: column; gap: 10px; }
-        .feed-item { background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: space-between; }
-        .feed-left { display: flex; align-items: center; gap: 12px; }
-        .feed-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
-        .feed-icon.green { background: #E8F5E9; }
-        .feed-icon.green i { color: #4CAF50; font-size: 18px; }
-        .feed-icon.orange { background: #FFF3E0; }
-        .feed-icon.orange i { color: #FF6B35; font-size: 18px; }
-        .feed-title { font-size: 13px; font-weight: 600; color: #1a1a1a; }
-        .feed-desc { font-size: 11px; color: #999; margin-top: 2px; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; background: #fff; padding: 6px; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        .tab { padding: 10px 18px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: #999; transition: all 0.2s; }
+        .tab.active { background: #FF6B35; color: #fff; }
+        .tab:hover:not(.active) { background: #f5f5f5; }
+        .variant { display: none; }
+        .variant.active { display: block; }
+
+        /* V1: Image Top */
+        .v1-feed { max-width: 360px; width: 100%; display: flex; flex-direction: column; gap: 10px; }
+        .v1-item { background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .v1-item-img { width: 100%; height: 80px; object-fit: cover; }
+        .v1-item-body { padding: 14px; display: flex; align-items: center; justify-content: space-between; }
+        .v1-left { display: flex; align-items: center; gap: 10px; }
+        .v1-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+        .v1-icon.green { background: #E8F5E9; }
+        .v1-icon.green i { color: #4CAF50; font-size: 16px; }
+        .v1-icon.orange { background: #FFF3E0; }
+        .v1-icon.orange i { color: #FF6B35; font-size: 16px; }
+        .v1-title { font-size: 13px; font-weight: 600; color: #1a1a1a; }
+        .v1-desc { font-size: 11px; color: #999; margin-top: 2px; }
+
+        /* V2: Image Left */
+        .v2-feed { max-width: 360px; width: 100%; display: flex; flex-direction: column; gap: 10px; }
+        .v2-item { background: #fff; border-radius: 18px; padding: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 12px; }
+        .v2-img { width: 56px; height: 56px; border-radius: 14px; object-fit: cover; flex-shrink: 0; }
+        .v2-body { flex: 1; }
+        .v2-title { font-size: 13px; font-weight: 700; color: #1a1a1a; }
+        .v2-desc { font-size: 11px; color: #999; margin-top: 2px; }
+        .v2-badge { padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+        .v2-badge.green { background: #E8F5E9; color: #4CAF50; }
+        .v2-badge.orange { background: #FFF3ED; color: #FF6B35; }
+
+        /* V3: Minimal */
+        .v3-feed { max-width: 360px; width: 100%; display: flex; flex-direction: column; gap: 8px; }
+        .v3-item { background: #fff; border-radius: 14px; padding: 14px 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 12px; }
+        .v3-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .v3-icon.green { background: #E8F5E9; }
+        .v3-icon.green i { color: #4CAF50; font-size: 18px; }
+        .v3-icon.orange { background: #FFF3ED; }
+        .v3-icon.orange i { color: #FF6B35; font-size: 18px; }
+        .v3-body { flex: 1; }
+        .v3-title { font-size: 13px; font-weight: 600; color: #1a1a1a; }
+        .v3-desc { font-size: 10px; color: #999; margin-top: 1px; }
+        .v3-check i { color: #4CAF50; font-size: 18px; }
     </style>
 </head>
 <body>
-    <!-- MODULE: drawOffersFeed -->
-    <div class="feed">
-        <div class="feed-item">
-            <div class="feed-left">
-                <div class="feed-icon green"><i class="ri-checkbox-circle-fill"></i></div>
-                <div>
-                    <div class="feed-title">Free beverage upgrade</div>
-                    <div class="feed-desc">Valid with any pastry item</div>
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('v1')">Image Top</button>
+        <button class="tab" onclick="switchTab('v2')">Image Left</button>
+        <button class="tab" onclick="switchTab('v3')">Minimal</button>
+    </div>
+
+    <!-- V1: Image Top -->
+    <div class="variant active" id="v1">
+        <div class="v1-feed">
+            <div class="v1-item">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" class="v1-item-img" alt="offer">
+                <div class="v1-item-body">
+                    <div class="v1-left">
+                        <div class="v1-icon green"><i class="ri-checkbox-circle-fill"></i></div>
+                        <div>
+                            <div class="v1-title">Free beverage upgrade</div>
+                            <div class="v1-desc">Valid with any pastry item</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="feed-item">
-            <div class="feed-left">
-                <div class="feed-icon orange"><i class="ri-star-fill"></i></div>
-                <div>
-                    <div class="feed-title">Double loyalty points</div>
-                    <div class="feed-desc">On orders after 10 PM</div>
+            <div class="v1-item">
+                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=400&q=80" class="v1-item-img" alt="offer">
+                <div class="v1-item-body">
+                    <div class="v1-left">
+                        <div class="v1-icon orange"><i class="ri-star-fill"></i></div>
+                        <div>
+                            <div class="v1-title">Double loyalty points</div>
+                            <div class="v1-desc">On orders after 10 PM</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- V2: Image Left -->
+    <div class="variant" id="v2">
+        <div class="v2-feed">
+            <div class="v2-item">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=100&q=80" class="v2-img" alt="offer">
+                <div class="v2-body">
+                    <div class="v2-title">Free beverage upgrade</div>
+                    <div class="v2-desc">Valid with any pastry item</div>
+                </div>
+                <div class="v2-badge green">NEW</div>
+            </div>
+            <div class="v2-item">
+                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=100&q=80" class="v2-img" alt="offer">
+                <div class="v2-body">
+                    <div class="v2-title">Double loyalty points</div>
+                    <div class="v2-desc">On orders after 10 PM</div>
+                </div>
+                <div class="v2-badge orange">2X</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- V3: Minimal -->
+    <div class="variant" id="v3">
+        <div class="v3-feed">
+            <div class="v3-item">
+                <div class="v3-icon green"><i class="ri-checkbox-circle-fill"></i></div>
+                <div class="v3-body">
+                    <div class="v3-title">Free beverage upgrade</div>
+                    <div class="v3-desc">Valid with any pastry item</div>
+                </div>
+                <div class="v3-check"><i class="ri-arrow-right-s-fill"></i></div>
+            </div>
+            <div class="v3-item">
+                <div class="v3-icon orange"><i class="ri-star-fill"></i></div>
+                <div class="v3-body">
+                    <div class="v3-title">Double loyalty points</div>
+                    <div class="v3-desc">On orders after 10 PM</div>
+                </div>
+                <div class="v3-check"><i class="ri-arrow-right-s-fill"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(id) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.variant').forEach(v => v.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
 </body>
 </html>

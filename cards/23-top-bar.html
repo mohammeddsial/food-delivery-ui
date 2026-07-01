@@ -8,47 +8,151 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; background: #fff; padding: 6px; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        .tab { padding: 10px 18px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: #999; transition: all 0.2s; }
+        .tab.active { background: #FF6B35; color: #fff; }
+        .tab:hover:not(.active) { background: #f5f5f5; }
+        .variant { display: none; }
+        .variant.active { display: block; }
+
+        /* Shared phone */
         .phone { width: 375px; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.12); }
         .status-bar { height: 44px; background: #fff; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 24px 8px; position: relative; }
         .notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 120px; height: 28px; background: #000; border-radius: 0 0 20px 20px; }
         .time { font-size: 15px; font-weight: 700; color: #1a1a1a; }
         .icons { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #666; }
         .icons i { font-size: 13px; }
-        .nav-row { padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; }
-        .nav-left { display: flex; align-items: center; gap: 10px; }
-        .hamburger { width: 32px; height: 32px; border-radius: 10px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
-        .hamburger i { font-size: 16px; color: #333; }
-        .brand { font-size: 14px; font-weight: 800; color: #1a1a1a; letter-spacing: 0.5px; }
-        .cart-btn { width: 36px; height: 36px; border-radius: 12px; background: #FF6B35; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; border: none; }
-        .cart-btn i { color: #fff; font-size: 18px; }
-        .cart-badge { position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; background: #1a1a1a; color: #fff; font-size: 9px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
         .content { height: 200px; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 13px; }
+
+        /* V1: Image Top */
+        .v1-nav { padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; }
+        .v1-left { display: flex; align-items: center; gap: 10px; }
+        .v1-hamburger { width: 32px; height: 32px; border-radius: 10px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
+        .v1-hamburger i { font-size: 16px; color: #333; }
+        .v1-brand { font-size: 14px; font-weight: 800; color: #1a1a1a; letter-spacing: 0.5px; }
+        .v1-cart { width: 36px; height: 36px; border-radius: 12px; background: #FF6B35; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; border: none; }
+        .v1-cart i { color: #fff; font-size: 18px; }
+        .v1-badge { position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; background: #1a1a1a; color: #fff; font-size: 9px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
+
+        /* V2: Image Left */
+        .v2-nav { padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; background: #1a1a1a; }
+        .v2-left { display: flex; align-items: center; gap: 10px; }
+        .v2-hamburger { width: 32px; height: 32px; border-radius: 10px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
+        .v2-hamburger i { font-size: 16px; color: #fff; }
+        .v2-brand { font-size: 14px; font-weight: 800; color: #fff; }
+        .v2-right { display: flex; align-items: center; gap: 10px; }
+        .v2-search { width: 32px; height: 32px; border-radius: 10px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
+        .v2-search i { font-size: 16px; color: #fff; }
+        .v2-cart { width: 36px; height: 36px; border-radius: 12px; background: #FF6B35; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; border: none; }
+        .v2-cart i { color: #fff; font-size: 18px; }
+        .v2-badge { position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; background: #FF6B35; color: #fff; font-size: 9px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #1a1a1a; }
+
+        /* V3: Minimal */
+        .v3-nav { padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; background: linear-gradient(180deg, #FFF3ED, #fff); }
+        .v3-left { display: flex; align-items: center; gap: 10px; }
+        .v3-avatar { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; flex-shrink: 0; }
+        .v3-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .v3-greeting { font-size: 10px; color: #999; }
+        .v3-name { font-size: 14px; font-weight: 800; color: #1a1a1a; }
+        .v3-right { display: flex; align-items: center; gap: 8px; }
+        .v3-icon { width: 36px; height: 36px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #eee; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .v3-icon i { font-size: 16px; color: #333; }
+        .v3-cart { position: relative; }
+        .v3-badge { position: absolute; top: -2px; right: -2px; width: 16px; height: 16px; background: #FF6B35; color: #fff; font-size: 9px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
-    <!-- MODULE: Top Bar (Status Bar + Nav Row) -->
-    <div class="phone">
-        <div class="status-bar">
-            <div class="notch"></div>
-            <span class="time">19:02</span>
-            <span class="icons">
-                <i class="ri-signal-wifi-fill"></i>
-                <i class="ri-wifi-fill"></i>
-                <i class="ri-battery-2-fill"></i>
-            </span>
-        </div>
-        <div class="nav-row">
-            <div class="nav-left">
-                <button class="hamburger"><i class="ri-menu-2-fill"></i></button>
-                <span class="brand">Food Hub</span>
-            </div>
-            <button class="cart-btn">
-                <i class="ri-shopping-bag-3-fill"></i>
-                <span class="cart-badge">2</span>
-            </button>
-        </div>
-        <div class="content">Page Content</div>
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('v1')">Image Top</button>
+        <button class="tab" onclick="switchTab('v2')">Image Left</button>
+        <button class="tab" onclick="switchTab('v3')">Minimal</button>
     </div>
+
+    <!-- V1: Image Top -->
+    <div class="variant active" id="v1">
+        <div class="phone">
+            <div class="status-bar">
+                <div class="notch"></div>
+                <span class="time">19:02</span>
+                <span class="icons"><i class="ri-signal-wifi-fill"></i><i class="ri-wifi-fill"></i><i class="ri-battery-2-fill"></i></span>
+            </div>
+            <div class="v1-nav">
+                <div class="v1-left">
+                    <button class="v1-hamburger"><i class="ri-menu-2-fill"></i></button>
+                    <span class="v1-brand">Food Hub</span>
+                </div>
+                <button class="v1-cart">
+                    <i class="ri-shopping-bag-3-fill"></i>
+                    <span class="v1-badge">2</span>
+                </button>
+            </div>
+            <div class="content">Page Content</div>
+        </div>
+    </div>
+
+    <!-- V2: Image Left -->
+    <div class="variant" id="v2">
+        <div class="phone">
+            <div class="status-bar">
+                <div class="notch"></div>
+                <span class="time">19:02</span>
+                <span class="icons"><i class="ri-signal-wifi-fill"></i><i class="ri-wifi-fill"></i><i class="ri-battery-2-fill"></i></span>
+            </div>
+            <div class="v2-nav">
+                <div class="v2-left">
+                    <button class="v2-hamburger"><i class="ri-menu-2-fill"></i></button>
+                    <span class="v2-brand">Food Hub</span>
+                </div>
+                <div class="v2-right">
+                    <button class="v2-search"><i class="ri-search-line"></i></button>
+                    <button class="v2-cart">
+                        <i class="ri-shopping-bag-3-fill"></i>
+                        <span class="v2-badge">2</span>
+                    </button>
+                </div>
+            </div>
+            <div class="content">Page Content</div>
+        </div>
+    </div>
+
+    <!-- V3: Minimal -->
+    <div class="variant" id="v3">
+        <div class="phone">
+            <div class="status-bar">
+                <div class="notch"></div>
+                <span class="time">19:02</span>
+                <span class="icons"><i class="ri-signal-wifi-fill"></i><i class="ri-wifi-fill"></i><i class="ri-battery-2-fill"></i></span>
+            </div>
+            <div class="v3-nav">
+                <div class="v3-left">
+                    <div class="v3-avatar">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=60&q=80" alt="avatar">
+                    </div>
+                    <div>
+                        <div class="v3-greeting">Good evening</div>
+                        <div class="v3-name">Sarah</div>
+                    </div>
+                </div>
+                <div class="v3-right">
+                    <button class="v3-icon"><i class="ri-notification-3-line"></i></button>
+                    <button class="v3-icon v3-cart">
+                        <i class="ri-shopping-bag-3-line"></i>
+                        <span class="v3-badge">2</span>
+                    </button>
+                </div>
+            </div>
+            <div class="content">Page Content</div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(id) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.variant').forEach(v => v.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
 </body>
 </html>

@@ -5,37 +5,135 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brand Header</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .header { max-width: 360px; width: 100%; background: #fff; padding: 16px; display: flex; flex-direction: column; gap: 12px; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-        .header-top { display: flex; align-items: center; justify-content: space-between; }
-        .header-address { font-size: 13px; font-weight: 700; color: #1a1a1a; display: flex; align-items: center; gap: 6px; }
-        .header-address i { color: #FF6B35; font-size: 16px; }
-        .header-avatar { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; }
-        .header-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .header-tabs { display: flex; gap: 8px; }
-        .tab { flex: 1; padding: 10px 14px; border-radius: 12px; font-size: 12px; font-weight: 600; text-align: center; cursor: pointer; border: 2px solid #e0e0e0; background: #fff; color: #999; }
-        .tab.active { border-color: #1a1a1a; background: #1a1a1a; color: #fff; font-weight: 700; }
+        .tabs { display: flex; gap: 6px; margin-bottom: 16px; justify-content: center; max-width: 360px; width: 100%; }
+        .tab { padding: 8px 14px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; border: 1.5px solid #ddd; background: #fff; color: #666; transition: all 0.2s; }
+        .tab.active { background: #FF6B35; color: #fff; border-color: #FF6B35; }
+        .variant { display: none; max-width: 360px; width: 100%; }
+        .variant.active { display: block; }
+
+        .toggle { display: flex; background: #f0f0f0; border-radius: 10px; padding: 3px; }
+        .toggle-btn { flex: 1; padding: 7px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; border: none; cursor: pointer; background: transparent; color: #888; transition: all 0.2s; }
+        .toggle-btn.active { background: #fff; color: #1a1a1a; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+
+        /* V1: Image Top */
+        .v1-header { background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        .v1-header .top { display: flex; align-items: center; justify-content: space-between; }
+        .v1-header .menu-icon { font-size: 20px; color: #1a1a1a; cursor: pointer; }
+        .v1-header .avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid #FF6B35; }
+        .v1-header .address { text-align: center; margin-top: 12px; }
+        .v1-header .address-label { font-size: 10px; color: #888; display: flex; align-items: center; justify-content: center; gap: 4px; }
+        .v1-header .address-text { font-size: 13px; font-weight: 700; color: #1a1a1a; margin-top: 2px; }
+        .v1-header .toggle-wrap { margin-top: 12px; }
+
+        /* V2: Image Left */
+        .v2-header { display: flex; align-items: center; background: #fff; border-radius: 18px; padding: 14px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); gap: 12px; }
+        .v2-header .menu-icon { font-size: 20px; color: #1a1a1a; cursor: pointer; flex-shrink: 0; }
+        .v2-header .avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #FF6B35; flex-shrink: 0; }
+        .v2-header .address { flex: 1; }
+        .v2-header .address-label { font-size: 10px; color: #888; display: flex; align-items: center; gap: 4px; }
+        .v2-header .address-text { font-size: 12px; font-weight: 700; color: #1a1a1a; }
+        .v2-header .toggle-wrap { flex-shrink: 0; }
+
+        /* V3: Minimal */
+        .v3-header { background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        .v3-top { display: flex; align-items: center; justify-content: space-between; }
+        .v3-brand { display: flex; align-items: center; gap: 8px; }
+        .v3-brand-icon { width: 32px; height: 32px; background: #FF6B35; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #fff; }
+        .v3-brand-name { font-size: 14px; font-weight: 800; color: #1a1a1a; }
+        .v3-icons { display: flex; gap: 14px; }
+        .v3-icons i { font-size: 18px; color: #1a1a1a; cursor: pointer; }
+        .v3-address { display: flex; align-items: center; gap: 6px; margin-top: 12px; background: #f8f8f8; padding: 10px 12px; border-radius: 12px; }
+        .v3-address i { color: #FF6B35; font-size: 16px; }
+        .v3-address .address-label { font-size: 10px; color: #888; }
+        .v3-address .address-text { font-size: 12px; font-weight: 700; color: #1a1a1a; }
+        .v3-toggle { margin-top: 12px; }
     </style>
 </head>
 <body>
-    <!-- MODULE: drawBrandHeader -->
-    <div class="header">
-        <div class="header-top">
-            <div class="header-address">
-                <i class="ri-map-pin-2-fill"></i>
-                2715 Ash Dr. San Jose, South Dakota
-            </div>
-            <div class="header-avatar">
-                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&q=80" alt="avatar">
+    <div style="display:flex;flex-direction:column;align-items:center;width:100%;">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab(0)">Image Top</div>
+            <div class="tab" onclick="switchTab(1)">Image Left</div>
+            <div class="tab" onclick="switchTab(2)">Minimal</div>
+        </div>
+
+        <!-- V1: Image Top -->
+        <div class="variant active" id="v0">
+            <div class="v1-header">
+                <div class="top">
+                    <i class="ri-menu-2-fill menu-icon"></i>
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&q=80" class="avatar" alt="avatar">
+                </div>
+                <div class="address">
+                    <div class="address-label"><i class="ri-map-pin-2-fill" style="color:#FF6B35;"></i> Delivering to</div>
+                    <div class="address-text">123 Main Street, Apt 4B</div>
+                </div>
+                <div class="toggle-wrap">
+                    <div class="toggle">
+                        <button class="toggle-btn active">Delivery</button>
+                        <button class="toggle-btn">Pickup</button>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="header-tabs">
-            <div class="tab active">Delivery</div>
-            <div class="tab">Pickup</div>
+
+        <!-- V2: Image Left -->
+        <div class="variant" id="v1">
+            <div class="v2-header">
+                <i class="ri-menu-2-fill menu-icon"></i>
+                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&q=80" class="avatar" alt="avatar">
+                <div class="address">
+                    <div class="address-label"><i class="ri-map-pin-2-fill" style="color:#FF6B35;font-size:12px;"></i> Delivering to</div>
+                    <div class="address-text">123 Main Street, Apt 4B</div>
+                </div>
+                <div class="toggle-wrap">
+                    <div class="toggle">
+                        <button class="toggle-btn active">Delivery</button>
+                        <button class="toggle-btn">Pickup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- V3: Minimal -->
+        <div class="variant" id="v2">
+            <div class="v3-header">
+                <div class="v3-top">
+                    <div class="v3-brand">
+                        <div class="v3-brand-icon"><i class="ri-store-2-fill"></i></div>
+                        <div class="v3-brand-name">FoodApp</div>
+                    </div>
+                    <div class="v3-icons">
+                        <i class="ri-notification-3-line"></i>
+                        <i class="ri-shopping-cart-2-line"></i>
+                    </div>
+                </div>
+                <div class="v3-address">
+                    <i class="ri-map-pin-2-fill"></i>
+                    <div>
+                        <div class="address-label">Delivering to</div>
+                        <div class="address-text">123 Main Street, Apt 4B</div>
+                    </div>
+                </div>
+                <div class="v3-toggle">
+                    <div class="toggle">
+                        <button class="toggle-btn active">Delivery</button>
+                        <button class="toggle-btn">Pickup</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+    <script>
+        function switchTab(idx) {
+            document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === idx));
+            document.querySelectorAll('.variant').forEach((v, i) => v.classList.toggle('active', i === idx));
+        }
+    </script>
 </body>
 </html>

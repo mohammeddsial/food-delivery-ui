@@ -5,49 +5,146 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Again Card</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .section { max-width: 360px; width: 100%; }
+        .tabs { display: flex; gap: 6px; margin-bottom: 16px; justify-content: center; max-width: 360px; width: 100%; }
+        .tab { padding: 8px 14px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; border: 1.5px solid #ddd; background: #fff; color: #666; transition: all 0.2s; }
+        .tab.active { background: #FF6B35; color: #fff; border-color: #FF6B35; }
+        .variant { display: none; max-width: 360px; width: 100%; }
+        .variant.active { display: block; }
         .section-title { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 14px; }
         .rail { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; }
         .rail::-webkit-scrollbar { display: none; }
-        .card { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); flex-shrink: 0; width: 130px; }
-        .card-img { width: 100%; height: 90px; object-fit: cover; display: block; }
+        .card { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); flex-shrink: 0; }
+        .card-img { width: 100%; object-fit: cover; display: block; }
         .card-body { padding: 10px; }
         .card-title { font-size: 11px; font-weight: 600; color: #1a1a1a; }
         .card-row { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
         .card-price { font-size: 12px; font-weight: 700; color: #FF6B35; }
         .card-add { width: 22px; height: 22px; border-radius: 50%; background: #FF6B35; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; border: none; }
+
+        /* V1: Image Top */
+        .v1-card { width: 130px; }
+        .v1-card .card-img { height: 90px; }
+
+        /* V2: Image Left */
+        .v2-rail { flex-direction: column; gap: 10px; }
+        .v2-card { width: 100%; display: flex; align-items: center; padding: 10px; border-radius: 16px; background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        .v2-card .card-img { width: 64px; height: 64px; border-radius: 12px; flex-shrink: 0; }
+        .v2-card .card-body { flex: 1; padding: 0 0 0 12px; }
+        .v2-card .card-title { font-size: 13px; font-weight: 700; }
+        .v2-card .card-meta { font-size: 10px; color: #888; margin-top: 2px; }
+        .v2-card .card-price { font-size: 14px; }
+        .v2-card .card-add { width: 28px; height: 28px; font-size: 16px; }
+
+        /* V3: Minimal */
+        .v3-list { display: flex; flex-direction: column; gap: 8px; }
+        .v3-item { display: flex; align-items: center; gap: 12px; background: #fff; padding: 12px 14px; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .v3-icon { width: 40px; height: 40px; background: #FFF0E8; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #FF6B35; flex-shrink: 0; }
+        .v3-info { flex: 1; }
+        .v3-info .card-title { font-size: 13px; font-weight: 700; }
+        .v3-info .card-meta { font-size: 10px; color: #888; margin-top: 2px; }
+        .v3-item .card-price { font-size: 13px; font-weight: 700; color: #FF6B35; }
+        .v3-item .card-add { width: 26px; height: 26px; font-size: 14px; }
     </style>
 </head>
 <body>
-    <!-- MODULE: drawOrderAgain -->
-    <!-- IMAGES: photo-1565299624946 (pizza), photo-1568901346375 (burger) -->
-    <div class="section">
-        <div class="section-title">Order Again</div>
-        <div class="rail">
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=150&q=80" class="card-img" alt="food">
-                <div class="card-body">
-                    <div class="card-title">Pepperoni Pizza</div>
-                    <div class="card-row">
-                        <span class="card-price">$9.99</span>
-                        <button class="card-add">+</button>
+    <div style="display:flex;flex-direction:column;align-items:center;width:100%;">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab(0)">Image Top</div>
+            <div class="tab" onclick="switchTab(1)">Image Left</div>
+            <div class="tab" onclick="switchTab(2)">Minimal</div>
+        </div>
+
+        <!-- V1: Image Top -->
+        <div class="variant active" id="v0">
+            <div class="section-title">Order Again</div>
+            <div class="rail">
+                <div class="card v1-card">
+                    <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80" class="card-img" alt="food">
+                    <div class="card-body">
+                        <div class="card-title">Pepperoni Pizza</div>
+                        <div class="card-row">
+                            <span class="card-price">$9.99</span>
+                            <button class="card-add">+</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=150&q=80" class="card-img" alt="food">
-                <div class="card-body">
-                    <div class="card-title">Beef Burger</div>
-                    <div class="card-row">
-                        <span class="card-price">$7.99</span>
-                        <button class="card-add">+</button>
+                <div class="card v1-card">
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80" class="card-img" alt="food">
+                    <div class="card-body">
+                        <div class="card-title">Beef Burger</div>
+                        <div class="card-row">
+                            <span class="card-price">$7.99</span>
+                            <button class="card-add">+</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- V2: Image Left -->
+        <div class="variant" id="v1">
+            <div class="section-title">Order Again</div>
+            <div class="rail v2-rail">
+                <div class="v2-card">
+                    <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=150&q=80" class="card-img" alt="food">
+                    <div class="card-body">
+                        <div class="card-title">Pepperoni Pizza</div>
+                        <div class="card-meta"><i class="ri-time-line"></i> Ordered 3 days ago</div>
+                        <div class="card-row">
+                            <span class="card-price">$9.99</span>
+                            <button class="card-add">+</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="v2-card">
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=150&q=80" class="card-img" alt="food">
+                    <div class="card-body">
+                        <div class="card-title">Beef Burger</div>
+                        <div class="card-meta"><i class="ri-time-line"></i> Ordered 1 week ago</div>
+                        <div class="card-row">
+                            <span class="card-price">$7.99</span>
+                            <button class="card-add">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- V3: Minimal -->
+        <div class="variant" id="v2">
+            <div class="section-title">Order Again</div>
+            <div class="v3-list">
+                <div class="v3-item">
+                    <div class="v3-icon"><i class="ri-restaurant-2-fill"></i></div>
+                    <div class="v3-info">
+                        <div class="card-title">Pepperoni Pizza</div>
+                        <div class="card-meta">Ordered 3 days ago</div>
+                    </div>
+                    <span class="card-price">$9.99</span>
+                    <button class="card-add">+</button>
+                </div>
+                <div class="v3-item">
+                    <div class="v3-icon"><i class="ri-restaurant-fill"></i></div>
+                    <div class="v3-info">
+                        <div class="card-title">Beef Burger</div>
+                        <div class="card-meta">Ordered 1 week ago</div>
+                    </div>
+                    <span class="card-price">$7.99</span>
+                    <button class="card-add">+</button>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <script>
+        function switchTab(idx) {
+            document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === idx));
+            document.querySelectorAll('.variant').forEach((v, i) => v.classList.toggle('active', i === idx));
+        }
+    </script>
 </body>
 </html>

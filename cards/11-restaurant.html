@@ -5,48 +5,134 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restaurant Card</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .card { background: #fff; border-radius: 20px; overflow: hidden; max-width: 320px; width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        .card-img-wrap { position: relative; }
-        .card-img { width: 100%; height: 180px; object-fit: cover; display: block; }
-        .badge-free { position: absolute; top: 12px; left: 12px; background: #FF6B35; color: #fff; font-size: 10px; font-weight: 700; padding: 5px 12px; border-radius: 10px; z-index: 2; }
-        .badge-bookmark { position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.92); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.12); z-index: 2; cursor: pointer; }
-        .badge-bookmark i { color: #FF6B35; font-size: 16px; }
-        .card-body { padding: 16px; }
-        .card-title { font-size: 18px; font-weight: 700; color: #1a1a1a; }
-        .card-meta { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
-        .meta-item { display: flex; align-items: center; gap: 4px; font-size: 12px; color: #888; font-weight: 600; }
-        .meta-item i { font-size: 14px; }
-        .meta-item .star { color: #FFD700; }
-        .meta-item .clock { color: #FF4444; }
-        .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
-        .tag { font-size: 10px; font-weight: 600; padding: 4px 10px; border-radius: 8px; background: #f5f5f5; color: #666; }
+        .tabs { display: flex; gap: 6px; margin-bottom: 16px; justify-content: center; max-width: 360px; width: 100%; }
+        .tab { padding: 8px 14px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; border: 1.5px solid #ddd; background: #fff; color: #666; transition: all 0.2s; }
+        .tab.active { background: #FF6B35; color: #fff; border-color: #FF6B35; }
+        .variant { display: none; max-width: 360px; width: 100%; }
+        .variant.active { display: block; }
+        .section-title { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 14px; }
+
+        .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 8px; }
+        .badge-free { background: #E8F5E9; color: #2E7D32; }
+        .badge-open { background: #FFF0E8; color: #FF6B35; }
+        .star { color: #FFC107; font-size: 11px; }
+
+        /* V1: Image Top */
+        .v1-card { background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        .v1-card .card-img { width: 100%; height: 140px; object-fit: cover; }
+        .v1-card .card-body { padding: 14px; }
+        .v1-card .card-top { display: flex; align-items: center; justify-content: space-between; }
+        .v1-card .card-title { font-size: 15px; font-weight: 700; color: #1a1a1a; }
+        .v1-card .card-bookmark { font-size: 18px; color: #ccc; cursor: pointer; }
+        .v1-card .card-meta { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-size: 11px; color: #888; }
+        .v1-card .tags { display: flex; gap: 6px; margin-top: 10px; }
+        .v1-card .tag { font-size: 10px; font-weight: 600; padding: 4px 10px; border-radius: 8px; background: #f5f5f5; color: #666; }
+
+        /* V2: Image Left */
+        .v2-card { display: flex; background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); align-items: center; padding: 14px; gap: 14px; }
+        .v2-card .card-img { width: 80px; height: 80px; border-radius: 14px; object-fit: cover; flex-shrink: 0; }
+        .v2-card .card-body { flex: 1; }
+        .v2-card .card-top { display: flex; align-items: center; justify-content: space-between; }
+        .v2-card .card-title { font-size: 14px; font-weight: 700; color: #1a1a1a; }
+        .v2-card .card-bookmark { font-size: 16px; color: #ccc; cursor: pointer; }
+        .v2-card .card-meta { display: flex; align-items: center; gap: 6px; margin-top: 4px; font-size: 10px; color: #888; }
+        .v2-card .tags { display: flex; gap: 4px; margin-top: 8px; }
+        .v2-card .tag { font-size: 9px; font-weight: 600; padding: 3px 8px; border-radius: 6px; background: #f5f5f5; color: #666; }
+
+        /* V3: Minimal */
+        .v3-card { background: #fff; border-radius: 18px; padding: 18px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        .v3-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .v3-avatar { width: 48px; height: 48px; border-radius: 14px; background: #FF6B35; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #fff; font-weight: 800; flex-shrink: 0; }
+        .v3-header-info { flex: 1; }
+        .v3-header-info .card-title { font-size: 15px; font-weight: 700; color: #1a1a1a; }
+        .v3-header-info .card-meta { font-size: 11px; color: #888; margin-top: 2px; display: flex; align-items: center; gap: 6px; }
+        .v3-header .card-bookmark { font-size: 18px; color: #ccc; cursor: pointer; }
+        .v3-tags { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+        .v3-tags .tag { font-size: 10px; font-weight: 600; padding: 4px 10px; border-radius: 8px; background: #f5f5f5; color: #666; }
     </style>
 </head>
 <body>
-    <!-- MODULE: Restaurant/merchant card (Image 8 reference) -->
-    <!-- IMAGE: photo-1568901346375 (burger hero) -->
-    <div class="card">
-        <div class="card-img-wrap">
-            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80" class="card-img" alt="burger">
-            <div class="badge-free">Free Delivery</div>
-            <div class="badge-bookmark"><i class="ri-bookmark-fill"></i></div>
+    <div style="display:flex;flex-direction:column;align-items:center;width:100%;">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab(0)">Image Top</div>
+            <div class="tab" onclick="switchTab(1)">Image Left</div>
+            <div class="tab" onclick="switchTab(2)">Minimal</div>
         </div>
-        <div class="card-body">
-            <div class="card-title">Burger King</div>
-            <div class="card-meta">
-                <span class="meta-item"><i class="ri-star-fill star"></i> 4.9</span>
-                <span class="meta-item"><i class="ri-time-line clock"></i> 20-25 Min</span>
+
+        <!-- V1: Image Top -->
+        <div class="variant active" id="v0">
+            <div class="section-title">Featured Restaurant</div>
+            <div class="v1-card">
+                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80" class="card-img" alt="restaurant">
+                <div class="card-body">
+                    <div class="card-top">
+                        <div class="card-title">Burger Palace</div>
+                        <i class="ri-bookmark-line card-bookmark"></i>
+                    </div>
+                    <div class="card-meta"><span class="star"><i class="ri-star-fill"></i> 4.8</span><span><i class="ri-time-line"></i> 25-35 min</span><span><i class="ri-walk-line"></i> 1.2 km</span></div>
+                    <div class="tags">
+                        <span class="badge badge-free"><i class="ri-truck-line"></i> Free Delivery</span>
+                        <span class="badge badge-open"><i class="ri-store-2-line"></i> Open Now</span>
+                    </div>
+                    <div class="tags" style="margin-top:6px;">
+                        <span class="tag">Burgers</span><span class="tag">Fast Food</span><span class="tag">American</span>
+                    </div>
+                </div>
             </div>
-            <div class="card-tags">
-                <span class="tag">Burger</span>
-                <span class="tag">Pizza</span>
-                <span class="tag">Fast Food</span>
+        </div>
+
+        <!-- V2: Image Left -->
+        <div class="variant" id="v1">
+            <div class="section-title">Featured Restaurant</div>
+            <div class="v2-card">
+                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=150&q=80" class="card-img" alt="restaurant">
+                <div class="card-body">
+                    <div class="card-top">
+                        <div class="card-title">Burger Palace</div>
+                        <i class="ri-bookmark-line card-bookmark"></i>
+                    </div>
+                    <div class="card-meta"><span class="star"><i class="ri-star-fill"></i> 4.8</span><span><i class="ri-time-line"></i> 25-35 min</span></div>
+                    <div class="tags">
+                        <span class="badge badge-free"><i class="ri-truck-line"></i> Free Delivery</span>
+                        <span class="badge badge-open"><i class="ri-store-2-line"></i> Open</span>
+                    </div>
+                    <div class="tags" style="margin-top:4px;">
+                        <span class="tag">Burgers</span><span class="tag">Fast Food</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- V3: Minimal -->
+        <div class="variant" id="v2">
+            <div class="section-title">Featured Restaurant</div>
+            <div class="v3-card">
+                <div class="v3-header">
+                    <div class="v3-avatar">BP</div>
+                    <div class="v3-header-info">
+                        <div class="card-title">Burger Palace</div>
+                        <div class="card-meta"><span class="star"><i class="ri-star-fill"></i> 4.8</span><span><i class="ri-time-line"></i> 25-35 min</span><span><i class="ri-walk-line"></i> 1.2 km</span></div>
+                    </div>
+                    <i class="ri-bookmark-line card-bookmark"></i>
+                </div>
+                <div class="v3-tags">
+                    <span class="badge badge-free"><i class="ri-truck-line"></i> Free Delivery</span>
+                    <span class="badge badge-open"><i class="ri-store-2-line"></i> Open Now</span>
+                    <span class="tag">Burgers</span><span class="tag">Fast Food</span><span class="tag">American</span>
+                </div>
             </div>
         </div>
     </div>
+
+    <script>
+        function switchTab(idx) {
+            document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === idx));
+            document.querySelectorAll('.variant').forEach((v, i) => v.classList.toggle('active', i === idx));
+        }
+    </script>
 </body>
 </html>

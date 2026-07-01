@@ -8,7 +8,14 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; background: #fff; padding: 6px; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        .tab { padding: 10px 18px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: #999; transition: all 0.2s; }
+        .tab.active { background: #FF6B35; color: #fff; }
+        .tab:hover:not(.active) { background: #f5f5f5; }
+        .variant { display: none; }
+        .variant.active { display: block; }
+
         .phone { width: 375px; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.12); }
         .status-bar { height: 44px; background: #fff; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 24px 8px; position: relative; }
         .notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 120px; height: 28px; background: #000; border-radius: 0 0 20px 20px; }
@@ -23,267 +30,199 @@
         .cart-btn { width: 36px; height: 36px; border-radius: 12px; background: #FF6B35; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; border: none; }
         .cart-btn i { color: #fff; font-size: 18px; }
         .cart-badge { position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; background: #1a1a1a; color: #fff; font-size: 9px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
-
-        .header { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
-
-        .address-row { display: flex; align-items: center; justify-content: space-between; cursor: pointer; position: relative; }
-        .address-left { display: flex; align-items: center; gap: 8px; flex: 1; }
-        .address-icon { width: 32px; height: 32px; border-radius: 10px; background: #FFF3ED; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .address-icon i { color: #FF6B35; font-size: 16px; }
-        .address-text { font-size: 13px; font-weight: 700; color: #1a1a1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .address-chevron { color: #999; font-size: 14px; flex-shrink: 0; transition: transform 0.2s; }
-        .address-chevron.open { transform: rotate(180deg); }
-
-        .toggle-tabs { display: flex; gap: 8px; }
-        .toggle-tab { flex: 1; padding: 10px 14px; border-radius: 12px; font-size: 12px; font-weight: 600; text-align: center; cursor: pointer; border: 2px solid #e0e0e0; background: #fff; color: #999; transition: all 0.2s; }
-        .toggle-tab.active { border-color: #1a1a1a; background: #1a1a1a; color: #fff; font-weight: 700; }
-        .toggle-tab:not(.active):hover { border-color: #ccc; }
-
-        .delivery-info { padding: 0 16px 16px; display: none; }
-        .delivery-info.show { display: block; }
-        .info-card { background: #f9f9f9; border-radius: 14px; padding: 14px; display: flex; align-items: center; gap: 12px; }
-        .info-icon { width: 40px; height: 40px; border-radius: 12px; background: #E8F5E9; display: flex; align-items: center; justify-content: center; }
-        .info-icon i { color: #4CAF50; font-size: 18px; }
-        .info-title { font-size: 13px; font-weight: 600; color: #1a1a1a; }
-        .info-desc { font-size: 11px; color: #999; margin-top: 2px; }
-
-        .pickup-info { padding: 0 16px 16px; display: none; }
-        .pickup-info.show { display: block; }
-        .pickup-card { background: #f9f9f9; border-radius: 14px; padding: 14px; display: flex; align-items: center; gap: 12px; }
-        .pickup-icon { width: 40px; height: 40px; border-radius: 12px; background: #FFF3E0; display: flex; align-items: center; justify-content: center; }
-        .pickup-icon i { color: #FF6B35; font-size: 18px; }
-        .pickup-title { font-size: 13px; font-weight: 600; color: #1a1a1a; }
-        .pickup-desc { font-size: 11px; color: #999; margin-top: 2px; }
-
         .content { height: 300px; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 13px; }
 
-        /* Address Dropdown */
-        .address-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 100; display: none; overflow: hidden; margin-top: 4px; }
-        .address-dropdown.show { display: block; }
-        .dropdown-item { padding: 12px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: background 0.15s; border-bottom: 1px solid #f5f5f5; }
-        .dropdown-item:last-child { border-bottom: none; }
-        .dropdown-item:hover { background: #f9f9f9; }
-        .dropdown-item.active { background: #FFF3ED; }
-        .dropdown-item i { color: #FF6B35; font-size: 16px; }
-        .dropdown-item .item-text { font-size: 12px; font-weight: 600; color: #1a1a1a; }
-        .dropdown-item .item-sub { font-size: 10px; color: #999; }
-        .dropdown-item .item-check { margin-left: auto; color: #FF6B35; font-size: 16px; display: none; }
-        .dropdown-item.active .item-check { display: block; }
-        .dropdown-header { padding: 10px 16px; font-size: 10px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #f5f5f5; }
+        /* V1: Standard Toggle */
+        .v1-header { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+        .v1-address { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 14px; background: #f9f9f9; cursor: pointer; }
+        .v1-address-left { display: flex; align-items: center; gap: 10px; }
+        .v1-address-icon { width: 32px; height: 32px; border-radius: 10px; background: #FFF3ED; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .v1-address-icon i { color: #FF6B35; font-size: 16px; }
+        .v1-address-text { font-size: 13px; font-weight: 700; color: #1a1a1a; }
+        .v1-toggle { display: flex; gap: 8px; }
+        .v1-tab { flex: 1; padding: 10px 14px; border-radius: 12px; font-size: 12px; font-weight: 600; text-align: center; cursor: pointer; border: 2px solid #e0e0e0; background: #fff; color: #999; transition: all 0.2s; }
+        .v1-tab.active { border-color: #FF6B35; background: #FF6B35; color: #fff; font-weight: 700; }
+        .v1-info { padding: 0 16px 16px; }
+        .v1-card { background: #f9f9f9; border-radius: 14px; padding: 14px; display: flex; align-items: center; gap: 12px; }
+        .v1-card-icon { width: 40px; height: 40px; border-radius: 12px; background: #E8F5E9; display: flex; align-items: center; justify-content: center; }
+        .v1-card-icon i { color: #4CAF50; font-size: 18px; }
+        .v1-card-title { font-size: 13px; font-weight: 600; color: #1a1a1a; }
+        .v1-card-desc { font-size: 11px; color: #999; margin-top: 2px; }
+
+        /* V2: Pill Toggle */
+        .v2-header { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+        .v2-toggle-wrap { background: #f0f0f0; border-radius: 14px; padding: 4px; display: flex; }
+        .v2-tab { flex: 1; padding: 10px; border-radius: 10px; font-size: 12px; font-weight: 600; text-align: center; cursor: pointer; border: none; background: transparent; color: #999; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .v2-tab.active { background: #fff; color: #1a1a1a; font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .v2-tab i { font-size: 16px; }
+        .v2-address { display: flex; align-items: center; gap: 10px; padding: 12px; background: #f9f9f9; border-radius: 12px; }
+        .v2-address i { color: #FF6B35; font-size: 18px; }
+        .v2-address-text { font-size: 12px; font-weight: 600; color: #1a1a1a; flex: 1; }
+        .v2-address-chevron { color: #999; font-size: 14px; }
+        .v2-info { padding: 0 16px 16px; display: flex; gap: 10px; }
+        .v2-card { background: #f9f9f9; border-radius: 14px; padding: 14px; flex: 1; text-align: center; }
+        .v2-card-icon { width: 40px; height: 40px; border-radius: 50%; background: #E8F5E9; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+        .v2-card-icon i { color: #4CAF50; font-size: 18px; }
+        .v2-card-title { font-size: 12px; font-weight: 600; color: #1a1a1a; margin-top: 8px; }
+        .v2-card-desc { font-size: 10px; color: #999; margin-top: 2px; }
+
+        /* V3: Minimal */
+        .v3-header { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+        .v3-toggle { display: flex; background: #FFF3ED; border-radius: 12px; padding: 4px; }
+        .v3-tab { flex: 1; padding: 10px; border-radius: 10px; font-size: 12px; font-weight: 600; text-align: center; cursor: pointer; border: none; background: transparent; color: #FF6B35; transition: all 0.2s; }
+        .v3-tab.active { background: #FF6B35; color: #fff; font-weight: 700; }
+        .v3-address { display: flex; align-items: center; gap: 10px; padding: 14px; background: #fff; border: 1px solid #eee; border-radius: 12px; }
+        .v3-address-icon { width: 36px; height: 36px; border-radius: 10px; background: #FFF3ED; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .v3-address-icon i { color: #FF6B35; font-size: 16px; }
+        .v3-address-label { font-size: 10px; color: #999; }
+        .v3-address-text { font-size: 13px; font-weight: 700; color: #1a1a1a; }
+        .v3-info { padding: 0 16px 16px; }
+        .v3-card { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 14px; display: flex; align-items: center; gap: 12px; }
+        .v3-card-icon { width: 40px; height: 40px; border-radius: 12px; background: #E8F5E9; display: flex; align-items: center; justify-content: center; }
+        .v3-card-icon i { color: #4CAF50; font-size: 18px; }
+        .v3-card-title { font-size: 13px; font-weight: 600; color: #1a1a1a; }
+        .v3-card-desc { font-size: 11px; color: #999; margin-top: 2px; }
     </style>
 </head>
 <body>
-    <div class="phone">
-        <div class="status-bar">
-            <div class="notch"></div>
-            <span class="time">19:02</span>
-            <span class="s-icons"><i class="ri-signal-wifi-fill"></i><i class="ri-wifi-fill"></i><i class="ri-battery-2-fill"></i></span>
-        </div>
-        <div class="nav-row">
-            <div class="nav-left">
-                <button class="hamburger"><i class="ri-menu-2-fill"></i></button>
-                <span class="brand">Food Hub</span>
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('v1')">Image Top</button>
+        <button class="tab" onclick="switchTab('v2')">Image Left</button>
+        <button class="tab" onclick="switchTab('v3')">Minimal</button>
+    </div>
+
+    <!-- V1: Standard Toggle -->
+    <div class="variant active" id="v1">
+        <div class="phone">
+            <div class="status-bar">
+                <div class="notch"></div>
+                <span class="time">19:02</span>
+                <span class="s-icons"><i class="ri-signal-wifi-fill"></i><i class="ri-wifi-fill"></i><i class="ri-battery-2-fill"></i></span>
             </div>
-            <button class="cart-btn"><i class="ri-shopping-bag-3-fill"></i><span class="cart-badge">2</span></button>
-        </div>
-
-        <div class="header">
-            <div class="address-row" id="addressRow">
-                <div class="address-left">
-                    <div class="address-icon"><i class="ri-map-pin-2-fill"></i></div>
-                    <span class="address-text" id="addressText">2715 Ash Dr. San Jose, SD</span>
+            <div class="nav-row">
+                <div class="nav-left">
+                    <button class="hamburger"><i class="ri-menu-2-fill"></i></button>
+                    <span class="brand">Food Hub</span>
                 </div>
-                <i class="ri-arrow-down-s-fill address-chevron" id="addressChevron"></i>
-
-                <!-- Delivery Address Dropdown -->
-                <div class="address-dropdown" id="deliveryDropdown">
-                    <div class="dropdown-header">Saved Addresses</div>
-                    <div class="dropdown-item active" onclick="selectDeliveryAddress(0)">
-                        <i class="ri-home-4-fill"></i>
-                        <div>
-                            <div class="item-text">Home</div>
-                            <div class="item-sub">2715 Ash Dr. San Jose, SD</div>
-                        </div>
-                        <i class="ri-check-line item-check"></i>
+                <button class="cart-btn"><i class="ri-shopping-bag-3-fill"></i><span class="cart-badge">2</span></button>
+            </div>
+            <div class="v1-header">
+                <div class="v1-address">
+                    <div class="v1-address-left">
+                        <div class="v1-address-icon"><i class="ri-map-pin-2-fill"></i></div>
+                        <span class="v1-address-text">2715 Ash Dr. San Jose, SD</span>
                     </div>
-                    <div class="dropdown-item" onclick="selectDeliveryAddress(1)">
-                        <i class="ri-building-2-fill"></i>
-                        <div>
-                            <div class="item-text">Office</div>
-                            <div class="item-sub">456 Oak Ave. Brooklyn, NY</div>
-                        </div>
-                        <i class="ri-check-line item-check"></i>
-                    </div>
-                    <div class="dropdown-item" onclick="selectDeliveryAddress(2)">
-                        <i class="ri-heart-3-fill"></i>
-                        <div>
-                            <div class="item-text">Partner's Place</div>
-                            <div class="item-sub">789 Pine Rd. Austin, TX</div>
-                        </div>
-                        <i class="ri-check-line item-check"></i>
-                    </div>
+                    <i class="ri-arrow-down-s-fill" style="color:#999;font-size:16px;"></i>
                 </div>
-
-                <!-- Pickup Branch Dropdown -->
-                <div class="address-dropdown" id="pickupDropdown">
-                    <div class="dropdown-header">Nearby Branches</div>
-                    <div class="dropdown-item active" onclick="selectPickupBranch(0)">
-                        <i class="ri-store-2-fill"></i>
-                        <div>
-                            <div class="item-text">Downtown Store</div>
-                            <div class="item-sub">0.3 mi · Ready in 15 min</div>
-                        </div>
-                        <i class="ri-check-line item-check"></i>
-                    </div>
-                    <div class="dropdown-item" onclick="selectPickupBranch(1)">
-                        <i class="ri-store-2-fill"></i>
-                        <div>
-                            <div class="item-text">Mall Location</div>
-                            <div class="item-sub">1.2 mi · Ready in 20 min</div>
-                        </div>
-                        <i class="ri-check-line item-check"></i>
-                    </div>
-                    <div class="dropdown-item" onclick="selectPickupBranch(2)">
-                        <i class="ri-store-2-fill"></i>
-                        <div>
-                            <div class="item-text">Airport Terminal</div>
-                            <div class="item-sub">3.5 mi · Ready in 25 min</div>
-                        </div>
-                        <i class="ri-check-line item-check"></i>
+                <div class="v1-toggle">
+                    <div class="v1-tab active"><i class="ri-truck-fill"></i> Delivery</div>
+                    <div class="v1-tab"><i class="ri-store-2-fill"></i> Pickup</div>
+                </div>
+            </div>
+            <div class="v1-info">
+                <div class="v1-card">
+                    <div class="v1-card-icon"><i class="ri-truck-fill"></i></div>
+                    <div>
+                        <div class="v1-card-title">Delivery to your door</div>
+                        <div class="v1-card-desc">Estimated arrival: 20-30 min</div>
                     </div>
                 </div>
             </div>
-
-            <div class="toggle-tabs">
-                <div class="toggle-tab active" id="tabDelivery" onclick="switchTab('delivery')">Delivery</div>
-                <div class="toggle-tab" id="tabPickup" onclick="switchTab('pickup')">Pickup</div>
-            </div>
+            <div class="content">Page Content</div>
         </div>
+    </div>
 
-        <div class="delivery-info show" id="deliveryInfo">
-            <div class="info-card">
-                <div class="info-icon"><i class="ri-truck-fill"></i></div>
-                <div>
-                    <div class="info-title">Delivery to your door</div>
-                    <div class="info-desc">Estimated arrival: 20-30 min</div>
+    <!-- V2: Pill Toggle -->
+    <div class="variant" id="v2">
+        <div class="phone">
+            <div class="status-bar">
+                <div class="notch"></div>
+                <span class="time">19:02</span>
+                <span class="s-icons"><i class="ri-signal-wifi-fill"></i><i class="ri-wifi-fill"></i><i class="ri-battery-2-fill"></i></span>
+            </div>
+            <div class="nav-row">
+                <div class="nav-left">
+                    <button class="hamburger"><i class="ri-menu-2-fill"></i></button>
+                    <span class="brand">Food Hub</span>
+                </div>
+                <button class="cart-btn"><i class="ri-shopping-bag-3-fill"></i><span class="cart-badge">2</span></button>
+            </div>
+            <div class="v2-header">
+                <div class="v2-toggle-wrap">
+                    <button class="v2-tab active"><i class="ri-truck-fill"></i> Delivery</button>
+                    <button class="v2-tab"><i class="ri-store-2-fill"></i> Pickup</button>
+                </div>
+                <div class="v2-address">
+                    <i class="ri-map-pin-2-fill"></i>
+                    <span class="v2-address-text">2715 Ash Dr. San Jose, SD</span>
+                    <i class="ri-arrow-down-s-fill v2-address-chevron"></i>
                 </div>
             </div>
-        </div>
-
-        <div class="pickup-info" id="pickupInfo">
-            <div class="pickup-card">
-                <div class="pickup-icon"><i class="ri-store-2-fill"></i></div>
-                <div>
-                    <div class="info-title" id="pickupStoreName">Downtown Store</div>
-                    <div class="info-desc" id="pickupStoreAddr">0.3 mi · Ready in 15 min</div>
+            <div class="v2-info">
+                <div class="v2-card">
+                    <div class="v2-card-icon"><i class="ri-truck-fill"></i></div>
+                    <div class="v2-card-title">20-30 min</div>
+                    <div class="v2-card-desc">Estimated arrival</div>
+                </div>
+                <div class="v2-card">
+                    <div class="v2-card-icon" style="background:#FFF3ED;"><i class="ri-money-dollar-circle-fill" style="color:#FF6B35;"></i></div>
+                    <div class="v2-card-title">$3.99</div>
+                    <div class="v2-card-desc">Delivery fee</div>
                 </div>
             </div>
+            <div class="content">Page Content</div>
         </div>
+    </div>
 
-        <div class="content">Page Content</div>
+    <!-- V3: Minimal -->
+    <div class="variant" id="v3">
+        <div class="phone">
+            <div class="status-bar">
+                <div class="notch"></div>
+                <span class="time">19:02</span>
+                <span class="s-icons"><i class="ri-signal-wifi-fill"></i><i class="ri-wifi-fill"></i><i class="ri-battery-2-fill"></i></span>
+            </div>
+            <div class="nav-row">
+                <div class="nav-left">
+                    <button class="hamburger"><i class="ri-menu-2-fill"></i></button>
+                    <span class="brand">Food Hub</span>
+                </div>
+                <button class="cart-btn"><i class="ri-shopping-bag-3-fill"></i><span class="cart-badge">2</span></button>
+            </div>
+            <div class="v3-header">
+                <div class="v3-toggle">
+                    <button class="v3-tab active">Delivery</button>
+                    <button class="v3-tab">Pickup</button>
+                </div>
+                <div class="v3-address">
+                    <div class="v3-address-icon"><i class="ri-map-pin-2-fill"></i></div>
+                    <div>
+                        <div class="v3-address-label">Deliver to</div>
+                        <div class="v3-address-text">2715 Ash Dr. San Jose, SD</div>
+                    </div>
+                    <i class="ri-arrow-down-s-fill" style="color:#999;font-size:16px;margin-left:auto;"></i>
+                </div>
+            </div>
+            <div class="v3-info">
+                <div class="v3-card">
+                    <div class="v3-card-icon"><i class="ri-truck-fill"></i></div>
+                    <div>
+                        <div class="v3-card-title">Delivery to your door</div>
+                        <div class="v3-card-desc">Estimated arrival: 20-30 min</div>
+                    </div>
+                </div>
+            </div>
+            <div class="content">Page Content</div>
+        </div>
     </div>
 
     <script>
-        let currentMode = 'delivery';
-        let dropdownOpen = false;
-
-        const deliveryAddresses = [
-            { label: 'Home', address: '2715 Ash Dr. San Jose, SD', icon: 'ri-home-4-fill' },
-            { label: 'Office', address: '456 Oak Ave. Brooklyn, NY', icon: 'ri-building-2-fill' },
-            { label: "Partner's Place", address: '789 Pine Rd. Austin, TX', icon: 'ri-heart-3-fill' }
-        ];
-
-        const pickupBranches = [
-            { name: 'Downtown Store', info: '0.3 mi · Ready in 15 min' },
-            { name: 'Mall Location', info: '1.2 mi · Ready in 20 min' },
-            { name: 'Airport Terminal', info: '3.5 mi · Ready in 25 min' }
-        ];
-
-        let selectedDelivery = 0;
-        let selectedPickup = 0;
-
-        function switchTab(tab) {
-            currentMode = tab;
-            const tabDelivery = document.getElementById('tabDelivery');
-            const tabPickup = document.getElementById('tabPickup');
-            const deliveryInfo = document.getElementById('deliveryInfo');
-            const pickupInfo = document.getElementById('pickupInfo');
-
-            closeDropdown();
-
-            if (tab === 'delivery') {
-                tabDelivery.classList.add('active');
-                tabPickup.classList.remove('active');
-                deliveryInfo.classList.add('show');
-                pickupInfo.classList.remove('show');
-                document.getElementById('addressText').textContent = deliveryAddresses[selectedDelivery].address;
-            } else {
-                tabPickup.classList.add('active');
-                tabDelivery.classList.remove('active');
-                pickupInfo.classList.add('show');
-                deliveryInfo.classList.remove('show');
-                document.getElementById('addressText').textContent = pickupBranches[selectedPickup].name;
-            }
+        function switchTab(id) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.variant').forEach(v => v.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.target.classList.add('active');
         }
-
-        function selectDeliveryAddress(index) {
-            selectedDelivery = index;
-            document.getElementById('addressText').textContent = deliveryAddresses[index].address;
-            updateDropdownActive('deliveryDropdown', index);
-            closeDropdown();
-        }
-
-        function selectPickupBranch(index) {
-            selectedPickup = index;
-            document.getElementById('addressText').textContent = pickupBranches[index].name;
-            document.getElementById('pickupStoreName').textContent = pickupBranches[index].name;
-            document.getElementById('pickupStoreAddr').textContent = pickupBranches[index].info;
-            updateDropdownActive('pickupDropdown', index);
-            closeDropdown();
-        }
-
-        function updateDropdownActive(dropdownId, activeIndex) {
-            const items = document.querySelectorAll(`#${dropdownId} .dropdown-item`);
-            items.forEach((item, i) => {
-                item.classList.toggle('active', i === activeIndex);
-            });
-        }
-
-        function toggleDropdown() {
-            const deliveryDD = document.getElementById('deliveryDropdown');
-            const pickupDD = document.getElementById('pickupDropdown');
-            const chevron = document.getElementById('addressChevron');
-
-            if (dropdownOpen) {
-                closeDropdown();
-            } else {
-                if (currentMode === 'delivery') {
-                    deliveryDD.classList.add('show');
-                } else {
-                    pickupDD.classList.add('show');
-                }
-                chevron.classList.add('open');
-                dropdownOpen = true;
-            }
-        }
-
-        function closeDropdown() {
-            document.getElementById('deliveryDropdown').classList.remove('show');
-            document.getElementById('pickupDropdown').classList.remove('show');
-            document.getElementById('addressChevron').classList.remove('open');
-            dropdownOpen = false;
-        }
-
-        document.getElementById('addressRow').addEventListener('click', (e) => {
-            if (e.target.closest('.dropdown-item')) return;
-            toggleDropdown();
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.address-row')) {
-                closeDropdown();
-            }
-        });
     </script>
 </body>
 </html>

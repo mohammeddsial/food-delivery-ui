@@ -8,45 +8,137 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; background: #fff; padding: 6px; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        .tab { padding: 10px 18px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: #999; transition: all 0.2s; }
+        .tab.active { background: #FF6B35; color: #fff; }
+        .tab:hover:not(.active) { background: #f5f5f5; }
+        .variant { display: none; }
+        .variant.active { display: block; }
+
         .phone { width: 375px; height: 600px; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.12); position: relative; display: flex; flex-direction: column; }
         .content { flex: 1; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 13px; }
-        .bottom-nav { height: 68px; background: #fff; border-top: 1px solid #eee; display: flex; align-items: center; justify-content: space-around; padding: 0 16px; position: absolute; bottom: 0; left: 0; right: 0; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; border: none; background: none; padding: 6px 12px; }
-        .nav-item i { font-size: 20px; color: #999; transition: color 0.2s; }
-        .nav-item span { font-size: 10px; color: #999; font-weight: 500; transition: color 0.2s; }
-        .nav-item.active i { color: #FF6B35; }
-        .nav-item.active span { color: #FF6B35; font-weight: 700; }
+
+        /* V1: Image Top */
+        .v1-nav { height: 68px; background: #fff; border-top: 1px solid #eee; display: flex; align-items: center; justify-content: space-around; padding: 0 16px; }
+        .v1-item { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; border: none; background: none; padding: 6px 12px; }
+        .v1-item i { font-size: 20px; color: #999; transition: color 0.2s; }
+        .v1-item span { font-size: 10px; color: #999; font-weight: 500; transition: color 0.2s; }
+        .v1-item.active i { color: #FF6B35; }
+        .v1-item.active span { color: #FF6B35; font-weight: 700; }
+
+        /* V2: Image Left */
+        .v2-nav { height: 72px; background: #1a1a1a; display: flex; align-items: center; justify-content: space-around; padding: 0 20px; border-radius: 20px 20px 0 0; }
+        .v2-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; border: none; background: none; padding: 8px 14px; position: relative; }
+        .v2-item i { font-size: 20px; color: rgba(255,255,255,0.5); transition: color 0.2s; }
+        .v2-item span { font-size: 10px; color: rgba(255,255,255,0.5); font-weight: 500; transition: color 0.2s; }
+        .v2-item.active i { color: #FF6B35; }
+        .v2-item.active span { color: #FF6B35; font-weight: 700; }
+        .v2-item.active::before { content: ''; position: absolute; top: -8px; width: 24px; height: 3px; background: #FF6B35; border-radius: 2px; }
+
+        /* V3: Minimal */
+        .v3-nav { height: 64px; background: #fff; border-top: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; position: absolute; bottom: 0; left: 0; right: 0; }
+        .v3-item { display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; border: none; background: none; padding: 6px 10px; }
+        .v3-item i { font-size: 20px; color: #999; transition: color 0.2s; }
+        .v3-item span { font-size: 9px; color: #999; font-weight: 500; transition: all 0.2s; }
+        .v3-item.active i { color: #FF6B35; }
+        .v3-item.active span { color: #FF6B35; font-weight: 700; }
+        .v3-item.active { background: #FFF3ED; border-radius: 12px; padding: 6px 12px; }
     </style>
 </head>
 <body>
-    <!-- MODULE: Bottom Nav -->
-    <div class="phone">
-        <div class="content">Page Content</div>
-        <div class="bottom-nav">
-            <button class="nav-item active">
-                <i class="ri-home-5-fill"></i>
-                <span>Home</span>
-            </button>
-            <button class="nav-item">
-                <i class="ri-search-line"></i>
-                <span>Search</span>
-            </button>
-            <button class="nav-item">
-                <i class="ri-heart-3-line"></i>
-                <span>Favorites</span>
-            </button>
-            <button class="nav-item">
-                <i class="ri-user-3-line"></i>
-                <span>Profile</span>
-            </button>
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('v1')">Image Top</button>
+        <button class="tab" onclick="switchTab('v2')">Image Left</button>
+        <button class="tab" onclick="switchTab('v3')">Minimal</button>
+    </div>
+
+    <!-- V1: Image Top -->
+    <div class="variant active" id="v1">
+        <div class="phone">
+            <div class="content">Page Content</div>
+            <div class="v1-nav">
+                <button class="v1-item active">
+                    <i class="ri-home-5-fill"></i>
+                    <span>Home</span>
+                </button>
+                <button class="v1-item">
+                    <i class="ri-search-line"></i>
+                    <span>Search</span>
+                </button>
+                <button class="v1-item">
+                    <i class="ri-heart-3-line"></i>
+                    <span>Favorites</span>
+                </button>
+                <button class="v1-item">
+                    <i class="ri-user-3-line"></i>
+                    <span>Profile</span>
+                </button>
+            </div>
         </div>
     </div>
+
+    <!-- V2: Image Left -->
+    <div class="variant" id="v2">
+        <div class="phone">
+            <div class="content">Page Content</div>
+            <div class="v2-nav">
+                <button class="v2-item active">
+                    <i class="ri-home-5-fill"></i>
+                    <span>Home</span>
+                </button>
+                <button class="v2-item">
+                    <i class="ri-search-line"></i>
+                    <span>Search</span>
+                </button>
+                <button class="v2-item">
+                    <i class="ri-heart-3-line"></i>
+                    <span>Favorites</span>
+                </button>
+                <button class="v2-item">
+                    <i class="ri-user-3-line"></i>
+                    <span>Profile</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- V3: Minimal -->
+    <div class="variant" id="v3">
+        <div class="phone">
+            <div class="content">Page Content</div>
+            <div class="v3-nav">
+                <button class="v3-item active">
+                    <i class="ri-home-5-fill"></i>
+                    <span>Home</span>
+                </button>
+                <button class="v3-item">
+                    <i class="ri-search-line"></i>
+                    <span>Search</span>
+                </button>
+                <button class="v3-item">
+                    <i class="ri-heart-3-line"></i>
+                    <span>Favorites</span>
+                </button>
+                <button class="v3-item">
+                    <i class="ri-user-3-line"></i>
+                    <span>Profile</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        document.querySelectorAll('.nav-item').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+        function switchTab(id) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.variant').forEach(v => v.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.target.classList.add('active');
+        }
+        document.querySelectorAll('.v1-item, .v2-item, .v3-item').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.closest('.nav, .v1-nav, .v2-nav, .v3-nav').querySelectorAll('button').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
             });
         });
     </script>

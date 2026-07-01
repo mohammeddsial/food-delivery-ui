@@ -5,30 +5,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Mosaic Grid</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .mosaic { max-width: 300px; width: 100%; display: grid; grid-template-columns: 1.2fr 0.8fr; grid-template-rows: 110px 110px; gap: 6px; }
-        .mosaic-item { border-radius: 16px; overflow: hidden; position: relative; }
-        .mosaic-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .mosaic-item:first-child { grid-row: 1 / 3; }
+        .tabs { display: flex; gap: 6px; margin-bottom: 16px; justify-content: center; max-width: 360px; width: 100%; }
+        .tab { padding: 8px 14px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; border: 1.5px solid #ddd; background: #fff; color: #666; transition: all 0.2s; }
+        .tab.active { background: #FF6B35; color: #fff; border-color: #FF6B35; }
+        .variant { display: none; max-width: 360px; width: 100%; }
+        .variant.active { display: block; }
+        .section-title { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 14px; }
+
+        /* V1: Image Top */
+        .v1-mosaic { display: grid; grid-template-columns: 1.2fr 0.8fr; grid-template-rows: 110px 110px; gap: 6px; border-radius: 16px; overflow: hidden; }
+        .v1-mosaic .mosaic-item { border-radius: 0; overflow: hidden; position: relative; }
+        .v1-mosaic .mosaic-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .v1-mosaic .mosaic-item:first-child { grid-row: 1 / 3; }
         .mosaic-count { position: absolute; inset: 0; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; font-weight: 800; }
+
+        /* V2: Image Left */
+        .v2-mosaic { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: 80px; gap: 6px; border-radius: 16px; overflow: hidden; }
+        .v2-mosaic .mosaic-item { border-radius: 0; overflow: hidden; position: relative; }
+        .v2-mosaic .mosaic-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        /* V3: Minimal */
+        .v3-mosaic { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .v3-mosaic .mosaic-item { border-radius: 12px; overflow: hidden; position: relative; aspect-ratio: 1; }
+        .v3-mosaic .mosaic-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .v3-mosaic .mosaic-item:last-child { border-radius: 12px; }
+        .v3-count { font-size: 16px; font-weight: 800; }
+        .v3-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+        .v3-footer-text { font-size: 12px; color: #666; display: flex; align-items: center; gap: 4px; }
+        .v3-footer-link { font-size: 12px; color: #FF6B35; font-weight: 700; cursor: pointer; }
     </style>
 </head>
 <body>
-    <!-- MODULE: drawImageMosaic -->
-    <!-- IMAGES: photo-1565299624946 (skewers), photo-1568901346375 (fish), photo-1504674900247 (plated food) -->
-    <div class="mosaic">
-        <div class="mosaic-item">
-            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=150&q=80" alt="food1">
+    <div style="display:flex;flex-direction:column;align-items:center;width:100%;">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab(0)">Image Top</div>
+            <div class="tab" onclick="switchTab(1)">Image Left</div>
+            <div class="tab" onclick="switchTab(2)">Minimal</div>
         </div>
-        <div class="mosaic-item">
-            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=150&q=80" alt="food2">
+
+        <!-- V1: Image Top -->
+        <div class="variant active" id="v0">
+            <div class="section-title">Gallery</div>
+            <div class="v1-mosaic">
+                <div class="mosaic-item">
+                    <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=300&q=80" alt="food1">
+                </div>
+                <div class="mosaic-item">
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80" alt="food2">
+                </div>
+                <div class="mosaic-item">
+                    <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=200&q=80" alt="food3">
+                    <div class="mosaic-count">+19</div>
+                </div>
+            </div>
         </div>
-        <div class="mosaic-item">
-            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=150&q=80" alt="food3">
-            <div class="mosaic-count">+19</div>
+
+        <!-- V2: Image Left -->
+        <div class="variant" id="v1">
+            <div class="section-title">Gallery</div>
+            <div class="v2-mosaic">
+                <div class="mosaic-item">
+                    <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=150&q=80" alt="food1">
+                </div>
+                <div class="mosaic-item">
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=150&q=80" alt="food2">
+                </div>
+                <div class="mosaic-item">
+                    <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=150&q=80" alt="food3">
+                </div>
+                <div class="mosaic-item" style="display:flex;align-items:center;justify-content:center;background:#FF6B35;">
+                    <div class="mosaic-count" style="position:static;background:none;">+19</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- V3: Minimal -->
+        <div class="variant" id="v2">
+            <div class="section-title">Gallery</div>
+            <div class="v3-mosaic">
+                <div class="mosaic-item">
+                    <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80" alt="food1">
+                </div>
+                <div class="mosaic-item">
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80" alt="food2">
+                </div>
+                <div class="mosaic-item">
+                    <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=200&q=80" alt="food3">
+                    <div class="mosaic-count v3-count">+19</div>
+                </div>
+            </div>
+            <div class="v3-footer">
+                <div class="v3-footer-text"><i class="ri-camera-line"></i> 22 photos</div>
+                <div class="v3-footer-link">View All <i class="ri-arrow-right-s-line"></i></div>
+            </div>
         </div>
     </div>
+
+    <script>
+        function switchTab(idx) {
+            document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === idx));
+            document.querySelectorAll('.variant').forEach((v, i) => v.classList.toggle('active', i === idx));
+        }
+    </script>
 </body>
 </html>

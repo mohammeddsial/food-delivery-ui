@@ -3,57 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Category Tiles</title>
+    <title>Category Tiles Card</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .section { max-width: 360px; width: 100%; }
-        .section-header { margin-bottom: 14px; }
-        .section-title { font-size: 18px; font-weight: 800; color: #1a1a1a; }
-        .section-sub { font-size: 12px; color: #999; margin-top: 2px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .cat-card { background: #fff; border-radius: 18px; padding: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 6px; position: relative; overflow: hidden; min-height: 140px; }
-        .cat-title { font-size: 14px; font-weight: 800; color: #1a1a1a; }
-        .cat-desc { font-size: 10px; color: #888; line-height: 1.3; }
-        .cat-badge { font-size: 9px; font-weight: 700; padding: 4px 10px; border-radius: 8px; background: #FFF3E0; color: #FF6B35; display: inline-block; width: fit-content; }
-        .cat-img { position: absolute; bottom: -8px; right: -8px; width: 80px; height: 80px; object-fit: cover; border-radius: 12px; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .variant-tabs { display: flex; gap: 8px; margin-bottom: 24px; }
+        .variant-tab { padding: 8px 16px; border-radius: 8px; border: 1px solid #ddd; background: #fff; cursor: pointer; font-size: 12px; font-weight: 600; color: #666; transition: all 0.2s; }
+        .variant-tab.active { background: #FF6B35; color: #fff; border-color: #FF6B35; }
+        .variant { display: none; }
+        .variant.active { display: block; }
+
+        /* V1: Image Top */
+        .v1-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 320px; }
+        .v1-card { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.08); position: relative; }
+        .v1-img { width: 100%; height: 120px; object-fit: cover; }
+        .v1-badge { position: absolute; top: 8px; left: 8px; background: #FF6B35; color: #fff; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; }
+        .v1-body { padding: 10px; }
+        .v1-title { font-size: 13px; font-weight: 700; color: #1a1a1a; }
+        .v1-desc { font-size: 10px; color: #888; margin-top: 2px; }
+
+        /* V2: Image Left */
+        .v2-list { display: flex; flex-direction: column; gap: 10px; max-width: 340px; }
+        .v2-card { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.08); display: flex; height: 90px; }
+        .v2-img { width: 90px; height: 100%; object-fit: cover; flex-shrink: 0; }
+        .v2-body { padding: 12px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .v2-title { font-size: 13px; font-weight: 700; color: #1a1a1a; }
+        .v2-desc { font-size: 11px; color: #888; margin-top: 2px; }
+
+        /* V3: Minimal */
+        .v3-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 320px; }
+        .v3-card { background: #fff; border-radius: 12px; padding: 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); text-align: center; }
+        .v3-icon { width: 48px; height: 48px; border-radius: 50%; background: #FFF3E0; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; }
+        .v3-icon i { font-size: 20px; color: #FF6B35; }
+        .v3-title { font-size: 12px; font-weight: 700; color: #1a1a1a; }
     </style>
 </head>
 <body>
-    <!-- MODULE: drawCategoryTiles -->
-    <!-- IMAGES: photo-1509440159596 (bakery), photo-1509042239860 (coffee), photo-1551024506 (sweets), photo-1504674900247 (bundles) -->
-    <div class="section">
-        <div class="section-header">
-            <div class="section-title">Our Categories</div>
-            <div class="section-sub">Find all your favorite bakery items in one place.</div>
-        </div>
-        <div class="grid">
-            <div class="cat-card">
-                <div class="cat-title">Cakes</div>
-                <div class="cat-desc">Soft, fresh cakes for birthdays, parties, and everyday cravings.</div>
-                <div class="cat-badge">Up To 60% Off</div>
-                <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=100&q=80" class="cat-img" alt="bakery">
+    <div class="variant-tabs">
+        <div class="variant-tab active" onclick="showVariant(1)">Image Top</div>
+        <div class="variant-tab" onclick="showVariant(2)">Image Left</div>
+        <div class="variant-tab" onclick="showVariant(3)">Minimal</div>
+    </div>
+
+    <div class="variant v1 active" id="v1">
+        <div class="v1-grid">
+            <div class="v1-card">
+                <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=300&q=80" class="v1-img" alt="burger">
+                <div class="v1-badge">20% OFF</div>
+                <div class="v1-body"><div class="v1-title">Burgers</div><div class="v1-desc">Juicy beef patties</div></div>
             </div>
-            <div class="cat-card">
-                <div class="cat-title">Pastries</div>
-                <div class="cat-desc">Creamy and flaky pastries made fresh every day.</div>
-                <div class="cat-badge">Up To 35% Off</div>
-                <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=100&q=80" class="cat-img" alt="coffee">
+            <div class="v1-card">
+                <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=300&q=80" class="v1-img" alt="coffee">
+                <div class="v1-body"><div class="v1-title">Coffee</div><div class="v1-desc">Freshly brewed</div></div>
             </div>
-            <div class="cat-card">
-                <div class="cat-title">Sweets</div>
-                <div class="cat-desc">Crunchy biscuits and cookies, perfect with tea or coffee.</div>
-                <div class="cat-badge">Up To 15% Off</div>
-                <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=100&q=80" class="cat-img" alt="sweets">
+            <div class="v1-card">
+                <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=300&q=80" class="v1-img" alt="dessert">
+                <div class="v1-badge">NEW</div>
+                <div class="v1-body"><div class="v1-title">Desserts</div><div class="v1-desc">Sweet treats</div></div>
             </div>
-            <div class="cat-card">
-                <div class="cat-title">Bundles</div>
-                <div class="cat-desc">Freshly baked breads, buns, and rolls for daily use.</div>
-                <div class="cat-badge">Up To 18% Off</div>
-                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=100&q=80" class="cat-img" alt="bundles">
+            <div class="v1-card">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80" class="v1-img" alt="healthy">
+                <div class="v1-body"><div class="v1-title">Healthy</div><div class="v1-desc">Fresh salads</div></div>
             </div>
         </div>
     </div>
+
+    <div class="variant" id="v2">
+        <div class="v2-list">
+            <div class="v2-card">
+                <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=300&q=80" class="v2-img" alt="burger">
+                <div class="v2-body"><div class="v2-title">Burgers</div><div class="v2-desc">Juicy beef patties  20% OFF</div></div>
+            </div>
+            <div class="v2-card">
+                <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=300&q=80" class="v2-img" alt="coffee">
+                <div class="v2-body"><div class="v2-title">Coffee</div><div class="v2-desc">Freshly brewed daily</div></div>
+            </div>
+            <div class="v2-card">
+                <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=300&q=80" class="v2-img" alt="dessert">
+                <div class="v2-body"><div class="v2-title">Desserts</div><div class="v2-desc">Sweet treats  NEW</div></div>
+            </div>
+            <div class="v2-card">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80" class="v2-img" alt="healthy">
+                <div class="v2-body"><div class="v2-title">Healthy</div><div class="v2-desc">Fresh salads & bowls</div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="variant" id="v3">
+        <div class="v3-grid">
+            <div class="v3-card"><div class="v3-icon"><i class="ri-restaurant-line"></i></div><div class="v3-title">Burgers</div></div>
+            <div class="v3-card"><div class="v3-icon"><i class="ri-cup-line"></i></div><div class="v3-title">Coffee</div></div>
+            <div class="v3-card"><div class="v3-icon"><i class="ri-cake-3-line"></i></div><div class="v3-title">Desserts</div></div>
+            <div class="v3-card"><div class="v3-icon"><i class="ri-leaf-line"></i></div><div class="v3-title">Healthy</div></div>
+        </div>
+    </div>
+
+    <script>
+    function showVariant(n) {
+        document.querySelectorAll('.variant').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.variant-tab').forEach(t => t.classList.remove('active'));
+        document.getElementById('v' + n).classList.add('active');
+        document.querySelectorAll('.variant-tab')[n - 1].classList.add('active');
+    }
+    </script>
 </body>
 </html>

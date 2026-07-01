@@ -5,26 +5,99 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deals Promo Banner</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .banner { max-width: 360px; width: 100%; background: linear-gradient(135deg, #FF6B35, #FF8F65); border-radius: 20px; padding: 24px; color: #fff; position: relative; overflow: hidden; }
+        .tabs { display: flex; gap: 6px; margin-bottom: 16px; justify-content: center; max-width: 360px; width: 100%; }
+        .tab { padding: 8px 14px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; border: 1.5px solid #ddd; background: #fff; color: #666; transition: all 0.2s; }
+        .tab.active { background: #FF6B35; color: #fff; border-color: #FF6B35; }
+        .variant { display: none; max-width: 360px; width: 100%; }
+        .variant.active { display: block; }
+
+        .banner { background: linear-gradient(135deg, #FF6B35, #FF8F65); border-radius: 20px; padding: 24px; color: #fff; position: relative; overflow: hidden; }
         .banner-tag { font-size: 12px; font-weight: 600; opacity: 0.9; }
         .banner-title { font-size: 12px; font-weight: 600; opacity: 0.9; }
         .banner-big { font-size: 40px; font-weight: 900; margin-top: 4px; line-height: 1; }
         .banner-sub { font-size: 12px; font-weight: 700; opacity: 0.8; letter-spacing: 2px; }
         .banner-img { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 140px; height: 100px; border-radius: 14px; object-fit: cover; opacity: 0.9; }
+
+        /* V1: Image Top */
+        .v1-banner { text-align: center; }
+        .v1-banner img { width: 100%; height: 160px; object-fit: cover; border-radius: 14px; margin-bottom: 16px; }
+        .v1-banner .banner-big { font-size: 48px; }
+        .v1-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-top: 12px; }
+
+        /* V2: Image Left */
+        .v2-banner { display: flex; align-items: center; gap: 16px; padding: 20px; }
+        .v2-img { width: 100px; height: 100px; border-radius: 14px; object-fit: cover; flex-shrink: 0; }
+        .v2-content { flex: 1; }
+        .v2-content .banner-big { font-size: 32px; }
+        .v2-tag { display: flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; opacity: 0.9; margin-top: 6px; }
+
+        /* V3: Minimal */
+        .v3-banner { text-align: center; padding: 28px 20px; }
+        .v3-icon { width: 56px; height: 56px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 12px; }
+        .v3-banner .banner-big { font-size: 36px; }
+        .v3-details { display: flex; justify-content: center; gap: 16px; margin-top: 14px; }
+        .v3-detail { font-size: 11px; opacity: 0.9; display: flex; align-items: center; gap: 4px; }
     </style>
 </head>
 <body>
-    <!-- MODULE: drawDealsPromos -->
-    <!-- IMAGE: photo-1568901346375 (burger with fries) -->
-    <div class="banner">
-        <div class="banner-tag">Food Package</div>
-        <div class="banner-title">Offer</div>
-        <div class="banner-big">25%</div>
-        <div class="banner-sub">DISCOUNT</div>
-        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80" class="banner-img" alt="food">
+    <div style="display:flex;flex-direction:column;align-items:center;width:100%;">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab(0)">Image Top</div>
+            <div class="tab" onclick="switchTab(1)">Image Left</div>
+            <div class="tab" onclick="switchTab(2)">Minimal</div>
+        </div>
+
+        <!-- V1: Image Top -->
+        <div class="variant active" id="v0">
+            <div class="banner v1-banner">
+                <div class="banner-tag">Food Package</div>
+                <div class="banner-title">Offer</div>
+                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80" alt="food">
+                <div class="banner-big">25%</div>
+                <div class="banner-sub">DISCOUNT</div>
+                <div class="v1-badge"><i class="ri-time-line"></i> Ends in 2 hours</div>
+            </div>
+        </div>
+
+        <!-- V2: Image Left -->
+        <div class="variant" id="v1">
+            <div class="banner v2-banner">
+                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80" class="v2-img" alt="food">
+                <div class="v2-content">
+                    <div class="banner-tag">Food Package</div>
+                    <div class="banner-title">Offer</div>
+                    <div class="banner-big">25%</div>
+                    <div class="banner-sub">DISCOUNT</div>
+                    <div class="v2-tag"><i class="ri-fire-fill"></i> Hot Deal</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- V3: Minimal -->
+        <div class="variant" id="v2">
+            <div class="banner v3-banner">
+                <div class="v3-icon"><i class="ri-gift-2-fill"></i></div>
+                <div class="banner-tag">Food Package</div>
+                <div class="banner-title">Offer</div>
+                <div class="banner-big">25%</div>
+                <div class="banner-sub">DISCOUNT</div>
+                <div class="v3-details">
+                    <div class="v3-detail"><i class="ri-time-line"></i> 2 hours left</div>
+                    <div class="v3-detail"><i class="ri-coupon-3-line"></i> Use: SAVE25</div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <script>
+        function switchTab(idx) {
+            document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === idx));
+            document.querySelectorAll('.variant').forEach((v, i) => v.classList.toggle('active', i === idx));
+        }
+    </script>
 </body>
 </html>

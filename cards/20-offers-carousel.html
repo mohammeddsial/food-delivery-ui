@@ -5,41 +5,151 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Offers Carousel</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .rail { display: flex; gap: 14px; overflow-x: auto; max-width: 380px; padding-bottom: 8px; }
-        .rail::-webkit-scrollbar { display: none; }
-        .card-dark { flex-shrink: 0; width: 200px; background: linear-gradient(135deg, #1a1a1a, #333); border-radius: 18px; padding: 18px; color: #fff; border: 2px solid #FF6B35; display: flex; flex-direction: column; justify-content: space-between; min-height: 130px; }
-        .card-light { flex-shrink: 0; width: 200px; background: #fff; border-radius: 18px; padding: 18px; border: 2px solid #e0e0e0; display: flex; flex-direction: column; justify-content: space-between; min-height: 130px; }
-        .card-label { font-size: 10px; color: #aaa; letter-spacing: 1px; text-transform: uppercase; }
-        .card-big { font-size: 22px; font-weight: 900; margin-top: 6px; }
-        .card-sub { font-size: 11px; color: #ccc; margin-top: 3px; }
-        .card-code { font-size: 10px; color: #FF6B35; margin-top: 10px; }
-        .card-light .card-label { color: #999; }
-        .card-light .card-big { color: #1a1a1a; }
-        .card-light .card-sub { color: #666; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; background: #fff; padding: 6px; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        .tab { padding: 10px 18px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: #999; transition: all 0.2s; }
+        .tab.active { background: #FF6B35; color: #fff; }
+        .tab:hover:not(.active) { background: #f5f5f5; }
+        .variant { display: none; }
+        .variant.active { display: block; }
+
+        /* V1: Image Top */
+        .v1-rail { display: flex; gap: 14px; overflow-x: auto; max-width: 380px; padding-bottom: 8px; }
+        .v1-rail::-webkit-scrollbar { display: none; }
+        .v1-card { flex-shrink: 0; width: 200px; border-radius: 18px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .v1-card-img { width: 100%; height: 80px; object-fit: cover; }
+        .v1-card-body { background: #fff; padding: 14px; }
+        .v1-card-label { font-size: 10px; color: #aaa; letter-spacing: 1px; text-transform: uppercase; }
+        .v1-card-big { font-size: 20px; font-weight: 900; color: #1a1a1a; margin-top: 4px; }
+        .v1-card-sub { font-size: 11px; color: #666; margin-top: 2px; }
+        .v1-card-code { font-size: 10px; color: #FF6B35; font-weight: 700; margin-top: 8px; display: flex; align-items: center; gap: 4px; }
+        .v1-card-dark .v1-card-body { background: #1a1a1a; }
+        .v1-card-dark .v1-card-label { color: #aaa; }
+        .v1-card-dark .v1-card-big { color: #fff; }
+        .v1-card-dark .v1-card-sub { color: #ccc; }
+
+        /* V2: Image Left */
+        .v2-rail { display: flex; gap: 14px; overflow-x: auto; max-width: 380px; padding-bottom: 8px; }
+        .v2-rail::-webkit-scrollbar { display: none; }
+        .v2-card { flex-shrink: 0; width: 220px; background: #fff; border-radius: 18px; padding: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 12px; border-left: 4px solid #FF6B35; }
+        .v2-icon { width: 44px; height: 44px; border-radius: 12px; background: #FFF3ED; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .v2-icon i { color: #FF6B35; font-size: 20px; }
+        .v2-body { flex: 1; }
+        .v2-label { font-size: 9px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+        .v2-big { font-size: 18px; font-weight: 900; color: #1a1a1a; }
+        .v2-sub { font-size: 10px; color: #666; margin-top: 1px; }
+        .v2-code { font-size: 9px; color: #FF6B35; font-weight: 700; margin-top: 4px; }
+        .v2-card-dark { background: #1a1a1a; border-left-color: #FFD700; }
+        .v2-card-dark .v2-icon { background: rgba(255,215,0,0.15); }
+        .v2-card-dark .v2-icon i { color: #FFD700; }
+        .v2-card-dark .v2-label { color: #aaa; }
+        .v2-card-dark .v2-big { color: #fff; }
+        .v2-card-dark .v2-sub { color: #ccc; }
+        .v2-card-dark .v2-code { color: #FFD700; }
+
+        /* V3: Minimal */
+        .v3-rail { display: flex; gap: 12px; overflow-x: auto; max-width: 380px; padding-bottom: 8px; }
+        .v3-rail::-webkit-scrollbar { display: none; }
+        .v3-card { flex-shrink: 0; width: 160px; background: #fff; border-radius: 14px; padding: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center; }
+        .v3-icon { width: 40px; height: 40px; border-radius: 50%; background: #FFF3ED; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+        .v3-icon i { color: #FF6B35; font-size: 18px; }
+        .v3-label { font-size: 9px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; }
+        .v3-big { font-size: 18px; font-weight: 900; color: #1a1a1a; margin-top: 4px; }
+        .v3-sub { font-size: 10px; color: #666; margin-top: 2px; }
+        .v3-code { font-size: 10px; color: #FF6B35; font-weight: 700; margin-top: 8px; padding: 4px 10px; background: #FFF3ED; border-radius: 8px; display: inline-block; }
+        .v3-card-dark { background: #1a1a1a; }
+        .v3-card-dark .v3-icon { background: rgba(255,107,53,0.2); }
+        .v3-card-dark .v3-label { color: #aaa; }
+        .v3-card-dark .v3-big { color: #fff; }
+        .v3-card-dark .v3-sub { color: #ccc; }
+        .v3-card-dark .v3-code { background: rgba(255,107,53,0.2); color: #FF8F65; }
     </style>
 </head>
 <body>
-    <!-- MODULE: drawOffersCarousel -->
-    <div class="rail">
-        <div class="card-dark">
-            <div>
-                <div class="card-label">Exclusive Offer</div>
-                <div class="card-big">$5 OFF</div>
-                <div class="card-sub">First 3 orders</div>
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('v1')">Image Top</button>
+        <button class="tab" onclick="switchTab('v2')">Image Left</button>
+        <button class="tab" onclick="switchTab('v3')">Minimal</button>
+    </div>
+
+    <!-- V1: Image Top -->
+    <div class="variant active" id="v1">
+        <div class="v1-rail">
+            <div class="v1-card v1-card-dark">
+                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=400&q=80" class="v1-card-img" alt="offer">
+                <div class="v1-card-body">
+                    <div class="v1-card-label">Exclusive Offer</div>
+                    <div class="v1-card-big">$5 OFF</div>
+                    <div class="v1-card-sub">First 3 orders</div>
+                    <div class="v1-card-code"><i class="ri-ticket-2-fill"></i> WELCOME5</div>
+                </div>
             </div>
-            <div class="card-code">Use code: WELCOME5</div>
-        </div>
-        <div class="card-light">
-            <div>
-                <div class="card-label">Weekend Deal</div>
-                <div class="card-big">20% OFF</div>
-                <div class="card-sub">Sat & Sun orders</div>
+            <div class="v1-card">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" class="v1-card-img" alt="offer">
+                <div class="v1-card-body">
+                    <div class="v1-card-label">Weekend Deal</div>
+                    <div class="v1-card-big">20% OFF</div>
+                    <div class="v1-card-sub">Sat & Sun orders</div>
+                    <div class="v1-card-code"><i class="ri-ticket-2-fill"></i> WEEKEND20</div>
+                </div>
             </div>
-            <div class="card-code">Use code: WEEKEND20</div>
         </div>
     </div>
+
+    <!-- V2: Image Left -->
+    <div class="variant" id="v2">
+        <div class="v2-rail">
+            <div class="v2-card v2-card-dark">
+                <div class="v2-icon"><i class="ri-percent-fill"></i></div>
+                <div class="v2-body">
+                    <div class="v2-label">Exclusive Offer</div>
+                    <div class="v2-big">$5 OFF</div>
+                    <div class="v2-sub">First 3 orders</div>
+                    <div class="v2-code">WELCOME5</div>
+                </div>
+            </div>
+            <div class="v2-card">
+                <div class="v2-icon"><i class="ri-calendar-fill"></i></div>
+                <div class="v2-body">
+                    <div class="v2-label">Weekend Deal</div>
+                    <div class="v2-big">20% OFF</div>
+                    <div class="v2-sub">Sat & Sun orders</div>
+                    <div class="v2-code">WEEKEND20</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- V3: Minimal -->
+    <div class="variant" id="v3">
+        <div class="v3-rail">
+            <div class="v3-card v3-card-dark">
+                <div class="v3-icon"><i class="ri-percent-fill"></i></div>
+                <div class="v3-label">Exclusive Offer</div>
+                <div class="v3-big">$5 OFF</div>
+                <div class="v3-sub">First 3 orders</div>
+                <div class="v3-code">WELCOME5</div>
+            </div>
+            <div class="v3-card">
+                <div class="v3-icon"><i class="ri-calendar-fill"></i></div>
+                <div class="v3-label">Weekend Deal</div>
+                <div class="v3-big">20% OFF</div>
+                <div class="v3-sub">Sat & Sun orders</div>
+                <div class="v3-code">WEEKEND20</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(id) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.variant').forEach(v => v.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
 </body>
 </html>
