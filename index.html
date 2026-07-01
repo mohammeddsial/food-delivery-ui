@@ -1401,25 +1401,25 @@
     <script>
         // ─── MASTER CONFIG (default module set, cloned per view) ──────────
         const defaultModulesConfig = [
-            { id: 'announcement-strip', name: 'Announcement Strip', core: false, enabled: true, style: 'default', styles: ['default', 'icon-headline', 'deadline-tag', 'image-side'] },
-            { id: 'brand-header', name: 'Brand Header Base', core: true, enabled: true, style: 'default', styles: ['default', 'compact', 'spacious'] },
-            { id: 'video-reel-hero', name: 'Video Reel Hero Layer', core: true, enabled: true, style: 'default', styles: ['default', 'card', 'fullscreen'] },
-            { id: 'active-order-tracker', name: 'Active Order Tracker', core: true, enabled: true, style: 'default', styles: ['default', 'compact', 'detailed'] },
-            { id: 'loyalty-card', name: 'Loyalty Metrics Card', core: true, enabled: true, style: 'default', styles: ['default', 'minimal', 'premium'] },
-            { id: 'finish-your-order', name: 'Finish Your Order Alert', core: false, enabled: true, style: 'default', styles: ['default', 'banner', 'popup'] },
-            { id: 'limited-time-deal', name: 'Limited-Time Deal Timer', core: false, enabled: true, style: 'default', styles: ['default', 'card', 'minimal'] },
-            { id: 'order-again', name: 'Order Again Rail', core: true, enabled: true, style: 'default', styles: ['default', 'grid', 'list'] },
-            { id: 'recommended-for-you', name: 'Recommended For You Grid', core: true, enabled: true, style: 'default', styles: ['default', 'horizontal', 'masonry'] },
-            { id: 'deals-promos', name: 'Deals/Promotions Gateway', core: true, enabled: true, style: 'default', styles: ['default', 'banner', 'cards'] },
-            { id: 'birthday-reward-banner', name: 'Birthday Reward Banner', core: false, enabled: false, style: 'default', styles: ['default', 'subtle', 'celebration'] },
-            { id: 'category-tiles', name: 'Category Navigation Grid', core: true, enabled: true, style: 'default', styles: ['default', 'icons', 'cards'] },
-            { id: 'meal-deal-combo', name: 'Meal-Deal Combo Builder', core: true, enabled: true, style: 'default', styles: ['default', 'compact', 'detailed'] },
-            { id: 'featured-items', name: 'Featured Items Slider', core: true, enabled: true, style: 'default', styles: ['default', 'hero', 'minimal'] },
-            { id: 'popular-rail', name: 'Popular Items Rail (+Add)', core: true, enabled: true, style: 'default', styles: ['default', 'horizontal', 'grid'] },
-            { id: 'offers-carousel', name: 'Offers Carousel Deck', core: false, enabled: true, style: 'default', styles: ['default', 'minimal', 'bold'] },
-            { id: 'offers-feed', name: 'Offers Comprehensive Feed', core: false, enabled: true, style: 'default', styles: ['default', 'list', 'cards'] },
-            { id: 'image-mosaic', name: 'Image Mosaic Lookbook', core: false, enabled: true, style: 'default', styles: ['default', 'grid', 'masonry'] },
-            { id: 'stories', name: 'Stories Loop Tickers', core: false, enabled: true, style: 'default', styles: ['default', 'minimal', 'circles'] },
+            { id: 'announcement-strip', name: 'Announcement Strip', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'brand-header', name: 'Brand Header Base', core: true, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'video-reel-hero', name: 'Video Reel Hero Layer', core: true, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'active-order-tracker', name: 'Active Order Tracker', core: true, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'loyalty-card', name: 'Loyalty Metrics Card', core: true, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'finish-your-order', name: 'Finish Your Order Alert', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'limited-time-deal', name: 'Limited-Time Deal Timer', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'order-again', name: 'Order Again Rail', core: true, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'recommended-for-you', name: 'Recommended For You Grid', core: true, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'deals-promos', name: 'Deals/Promotions Gateway', core: true, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'birthday-reward-banner', name: 'Birthday Reward Banner', core: false, enabled: false, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'category-tiles', name: 'Category Navigation Grid', core: true, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'meal-deal-combo', name: 'Meal-Deal Combo Builder', core: true, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'featured-items', name: 'Featured Items Slider', core: true, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'popular-rail', name: 'Popular Items Rail (+Add)', core: true, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'offers-carousel', name: 'Offers Carousel Deck', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'offers-feed', name: 'Offers Comprehensive Feed', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'image-mosaic', name: 'Image Mosaic Lookbook', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'stories', name: 'Stories Loop Tickers', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
         ];
 
         // Each of the 3 viewports keeps its OWN independent module list (enable/order/style)
@@ -1700,7 +1700,7 @@
         // visual layout (checked against the render functions below). All other
         // modules currently only render their "default" look regardless of the
         // style picked - the picker still works, it's flagged with a dim dot.
-        const MODULES_WITH_REAL_VARIANTS = ['announcement-strip', 'video-reel-hero', 'limited-time-deal', 'order-again', 'recommended-for-you'];
+        const MODULES_WITH_REAL_VARIANTS = ['video-reel-hero', 'limited-time-deal', 'order-again', 'recommended-for-you'];
 
         let dragSourceIndex = null;
 
@@ -1789,36 +1789,19 @@
         // ─── DESIGN PICKER (visual thumbnail popup) ─────────────────────
         // Abstract layout diagrams per style keyword - gives a genuine visual
         // difference to pick from without needing a full live-rendered preview.
+        // Simple abstract layout diagrams distinguishing the 3 generic choices
+        // every module now offers (default / option 1 / option 2).
         function getStyleThumbHTML(styleName) {
-            const s = styleName.toLowerCase();
             const img = 'position:absolute;background:#3a3a3a;border-radius:3px;';
             const line = 'position:absolute;background:#333;border-radius:2px;';
-            if (s === 'default') {
+            if (styleName === 'default') {
                 return `<div style="${img}top:4px;left:4px;width:16px;height:16px;"></div><div style="${line}top:6px;left:24px;width:14px;height:3px;"></div><div style="${line}top:12px;left:24px;width:10px;height:3px;"></div><div style="${line}bottom:4px;left:4px;width:30px;height:5px;background:#00615F;border-radius:6px;"></div>`;
             }
-            if (['minimal', 'subtle', 'compact'].includes(s)) {
-                return `<div style="${line}top:16px;left:6px;width:32px;height:3px;"></div><div style="${line}top:23px;left:6px;width:20px;height:3px;"></div>`;
-            }
-            if (['bold', 'celebration', 'banner', 'spacious'].includes(s)) {
-                return `<div style="position:absolute;inset:6px;background:#00615F;border-radius:5px;opacity:0.35;"></div><div style="${line}top:18px;left:10px;width:24px;height:4px;background:#00615F;"></div>`;
-            }
-            if (['card', 'popup', 'detailed'].includes(s)) {
-                return `<div style="position:absolute;top:5px;left:8px;right:8px;bottom:5px;border:1.5px solid #444;border-radius:6px;"></div><div style="${img}top:8px;left:11px;width:14px;height:10px;"></div><div style="${line}top:9px;left:28px;width:10px;height:3px;"></div>`;
-            }
-            if (['fullscreen', 'hero'].includes(s)) {
-                return `<div style="position:absolute;inset:2px;background:linear-gradient(135deg,#2a2a2a,#3a3a3a);border-radius:4px;"></div><div style="${line}bottom:6px;left:6px;width:24px;height:4px;background:#00615F;"></div>`;
-            }
-            if (['grid', 'icons', 'cards'].includes(s)) {
-                return `<div style="${img}top:5px;left:5px;width:14px;height:14px;"></div><div style="${img}top:5px;left:22px;width:14px;height:14px;"></div><div style="${img}top:22px;left:5px;width:14px;height:14px;"></div><div style="${img}top:22px;left:22px;width:14px;height:14px;"></div>`;
-            }
-            if (['list', 'horizontal'].includes(s)) {
+            if (styleName === 'option 1') {
                 return `<div style="${img}top:5px;left:5px;width:10px;height:10px;"></div><div style="${line}top:6px;left:18px;width:20px;height:3px;"></div><div style="${img}top:19px;left:5px;width:10px;height:10px;"></div><div style="${line}top:20px;left:18px;width:20px;height:3px;"></div>`;
             }
-            if (s === 'masonry') {
-                return `<div style="${img}top:5px;left:5px;width:12px;height:20px;"></div><div style="${img}top:5px;left:20px;width:12px;height:10px;"></div><div style="${img}top:18px;left:20px;width:12px;height:8px;"></div>`;
-            }
-            // fallback generic
-            return `<div style="${line}top:18px;left:6px;width:32px;height:3px;"></div><div style="${line}top:24px;left:6px;width:22px;height:3px;"></div>`;
+            // option 2
+            return `<div style="position:absolute;inset:6px;background:#00615F;border-radius:5px;opacity:0.35;"></div><div style="${line}top:18px;left:10px;width:24px;height:4px;background:#00615F;"></div>`;
         }
 
         function openDesignPicker(moduleId) {
@@ -2506,7 +2489,7 @@
             const heroH = window.cardConfig[theme].heroHeight;
             
             // Style variations
-            if (style === 'card') {
+            if (style === 'option 1') {
                 // Card style - smaller, contained
                 if (theme === 'neumorphism') {
                     return `
@@ -2539,7 +2522,7 @@
                         </div>
                     </div>`;
                 }
-            } else if (style === 'fullscreen') {
+            } else if (style === 'option 2') {
                 // Fullscreen style - edge to edge
                 if (theme === 'neumorphism') {
                     return `
@@ -2824,7 +2807,7 @@
             const val = stateSimulation.countdown;
             
             // Image Left variant
-            if (style === 'minimal') {
+            if (style === 'option 2') {
                 if (theme === 'neumorphism') {
                     return `
                     <div style="padding:0 16px 16px;">
@@ -2938,7 +2921,7 @@
 
         function drawOrderAgain(theme, style = 'default') {
             // Grid variant
-            if (style === 'grid') {
+            if (style === 'option 1') {
                 if (theme === 'neumorphism') {
                     return `
                     <div style="padding:0 16px 16px;">
@@ -3151,7 +3134,7 @@
             const d = getSimulatedItems();
             
             // List variant (Image Left)
-            if (style === 'list') {
+            if (style === 'option 1') {
                 if (theme === 'neumorphism') {
                     return `
                     <div style="padding:0 16px 16px;">
