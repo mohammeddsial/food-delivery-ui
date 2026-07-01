@@ -1250,25 +1250,25 @@
     <script>
         // ─── MASTER CONFIG ────────────────────────────────────────────────
         let modulesConfig = [
-            { id: 'announcement-strip', name: 'Announcement Strip', core: false, enabled: true, style: 'default', styles: ['default', 'minimal', 'bold'] },
-            { id: 'brand-header', name: 'Brand Header Base', core: true, enabled: true, style: 'default', styles: ['default', 'compact', 'spacious'] },
-            { id: 'video-reel-hero', name: 'Video Reel Hero Layer', core: true, enabled: true, style: 'default', styles: ['default', 'card', 'fullscreen'] },
-            { id: 'active-order-tracker', name: 'Active Order Tracker', core: true, enabled: true, style: 'default', styles: ['default', 'compact', 'detailed'] },
-            { id: 'loyalty-card', name: 'Loyalty Metrics Card', core: true, enabled: true, style: 'default', styles: ['default', 'minimal', 'premium'] },
-            { id: 'finish-your-order', name: 'Finish Your Order Alert', core: false, enabled: true, style: 'default', styles: ['default', 'banner', 'popup'] },
-            { id: 'limited-time-deal', name: 'Limited-Time Deal Timer', core: false, enabled: true, style: 'default', styles: ['default', 'card', 'minimal'] },
-            { id: 'order-again', name: 'Order Again Rail', core: true, enabled: true, style: 'default', styles: ['default', 'grid', 'list'] },
-            { id: 'recommended-for-you', name: 'Recommended For You Grid', core: true, enabled: true, style: 'default', styles: ['default', 'horizontal', 'masonry'] },
-            { id: 'deals-promos', name: 'Deals/Promotions Gateway', core: true, enabled: true, style: 'default', styles: ['default', 'banner', 'cards'] },
-            { id: 'birthday-reward-banner', name: 'Birthday Reward Banner', core: false, enabled: true, style: 'default', styles: ['default', 'subtle', 'celebration'] },
-            { id: 'category-tiles', name: 'Category Navigation Grid', core: true, enabled: true, style: 'default', styles: ['default', 'icons', 'cards'] },
-            { id: 'meal-deal-combo', name: 'Meal-Deal Combo Builder', core: true, enabled: true, style: 'default', styles: ['default', 'compact', 'detailed'] },
-            { id: 'featured-items', name: 'Featured Items Slider', core: true, enabled: true, style: 'default', styles: ['default', 'hero', 'minimal'] },
-            { id: 'popular-rail', name: 'Popular Items Rail (+Add)', core: true, enabled: true, style: 'default', styles: ['default', 'horizontal', 'grid'] },
-            { id: 'offers-carousel', name: 'Offers Carousel Deck', core: false, enabled: true, style: 'default', styles: ['default', 'minimal', 'bold'] },
-            { id: 'offers-feed', name: 'Offers Comprehensive Feed', core: false, enabled: true, style: 'default', styles: ['default', 'list', 'cards'] },
-            { id: 'image-mosaic', name: 'Image Mosaic Lookbook', core: false, enabled: true, style: 'default', styles: ['default', 'grid', 'masonry'] },
-            { id: 'stories', name: 'Stories Loop Tickers', core: false, enabled: true, style: 'default', styles: ['default', 'minimal', 'circles'] },
+            { id: 'announcement-strip', name: 'Announcement Strip', core: false, enabled: true },
+            { id: 'brand-header', name: 'Brand Header Base', core: true, enabled: true },
+            { id: 'video-reel-hero', name: 'Video Reel Hero Layer', core: true, enabled: true },
+            { id: 'active-order-tracker', name: 'Active Order Tracker', core: true, enabled: true },
+            { id: 'loyalty-card', name: 'Loyalty Metrics Card', core: true, enabled: true },
+            { id: 'finish-your-order', name: 'Finish Your Order Alert', core: false, enabled: true },
+            { id: 'limited-time-deal', name: 'Limited-Time Deal Timer', core: false, enabled: true },
+            { id: 'order-again', name: 'Order Again Rail', core: true, enabled: true },
+            { id: 'recommended-for-you', name: 'Recommended For You Grid', core: true, enabled: true },
+            { id: 'deals-promos', name: 'Deals/Promotions Gateway', core: true, enabled: true },
+            { id: 'birthday-reward-banner', name: 'Birthday Reward Banner', core: false, enabled: true },
+            { id: 'category-tiles', name: 'Category Navigation Grid', core: true, enabled: true },
+            { id: 'meal-deal-combo', name: 'Meal-Deal Combo Builder', core: true, enabled: true },
+            { id: 'featured-items', name: 'Featured Items Slider', core: true, enabled: true },
+            { id: 'popular-rail', name: 'Popular Items Rail (+Add)', core: true, enabled: true },
+            { id: 'offers-carousel', name: 'Offers Carousel Deck', core: false, enabled: true },
+            { id: 'offers-feed', name: 'Offers Comprehensive Feed', core: false, enabled: true },
+            { id: 'image-mosaic', name: 'Image Mosaic Lookbook', core: false, enabled: true },
+            { id: 'stories', name: 'Stories Loop Tickers', core: false, enabled: true },
            
         ];
 
@@ -1541,22 +1541,13 @@
                         ${mod.core ? '<span class="core-badge">core</span>' : ''}
                         <span class="mod-label">${mod.name}</span>
                     </div>
-                    <div class="actions" style="display:flex;align-items:center;gap:6px;">
-                        <select onchange="setModuleStyle('${mod.id}', this.value)" style="width:70px;background:#222;border:1px solid #333;color:#ddd;padding:3px 4px;border-radius:4px;font-size:9px;cursor:pointer;">
-                            ${mod.styles.map(s => `<option value="${s}" ${s === mod.style ? 'selected' : ''}>${s}</option>`).join('')}
-                        </select>
+                    <div class="actions">
                         <button onclick="moveModule(${index}, -1)" ${index === 0 ? 'disabled' : ''}><i data-lucide="chevron-up" style="font-size:8px;"></i></button>
                         <button onclick="moveModule(${index}, 1)" ${index === modulesConfig.length - 1 ? 'disabled' : ''}><i data-lucide="chevron-down" style="font-size:8px;"></i></button>
                     </div>
                 `;
                 container.appendChild(row);
             });
-        }
-
-        function setModuleStyle(id, style) {
-            const mod = modulesConfig.find(m => m.id === id);
-            if (mod) mod.style = style;
-            renderAllViewports();
         }
 
         function toggleModule(id) {
@@ -1787,64 +1778,63 @@
                 modulesConfig.forEach(mod => {
                     if (!mod.enabled) return;
                     let html = '';
-                    const style = mod.style || 'default';
                     switch (mod.id) {
                         case 'announcement-strip':
-                            html = drawAnnouncementStrip(theme, style);
+                            html = drawAnnouncementStrip(theme);
                             break;
                         case 'brand-header':
-                            html = drawBrandHeader(theme, style);
+                            html = drawBrandHeader(theme);
                             break;
                         case 'video-reel-hero':
-                            html = drawVideoHero(theme, style);
+                            html = drawVideoHero(theme);
                             break;
                         case 'active-order-tracker':
-                            html = drawActiveOrderTracker(theme, style);
+                            html = drawActiveOrderTracker(theme);
                             break;
                         case 'loyalty-card':
-                            html = drawLoyaltyCard(theme, style);
+                            html = drawLoyaltyCard(theme);
                             break;
                         case 'finish-your-order':
-                            html = drawFinishYourOrder(theme, style);
+                            html = drawFinishYourOrder(theme);
                             break;
                         case 'limited-time-deal':
-                            html = drawLimitedTimeDeal(theme, style);
+                            html = drawLimitedTimeDeal(theme);
                             break;
                         case 'order-again':
-                            html = drawOrderAgain(theme, style);
+                            html = drawOrderAgain(theme);
                             break;
                         case 'recommended-for-you':
-                            html = drawRecommended(theme, style);
+                            html = drawRecommended(theme);
                             break;
                         case 'deals-promos':
-                            html = drawDealsPromos(theme, style);
+                            html = drawDealsPromos(theme);
                             break;
                         case 'birthday-reward-banner':
-                            html = drawBirthdayBanner(theme, style);
+                            html = drawBirthdayBanner(theme);
                             break;
                         case 'category-tiles':
-                            html = drawCategoryTiles(theme, style);
+                            html = drawCategoryTiles(theme);
                             break;
                         case 'meal-deal-combo':
-                            html = drawMealCombo(theme, style);
+                            html = drawMealCombo(theme);
                             break;
                         case 'featured-items':
-                            html = drawFeaturedItems(theme, style);
+                            html = drawFeaturedItems(theme);
                             break;
                         case 'popular-rail':
-                            html = drawPopularRail(theme, style);
+                            html = drawPopularRail(theme);
                             break;
                         case 'offers-carousel':
-                            html = drawOffersCarousel(theme, style);
+                            html = drawOffersCarousel(theme);
                             break;
                         case 'offers-feed':
-                            html = drawOffersFeed(theme, style);
+                            html = drawOffersFeed(theme);
                             break;
                         case 'image-mosaic':
-                            html = drawImageMosaic(theme, style);
+                            html = drawImageMosaic(theme);
                             break;
                         case 'stories':
-                            html = drawStories(theme, style);
+                            html = drawStories(theme);
                             break;
                         case 'color-palette':
                             html = drawColorPalette(theme);
@@ -2232,79 +2222,8 @@
             }
         }
 
-        function drawVideoHero(theme, style = 'default') {
+        function drawVideoHero(theme) {
             const heroH = window.cardConfig[theme].heroHeight;
-            
-            // Style variations
-            if (style === 'card') {
-                // Card style - smaller, contained
-                if (theme === 'neumorphism') {
-                    return `
-                    <div style="padding:0 16px;margin-bottom:16px;" class="animate-fade-in-up">
-                        <div style="height:180px;width:100%;border-radius:20px;overflow:hidden;position:relative;background:linear-gradient(rgba(0,0,0,0) 30%, rgba(0,0,0,0.85) 100%),url('https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=600&q=80');background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
-                            <div style="position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;" class="btn-morph">${iconFA('play', 'text-[#E85D4A]')}</div>
-                            <h2 style="font-size:18px;font-weight:700;color:#fff;">Fresh Pizza Perfection</h2>
-                            <p style="font-size:11px;color:rgba(255,255,255,0.7);margin-top:4px;">Watch our chefs craft signature dishes</p>
-                        </div>
-                    </div>`;
-                } else if (theme === 'glassmorphism') {
-                    return `
-                    <div style="padding:0 16px;margin-bottom:16px;" class="animate-fade-in-up">
-                        <div style="height:180px;width:100%;border-radius:20px;overflow:hidden;position:relative;background:linear-gradient(rgba(0,0,0,0) 25%, rgba(26,26,26,0.95) 100%),url('https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80');background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.1);">
-                            <div style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);border-radius:9999px;padding:4px 10px;display:flex;align-items:center;gap:4px;font-size:8px;font-weight:700;color:#FFD54F;">${iconMaterial('play-circle-line', 'color:#FF6B9D;')} LIVE</div>
-                            <h2 style="font-size:18px;font-weight:700;color:#fff;">Premium Fresh Bowls</h2>
-                            <p style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:4px;">Watch our chefs craft signature dishes</p>
-                        </div>
-                    </div>`;
-                } else {
-                    return `
-                    <div style="padding:0 16px 16px;" class="animate-fade-in-up">
-                        <div style="height:180px;width:100%;border-radius:16px;overflow:hidden;position:relative;background:linear-gradient(rgba(0,0,0,0) 35%, rgba(0,0,0,0.8) 100%),url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80');background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;border:1px solid #E8DDD3;">
-                            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-                                <div style="width:28px;height:28px;border-radius:8px;background:#8B6F47;display:flex;align-items:center;justify-content:center;">${iconBS('player-play', 'color:#fff;')}</div>
-                                <span style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.9);text-transform:uppercase;letter-spacing:1px;">Featured Video</span>
-                            </div>
-                            <h3 style="font-size:16px;font-weight:700;color:#fff;">Fresh Pizza Perfection</h3>
-                            <p style="font-size:10px;color:rgba(255,255,255,0.7);margin-top:2px;">Watch our chefs craft signature dishes</p>
-                        </div>
-                    </div>`;
-                }
-            } else if (style === 'fullscreen') {
-                // Fullscreen style - edge to edge
-                if (theme === 'neumorphism') {
-                    return `
-                    <div style="margin-bottom:16px;" class="animate-fade-in-up">
-                        <div style="height:${heroH + 60}px;width:100%;overflow:hidden;position:relative;background:linear-gradient(rgba(0,0,0,0) 20%, rgba(0,0,0,0.9) 100%),url('https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80');background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:flex-end;padding:24px 16px;">
-                            <div style="position:absolute;top:16px;right:16px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,0.2);" class="btn-morph">${iconFA('play', 'text-[#E85D4A]')}</div>
-                            <h2 class="editorial-heading" style="font-size:32px;color:#fff;margin-bottom:8px;">FRESH PIZZA<br>PERFECTION</h2>
-                            <p class="editorial-subheading" style="color:rgba(255,255,255,0.8);">Watch our chefs craft signature dishes</p>
-                        </div>
-                    </div>`;
-                } else if (theme === 'glassmorphism') {
-                    return `
-                    <div style="margin-bottom:16px;" class="animate-fade-in-up">
-                        <div style="height:${heroH + 60}px;width:100%;overflow:hidden;position:relative;background:linear-gradient(rgba(0,0,0,0) 20%, rgba(26,26,26,0.95) 100%),url('https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80');background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:flex-end;padding:24px 16px;">
-                            <div style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.12);border-radius:9999px;padding:8px 16px;display:flex;align-items:center;gap:6px;font-size:10px;font-weight:700;color:#FFD54F;letter-spacing:1px;">${iconMaterial('play-circle-line', 'color:#FF6B9D;')} LIVE</div>
-                            <h2 style="font-size:30px;font-weight:900;color:#fff;letter-spacing:-0.5px;line-height:1.05;">PREMIUM FRESH<br>BOWLS</h2>
-                            <p style="font-size:13px;color:rgba(255,255,255,0.7);margin-top:8px;">Watch our chefs craft signature dishes in real-time</p>
-                        </div>
-                    </div>`;
-                } else {
-                    return `
-                    <div style="margin-bottom:16px;" class="animate-fade-in-up">
-                        <div style="height:${heroH + 40}px;width:100%;overflow:hidden;position:relative;background:linear-gradient(rgba(0,0,0,0) 25%, rgba(0,0,0,0.85) 100%),url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80');background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:flex-end;padding:20px 16px;">
-                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                                <div style="width:36px;height:36px;border-radius:10px;background:#8B6F47;display:flex;align-items:center;justify-content:center;">${iconBS('player-play', 'color:#fff;')}</div>
-                                <span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.9);text-transform:uppercase;letter-spacing:1.5px;">Featured Video</span>
-                            </div>
-                            <h3 style="font-size:26px;font-weight:700;color:#fff;line-height:1.05;">PREMIUM FRESH<br>PIZZA PERFECTION</h3>
-                            <p style="font-size:12px;color:rgba(255,255,255,0.7);margin-top:6px;">Watch our chefs craft signature dishes</p>
-                        </div>
-                    </div>`;
-                }
-            }
-            
-            // Default style
             if (theme === 'neumorphism') {
                 return `
                 <div style="padding:0 16px;margin-bottom:16px;" class="animate-fade-in-up">
