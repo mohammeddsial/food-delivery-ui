@@ -14,7 +14,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;800&family=Space+Grotesk:wght@400;700&family=Outfit:wght@300;600;900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;500;800&family=Space+Grotesk:wght@400;700&family=Outfit:wght@300;600;900&display=swap"
         rel="stylesheet" />
 
     <!-- ===== ICON LIBRARY 1: LUCIDE (Neumorphism) ===== -->
@@ -87,45 +87,47 @@
             padding-bottom: 80px;
         }
 
-        /* --- THEME 1: NEUMORPHISM (Lucide) - Eaterny Light Style --- */
+        /* --- THEME 1: LIGHT - Crumbl Premium Style --- */
         .theme-neumorphism {
-            font-family: 'Poppins', sans-serif;
-            background: #F9F3F0 !important;
+            font-family: 'Inter', sans-serif;
+            background: #FFFFFF !important;
             color: #1A1A1A !important;
         }
 
         .neu-flat {
             background: #FFFFFF;
-            box-shadow: 0 2px 8px rgba(0, 97, 95, 0.06);
-            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            border-radius: 16px;
+            border: 1px solid #F0F0F0;
         }
 
         .neu-inset {
-            background: #F0F7F6;
-            box-shadow: inset 0 1px 3px rgba(0, 97, 95, 0.08);
+            background: #F7F7F7;
             border-radius: 12px;
         }
 
         .neu-pill {
             background: #FFFFFF;
-            box-shadow: 0 2px 6px rgba(0, 97, 95, 0.06);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
             border-radius: 9999px;
+            border: 1px solid #F0F0F0;
         }
 
         .neu-food-card {
             background: #FFFFFF;
-            border-radius: 16px;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 2px 12px rgba(0, 97, 95, 0.08);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
         }
 
         .neu-badge {
-            background: #00615F;
+            background: #1A1A1A;
             color: #fff;
-            font-size: 9px;
-            font-weight: 600;
-            padding: 3px 8px;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 10px;
             border-radius: 6px;
+            letter-spacing: 0.3px;
         }
 
         .neu-veg-dot {
@@ -147,14 +149,16 @@
         }
 
         .neu-add-btn {
-            background: #00615F;
+            background: #1A1A1A;
             color: #fff;
             border: none;
-            border-radius: 8px;
-            padding: 6px 16px;
+            border-radius: 9999px;
+            padding: 8px 20px;
             font-size: 12px;
             font-weight: 700;
             cursor: pointer;
+            letter-spacing: 0.3px;
+            transition: all 0.2s;
         }
 
         /* --- THEME 2: GLASSMORPHISM (Remix Icon) --- */
@@ -298,14 +302,14 @@
             bottom: -16px;
             left: 50%;
             transform: translateX(-50%);
-            background: #00615F;
+            background: #1A1A1A;
             color: #fff;
             font-size: 13px;
             font-weight: 800;
             padding: 6px 18px;
             border-radius: 14px;
             white-space: nowrap;
-            box-shadow: 0 4px 12px rgba(255,107,53,0.35);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             z-index: 2;
         }
         .fd-heart {
@@ -324,7 +328,7 @@
             cursor: pointer;
         }
         .fd-heart i { color: #ccc; font-size: 14px; }
-        .fd-heart.active i { color: #00615F; }
+        .fd-heart.active i { color: #1A1A1A; }
         .fd-meta {
             display: flex;
             align-items: center;
@@ -339,7 +343,7 @@
             color: #888;
             font-weight: 600;
         }
-        .fd-meta-item i { font-size: 13px; color: #00615F; }
+        .fd-meta-item i { font-size: 13px; color: #1A1A1A; }
         .fd-meta-item .star { color: #FFD700; }
         .fd-title {
             font-size: 14px;
@@ -373,20 +377,21 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            background: #00615F;
+            background: #1A1A1A;
             color: #fff;
             border: none;
-            border-radius: 10px;
-            padding: 6px 14px;
+            border-radius: 9999px;
+            padding: 8px 18px;
             font-size: 11px;
             font-weight: 700;
             cursor: pointer;
+            letter-spacing: 0.3px;
         }
         .fd-delivery-badge {
             position: absolute;
             top: 10px;
             left: 10px;
-            background: #00615F;
+            background: #1A1A1A;
             color: #fff;
             font-size: 9px;
             font-weight: 700;
@@ -409,7 +414,7 @@
             z-index: 2;
             cursor: pointer;
         }
-        .fd-bookmark i { color: #00615F; font-size: 14px; }
+        .fd-bookmark i { color: #1A1A1A; font-size: 14px; }
         .fd-countdown-bar {
             position: absolute;
             bottom: 0;
@@ -432,7 +437,7 @@
             display: flex;
             align-items: center;
             gap: 0;
-            background: #00615F;
+            background: #1A1A1A;
             border-radius: 24px;
             overflow: hidden;
         }
@@ -483,8 +488,8 @@
             font-weight: 700;
             padding: 4px 10px;
             border-radius: 8px;
-            background: #FFF3E0;
-            color: #00615F;
+            background: #F0F0F0;
+            color: #1A1A1A;
             display: inline-block;
             width: fit-content;
         }
@@ -781,7 +786,7 @@
         }
 
         .drawer .drawer-nav a.active {
-            background: #00615F;
+            background: #1A1A1A;
             color: #fff;
         }
 
@@ -1738,18 +1743,24 @@
                 if (theme === 'glassmorphism') {
                     deliveryBtn.style.cssText = 'background:#4CAF50;color:#fff;font-size:9px;font-weight:700;padding:5px 12px;border-radius:9999px;cursor:pointer;';
                     pickupBtn.style.cssText = 'color:rgba(255,255,255,0.4);font-size:9px;font-weight:600;padding:5px 12px;border-radius:9999px;cursor:pointer;';
+                } else if (theme === 'neumorphism') {
+                    deliveryBtn.style.cssText = 'flex:1;padding:8px 12px;text-align:center;border-radius:10px;background:#1A1A1A;color:#fff;font-size:11px;font-weight:700;cursor:pointer;';
+                    pickupBtn.style.cssText = 'flex:1;padding:8px 12px;text-align:center;border-radius:10px;color:#999;font-size:11px;font-weight:500;cursor:pointer;';
                 } else {
-                    deliveryBtn.style.cssText = theme === 'neubrutalism' ? 'flex:1;padding:8px 12px;text-align:center;border-radius:12px;background:#00615F;color:#fff;font-size:11px;font-weight:700;cursor:pointer;' : 'flex:1;padding:8px 12px;text-align:center;border-radius:10px;background:#00615F;color:#fff;font-size:11px;font-weight:700;cursor:pointer;';
-                    pickupBtn.style.cssText = theme === 'neubrutalism' ? 'flex:1;padding:8px 12px;text-align:center;border-radius:12px;color:#999;font-size:11px;font-weight:500;cursor:pointer;' : 'flex:1;padding:8px 12px;text-align:center;border-radius:10px;color:#999;font-size:11px;font-weight:500;cursor:pointer;';
+                    deliveryBtn.style.cssText = 'flex:1;padding:8px 12px;text-align:center;border-radius:12px;background:#00615F;color:#fff;font-size:11px;font-weight:700;cursor:pointer;';
+                    pickupBtn.style.cssText = 'flex:1;padding:8px 12px;text-align:center;border-radius:12px;color:#999;font-size:11px;font-weight:500;cursor:pointer;';
                 }
                 if (pickupDD) { pickupDD.style.display = 'none'; }
             } else {
                 if (theme === 'glassmorphism') {
                     pickupBtn.style.cssText = 'background:#4CAF50;color:#fff;font-size:9px;font-weight:700;padding:5px 12px;border-radius:9999px;cursor:pointer;';
                     deliveryBtn.style.cssText = 'color:rgba(255,255,255,0.4);font-size:9px;font-weight:600;padding:5px 12px;border-radius:9999px;cursor:pointer;';
+                } else if (theme === 'neumorphism') {
+                    pickupBtn.style.cssText = 'flex:1;padding:8px 12px;text-align:center;border-radius:10px;background:#1A1A1A;color:#fff;font-size:11px;font-weight:700;cursor:pointer;';
+                    deliveryBtn.style.cssText = 'flex:1;padding:8px 12px;text-align:center;border-radius:10px;color:#999;font-size:11px;font-weight:500;cursor:pointer;';
                 } else {
-                    pickupBtn.style.cssText = theme === 'neubrutalism' ? 'flex:1;padding:8px 12px;text-align:center;border-radius:12px;background:#00615F;color:#fff;font-size:11px;font-weight:700;cursor:pointer;' : 'flex:1;padding:8px 12px;text-align:center;border-radius:10px;background:#00615F;color:#fff;font-size:11px;font-weight:700;cursor:pointer;';
-                    deliveryBtn.style.cssText = theme === 'neubrutalism' ? 'flex:1;padding:8px 12px;text-align:center;border-radius:12px;color:#999;font-size:11px;font-weight:500;cursor:pointer;' : 'flex:1;padding:8px 12px;text-align:center;border-radius:10px;color:#999;font-size:11px;font-weight:500;cursor:pointer;';
+                    pickupBtn.style.cssText = 'flex:1;padding:8px 12px;text-align:center;border-radius:12px;background:#00615F;color:#fff;font-size:11px;font-weight:700;cursor:pointer;';
+                    deliveryBtn.style.cssText = 'flex:1;padding:8px 12px;text-align:center;border-radius:12px;color:#999;font-size:11px;font-weight:500;cursor:pointer;';
                 }
                 if (pickupDD) { pickupDD.style.display = 'block'; }
             }
@@ -1868,11 +1879,11 @@
                 const cartItemBg = theme === 'glassmorphism' ? 'rgba(255,255,255,0.05)' : (theme === 'neubrutalism' ? '#F9F3F0' : '#f9f9f9');
                 const cartItemNameColor = theme === 'glassmorphism' ? '#fff' : (theme === 'neubrutalism' ? '#3D3229' : '#1a1a1a');
                 const cartItemDescColor = theme === 'glassmorphism' ? 'rgba(255,255,255,0.4)' : '#999';
-                const cartAccent = theme === 'glassmorphism' ? '#4CAF50' : (theme === 'neubrutalism' ? '#00615F' : '#00615F');
-                const cartPriceColor = theme === 'glassmorphism' ? '#4CAF50' : (theme === 'neubrutalism' ? '#00615F' : '#00615F');
-                const cartTotalColor = theme === 'glassmorphism' ? '#FFD54F' : (theme === 'neubrutalism' ? '#FFC200' : '#00615F');
+                const cartAccent = theme === 'glassmorphism' ? '#4CAF50' : (theme === 'neubrutalism' ? '#00615F' : '#1A1A1A');
+                const cartPriceColor = theme === 'glassmorphism' ? '#4CAF50' : (theme === 'neubrutalism' ? '#00615F' : '#1A1A1A');
+                const cartTotalColor = theme === 'glassmorphism' ? '#FFD54F' : (theme === 'neubrutalism' ? '#FFC200' : '#1A1A1A');
                 const cartSubtotalColor = theme === 'glassmorphism' ? '#fff' : (theme === 'neubrutalism' ? '#3D3229' : '#1a1a1a');
-                const cartBtnShadow = theme === 'glassmorphism' ? '0 4px 16px rgba(76,175,80,0.3)' : (theme === 'neubrutalism' ? '0 4px 16px rgba(139,111,71,0.2)' : '0 4px 16px rgba(232,93,74,0.35)');
+                const cartBtnShadow = theme === 'glassmorphism' ? '0 4px 16px rgba(76,175,80,0.3)' : (theme === 'neubrutalism' ? '0 4px 16px rgba(139,111,71,0.2)' : '0 4px 16px rgba(0,0,0,0.15)');
                 const cartPopupShadow = theme === 'glassmorphism' ? '0 -8px 40px rgba(0,0,0,0.3)' : '0 -8px 40px rgba(0,0,0,0.15)';
                 const cartDivider = theme === 'glassmorphism' ? 'rgba(255,255,255,0.08)' : (theme === 'neubrutalism' ? '#E8DDD3' : '#eee');
 
@@ -2013,7 +2024,7 @@
                     </div>
                     <div onclick="openCartPopup('${theme}')" style="cursor:pointer;${theme === 'neumorphism' ? 'position:relative;' : theme === 'glassmorphism' ? 'position:relative;' : `width:36px;height:36px;border-radius:10px;background:#fff;border:1.5px solid #E0E0E0;box-shadow:2px 2px 0px #E0E0E0;display:flex;align-items:center;justify-content:center;color:#1a1a1a;position:relative;`}">
                         ${theme === 'neumorphism' ?
-                            `<button class="w-8 h-8 neu-flat flex items-center justify-center ${rightIconColor} relative" style="position:relative;">${iconFor(theme, rightIconName)}<span style="position:absolute;top:-4px;right:-6px;min-width:16px;height:16px;background:#00615F;color:#fff;font-size:8px;font-weight:700;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid #fff;">2</span></button>` :
+                            `<button class="w-8 h-8 neu-flat flex items-center justify-center ${rightIconColor} relative" style="position:relative;">${iconFor(theme, rightIconName)}<span style="position:absolute;top:-4px;right:-6px;min-width:16px;height:16px;background:#1A1A1A;color:#fff;font-size:8px;font-weight:700;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid #fff;">2</span></button>` :
                             theme === 'glassmorphism' ?
                             `${iconFor(theme, rightIconName, 'color:#fff;')}<span style="position:absolute;top:-6px;right:-6px;background:#4CAF50;font-size:8px;font-weight:700;padding:2px 5px;border-radius:50%;color:#fff;">2</span>` :
                             `${iconFor(theme, rightIconName, 'color:#3D3229;font-size:18px;')}<span style="position:absolute;top:-3px;right:-3px;width:14px;height:14px;background:#00615F;color:#fff;font-size:8px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #F9F3F0;">2</span>`
@@ -2096,12 +2107,12 @@
 
                 if (theme === 'neumorphism') {
                     if (isActive) {
-                        btnStyle = 'color:#00615F; font-weight:700;';
-                        labelStyle = 'color:#00615F;';
-                        dotHtml = '<div style="width:4px;height:4px;border-radius:50%;background:#00615F;margin-top:2px;"></div>';
+                        btnStyle = 'color:#1A1A1A; font-weight:700;';
+                        labelStyle = 'color:#1A1A1A;';
+                        dotHtml = '<div style="width:4px;height:4px;border-radius:50%;background:#1A1A1A;margin-top:2px;"></div>';
                     } else {
-                        btnStyle = 'color:#999;';
-                        labelStyle = 'color:#999;';
+                        btnStyle = 'color:#BBB;';
+                        labelStyle = 'color:#BBB;';
                         dotHtml = '<div style="height:6px;"></div>';
                     }
             } else if (theme === 'glassmorphism') {
@@ -2126,7 +2137,7 @@
                     }
                 }
 
-                const badgeHtml = item.badge ? `<span style="position:absolute;top:-4px;right:-8px;min-width:16px;height:16px;background:${pal.Primary || '#00615F'};color:#fff;font-size:8px;font-weight:700;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid ${theme === 'glassmorphism' ? 'rgba(26,26,26,0.9)' : '#fff'};">${item.badge}</span>` : '';
+                const badgeHtml = item.badge ? `<span style="position:absolute;top:-4px;right:-8px;min-width:16px;height:16px;background:${theme === 'neumorphism' ? '#1A1A1A' : (pal.Primary || '#00615F')};color:#fff;font-size:8px;font-weight:700;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid ${theme === 'glassmorphism' ? 'rgba(26,26,26,0.9)' : '#fff'};">${item.badge}</span>` : '';
 
                 return `<button onclick="setActiveNav(${index})" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;cursor:pointer;padding:6px 8px;position:relative;transition:transform 0.15s;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform='scale(1)'" onmouseleave="this.style.transform='scale(1)'">${iconHtml}<span style="font-size:10px;${labelStyle}">${item.label}</span>${dotHtml}${badgeHtml}</button>`;
             }).join('');
@@ -2149,7 +2160,7 @@
         // ─── ALL COMPONENT DRAW FUNCTIONS ──────────────────────────────
         function drawAnnouncementStrip(theme) {
             if (theme === 'neumorphism') {
-                return `<div style="margin:8px;padding:10px 16px;background:#F0F7F6;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:10px;font-weight:700;color:#00615F;letter-spacing:0.5px;">${iconFA('flame', 'text-[#00615F]')} FREE DELIVERY ON ORDERS OVER $25</div>`;
+                return `<div style="margin:8px;padding:10px 16px;background:#F7F7F7;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:10px;font-weight:700;color:#1A1A1A;letter-spacing:0.5px;">${iconFA('flame', 'text-[#1A1A1A]')} FREE DELIVERY ON ORDERS OVER $25</div>`;
             } else if (theme === 'glassmorphism') {
                 return `<div style="width:100%;padding:8px 12px;background:rgba(76,175,80,0.12);border-bottom:1px solid rgba(76,175,80,0.15);display:flex;align-items:center;justify-content:center;gap:8px;font-size:9px;font-weight:700;color:#4CAF50;letter-spacing:0.8px;">${iconMaterial('alert-line', 'color:#FFD54F;')} FREE DELIVERY ON YOUR FIRST ORDER</div>`;
             } else {
@@ -2166,23 +2177,23 @@
                             <div style="width:32px;height:32px;border-radius:10px;background:#F0F7F6;display:flex;align-items:center;justify-content:center;">${iconFA('map-pin', 'text-[#00615F]')}</div>
                             <div>
                                 <div style="font-size:9px;color:#999;letter-spacing:1px;text-transform:uppercase;font-weight:600;">Deliver to</div>
-                                <div style="font-size:12px;font-weight:700;color:#1A1A1A;display:flex;align-items:center;gap:4px;">Manhattan West, NY ${iconFA('chevron-down', 'text-[#00615F]')}</div>
+                                <div style="font-size:12px;font-weight:700;color:#1A1A1A;display:flex;align-items:center;gap:4px;">Manhattan West, NY ${iconFA('chevron-down', 'text-[#1A1A1A]')}</div>
                             </div>
                         </div>
                     </div>
                     <div id="addressDropdown-${theme}" style="display:none;background:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.12);padding:8px;position:absolute;top:60px;left:16px;right:16px;z-index:100;">
-                        <div onclick="selectAddress('${theme}','Manhattan West, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#1A1A1A;display:flex;align-items:center;gap:8px;background:#F0F7F6;">${iconFA('map-pin', 'text-[#00615F]')} Manhattan West, NY</div>
+                        <div onclick="selectAddress('${theme}','Manhattan West, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#1A1A1A;display:flex;align-items:center;gap:8px;background:#F7F7F7;">${iconFA('map-pin', 'text-[#1A1A1A]')} Manhattan West, NY</div>
                         <div onclick="selectAddress('${theme}','Times Square, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#1A1A1A;display:flex;align-items:center;gap:8px;">${iconFA('map-pin', 'text-gray-400')} Times Square, NY</div>
                         <div onclick="selectAddress('${theme}','Central Park, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#1A1A1A;display:flex;align-items:center;gap:8px;">${iconFA('map-pin', 'text-gray-400')} Central Park, NY</div>
                         <div style="border-top:1px solid #f0f0f0;margin:4px 0;"></div>
-                        <div onclick="selectAddress('${theme}','Brooklyn Bridge, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;color:#00615F;display:flex;align-items:center;gap:8px;">${iconFA('plus', 'text-[#00615F]')} Add New Address</div>
+                        <div onclick="selectAddress('${theme}','Brooklyn Bridge, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;color:#1A1A1A;display:flex;align-items:center;gap:8px;">${iconFA('plus', 'text-[#1A1A1A]')} Add New Address</div>
                     </div>
-                    <div style="display:flex;background:#F9F3F0;border-radius:12px;padding:3px;">
-                        <div onclick="setDeliveryMode('${theme}','delivery')" id="deliveryBtn-${theme}" style="flex:1;padding:8px 12px;text-align:center;border-radius:10px;background:#00615F;color:#fff;font-size:11px;font-weight:700;cursor:pointer;">Delivery</div>
+                    <div style="display:flex;background:#F7F7F7;border-radius:12px;padding:3px;">
+                        <div onclick="setDeliveryMode('${theme}','delivery')" id="deliveryBtn-${theme}" style="flex:1;padding:8px 12px;text-align:center;border-radius:10px;background:#1A1A1A;color:#fff;font-size:11px;font-weight:700;cursor:pointer;">Delivery</div>
                         <div onclick="setDeliveryMode('${theme}','pickup')" id="pickupBtn-${theme}" style="flex:1;padding:8px 12px;text-align:center;border-radius:10px;color:#999;font-size:11px;font-weight:500;cursor:pointer;">Pickup</div>
                     </div>
                     <div id="pickupDropdown-${theme}" style="display:none;background:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.12);padding:8px;">
-                        <div onclick="selectBranch('${theme}','Downtown NYC')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#1A1A1A;display:flex;align-items:center;gap:8px;background:#F0F7F6;">${iconFA('store', 'text-[#00615F]')} Downtown NYC</div>
+                        <div onclick="selectBranch('${theme}','Downtown NYC')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#1A1A1A;display:flex;align-items:center;gap:8px;background:#F7F7F7;">${iconFA('store', 'text-[#1A1A1A]')} Downtown NYC</div>
                         <div onclick="selectBranch('${theme}','Midtown Manhattan')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#1A1A1A;display:flex;align-items:center;gap:8px;">${iconFA('store', 'text-gray-400')} Midtown Manhattan</div>
                         <div onclick="selectBranch('${theme}','Brooklyn Heights')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#1A1A1A;display:flex;align-items:center;gap:8px;">${iconFA('store', 'text-gray-400')} Brooklyn Heights</div>
                     </div>
