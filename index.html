@@ -1358,28 +1358,32 @@
             const pal = window.colorPalettes[theme]?.colors || window.colorPalettes.neumorphism.colors;
             const navItems = [
                 { icon: 'home', label: 'Home' },
-                { icon: 'search', label: 'Search' },
-                { icon: 'heart', label: 'Favorites' },
+                { icon: 'menu', label: 'Menu' },
+                { icon: 'gift', label: 'Rewards' },
+                { icon: 'tag', label: 'Promotions' },
                 { icon: 'user', label: 'Profile' }
             ];
 
             const iconMap = {
                 neumorphism: {
                     home: 'home',
-                    search: 'search',
-                    heart: 'heart',
+                    menu: 'utensils',
+                    gift: 'gift',
+                    tag: 'tag',
                     user: 'user'
                 },
                 glassmorphism: {
                     home: 'home-line',
-                    search: 'search-line',
-                    heart: 'heart-line',
+                    menu: 'restaurant-line',
+                    gift: 'gift-line',
+                    tag: 'price-tag-line',
                     user: 'user-line'
                 },
                 neubrutalism: {
                     home: 'home',
-                    search: 'search',
-                    heart: 'heart',
+                    menu: 'tools-kitchen-2',
+                    gift: 'gift',
+                    tag: 'discount',
                     user: 'user'
                 }
             };
