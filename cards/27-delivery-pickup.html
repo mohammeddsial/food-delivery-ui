@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery / Pickup Toggle</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .phone { width: 375px; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.12); }
+        .status-bar { height: 44px; background: #fff; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 24px 8px; position: relative; }
+        .notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 120px; height: 28px; background: #000; border-radius: 0 0 20px 20px; }
+        .time { font-size: 15px; font-weight: 700; color: #1a1a1a; }
+        .s-icons { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #666; }
+        .s-icons i { font-size: 13px; }
+        .nav-row { padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; background: #fff; }
+        .nav-left { display: flex; align-items: center; gap: 10px; }
+        .hamburger { width: 32px; height: 32px; border-radius: 10px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
+        .hamburger i { font-size: 16px; color: #333; }
+        .brand { font-size: 14px; font-weight: 800; color: #1a1a1a; }
+        .cart-btn { width: 36px; height: 36px; border-radius: 12px; background: #FF6B35; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; border: none; }
+        .cart-btn i { color: #fff; font-size: 18px; }
+        .cart-badge { position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; background: #1a1a1a; color: #fff; font-size: 9px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
+
+        .header { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+        .address-row { display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+        .address-left { display: flex; align-items: center; gap: 8px; }
+        .address-icon { width: 32px; height: 32px; border-radius: 10px; background: #FFF3ED; display: flex; align-items: center; justify-content: center; }
+        .address-icon i { color: #FF6B35; font-size: 16px; }
+        .address-text { font-size: 13px; font-weight: 700; color: #1a1a1a; }
+        .address-chevron { color: #999; font-size: 14px; }
+
+        .toggle-tabs { display: flex; gap: 8px; }
+        .toggle-tab { flex: 1; padding: 10px 14px; border-radius: 12px; font-size: 12px; font-weight: 600; text-align: center; cursor: pointer; border: 2px solid #e0e0e0; background: #fff; color: #999; transition: all 0.2s; }
+        .toggle-tab.active { border-color: #1a1a1a; background: #1a1a1a; color: #fff; font-weight: 700; }
+        .toggle-tab:not(.active):hover { border-color: #ccc; }
+
+        .delivery-info { padding: 0 16px 16px; display: none; }
+        .delivery-info.show { display: block; }
+        .info-card { background: #f9f9f9; border-radius: 14px; padding: 14px; display: flex; align-items: center; gap: 12px; }
+        .info-icon { width: 40px; height: 40px; border-radius: 12px; background: #E8F5E9; display: flex; align-items: center; justify-content: center; }
+        .info-icon i { color: #4CAF50; font-size: 18px; }
+        .info-title { font-size: 13px; font-weight: 600; color: #1a1a1a; }
+        .info-desc { font-size: 11px; color: #999; margin-top: 2px; }
+
+        .pickup-info { padding: 0 16px 16px; display: none; }
+        .pickup-info.show { display: block; }
+        .pickup-card { background: #f9f9f9; border-radius: 14px; padding: 14px; display: flex; align-items: center; gap: 12px; }
+        .pickup-icon { width: 40px; height: 40px; border-radius: 12px; background: #FFF3E0; display: flex; align-items: center; justify-content: center; }
+        .pickup-icon i { color: #FF6B35; font-size: 18px; }
+        .pickup-title { font-size: 13px; font-weight: 600; color: #1a1a1a; }
+        .pickup-desc { font-size: 11px; color: #999; margin-top: 2px; }
+
+        .content { height: 300px; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 13px; }
+    </style>
+</head>
+<body>
+    <!-- MODULE: Delivery / Pickup Toggle + Address Change -->
+    <div class="phone">
+        <div class="status-bar">
+            <div class="notch"></div>
+            <span class="time">19:02</span>
+            <span class="s-icons"><i class="ri-signal-wifi-fill"></i><i class="ri-wifi-fill"></i><i class="ri-battery-2-fill"></i></span>
+        </div>
+        <div class="nav-row">
+            <div class="nav-left">
+                <button class="hamburger"><i class="ri-menu-2-fill"></i></button>
+                <span class="brand">Food Hub</span>
+            </div>
+            <button class="cart-btn"><i class="ri-shopping-bag-3-fill"></i><span class="cart-badge">2</span></button>
+        </div>
+
+        <div class="header">
+            <div class="address-row" id="addressRow">
+                <div class="address-left">
+                    <div class="address-icon"><i class="ri-map-pin-2-fill"></i></div>
+                    <span class="address-text" id="addressText">2715 Ash Dr. San Jose, SD</span>
+                </div>
+                <i class="ri-arrow-down-s-fill address-chevron"></i>
+            </div>
+            <div class="toggle-tabs">
+                <div class="toggle-tab active" id="tabDelivery" onclick="switchTab('delivery')">Delivery</div>
+                <div class="toggle-tab" id="tabPickup" onclick="switchTab('pickup')">Pickup</div>
+            </div>
+        </div>
+
+        <div class="delivery-info show" id="deliveryInfo">
+            <div class="info-card">
+                <div class="info-icon"><i class="ri-truck-fill"></i></div>
+                <div>
+                    <div class="info-title">Delivery to your door</div>
+                    <div class="info-desc">Estimated arrival: 20-30 min</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="pickup-info" id="pickupInfo">
+            <div class="pickup-card">
+                <div class="pickup-icon"><i class="ri-store-2-fill"></i></div>
+                <div>
+                    <div class="pickup-title">Pickup from store</div>
+                    <div class="pickup-desc">Ready in 15 min · 0.3 miles away</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">Page Content</div>
+    </div>
+
+    <script>
+        const addresses = [
+            '2715 Ash Dr. San Jose, SD',
+            '456 Oak Ave. Brooklyn, NY',
+            '789 Pine Rd. Austin, TX',
+            '321 Elm St. Portland, OR'
+        ];
+        let currentAddr = 0;
+
+        function switchTab(tab) {
+            const tabDelivery = document.getElementById('tabDelivery');
+            const tabPickup = document.getElementById('tabPickup');
+            const deliveryInfo = document.getElementById('deliveryInfo');
+            const pickupInfo = document.getElementById('pickupInfo');
+
+            if (tab === 'delivery') {
+                tabDelivery.classList.add('active');
+                tabPickup.classList.remove('active');
+                deliveryInfo.classList.add('show');
+                pickupInfo.classList.remove('show');
+            } else {
+                tabPickup.classList.add('active');
+                tabDelivery.classList.remove('active');
+                pickupInfo.classList.add('show');
+                deliveryInfo.classList.remove('show');
+            }
+        }
+
+        document.getElementById('addressRow').addEventListener('click', () => {
+            currentAddr = (currentAddr + 1) % addresses.length;
+            document.getElementById('addressText').textContent = addresses[currentAddr];
+        });
+    </script>
+</body>
+</html>

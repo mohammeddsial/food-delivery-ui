@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UX Component Discovery Engine · 3 Icon Libraries</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;800&family=Space+Grotesk:wght@400;700&family=Outfit:wght@300;600;900&display=swap" rel="stylesheet" />
+
+    <!-- ===== ICON LIBRARY 1: FONT AWESOME (Neumorphism) ===== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <!-- ===== ICON LIBRARY 2: MATERIAL SYMBOLS (Glassmorphism) ===== -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <!-- ===== ICON LIBRARY 3: BOOTSTRAP ICONS (Neubrutalism) ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <!-- Lucide (fallback for structural elements) -->
+    <script src="https://unpkg.com/lucide@latest">
+    </script>
+
+    <style>
+        /* base reset */
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0d0d0d;
+            color: #f3f4f6;
+        }
+
+        /* Master Viewport */
+        .phone-viewport {
+            width: 375px;
+            height: 812px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .scrollable-content {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-bottom: 80px;
+        }
+
+        /* --- THEME 1: NEUMORPHISM (Font Awesome) --- */
+        .theme-neumorphism {
+            background-color: #e0e0e0 !important;
+            color: #333333 !important;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .neu-flat {
+            background: #e0e0e0;
+            box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
+            border-radius: 16px;
+        }
+        .neu-inset {
+            background: #e0e0e0;
+            box-shadow: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff;
+            border-radius: 12px;
+        }
+        .neu-pill {
+            background: #e0e0e0;
+            box-shadow: 3px 3px 6px #bebebe, -3px -3px 6px #ffffff;
+            border-radius: 9999px;
+        }
+
+        /* --- THEME 2: GLASSMORPHISM (Material Symbols) --- */
+        .theme-glassmorphism {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%) !important;
+            color: #ffffff !important;
+            font-family: 'Outfit', sans-serif;
+        }
+        .theme-glassmorphism::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: -50px;
+            width: 200px;
+            height: 200px;
+            background: rgba(236, 72, 153, 0.25);
+            border-radius: 50%;
+            filter: blur(50px);
+            z-index: 0;
+            pointer-events: none;
+        }
+        .theme-glassmorphism::after {
+            content: '';
+            position: absolute;
+            bottom: 20%;
+            right: -50px;
+            width: 220px;
+            height: 220px;
+            background: rgba(59, 130, 246, 0.25);
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: 0;
+            pointer-events: none;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+        }
+        .glass-pill {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 9999px;
+        }
+
+        /* --- THEME 3: NEUBRUTALISM (Bootstrap Icons) --- */
+        .theme-neubrutalism {
+            background-color: #FFFFFF !important;
+            color: #000000 !important;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .brutal-card {
+            background: #ffffff;
+            border: 1px solid #f0f0f0;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            border-radius: 16px;
+        }
+        .brutal-accent-yellow {
+            background-color: #ffde4d;
+        }
+        .brutal-accent-lime {
+            background-color: #ccff00;
+        }
+        .brutal-accent-pink {
+            background-color: #ff6ea7;
+        }
+        .brutal-pill {
+            background: #ffffff;
+            border: 2px solid #000000;
+            box-shadow: 2px 2px 0px #000000;
+            border-radius: 9999px;
+        }
+
+        /* ---- Controller ---- */
+        .controller {
+            width: 28%;
+            min-width: 300px;
+            max-width: 400px;
+            background: #141414;
+            border-right: 1px solid #2a2a2a;
+            padding: 16px 18px;
+            overflow-y: auto;
+            color: #e0e0e0;
+            flex-shrink: 0;
+            height: 100vh;
+        }
+        .controller::-webkit-scrollbar {
+            width: 2px;
+        }
+        .controller::-webkit-scrollbar-thumb {
+            background: #333;
+        }
+        .controller .panel-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: -0.3px;
+        }
+        .controller .panel-title span {
+            font-size: 9px;
+            background: #2a2a2a;
+            padding: 2px 10px;
+            border-radius: 20px;
+            color: #888;
+            font-weight: 400;
+        }
+        .ctrl-section {
+            margin-top: 14px;
+        }
+        .ctrl-section h3 {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: #666;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .ctrl-group {
+            background: #1c1c1c;
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            border: 1px solid #262626;
+        }
+        .module-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid #242424;
+            font-size: 12px;
+            gap: 6px;
+        }
+        .module-row:last-child {
+            border-bottom: none;
+        }
+        .module-row .left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 0;
+        }
+        .module-row .left input[type="checkbox"] {
+            accent-color: #FF6B35;
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .module-row .left .core-badge {
+            font-size: 7px;
+            background: #2a2a2a;
+            color: #777;
+            padding: 1px 6px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            flex-shrink: 0;
+        }
+        .module-row .left .mod-label {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #ccc;
+        }
+        .module-row .actions {
+            display: flex;
+            gap: 2px;
+            flex-shrink: 0;
+        }
+        .module-row .actions button {
+            background: #2a2a2a;
+            border: none;
+            color: #999;
+            width: 22px;
+            height: 22px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 10px;
+            transition: 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .module-row .actions button:hover {
+            background: #3a3a3a;
+            color: #fff;
+        }
+        .state-btn {
+            background: #2a2a2a;
+            border: 1px solid #333;
+            color: #ddd;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .state-btn:hover {
+            background: #3a3a3a;
+        }
+        .state-btn.active {
+            background: #FF6B35;
+            color: #fff;
+            border-color: #FF6B35;
+            font-weight: 600;
+        }
+
+        /* ---- Drawer ---- */
+        .drawer-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 15;
+            border-radius: 24px;
+        }
+        .drawer-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .drawer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 280px;
+            background: #fff;
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 20;
+            border-radius: 24px 0 0 24px;
+            overflow-y: auto;
+            padding: 20px 16px;
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.2);
+        }
+        .drawer.open {
+            transform: translateX(0);
+        }
+        .drawer .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .drawer .drawer-header .close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+        .drawer .drawer-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .drawer .drawer-nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: 0.15s;
+            color: #333;
+        }
+        .drawer .drawer-nav a:hover {
+            background: #f0f0f0;
+        }
+        .drawer .drawer-nav a i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+
+        /* material icons helper */
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            user-select: none;
+        }
+        .theme-glassmorphism .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* bootstrap icons helper */
+        .theme-neubrutalism .bi {
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="p-6 h-screen w-screen flex overflow-hidden">
+
+    <!-- LEFT CONTROLLER -->
+    <div class="controller" id="controllerPanel">
+        <div class="panel-title">
+            <i class="fas fa-sliders-h" style="color:#FF6B35;font-size:14px;"></i> Module Engine
+            <span>v1.0</span>
+        </div>
+        <div style="font-size:11px;color:#666;margin-bottom:12px;">19 components · 3 design systems · 3 icon libs</div>
+
+        <div class="ctrl-section">
+            <h3>Module Orchestrator</h3>
+            <div class="ctrl-group" id="moduleListContainer"></div>
+        </div>
+
+        <div class="ctrl-section">
+            <h3>State Simulation</h3>
+            <div class="ctrl-group">
+                <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                    <select id="weatherSelect" style="flex:1;min-width:70px;background:#222;border:1px solid #333;color:#ddd;padding:4px 8px;border-radius:6px;font-size:11px;outline:none;">
+                        <option value="Sunny">Clear</option>
+                        <option value="Rainy">Rain</option>
+                        <option value="Snowy">Snow</option>
+                    </select>
+                    <select id="timeSelect" style="flex:1;min-width:70px;background:#222;border:1px solid #333;color:#ddd;padding:4px 8px;border-radius:6px;font-size:11px;outline:none;">
+                        <option value="Breakfast">Morning</option>
+                        <option value="Lunch" selected>Lunch</option>
+                        <option value="LateNight">Late Night</option>
+                    </select>
+                </div>
+                <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
+                    <button class="state-btn" id="orderToggleBtn"><i class="fas fa-truck"></i> Active Order</button>
+                    <button class="state-btn" id="birthdayToggleBtn"><i class="fas fa-gift"></i> Birthday</button>
+                </div>
+                <div style="display:flex;gap:6px;margin-top:6px;align-items:center;">
+                    <span style="font-size:10px;color:#888;">Countdown:</span>
+                    <input type="number" id="countdownInput" value="45" style="width:50px;background:#222;border:1px solid #333;color:#ddd;padding:3px 6px;border-radius:6px;font-size:12px;outline:none;" />
+                    <span style="font-size:10px;color:#666;">min</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="font-size:9px;color:#444;margin-top:10px;border-top:1px solid #1a1a1a;padding-top:8px;text-align:center;">
+            <i class="fas fa-sync-alt" style="margin-right:4px;"></i> Real-time · all viewports sync
+        </div>
+        <div style="font-size:8px;color:#333;margin-top:4px;text-align:center;border-top:1px solid #1a1a1a;padding-top:6px;">
+            <span style="background:#1a1a1a;padding:2px 8px;border-radius:4px;">FA</span>
+            <span style="background:#1a1a1a;padding:2px 8px;border-radius:4px;margin-left:4px;">Material</span>
+            <span style="background:#1a1a1a;padding:2px 8px;border-radius:4px;margin-left:4px;">Bootstrap</span>
+        </div>
+    </div>
+
+    <!-- MAIN VIEWPORT GRID -->
+    <div class="flex-1 h-full flex flex-col overflow-hidden">
+        <div class="flex items-center justify-between mb-4 bg-slate-900 border border-slate-800 rounded-xl px-4 py-2">
+            <div class="text-sm font-bold text-slate-300">HIGH-FIDELITY DESIGN STRATIFICATION WORKBENCH</div>
+            <div class="flex gap-3 text-xs text-slate-500">
+                <span><i class="fas fa-circle" style="color:#FF6B35;font-size:8px;"></i> FA</span>
+                <span><i class="material-symbols-outlined" style="font-size:14px;color:#a78bfa;">circle</i> Material</span>
+                <span><i class="bi bi-circle-fill" style="color:#fbbf24;font-size:8px;"></i> Bootstrap</span>
+            </div>
+        </div>
+
+        <div class="flex-1 flex gap-4 overflow-x-auto justify-start items-center pb-4">
+
+            <!-- VIEWPORT 1: NEUMORPHISM · Font Awesome -->
+            <div class="flex flex-col items-center">
+                <span class="text-xs font-bold text-slate-400 mb-1 tracking-wider uppercase flex items-center gap-2">
+                    <i class="fas fa-cube"></i> Neumorphism <span class="text-[8px] bg-slate-800 px-2 py-0.5 rounded-full text-slate-400">Font Awesome</span>
+                </span>
+                <div id="viewport-neumorphism" class="phone-viewport theme-neumorphism rounded-[40px] border-[10px] border-slate-950 shadow-2xl">
+                </div>
+            </div>
+
+            <!-- VIEWPORT 2: GLASSMORPHISM · Material Symbols -->
+            <div class="flex flex-col items-center">
+                <span class="text-xs font-bold text-indigo-400 mb-1 tracking-wider uppercase flex items-center gap-2">
+                    <i class="material-symbols-outlined" style="font-size:16px;">lens</i> Glassmorphism <span class="text-[8px] bg-slate-800 px-2 py-0.5 rounded-full text-indigo-400">Material</span>
+                </span>
+                <div id="viewport-glassmorphism" class="phone-viewport theme-glassmorphism rounded-[40px] border-[10px] border-slate-950 shadow-2xl">
+                </div>
+            </div>
+
+            <!-- VIEWPORT 3: NEUBRUTALISM · Bootstrap Icons -->
+            <div class="flex flex-col items-center">
+                <span class="text-xs font-bold text-yellow-500 mb-1 tracking-wider uppercase flex items-center gap-2">
+                    <i class="bi bi-cube"></i> Neubrutalism <span class="text-[8px] bg-slate-800 px-2 py-0.5 rounded-full text-yellow-500">Bootstrap</span>
+                </span>
+                <div id="viewport-neubrutalism" class="phone-viewport theme-neubrutalism rounded-[40px] border-[10px] border-slate-950 shadow-2xl">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ─── MASTER CONFIG ────────────────────────────────────────────────
+        let modulesConfig = [
+            { id: 'announcement-strip', name: 'Announcement Strip', core: false, enabled: true },
+            { id: 'brand-header', name: 'Brand Header Base', core: true, enabled: true },
+            { id: 'video-reel-hero', name: 'Video Reel Hero Layer', core: true, enabled: true },
+            { id: 'active-order-tracker', name: 'Active Order Tracker', core: true, enabled: true },
+            { id: 'loyalty-card', name: 'Loyalty Metrics Card', core: true, enabled: true },
+            { id: 'finish-your-order', name: 'Finish Your Order Alert', core: false, enabled: true },
+            { id: 'limited-time-deal', name: 'Limited-Time Deal Timer', core: false, enabled: true },
+            { id: 'order-again', name: 'Order Again Rail', core: true, enabled: true },
+            { id: 'recommended-for-you', name: 'Recommended For You Grid', core: true, enabled: true },
+            { id: 'deals-promos', name: 'Deals/Promotions Gateway', core: true, enabled: true },
+            { id: 'birthday-reward-banner', name: 'Birthday Reward Banner', core: false, enabled: true },
+            { id: 'category-tiles', name: 'Category Navigation Grid', core: true, enabled: true },
+            { id: 'meal-deal-combo', name: 'Meal-Deal Combo Builder', core: true, enabled: true },
+            { id: 'featured-items', name: 'Featured Items Slider', core: true, enabled: true },
+            { id: 'popular-rail', name: 'Popular Items Rail (+Add)', core: true, enabled: true },
+            { id: 'offers-carousel', name: 'Offers Carousel Deck', core: false, enabled: true },
+            { id: 'offers-feed', name: 'Offers Comprehensive Feed', core: false, enabled: true },
+            { id: 'image-mosaic', name: 'Image Mosaic Lookbook', core: false, enabled: true },
+            { id: 'stories', name: 'Stories Loop Tickers', core: false, enabled: true }
+        ];
+
+        let stateSimulation = {
+            weather: 'Sunny',
+            time: 'Lunch',
+            countdown: 45,
+            orderActive: true,
+            birthday: false
+        };
+
+        // ─── ICON HELPERS per theme ──────────────────────────────────────
+        function iconFA(name, cls = '') {
+            return `<i class="fas fa-${name} ${cls}"></i>`;
+        }
+
+        function iconMaterial(name, cls = '') {
+            return `<span class="material-symbols-outlined ${cls}">${name}</span>`;
+        }
+
+        function iconBS(name, cls = '') {
+            return `<i class="bi bi-${name} ${cls}"></i>`;
+        }
+
+        function iconFor(theme, name, extra = '') {
+            if (theme === 'neumorphism') return iconFA(name, extra);
+            if (theme === 'glassmorphism') return iconMaterial(name, extra);
+            if (theme === 'neubrutalism') return iconBS(name, extra);
+            return iconFA(name, extra);
+        }
+
+        // ─── SIMULATED FOOD DATA ─────────────────────────────────────────
+        function getSimulatedItems() {
+            if (stateSimulation.weather === 'Sunny') {
+                return {
+                    rec: ['Artisanal Mango Gelato Bowl', 'Cold Brew Nitro Craft Soda'],
+                    desc: 'Beat the heat with clean, crisp refreshing formulas.',
+                    img1: 'https://images.unsplash.com/photo-1506084868230-bb9d95c24759?auto=format&fit=crop&w=300&q=80',
+                    img2: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=300&q=80'
+                };
+            } else if (stateSimulation.weather === 'Rainy') {
+                return {
+                    rec: ['Truffle Grilled Cheese Sandwich', 'Roasted Tomato Basil Soup Box'],
+                    desc: 'Warm comfort pairings optimized for wet climates.',
+                    img1: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=300&q=80',
+                    img2: 'https://images.unsplash.com/photo-1547592165-e1d17fed6005?auto=format&fit=crop&w=300&q=80'
+                };
+            } else {
+                return {
+                    rec: ['White Chocolate Skillet Cookie', 'Gourmet Cinnamon Roll Glaze'],
+                    desc: 'High-density comfort carbs designed for cold days.',
+                    img1: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=300&q=80',
+                    img2: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=300&q=80'
+                };
+            }
+        }
+
+        // ─── CONTROLLER UI ───────────────────────────────────────────────
+        function buildControllerList() {
+            const container = document.getElementById('moduleListContainer');
+            container.innerHTML = '';
+            modulesConfig.forEach((mod, index) => {
+                const row = document.createElement('div');
+                row.className = 'module-row';
+                row.innerHTML = `
+                    <div class="left">
+                        <input type="checkbox" ${mod.enabled ? 'checked' : ''} onchange="toggleModule('${mod.id}')">
+                        ${mod.core ? '<span class="core-badge">core</span>' : ''}
+                        <span class="mod-label">${mod.name}</span>
+                    </div>
+                    <div class="actions">
+                        <button onclick="moveModule(${index}, -1)" ${index === 0 ? 'disabled' : ''}><i class="fas fa-chevron-up" style="font-size:8px;"></i></button>
+                        <button onclick="moveModule(${index}, 1)" ${index === modulesConfig.length - 1 ? 'disabled' : ''}><i class="fas fa-chevron-down" style="font-size:8px;"></i></button>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function toggleModule(id) {
+            const mod = modulesConfig.find(m => m.id === id);
+            if (mod) mod.enabled = !mod.enabled;
+            renderAllViewports();
+        }
+
+        function moveModule(index, direction) {
+            const target = index + direction;
+            if (target >= 0 && target < modulesConfig.length) {
+                const temp = modulesConfig[index];
+                modulesConfig[index] = modulesConfig[target];
+                modulesConfig[target] = temp;
+                buildControllerList();
+                renderAllViewports();
+            }
+        }
+
+        function updateSimulations() {
+            stateSimulation.weather = document.getElementById('weatherSelect').value;
+            stateSimulation.time = document.getElementById('timeSelect').value;
+            stateSimulation.countdown = parseInt(document.getElementById('countdownInput').value) || 0;
+            renderAllViewports();
+        }
+
+        function attachDrawerEvents() {
+            document.querySelectorAll('[data-drawer-toggle]').forEach(el => {
+                el.addEventListener('click', function() {
+                    const vpId = this.dataset.drawerToggle;
+                    const overlay = document.querySelector(`[data-drawer-overlay="${vpId}"]`);
+                    const drawer = document.querySelector(`[data-drawer="${vpId}"]`);
+                    if (overlay) overlay.classList.add('open');
+                    if (drawer) drawer.classList.add('open');
+                });
+            });
+            document.querySelectorAll('[data-drawer-close]').forEach(el => {
+                el.addEventListener('click', function() {
+                    const vpId = this.dataset.drawerClose;
+                    const overlay = document.querySelector(`[data-drawer-overlay="${vpId}"]`);
+                    const drawer = document.querySelector(`[data-drawer="${vpId}"]`);
+                    if (overlay) overlay.classList.remove('open');
+                    if (drawer) drawer.classList.remove('open');
+                });
+            });
+            document.querySelectorAll('[data-drawer-overlay]').forEach(el => {
+                el.addEventListener('click', function() {
+                    this.classList.remove('open');
+                    const vpId = this.dataset.drawerOverlay;
+                    const drawer = document.querySelector(`[data-drawer="${vpId}"]`);
+                    if (drawer) drawer.classList.remove('open');
+                });
+            });
+        }
+
+        function initControllerEvents() {
+            const orderBtn = document.getElementById('orderToggleBtn');
+            const birthdayBtn = document.getElementById('birthdayToggleBtn');
+            if (orderBtn) {
+                orderBtn.classList.add('active');
+                orderBtn.addEventListener('click', function() {
+                    stateSimulation.orderActive = !stateSimulation.orderActive;
+                    this.classList.toggle('active');
+                    renderAllViewports();
+                });
+            }
+            if (birthdayBtn) {
+                birthdayBtn.addEventListener('click', function() {
+                    stateSimulation.birthday = !stateSimulation.birthday;
+                    this.classList.toggle('active');
+                    renderAllViewports();
+                });
+            }
+            document.getElementById('weatherSelect').addEventListener('change', updateSimulations);
+            document.getElementById('timeSelect').addEventListener('change', updateSimulations);
+            document.getElementById('countdownInput').addEventListener('input', updateSimulations);
+        }
+
+        // ─── RENDER ALL VIEWPORTS ────────────────────────────────────────
+        function renderAllViewports() {
+            const views = ['neumorphism', 'glassmorphism', 'neubrutalism'];
+            views.forEach(theme => {
+                const container = document.getElementById(`viewport-${theme}`);
+                container.innerHTML = '';
+
+                // Top Nav
+                container.innerHTML += generateTopNav(theme);
+
+                // Scrollable content
+                const scrollWrapper = document.createElement('div');
+                scrollWrapper.className = 'scrollable-content';
+
+                modulesConfig.forEach(mod => {
+                    if (!mod.enabled) return;
+                    let html = '';
+                    switch (mod.id) {
+                        case 'announcement-strip':
+                            html = drawAnnouncementStrip(theme);
+                            break;
+                        case 'brand-header':
+                            html = drawBrandHeader(theme);
+                            break;
+                        case 'video-reel-hero':
+                            html = drawVideoHero(theme);
+                            break;
+                        case 'active-order-tracker':
+                            html = drawActiveOrderTracker(theme);
+                            break;
+                        case 'loyalty-card':
+                            html = drawLoyaltyCard(theme);
+                            break;
+                        case 'finish-your-order':
+                            html = drawFinishYourOrder(theme);
+                            break;
+                        case 'limited-time-deal':
+                            html = drawLimitedTimeDeal(theme);
+                            break;
+                        case 'order-again':
+                            html = drawOrderAgain(theme);
+                            break;
+                        case 'recommended-for-you':
+                            html = drawRecommended(theme);
+                            break;
+                        case 'deals-promos':
+                            html = drawDealsPromos(theme);
+                            break;
+                        case 'birthday-reward-banner':
+                            html = drawBirthdayBanner(theme);
+                            break;
+                        case 'category-tiles':
+                            html = drawCategoryTiles(theme);
+                            break;
+                        case 'meal-deal-combo':
+                            html = drawMealCombo(theme);
+                            break;
+                        case 'featured-items':
+                            html = drawFeaturedItems(theme);
+                            break;
+                        case 'popular-rail':
+                            html = drawPopularRail(theme);
+                            break;
+                        case 'offers-carousel':
+                            html = drawOffersCarousel(theme);
+                            break;
+                        case 'offers-feed':
+                            html = drawOffersFeed(theme);
+                            break;
+                        case 'image-mosaic':
+                            html = drawImageMosaic(theme);
+                            break;
+                        case 'stories':
+                            html = drawStories(theme);
+                            break;
+                    }
+                    scrollWrapper.innerHTML += html;
+                });
+
+                container.appendChild(scrollWrapper);
+
+                // Bottom Bar
+                container.innerHTML += generateBottomBar(theme);
+
+                // Drawer
+                container.innerHTML += `
+                    <div class="drawer-overlay" data-drawer-overlay="vp-${theme}"></div>
+                    <div class="drawer" data-drawer="vp-${theme}">
+                        <div class="drawer-header">
+                            <div style="font-size:16px;font-weight:700;">Menu</div>
+                            <button class="close-btn" data-drawer-close="vp-${theme}"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="drawer-nav">
+                            <a href="#">${iconFor(theme, 'house', 'mr-2')} Home</a>
+                            <a href="#">${iconFor(theme, 'search', 'mr-2')} Search</a>
+                            <a href="#">${iconFor(theme, 'heart', 'mr-2')} Favorites</a>
+                            <a href="#">${iconFor(theme, 'bag', 'mr-2')} Orders</a>
+                            <a href="#">${iconFor(theme, 'person', 'mr-2')} Profile</a>
+                            <a href="#">${iconFor(theme, 'gear', 'mr-2')} Settings</a>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // re-init Lucide for any remaining data-lucide attributes
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            attachDrawerEvents();
+        }
+
+        // ─── NAVIGATION BARS ─────────────────────────────────────────────
+        function generateTopNav(theme) {
+            const t = theme;
+            if (t === 'neumorphism') {
+                return `
+                <div style="position:relative;min-height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 16px 8px;background:#e0e0e0;z-index:30;border-bottom:1px solid #ccc;">
+                    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:28px;background:#000;border-radius:0 0 20px 20px;"></div>
+                    <span style="font-size:15px;font-weight:700;color:#333;">19:02</span>
+                    <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:#555;"><i class="fas fa-signal"></i> <i class="fas fa-wifi"></i> <i class="fas fa-battery-full"></i></span>
+                </div>
+                <div style="padding:8px 16px;display:flex;align-items:center;justify-content:space-between;background:#e0e0e0;border-bottom:1px solid #ccc;z-index:30;">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <i class="fas fa-bars" data-drawer-toggle="vp-neumorphism" style="cursor:pointer;font-size:16px;color:#555;"></i>
+                        <span class="font-extrabold text-sm text-gray-700 tracking-wider">CRUMBL&CO</span>
+                    </div>
+                    <button class="w-8 h-8 neu-flat flex items-center justify-center text-gray-600 relative"><i class="fas fa-shopping-bag"></i></button>
+                </div>`;
+            } else if (t === 'glassmorphism') {
+                return `
+                <div style="position:relative;min-height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 16px 8px;background:rgba(15,23,42,0.6);backdrop-filter:blur(12px);z-index:30;border-bottom:1px solid rgba(255,255,255,0.08);">
+                    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:28px;background:#000;border-radius:0 0 20px 20px;"></div>
+                    <span style="font-size:15px;font-weight:700;color:#e2e8f0;">19:02</span>
+                    <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:#94a3b8;"><i class="fas fa-signal"></i> <i class="fas fa-wifi"></i> <i class="fas fa-battery-full"></i></span>
+                </div>
+                <div style="padding:8px 16px;display:flex;align-items:center;justify-content:space-between;background:rgba(15,23,42,0.4);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.08);z-index:30;">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <i class="material-symbols-outlined" data-drawer-toggle="vp-glassmorphism" style="cursor:pointer;font-size:20px;color:#c7d2fe;">menu</i>
+                        <span class="font-black text-sm tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400">NEXT_EATS</span>
+                    </div>
+                    <div style="position:relative;"><span class="material-symbols-outlined" style="font-size:22px;color:#a5b4fc;">shopping_cart</span><span style="position:absolute;top:-6px;right:-6px;background:#ec4899;font-size:8px;font-weight:700;padding:1px 5px;border-radius:50%;color:#fff;">2</span></div>
+                </div>`;
+            } else {
+                return `
+                <div style="height:54px;min-height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 8px;background:#fff;position:relative;z-index:10;">
+                    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:28px;background:#000;border-radius:0 0 20px 20px;"></div>
+                    <span style="font-size:15px;font-weight:700;color:#000;">19:02</span>
+                    <span style="display:flex;align-items:center;gap:6px;font-size:11px;"><i class="fas fa-signal"></i> <i class="fas fa-wifi"></i> <i class="fas fa-battery-full"></i></span>
+                </div>
+                <div style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid #f0f0f0;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <i class="bi bi-list" data-drawer-toggle="vp-neubrutalism" style="cursor:pointer;font-size:20px;color:#333;"></i>
+                        <div>
+                            <div style="font-size:10px;color:#999;">Deliver to</div>
+                            <div style="font-size:13px;font-weight:700;color:#333;">2715 Ash Dr. San Jose...</div>
+                        </div>
+                    </div>
+                    <div style="width:36px;height:36px;border-radius:12px;background:#FF6B35;display:flex;align-items:center;justify-content:center;color:#fff;position:relative;">
+                        <i class="bi bi-bell"></i>
+                        <span style="position:absolute;top:-3px;right:-3px;width:14px;height:14px;background:#FF6B35;color:#fff;font-size:8px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #fff;">2</span>
+                    </div>
+                </div>`;
+            }
+        }
+
+        function generateBottomBar(theme) {
+            const t = theme;
+            if (t === 'neumorphism') {
+                return `
+                <div class="absolute bottom-0 left-0 right-0 h-16 bg-[#e0e0e0] border-t border-gray-300 px-6 flex items-center justify-between z-30 shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
+                    <button class="flex flex-col items-center justify-center text-teal-600 font-bold"><i class="fas fa-home text-lg"></i><span class="text-[9px] mt-0.5">Home</span></button>
+                    <button class="flex flex-col items-center justify-center text-gray-500"><i class="fas fa-search text-lg"></i><span class="text-[9px] mt-0.5">Search</span></button>
+                    <button class="flex flex-col items-center justify-center text-gray-500"><i class="fas fa-clock text-lg"></i><span class="text-[9px] mt-0.5">Orders</span></button>
+                    <button class="flex flex-col items-center justify-center text-gray-500"><i class="fas fa-user text-lg"></i><span class="text-[9px] mt-0.5">Profile</span></button>
+                </div>`;
+            } else if (t === 'glassmorphism') {
+                return `
+                <div class="absolute bottom-3 left-4 right-4 h-16 glass-panel border-white/20 bg-slate-900/60 backdrop-blur-xl px-6 flex items-center justify-between z-30">
+                    <button class="text-pink-400 flex flex-col items-center"><span class="material-symbols-outlined" style="font-size:22px;">home</span><span class="text-[9px] font-medium tracking-wide">Discovery</span></button>
+                    <button class="text-indigo-200 opacity-60 flex flex-col items-center"><span class="material-symbols-outlined" style="font-size:22px;">explore</span><span class="text-[9px]">Explore</span></button>
+                    <button class="text-indigo-200 opacity-60 flex flex-col items-center"><span class="material-symbols-outlined" style="font-size:22px;">trending_up</span><span class="text-[9px]">Status</span></button>
+                    <button class="text-indigo-200 opacity-60 flex flex-col items-center"><span class="material-symbols-outlined" style="font-size:22px;">person</span><span class="text-[9px]">Vault</span></button>
+                </div>`;
+            } else {
+                return `
+                <div style="height:64px;min-height:64px;display:flex;align-items:center;justify-content:space-around;padding:0 16px 4px;background:#fff;border-top:1px solid #f0f0f0;position:relative;z-index:10;">
+                    <button style="display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;font-weight:500;color:#FF6B35;cursor:pointer;padding:6px 12px;border-radius:12px;"><i class="bi bi-house-fill" style="font-size:20px;"></i><span>Home</span></button>
+                    <button style="display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;font-weight:500;color:#999;cursor:pointer;padding:6px 12px;border-radius:12px;"><i class="bi bi-search" style="font-size:20px;"></i><span>Search</span></button>
+                    <button style="display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;font-weight:500;color:#999;cursor:pointer;padding:6px 12px;border-radius:12px;"><i class="bi bi-heart" style="font-size:20px;"></i><span>Favorites</span></button>
+                    <button style="display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;font-weight:500;color:#999;cursor:pointer;padding:6px 12px;border-radius:12px;"><i class="bi bi-person" style="font-size:20px;"></i><span>Profile</span></button>
+                </div>`;
+            }
+        }
+
+        // ─── COMPONENT DRAWERS ───────────────────────────────────────────
+        function drawAnnouncementStrip(theme) {
+            if (theme === 'neumorphism') {
+                return `<div class="m-2 p-2 neu-inset flex items-center gap-2 justify-center text-[10px] text-gray-600 font-bold tracking-wide">${iconFA('info-circle','text-orange-500')} KITCHENS CLOSE EARLY AT 9PM TONIGHT</div>`;
+            } else if (theme === 'glassmorphism') {
+                return `<div class="w-full bg-pink-500/20 backdrop-blur-sm py-1.5 px-3 text-[9px] text-pink-200 flex items-center justify-center gap-1.5 border-b border-pink-500/15 tracking-wider">${iconMaterial('warning','text-pink-400 animate-pulse')} HIGH DEMAND METRICS: EXTENDED COURIER ROUTING LOGISTICS</div>`;
+            } else {
+                return `<div style="background:#FFF3ED;padding:8px 16px;text-align:center;font-size:11px;font-weight:500;color:#FF6B35;display:flex;align-items:center;justify-content:center;gap:6px;">${iconBS('lightning','')} Free delivery on orders over $25</div>`;
+            }
+        }
+
+        function drawBrandHeader(theme) {
+            if (theme === 'neumorphism') {
+                return `
+                <div class="p-4 flex flex-col gap-3">
+                    <div class="flex justify-between items-center">
+                        <div class="neu-pill px-3 py-1.5 text-xs font-semibold text-gray-600 flex items-center gap-1.5">${iconFA('map-pin','text-teal-600')} Manhattan West, NY ${iconFA('chevron-down')}</div>
+                    </div>
+                    <div class="grid grid-cols-2 p-1.5 neu-inset">
+                        <div class="neu-flat py-1.5 text-center text-xs font-bold text-gray-800">Fulfillment Delivery</div>
+                        <div class="py-1.5 text-center text-xs font-medium text-gray-500">Store Pickup</div>
+                    </div>
+                </div>`;
+            } else if (theme === 'glassmorphism') {
+                return `
+                <div class="p-4 flex justify-between items-center z-10 relative">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">${iconMaterial('location_on','text-cyan-400')}</div>
+                        <div>
+                            <div class="text-[9px] text-indigo-300 tracking-widest font-light uppercase">DELIVER TO</div>
+                            <div class="text-xs font-bold flex items-center gap-0.5">Corporate Loft, Plaza Floor ${iconMaterial('expand_more','text-indigo-400')}</div>
+                        </div>
+                    </div>
+                    <div class="glass-pill p-0.5 flex w-28 justify-between">
+                        <span class="bg-gradient-to-r from-pink-500 to-indigo-500 text-[9px] font-bold px-2.5 py-1 rounded-full">DEL</span>
+                        <span class="text-white/50 text-[9px] font-medium px-2.5 py-1">PCK</span>
+                    </div>
+                </div>`;
+            } else {
+                return `
+                <div class="p-3 bg-white border-b border-gray-100 flex flex-col gap-2">
+                    <div class="flex justify-between items-center">
+                        <div style="font-size:13px;font-weight:700;color:#333;display:flex;align-items:center;gap:6px;">${iconBS('geo-alt-fill','text-[#FF6B35]')} 2715 Ash Dr. San Jose...</div>
+                    </div>
+                    <div style="display:flex;gap:6px;">
+                        <div style="flex:1;padding:8px 12px;border-radius:10px;background:#FF6B35;color:#fff;font-size:12px;font-weight:600;text-align:center;">Delivery</div>
+                        <div style="flex:1;padding:8px 12px;border-radius:10px;background:#f5f5f5;color:#666;font-size:12px;font-weight:500;text-align:center;">Pickup</div>
+                    </div>
+                </div>`;
+            }
+        }
+
+        function drawVideoHero(theme) {
+            if (theme === 'neumorphism') {
+                return `
+                <div class="p-4">
+                    <div class="h-44 w-full neu-flat relative overflow-hidden flex flex-col justify-end p-4 bg-cover bg-center" style="background-image: linear-gradient(rgba(224,224,224,0.1), rgba(224,224,224,0.95)), url('https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=400&q=80')">
+                        <div class="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#e0e0e0] shadow-[3px_3px_6px_#bebebe,-3px,-3px,6px_#ffffff] flex items-center justify-center text-gray-600">${iconFA('play')}</div>
+                        <span class="text-[9px] font-bold text-gray-500 tracking-widest uppercase">CRAVING MOTION INDEX</span>
+                        <h2 class="text-base font-black text-gray-700 leading-none mt-0.5">THE FRESH CONFECTION CUT</h2>
+                    </div>
+                </div>`;
+            } else if (theme === 'glassmorphism') {
+                return `
+                <div class="px-4 mb-4">
+                    <div class="h-60 w-full glass-panel relative overflow-hidden flex flex-col justify-end p-4 bg-cover bg-center" style="background-image: linear-gradient(rgba(0,0,0,0) 40%, rgba(15,23,42,0.9) 100%), url('https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=400&q=80')">
+                        <div class="absolute top-3 right-3 glass-pill px-2.5 py-0.5 text-[8px] font-bold tracking-widest text-cyan-300 border-cyan-500/30 flex items-center gap-1 uppercase">${iconMaterial('visibility','animate-pulse')} LIVE STREAMS</div>
+                        <h2 class="text-xl font-black tracking-tight mb-1 bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent">BAKED FLUIDITY</h2>
+                        <p class="text-[11px] text-indigo-200 font-light leading-tight">Watch luxury glaze application loops run fresh in the main production kitchens.</p>
+                    </div>
+                </div>`;
+            } else {
+                return `
+                <div class="p-3">
+                    <div style="height:180px;width:100%;border-radius:16px;overflow:hidden;position:relative;background:linear-gradient(rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%),url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=400&q=80');background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;">
+                        <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+                            <div style="width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;">${iconBS('play-fill','text-[#333]')}</div>
+                            <span style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:1px;">Featured Video</span>
+                        </div>
+                        <h3 style="font-size:18px;font-weight:700;color:#fff;line-height:1.1;">Premium Heavy Interface Concept</h3>
+                    </div>
+                </div>`;
+            }
+        }
+
+        function drawActiveOrderTracker(theme) {
+            if (!stateSimulation.orderActive) return '';
+            if (theme === 'neumorphism') {
+                return `
+                <div class="mx-4 my-2 p-3 neu-inset flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-7 h-7 rounded-full bg-teal-50 flex items-center justify-center shadow-inner">${iconFA('utensils','text-teal-600')}</div>
+                        <div>
+                            <div class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Active Fulfillment Pipeline</div>
+                            <div class="text-xs font-black text-teal-600">Kitchen processing array active...</div>
+                        </div>
+                    </div>
+                </div>`;
+            } else if (theme === 'glassmorphism') {
+                return `
+                <div class="mx-4 mb-4 p-3 bg-indigo-500/15 border border-indigo-400/25 backdrop-blur-md rounded-xl flex items-center justify-between z-10 relative">
+                    <div class="flex items-center gap-3">
+                        <div class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-white flex items-center gap-1">${iconMaterial('local_shipping','text-cyan-400')} Transit Operations</div>
+                            <div class="text-[10px] text-indigo-200">Courier assigned • Intersecting destination within 12M</div>
+                        </div>
+                    </div>
+                    ${iconMaterial('chevron_right','text-indigo-400')}
+                </div>`;
+            } else {
+                return `
+                <div class="mx-3 my-2 p-3 rounded-2xl flex justify-between items-center" style="background:#FFF3ED;border:1px solid #FFE0D0;">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div style="width:32px;height:32px;border-radius:10px;background:#FF6B35;display:flex;align-items:center;justify-content:center;">${iconBS('truck','text-white')}</div>
+                        <div>
+                            <div style="font-size:11px;font-weight:600;color:#333;">Active Order</div>
+                            <div style="font-size:10px;color:#999;">Arriving in 12 min</div>
+                        </div>
+                    </div>
+                    <span style="font-size:10px;font-weight:700;background:#FF6B35;padding:4px 10px;border-radius:8px;color:#fff;">Track</span>
+                </div>`;
+            }
+        }
+
+        function drawLoyaltyCard(theme) {
+            if (theme === 'neumorphism') {
+                return `
+                <div class="p-4">
+                    <div class="p-4 neu-flat flex flex-col gap-2">
+                        <div class="flex justify-between items-center text-[10px] text-gray-500 font-bold">
+                            <span class="flex items-center gap-1">${iconFA('award','text-orange-500')} REWARDS PASS</span>
+                            <span class="text-gray-700">420 CREDIT BAL</span>
+                        </div>
+                        <div class="h-2 w-full bg-gray-300 rounded-full overflow-hidden shadow-inner">
+                            <div class="h-full bg-gradient-to-r from-orange-400 to-amber-500 rounded-full" style="width:75%"></div>
+                        </div>
+                        <div class="text-[9px] text-gray-400 font-medium">80 tokens remaining to generate next level sweet redemption tier rewards.</div>
+                    </div>
+                </div>`;
+            } else if (theme === 'glassmorphism') {
+                return `
+                <div class="px-4 mb-4">
+                    <div class="glass-panel p-3.5 bg-gradient-to-br from-white/10 to-transparent">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="flex items-center gap-2">
+                                <div class="w-7 h-7 rounded-lg bg-pink-500/20 flex items-center justify-center">${iconMaterial('credit_card','text-pink-400')}</div>
+                                <div>
+                                    <span class="text-[9px] text-pink-300 font-semibold tracking-widest uppercase">TIER STATUS</span>
+                                    <h4 class="text-xs font-bold text-white">Gold Tier VIP Elite</h4>
+                                </div>
+                            </div>
+                            <span class="text-base font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400">82% LEVEL</span>
+                        </div>
+                        <div class="w-full bg-white/10 h-1 rounded-full overflow-hidden">
+                            <div class="bg-gradient-to-r from-pink-500 to-cyan-400 h-full" style="width:82%"></div>
+                        </div>
+                    </div>
+                </div>`;
+            } else {
+                return `
+                <div class="p-3">
+                    <div style="background:#fff;border-radius:16px;padding:14px;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <div style="width:28px;height:28px;border-radius:8px;background:#FFF3ED;display:flex;align-items:center;justify-content:center;">${iconBS('award','text-[#FF6B35]')}</div>
+                                <div>
+                                    <div style="font-size:10px;color:#999;">Rewards</div>
+                                    <div style="font-size:12px;font-weight:700;color:#333;">420 pts</div>
+                                </div>
+                            </div>
+                            <span style="font-size:10px;font-weight:600;color:#FF6B35;">View All</span>
+                        </div>
+                        <div style="height:6px;background:#f5f5f5;border-radius:3px;overflow:hidden;">
+                            <div style="height:100%;background:linear-gradient(90deg,#FF6B35,#FF8F65);border-radius:3px;width:75%;"></div>
+                        </div>
+                        <div style="font-size:10px;color:#999;margin-top:6px;">80 pts to next reward</div>
+                    </div>
+                </div>`;
+            }
+        }
+
+        function drawFinishYourOrder(theme) {
+            if (theme === 'neumorphism') {
+                return `
+                <div class="mx-4 my-2 p-3 bg-amber-50/60 rounded-xl border border-amber-200/40 flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 shadow-inner">${iconFA('shopping-cart')}</div>
+                        <div>
+                            <span class="text-xs font-bold text-amber-800 block">Incomplete Session Cache</span>
+                            <span class="text-[10px] text-amber-600 block">2x Fudge Brownies waiting in cart data</span>
+                        </div>
+                    </div>
+                </div>`;
+            } else if (theme === 'glassmorphism') {
+                return `
+                <div class="mx-4 mb-4 p-3 glass-panel border-pink-500/25 bg-gradient-to-r from-pink-500/15 to-transparent flex justify-between items-center z-10 relative">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-pink-500/20 flex items-center justify-center">${iconMaterial('shopping_bag','text-pink-400')}</div>
+                        <div>
+                            <div class="text-xs font-bold text-pink-200">Cart Abandonment Detected</div>
+                            <div class="text-[10px] text-indigo-200">Recover and execute 1-Tap conversion checkout</div>
+                        </div>
+                    </div>
+                    <button class="bg-pink-500 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg shadow-lg shadow-pink-500/20">${iconMaterial('arrow_forward','')}</button>
+                </div>`;
+            } else {
+                return `
+                <div class="mx-3 my-2 p-3 rounded-2xl flex items-center justify-between" style="background:#FFF8E1;border:1px solid #FFE082;">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div style="width:32px;height:32px;border-radius:10px;background:#FFB300;display:flex;align-items:center;justify-content:center;">${iconBS('cart','text-white')}</div>
+                        <div>
+                            <div style="font-size:11px;font-weight:600;color:#333;">Cart waiting</div>
+                            <div style="font-size:10px;color:#999;">2 items in your cart</div>
+                        </div>
+                    </div>
+                    <button style="background:#FFB300;color:#fff;font-size:10px;font-weight:600;padding:6px 14px;border-radius:8px;border:none;cursor:pointer;">Checkout</button>
+                </div>`;
+            }
+        }
+
+        function drawLimitedTimeDeal(theme) {
+            const val = stateSimulation.countdown;
+            if (theme === 'neumorphism') {
+                return `
+                <div class="p-4">
+                    <div class="p-3 neu-flat bg-red-50/50 flex justify-between items-center">
+                        <span class="text-xs font-extrabold text-red-600 tracking-tight flex items-center gap-1">${iconFA('clock')} TIMED VALUE DROP</span>
+                        <span class="font-mono text-xs font-black text-red-700 bg-red-100 px-2 py-0.5 rounded-md shadow-inner">${val}</span>
+                    </div>
+                </div>`;
+            } else if (theme === 'glassmorphism') {
+                return `
+                <div class="px-4 mb-4">
+                    <div class="glass-panel p-3 bg-red-500/10 border-red-500/25 flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            ${iconMaterial('hourglass','text-red-400 animate-spin')}
+                            <span class="text-[10px] text-red-200 uppercase tracking-widest font-bold">FOMO ACCELERATION</span>
+                        </div>
+                        <span class="font-mono text-base font-black text-red-400 bg-black/40 px-2.5 py-0.5 rounded-lg border border-red-500/20">${val}</span>
+                    </div>
+                </div>`;
+            } else {
+                return `
+                <div class="p-3">
+                    <div style="background:#fff;border-radius:16px;padding:12px 14px;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:space-between;">
+                        <div style="display:flex;align-items:center;gap:8px;">${iconBS('clock','text-[#FF6B35]')}<span style="font-size:12px;font-weight:600;color:#333;">Deal ends in</span></div>
+                        <span style="font-size:13px;font-weight:700;color:#FF6B35;background:#FFF3ED;padding:4px 10px;border-radius:8px;">${val}m</span>
+                    </div>
+                </div>`;
+            }
+        }
+
+        function drawOrderAgain(theme) {
+            if (theme === 'neumorphism') {
+                return `
+                <div class="p-4 flex flex-col gap-2">
+                    <span class="text-[10px] font-bold text-gray-400 tracking-wider uppercase px-1">RAPID POWER-USER FAST TRACK</span>
+                    <div class="flex gap-3 overflow-x-auto pb-1.5">
+                        <div class="w-32 flex-shrink-0 p-2.5 neu-flat text-xs text-gray-700 font-bold flex items-center gap-1.5">${iconFA('undo','text-gray-500')} Friday Night Combo</div>
+                        <div class="w-32 flex-shrink-0 p-2.5 neu-flat text-xs text-gray-700 font-bold flex items-center gap-1.5">${iconFA('undo','text-gray-500')} Standard Fuel Run</div>
+                    </div>
+                </div>`;
+            } else if (theme === 'glassmorphism') {
+                return `
+                <div class="pl-4 mb-4 flex flex-col gap-2">
+                    <span class="text-[10px] font-bold tracking-widest text-indigo-300 uppercase">HIGH FREQUENCY ROUTING LOOPS</span>
+                    <div class="flex gap-3 overflow-x-auto pb-1 pr-4">
+                        <div class="w-32 flex-shrink-0 glass-panel p-2.5 bg-white/5 flex flex-col gap-0.5">
+                            <span class="text-xs font-bold text-white truncate flex items-center gap-1">${iconMaterial('history','text-cyan-400')} The Usual Box</span>
+                            <span class="text-[9px] text-indigo-300">Ordered 14x frequency</span>
+                        </div>
+                        <div class="w-32 flex-shrink-0 glass-panel p-2.5 bg-white/5 flex flex-col gap-0.5">
+                            <span class="text-xs font-bold text-white truncate flex items-center gap-1">${iconMaterial('history','text-cyan-400')} Morning Double</span>
+                            <span class="text-[9px] text-indigo-300">Ordered 8x frequency</span>
+                        </div>
+                    </div>
+                </div>`;
+            } else {
+                return `
+                <div class="p-3">
+                    <div style="font-size:14px;font-weight:700;color:#333;margin-bottom:10px;">Order Again</div>
+                    <div class="flex gap-3 overflow-x-auto pb-2">
+                        <div style="flex-shrink:0;width:140px;background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+                            <div style="font-size:12px;font-weight:600;color:#333;display:flex;align-items:center;gap:6px;">${iconBS('arrow-repeat','text-[#999]')} Friday Night Combo</div>
+                        </div>
+                        <div style="flex-shrink:0;width:140px;background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+                            <div style="font-size:12px;font-weight:600;color:#333;display:flex;align-items:center;gap:6px;">${iconBS('arrow-repeat','text-[#999]')} Morning Double</div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+        }
+
+        function drawRecommended(theme) {
+            const d = getSimulatedItems();
+            if (theme === 'neumorphism') {
+                return `
+                <div class="p-4 flex flex-col gap-3">
+                    <div>
+                        <h4 class="text-xs font-black text-gray-500 tracking-wider uppercase flex items-center gap-1">${iconFA('sparkles','text-teal-600')} PERSONALIZED ARCHETYPE</h4>
+                        <p class="text-[9px] text-gray-400 leading-tight mt-0.5">${d.desc}</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="p-2.5 neu-flat flex flex-col gap-1.5 items-center">
+                            <img src="${d.img1}" class="w-full h-16 object-cover rounded-lg shadow-inner grayscale opacity-90" alt="food">
+                            <span class="text-[11px] font-bold text-gray-700 truncate w-full text-center">${d.rec[0]}</span>
+                        </div>
+                        <div class="p-2.5 neu-flat flex flex-col gap-1.5 items-center">
+                            <img src="${d.img2}" class="w-full h-16 object-cover rounded-lg shadow-inner grayscale opacity-90" alt="food">
+                            <span class="text-[11px] font-bold text-gray-700 truncate w-full text-center">${d.rec[1]}</span>
+                        </div>
+                    </div>
+                </div>`;
+            } else if (theme === 'glassmorphism') {
+                return `
+                <div class="px-4 mb-4">
+                    <div class="mb-2">
+                        <span class="text-[9px] text-pink-300 font-bold tracking-widest uppercase flex items-center gap-1">${iconMaterial('memory','text-pink-400')} PROBABILISTIC CONTEXT TARGETING</span>
+                        <h4 class="text-xs text-white opacity-80 mt-0.5">${d.desc}</h4>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="glass-panel p-2 bg-gradient-to-b from-white/10 to-transparent flex flex-col">
+                            <img src="${d.img1}" class="w-full h-20 object-cover rounded-xl mb-2 filter saturate-120" alt="food">
+                            <div class="text-[11px] font-medium text-white truncate px-1">${d.rec[0]}</div>
+                        </div>
+                        <div class="glass-panel p-2 bg-gradient-to-b from-white/10 to-transparent flex flex-col">
+                            <img src="${d.img2}" class="w-full h-20 object-cover rounded-xl mb-2 filter saturate-120" alt="food">
+                            <div class="text-[11px] font-medium text-white truncate px-1">${d.rec[1]}</div>
+                        </div>
+                    </div>
+                </div>`;
+            } else {
+                return `
+                <div class="p-3">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                        <span style="font-size:14px;font-weight:700;color:#333;">Recommended</span>
+                        <span style="font-size:10px;color:#999;">${stateSimulation.weather}</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+                            <div style="position:relative;">
+                                <img src="${d.img1}" style="width:100%;height:120px;object-fit:cover;" alt="food">
+                                <div style="position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;">${iconBS('heart','text-[#ccc]')}</div>
+                            </div>
+                            <div style="padding:10px;">
+                                <div style="font-size:12px;font-weight:600;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.rec[0]}</div>
+                                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
+                                    <span style="font-size:13px;font-weight:700;color:#FF6B35;">$12.99</span>
+                                    <div style="display:flex;align-items:center;gap:8px;">
+                                        <div style="width:24px;height:24px;border-radius:8px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:12px;color:#999;cursor:pointer;">-</div>
+                                        <span style="font-size:12px;font-weight:600;">1</span>
+                                        <div style="width:24px;height:24px;border-radius:8px;background:#FF6B35;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;cursor:pointer;">+</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+                            <div style="position:relative;">
+                                <img src="${d.img2}" style="width:100%;height:120px;object-fit:cover;" alt="food">
+                                <div style="position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;">${iconBS('heart','text-[#ccc]')}</div>
+                            </div>
+                            <div style="padding:10px;">
+                                <div style="font-size:12px;font-weight:600;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.rec[1]}</div>
+                                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
+                                    <span style="font-size:13px;font-weight:700;color:#FF6B35;">$9.99</span>
+                                    <div style="display:flex;align-items:center;gap:8px;">
+                                        <div style="width:24px;height:24px;border-radius:8px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:12px;color:#999;cursor:pointer;">-</div>
+                                        <span style="font-size:12px;font-weight:600;">1</span>
+                                        <div style="width:24px;height:24px;border-radius:8px;background:#FF6B35;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;cursor:pointer;">+</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+        }
+
+        function drawDealsPromos(theme) {
+            if (theme === 'neumorphism') {
+                return `
+                <div class="p-4">
+                    <div class="p-4 bg-gradient-to-br from-teal-600 to-emerald-600 rounded-2xl shadow-md text-white flex justify-between items-center">
+                        <div>
+                            <span class="text-[9px] font-black tracking-widest opacity-80 uppercase flex items-center gap-1">${iconFA('tag')} REDUCTION INTERFACE</span>
+                            <h3 class="text-sm font-black leading-tight mt-0.5">30% BASE COST REDUCTION ON ENTRYS</h3>
+                        </div>
+                        ${iconFA('percent','opacity-30 text-2xl')}
+                    </div>
+                </div>`;
+            } else if (theme === 'glassmorphism') {
+                return `
+                <div class="px-4 mb-4">
+                    <div class="glass-panel p-4 bg-gradient-to-r from-cyan-500/15 to-blue-500/15 border-cyan-400/25 flex justify-between items-center z-10 relative">
+                        <div>
+                            <span class="text-[9px] text-cyan-300 font-mono font-black tracking-widest uppercase flex items-center gap-1">${iconMaterial('confirmation_number')} CONCESSION ROUTER</span>
+                            <h4 class="text-xs font-bold text-white mt-0.5">Initialize Premium Free Delivery Pass</h4>
+                        </div>
+                        ${iconMaterial('sparkles','text-cyan-400')}
+                    </div>
+                </div>`;
+            } else {
+                return `
+                <div class="p-3">
+                    <div style="background:linear-gradient(135deg,#FF6B35,#FF8F65);border-radius:16px;padding:16px;color:#fff;display:flex;align-items:center;justify-content:space-between;">
+                        <div>
+                            <div style="font-size:10px;font-weight:600;opacity:0.8;display:flex;align-items:center;gap:4px;">${iconBS('tag','')} LIMITED OFFER</div>
+                            <div style="font-size:15px;font-weight:700;margin-top:4px;">30% OFF First Order</div>
+                            <div style="font-size:10px;opacity:0.7;margin-top:2px;">Use code SAVE30 at checkout</div>
+                        </div>
+                        <div style="width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;">${iconBS('arrow-right','text-lg')}</div>
+                    </div>
+                </div>`;
+            }
+        }
+
+        function drawBirthdayBanner(theme) {
+            if (!stateSimulation.birthday) return '';
+            if (theme === 'neumorphism') {
+                return `
+                <div class="mx-4 my-2 p-3 text-center rounded-xl bg-purple-50 text-purple-700 border border-purple-200/40 font-bold text-[10px] flex items-center justify-center gap-1.5 shadow-inner">
+                    ${iconFA('gift','text-purple-500')} Milestone Cycle Valid: Free Glazed Shell Unlocked
+                </div>`;
+            } else if (theme === 'glassmorphism') {
+                return `
+                <div class="mx-4 mb-4 p-3 glass-panel bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-center border-purple-400/30 flex items-center justify-center gap-2 z-10 relative">
+                    ${iconMaterial('cake','text-pink-400 animate-bounce')}
+                    <div class="text-[11px] font-bold text-white tracking-wide">Personal Milestone Anniversary Complementary Asset Valid</div>
+                </div>`;
+            } else {
+                return `
+                <div class="mx-3 my-2 p-3 rounded-2xl text-center" style="background:#FFF3ED;border:1px solid #FFE0D0;">
+                    <div style="font-size:11px;font-weight:600;color:#FF6B35;display:flex;align-items:center;justify-content:center;gap:6px;">${iconBS('gift','')} Happy Birthday! Free treat unlocked</div>
+                </div>`;
+            }
+        }
+
+        function drawCategoryTiles(theme) {
+            const cats = [
+                { name: 'Bakery', icon: 'cookie' },
+                { name: 'Brew', icon: 'coffee' },
+                { name: 'Sweets', icon: 'ice-cream' },
+                { name: 'Bundles', icon: 'package' }
+            ];
+            if (theme === 'neumorphism') {
+                return `
+                <div class="p-4 flex flex-col gap-2">
+                    <span class="text-[10px] font-bold text-gray-400 tracking-wider uppercase px-1">ANCHOR NAVIGATION ARCHITECTURE</span>
+                    <div class="grid grid-cols-4 gap-2">
+                        ${cats.map(c => `<div class="py-2.5 flex flex-col items-center justify-center gap-1 neu-flat text-[10px] font-bold text-gray-600">${iconFA(c.icon,'text-gray-500')}<span>${c.name}</span></div>`).join('')}
+                    </div>
+                </div>`;
+            } else if (theme === 'glassmorphism') {
+                return `
+                <div class="px-4 mb-4 flex flex-col gap-2">
+                    <span class="text-[9px] text-indigo-300 font-bold tracking-widest uppercase">Deep-Link Grid Modifiers</span>
+                    <div class="grid grid-cols-4 gap-2">
+                        ${cats.map(c => `<div class="py-2 flex flex-col items-center justify-center gap-1 glass-pill text-[10px] text-white font-medium">${iconMaterial(c.icon,'text-cyan-400')}<span>${c.name}</span></div>`).join('')}
+                    </div>
+                </div>`;
+            } else {
+                return `
+                <div class="p-3 flex flex-col gap-2">
+                    <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;">
+                        ${cats.map(c => `<div style="flex-shrink:0;padding:8px 16px;border-radius:20px;background:#f5f5f5;font-size:12px;font-weight:500;color:#333;display:flex;align-items:center;gap:6px;cursor:pointer;">${iconBS(c.icon,'text-[#FF6B35]')}<span>${c.name}</span></div>`).join('')}
+                    </div>
+                </div>`;
+            }
+        }
+
+        function drawMealCombo(theme) {
+            if (theme === 'neumorphism') {
+                return `
+                <div class="p-4">
+                    <div class="p-3.5 neu-flat flex flex-col gap-2">
+                        <div class="text-xs font-bold text-gray-700 flex items-center gap-1">${iconFA('layer-group','text-teal-600')} COMPOSITE PIPELINE UPGRADE</div>
+                        <div class="p-2 neu-inset bg-gray-50 flex justify-between items-center text-[11px]">
+                            <span class="text-gray-500 font-medium">Bundle with Artisan Drip + Spread</span>
+                            <span class="text-teal-600 font-bold font-mono">+$4.50</span>
+                        </div>
+                    </div>
+                </div>`;
+            } else if (theme === 'glassmorphism') {
+                return `
+                <div class="px-4 mb-4">
+                    <div class="glass-panel p-3.5 bg-gradient-to-tr from-indigo-500/10 to-transparent z-10 relative">
+                        <h5 class="text-xs font-bold text-white mb-2 flex items-center gap-1.5">${iconMaterial('layers','text-pink-400')} Contextual Meal Configurator</h5>
+                        <div class="glass-pill py-2 px-3 flex justify-between items-center text-[10px] text-indigo-100">
+                            <span>Inject Complete Pastry Pairing Array</span>
+                            <span class="text-cyan-400 font-mono font-bold">+$6.00</span>
+                        </div>
+                    </div>
+                </div>`;
+            } else {
+                return `
+                <div class="p-3">
+                    <div style="background:#fff;border-radius:16px;padding:14px;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+                        <div style="font-size:12px;font-weight:600;color:#333;display:flex;align-items:center;gap:6px;margin-bottom:10px;">${iconBS('layers','text-[#FF6B35]')} Meal Deal</div>
+                        <div style="background:#f9f9f9;border-radius:10px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;">
+                            <span style="font-size:11px;color:#666;">Bundle with drink + dessert</span>
+                            <span style="font-size:12px;font-weight:700;color:#FF6B35;">+$4.50</span>
+                        </div>
+                    </div>
+                </div>`;
+            }
+        }
+
+        function drawFeaturedItems(theme) {
+            const img = 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=150&q=80';
+            if (theme === 'neumorphism') {
+                return `
+                <div class="p-4 flex flex-col gap-2">
+                    <span class="text-[10px] font-bold text-gray-400 tracking-wider uppercase px-1">ROTATING SELECTION MATRIX</span>
+                    <div class="p-2.5 neu-flat flex items-center gap-3">
+                        <img src="${img}" class="w-10 h-10 object-cover rounded-lg shadow-inner grayscale opacity-90" alt="food">
+                        <div>
+                            <div class="text-xs font-bold text-gray-800">Spiced Cinnamon Cruffin</div>
+                            <div class="text-[9px] text-gray-400">Limited seasonal kitchen launch sequence.</div>
+                        </div>
+                    </div>
+                </div>`;
+            } else if (theme === 'glassmorphism') {
+                return `
+                <div class="px-4 mb-4 flex flex-col gap-2">
+                    <span class="text-[9px] text-indigo-300 font-bold tracking-widest uppercase flex items-center gap-1">${iconMaterial('star','text-pink-400')} HIGH-TIER COLLABORATIONS</span>
+                    <div class="glass-panel p-2.5 flex items-center gap-3 bg-white/5 z-10 relative">
+                        <img src="${img}" class="w-12 h-12 object-cover rounded-lg flex-shrink-0 filter saturate-120" alt="food">
+                        <div>
+                            <div class="text-xs font-bold text-white">Yuzu Matcha Cloud Gateau</div>
+                            <p class="text-[9px] text-indigo-200 font-light mt-0.5 leading-tight">Infused with verified high-grade ceremonial stone matcha powder.</p>
+                        </div>
+                    </div>
+                </div>`;
+            } else {
+                return `
+                <div class="p-3">
+                    <div style="font-size:14px;font-weight:700;color:#333;margin-bottom:10px;">Featured</div>
+                    <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;gap:12px;padding:12px;">
+                        <img src="${img}" style="width:64px;height:64px;border-radius:12px;object-fit:cover;flex-shrink:0;" alt="food">
+                        <div>
+                            <div style="font-size:13px;font-weight:600;color:#333;">Spiced Cinnamon Cruffin</div>
+                            <div style="font-size:10px;color:#999;margin-top:2px;">Limited seasonal launch</div>
+                            <div style="font-size:13px;font-weight:700;color:#FF6B35;margin-top:6px;">$5.50</div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+        }
+
+        function drawPopularRail(theme) {
+            const a = 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=150&q=80';
+            const b = 'https://images.unsplash.com/photo-1603532648955-039310d9ed75?auto=format&fit=crop&w=150&q=80';
+            if (theme === 'neumorphism') {
+                return `
+                <div class="p-4 flex flex-col gap-2">
+                    <span class="text-[10px] font-bold text-gray-400 tracking-wider uppercase px-1">CONVERSION ACCELERATORS</span>
+                    <div class="flex gap-3 overflow-x-auto pb-1.5">
+                        <div class="w-36 flex-shrink-0 p-2.5 neu-flat flex flex-col">
+                            <img src="${a}" class="w-full h-16 object-cover rounded-lg shadow-inner grayscale opacity-90 mb-1.5" alt="food">
+                            <span class="text-[11px] font-bold text-gray-700 truncate">Glazed Chocolate Block</span>
+                            <div class="flex justify-between items-center mt-1.5">
+                                <span class="text-xs font-black text-teal-600 font-mono">$4.50</span>
+                                <span class="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600 shadow-sm">${iconFA('plus')}</span>
+                            </div>
+                        </div>
+                        <div class="w-36 flex-shrink-0 p-2.5 neu-flat flex flex-col">
+                            <img src="${b}" class="w-full h-16 object-cover rounded-lg shadow-inner grayscale opacity-90 mb-1.5" alt="food">
+                            <span class="text-[11px] font-bold text-gray-700 truncate">Vanilla Bean Glaze</span>
+                            <div class="flex justify-between items-center mt-1.5">
+                                <span class="text-xs font-black text-teal-600 font-mono">$4.00</span>
+                                <span class="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600 shadow-sm">${iconFA('plus')}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            } else if (theme === 'glassmorphism') {
+                return `
+                <div class="pl-4 mb-4 flex flex-col gap-2">
+                    <span class="text-[9px] text-pink-300 font-bold tracking-widest uppercase flex items-center gap-1">${iconMaterial('trending_up','text-pink-400')} METRIC SOCIAL PROOF DRIVERS</span>
+                    <div class="flex gap-3 overflow-x-auto pb-1.5 pr-4">
+                        <div class="w-36 flex-shrink-0 glass-panel p-2 bg-white/5 flex flex-col">
+                            <img src="${a}" class="w-full h-16 object-cover rounded-lg mb-2 filter saturate-120" alt="food">
+                            <div class="text-[11px] font-medium text-white truncate px-0.5">Salted Foam Velvet</div>
+                            <div class="flex justify-between items-center mt-2 px-0.5">
+                                <span class="text-xs text-cyan-400 font-mono font-bold">$5.25</span>
+                                <button class="bg-gradient-to-r from-pink-500 to-indigo-500 p-1 rounded-md text-white">${iconMaterial('add','')}</button>
+                            </div>
+                        </div>
+                        <div class="w-36 flex-shrink-0 glass-panel p-2 bg-white/5 flex flex-col">
+                            <img src="${b}" class="w-full h-16 object-cover rounded-lg mb-2 filter saturate-120" alt="food">
+                            <div class="text-[11px] font-medium text-white truncate px-0.5">Red Velvet Crumb</div>
+                            <div class="flex justify-between items-center mt-2 px-0.5">
+                                <span class="text-xs text-cyan-400 font-mono font-bold">$6.00</span>
+                                <button class="bg-gradient-to-r from-pink-500 to-indigo-500 p-1 rounded-md text-white">${iconMaterial('add','')}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            } else {
+                return `
+                <div class="p-3">
+                    <div style="font-size:14px;font-weight:700;color:#333;margin-bottom:10px;">Popular Items</div>
+                    <div class="flex gap-3 overflow-x-auto pb-2">
+                        <div style="flex-shrink:0;width:150px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+                            <div style="position:relative;">
+                                <img src="${a}" style="width:100%;height:100px;object-fit:cover;" alt="food">
+                                <div style="position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;">${iconBS('heart','text-[#ccc]')}</div>
+                            </div>
+                            <div style="padding:8px 10px;">
+                                <div style="font-size:11px;font-weight:600;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Street Taco Pack</div>
+                                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
+                                    <span style="font-size:12px;font-weight:700;color:#FF6B35;">$11.00</span>
+                                    <div style="width:22px;height:22px;border-radius:6px;background:#FF6B35;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;cursor:pointer;">+</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="flex-shrink:0;width:150px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+                            <div style="position:relative;">
+                                <img src="${b}" style="width:100%;height:100px;object-fit:cover;" alt="food">
+                                <div style="position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;">${iconBS('heart','text-[#ccc]')}</div>
+                            </div>
+                            <div style="padding:8px 10px;">
+                                <div style="font-size:11px;font-weight:600;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Crisp Chip Unit</div>
+                                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
+                                    <span style="font-size:12px;font-weight:700;color:#FF6B35;">$4.50</span>
+                                    <div style="width:22px;height:22px;border-radius:6px;background:#FF6B35;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;cursor:pointer;">+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+        }
+
+        function drawOffersCarousel(theme) {
+            if (theme === 'neumorphism') {
+                return `
+                <div class="p-4 overflow-hidden">
+                    <div class="flex gap-3 overflow-x-auto pb-1">
+                        <div class="w-56 flex-shrink-0 p-3 rounded-xl bg-indigo-50/60 border border-indigo-100 text-[11px] text-indigo-800 font-bold flex items-center gap-1.5">${iconFA('ticket','text-indigo-500')} Save $5 on First 3 Digital Checks</div>
+                        <div class="w-56 flex-shrink-0 p-3 rounded-xl bg-teal-50/60 border border-teal-100 text-[11px] text-teal-800 font-bold flex items-center gap-1.5">${iconFA('ticket','text-teal-500')} Complimentary Routing Waiver</div>
+                    </div>
+                </div>`;
+            } else if (theme === 'glassmorphism') {
+                return `
+                <div class="pl-4 mb-4">
+                    <div class="flex gap-3 overflow-x-auto pb-1 pr-4">
+                        <div class="w-48 flex-shrink-0 glass-panel p-2.5 border-cyan-500/25 text-[10px] text-cyan-200 flex items-center gap-2 z-10 relative">${iconMaterial('verified','text-cyan-400')} Premium Pass Status Active</div>
+                        <div class="w-48 flex-shrink-0 glass-panel p-2.5 border-pink-500/25 text-[10px] text-pink-200 flex items-center gap-2 z-10 relative">${iconMaterial('bolt','text-pink-400')} Multiplier Token Applied</div>
+                    </div>
+                </div>`;
+            } else {
+                return `
+                <div class="p-3">
+                    <div class="flex gap-3 overflow-x-auto pb-2">
+                        <div style="flex-shrink:0;width:180px;background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;align-items:center;gap:8px;">${iconBS('ticket','text-[#FF6B35]')}<span style="font-size:11px;font-weight:500;color:#333;">Free delivery on first order</span></div>
+                        <div style="flex-shrink:0;width:180px;background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;align-items:center;gap:8px;">${iconBS('ticket','text-[#FF6B35]')}<span style="font-size:11px;font-weight:500;color:#333;">20% off weekend orders</span></div>
+                    </div>
+                </div>`;
+            }
+        }
+
+        function drawOffersFeed(theme) {
+            if (theme === 'neumorphism') {
+                return `
+                <div class="p-4 flex flex-col gap-2">
+                    <div class="p-2.5 neu-flat text-[11px] text-gray-600 font-medium flex items-center gap-2">${iconFA('check-circle','text-teal-600')} Free beverage upgrades valid for pastry items.</div>
+                    <div class="p-2.5 neu-flat text-[11px] text-gray-600 font-medium flex items-center gap-2">${iconFA('check-circle','text-teal-600')} Double loyalty tokens activated on midnight loops.</div>
+                </div>`;
+            } else if (theme === 'glassmorphism') {
+                return `
+                <div class="px-4 mb-4 flex flex-col gap-2">
+                    <div class="glass-panel p-3 text-[10px] text-indigo-100/90 border-dashed z-10 relative">
+                        <div class="font-bold text-pink-400 mb-1.5 flex items-center gap-1">${iconMaterial('layers','')} Active Coupon System Core</div>
+                        <div class="space-y-1.5 px-0.5">
+                            <div class="flex items-center gap-1.5">${iconMaterial('add','text-cyan-400')} Complementary processing handler access keys.</div>
+                            <div class="flex items-center gap-1.5">${iconMaterial('add','text-cyan-400')} Weekend fulfillment routing premium fee waivers.</div>
+                        </div>
+                    </div>
+                </div>`;
+            } else {
+                return `
+                <div class="p-3">
+                    <div style="background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                        <span style="font-size:11px;color:#333;display:flex;align-items:center;gap:6px;">${iconBS('check-circle','text-[#4CAF50]')} Free upgrades on pastry items</span>
+                        ${iconBS('arrow-up-right','text-[#999]')}
+                    </div>
+                    <div style="background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;align-items:center;justify-content:space-between;">
+                        <span style="font-size:11px;color:#333;display:flex;align-items:center;gap:6px;">${iconBS('check-circle','text-[#4CAF50]')} Double points on midnight orders</span>
+                        ${iconBS('arrow-up-right','text-[#999]')}
+                    </div>
+                </div>`;
+            }
+        }
+
+        function drawImageMosaic(theme) {
+            const f1 = 'https://images.unsplash.com/photo-1506084868230-bb9d95c24759?auto=format&fit=crop&w=120&q=80';
+            const f2 = 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=120&q=80';
+            const f3 = 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=120&q=80';
+            if (theme === 'neumorphism') {
+                return `
+                <div class="p-4 grid grid-cols-3 gap-2">
+                    <img src="${f1}" class="h-14 w-full object-cover rounded-xl shadow-inner grayscale opacity-80" alt="mosaic">
+                    <img src="${f2}" class="h-14 w-full object-cover rounded-xl shadow-inner grayscale opacity-80" alt="mosaic">
+                    <img src="${f3}" class="h-14 w-full object-cover rounded-xl shadow-inner grayscale opacity-80" alt="mosaic">
+                </div>`;
+            } else if (theme === 'glassmorphism') {
+                return `
+                <div class="px-4 mb-4 grid grid-cols-3 gap-2 z-10 relative">
+                    <img src="${f1}" class="h-16 w-full object-cover rounded-xl glass-panel p-0.5 filter saturate-120" alt="mosaic">
+                    <img src="${f2}" class="h-16 w-full object-cover rounded-xl glass-panel p-0.5 filter saturate-120" alt="mosaic">
+                    <img src="${f3}" class="h-16 w-full object-cover rounded-xl glass-panel p-0.5 filter saturate-120" alt="mosaic">
+                </div>`;
+            } else {
+                return `
+                <div class="p-3 grid grid-cols-3 gap-2">
+                    <img src="${f1}" style="height:64px;width:100%;object-fit:cover;border-radius:12px;" alt="mosaic">
+                    <img src="${f2}" style="height:64px;width:100%;object-fit:cover;border-radius:12px;" alt="mosaic">
+                    <img src="${f3}" style="height:64px;width:100%;object-fit:cover;border-radius:12px;" alt="mosaic">
+                </div>`;
+            }
+        }
+
+        function drawStories(theme) {
+            const av = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80';
+            if (theme === 'neumorphism') {
+                return `
+                <div class="p-4 flex gap-3 overflow-x-auto">
+                    <div class="w-12 h-12 rounded-full neu-flat p-0.5 flex-shrink-0"><img src="${av}" class="w-full h-full rounded-full object-cover grayscale" alt="avatar"></div>
+                    <div class="w-12 h-12 rounded-full neu-flat p-0.5 flex-shrink-0"><div class="w-full h-full rounded-full bg-gray-300 shadow-inner flex items-center justify-center text-gray-500">${iconFA('plus')}</div></div>
+                </div>`;
+            } else if (theme === 'glassmorphism') {
+                return `
+                <div class="pl-4 mb-4 flex gap-3 overflow-x-auto z-10 relative">
+                    <div class="w-13 h-13 rounded-full p-0.5 border-2 border-pink-500 flex-shrink-0"><img src="${av}" class="w-full h-full rounded-full object-cover" alt="avatar"></div>
+                    <div class="w-13 h-13 rounded-full p-0.5 border-2 border-dashed border-indigo-400/40 flex-shrink-0 flex items-center justify-center bg-white/5">${iconMaterial('add','text-indigo-300')}</div>
+                </div>`;
+            } else {
+                return `
+                <div class="p-3 flex gap-2 overflow-x-auto font-mono">
+                    <div class="w-14 h-14 border-3 border-black brutal-accent-yellow flex-shrink-0 flex flex-col items-center justify-center text-[10px] font-black">${iconBS('camera-reels','mb-0.5')} LIVE</div>
+                    <div class="w-14 h-14 border-3 border-black bg-white flex-shrink-0 flex flex-col items-center justify-center text-[10px] font-black text-gray-400">${iconBS('plus','')} ADD</div>
+                </div>`;
+            }
+        }
+
+        // ─── BOOT ──────────────────────────────────────────────────────────
+        window.onload = function() {
+            buildControllerList();
+            renderAllViewports();
+            initControllerEvents();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Cards</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0d0d0d; color: #fff; padding: 40px 20px; }
+        h1 { text-align: center; font-size: 24px; margin-bottom: 8px; }
+        .sub { text-align: center; font-size: 12px; color: #888; margin-bottom: 40px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; max-width: 1400px; margin: 0 auto; }
+        .card-link { background: #1a1a1a; border-radius: 16px; padding: 20px; text-decoration: none; color: #fff; border: 1px solid #2a2a2a; transition: border-color 0.2s, transform 0.2s; display: block; }
+        .card-link:hover { border-color: #FF6B35; transform: translateY(-2px); }
+        .card-num { font-size: 10px; color: #FF6B35; font-weight: 700; letter-spacing: 1px; }
+        .card-name { font-size: 16px; font-weight: 700; margin-top: 4px; }
+        .card-module { font-size: 11px; color: #888; margin-top: 2px; font-family: monospace; }
+        .card-desc { font-size: 12px; color: #aaa; margin-top: 8px; line-height: 1.4; }
+        .card-imgs { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+        .card-imgs img { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; border: 1px solid #333; }
+    </style>
+</head>
+<body>
+    <h1>All Card Components</h1>
+    <div class="sub">19 Modules + 4 Bonus Cards = 23 total</div>
+    <div class="grid">
+        <a class="card-link" href="13-announcement-strip.html">
+            <div class="card-num">#01</div>
+            <div class="card-name">Announcement Strip</div>
+            <div class="card-module">drawAnnouncementStrip</div>
+            <div class="card-desc">Black bar with gold text "FREE DELIVERY ON ORDERS OVER $25"</div>
+        </a>
+        <a class="card-link" href="14-brand-header.html">
+            <div class="card-num">#02</div>
+            <div class="card-name">Brand Header</div>
+            <div class="card-module">drawBrandHeader</div>
+            <div class="card-desc">Address + avatar + Delivery/Pickup toggle tabs</div>
+            <div class="card-imgs">
+                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&q=80" alt="">
+            </div>
+        </a>
+        <a class="card-link" href="15-video-hero.html">
+            <div class="card-num">#03</div>
+            <div class="card-name">Video Reel Hero</div>
+            <div class="card-module">drawVideoHero</div>
+            <div class="card-desc">Full-width food image with play button overlay</div>
+            <div class="card-imgs">
+                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=80&q=80" alt="">
+            </div>
+        </a>
+        <a class="card-link" href="10-order-tracker.html">
+            <div class="card-num">#04</div>
+            <div class="card-name">Active Order Tracker</div>
+            <div class="card-module">drawActiveOrderTracker</div>
+            <div class="card-desc">Orange progress bar "Delivery In Progress"</div>
+        </a>
+        <a class="card-link" href="16-loyalty-card.html">
+            <div class="card-num">#05</div>
+            <div class="card-name">Loyalty Card</div>
+            <div class="card-module">drawLoyaltyCard</div>
+            <div class="card-desc">Dark gradient card with gold progress bar, tier, points</div>
+        </a>
+        <a class="card-link" href="17-finish-order.html">
+            <div class="card-num">#06</div>
+            <div class="card-name">Finish Your Order</div>
+            <div class="card-module">drawFinishYourOrder</div>
+            <div class="card-desc">Dashed yellow border banner with cart icon + checkout button</div>
+        </a>
+        <a class="card-link" href="01-limited-deal.html">
+            <div class="card-num">#07</div>
+            <div class="card-name">Limited-Time Deal</div>
+            <div class="card-module">drawLimitedTimeDeal</div>
+            <div class="card-desc">Food image card with countdown timer pill</div>
+            <div class="card-imgs">
+                <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=80&q=80" alt="">
+            </div>
+        </a>
+        <a class="card-link" href="06-order-again.html">
+            <div class="card-num">#08</div>
+            <div class="card-name">Order Again</div>
+            <div class="card-module">drawOrderAgain</div>
+            <div class="card-desc">Horizontal scroll food cards with quick-add buttons</div>
+            <div class="card-imgs">
+                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=80&q=80" alt="">
+                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=80&q=80" alt="">
+            </div>
+        </a>
+        <a class="card-link" href="02-recommended.html">
+            <div class="card-num">#09</div>
+            <div class="card-name">Recommended For You</div>
+            <div class="card-module">drawRecommended</div>
+            <div class="card-desc">2-column grid with price badges, hearts, ratings, delivery time</div>
+            <div class="card-imgs">
+                <img src="https://images.unsplash.com/photo-1506084868230-bb9d95c24759?auto=format&fit=crop&w=80&q=80" alt="">
+                <img src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=80&q=80" alt="">
+            </div>
+        </a>
+        <a class="card-link" href="05-deals-promo.html">
+            <div class="card-num">#10</div>
+            <div class="card-name">Deals & Promos</div>
+            <div class="card-module">drawDealsPromos</div>
+            <div class="card-desc">Orange gradient banner "25% DISCOUNT" with food image</div>
+            <div class="card-imgs">
+                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=80&q=80" alt="">
+            </div>
+        </a>
+        <a class="card-link" href="18-birthday-reward.html">
+            <div class="card-num">#11</div>
+            <div class="card-name">Birthday Reward</div>
+            <div class="card-module">drawBirthdayBanner</div>
+            <div class="card-desc">Orange text banner with gift icon "Free treat unlocked"</div>
+        </a>
+        <a class="card-link" href="04-categories.html">
+            <div class="card-num">#12</div>
+            <div class="card-name">Category Tiles</div>
+            <div class="card-module">drawCategoryTiles</div>
+            <div class="card-desc">2x2 grid with food images, discount badges, descriptions</div>
+            <div class="card-imgs">
+                <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=80&q=80" alt="">
+                <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=80&q=80" alt="">
+                <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=80&q=80" alt="">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=80&q=80" alt="">
+            </div>
+        </a>
+        <a class="card-link" href="09-meal-combo.html">
+            <div class="card-num">#13</div>
+            <div class="card-name">Meal-Deal Combo</div>
+            <div class="card-module">drawMealCombo</div>
+            <div class="card-desc">"Complete the Meal" with drink + dessert add-on rows</div>
+            <div class="card-imgs">
+                <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=80&q=80" alt="">
+                <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=80&q=80" alt="">
+            </div>
+        </a>
+        <a class="card-link" href="19-featured-items.html">
+            <div class="card-num">#14</div>
+            <div class="card-name">Featured Items</div>
+            <div class="card-module">drawFeaturedItems</div>
+            <div class="card-desc">Hero image card with "Free Delivery" badge, bookmark, rating, tags</div>
+            <div class="card-imgs">
+                <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=80&q=80" alt="">
+            </div>
+        </a>
+        <a class="card-link" href="03-popular.html">
+            <div class="card-num">#15</div>
+            <div class="card-name">Popular Rail</div>
+            <div class="card-module">drawPopularRail</div>
+            <div class="card-desc">Horizontal scroll food cards with "View All" header</div>
+            <div class="card-imgs">
+                <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=80&q=80" alt="">
+                <img src="https://images.unsplash.com/photo-1603532648955-039310d9ed75?auto=format&fit=crop&w=80&q=80" alt="">
+            </div>
+        </a>
+        <a class="card-link" href="20-offers-carousel.html">
+            <div class="card-num">#16</div>
+            <div class="card-name">Offers Carousel</div>
+            <div class="card-module">drawOffersCarousel</div>
+            <div class="card-desc">Dark + light offer cards with codes "WELCOME5" / "WEEKEND20"</div>
+        </a>
+        <a class="card-link" href="21-offers-feed.html">
+            <div class="card-num">#17</div>
+            <div class="card-name">Offers Feed</div>
+            <div class="card-module">drawOffersFeed</div>
+            <div class="card-desc">List items with green/orange icons, titles, descriptions</div>
+        </a>
+        <a class="card-link" href="07-mosaic.html">
+            <div class="card-num">#18</div>
+            <div class="card-name">Image Mosaic</div>
+            <div class="card-module">drawImageMosaic</div>
+            <div class="card-desc">Asymmetric 3-photo grid with "+19" count overlay</div>
+            <div class="card-imgs">
+                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=80&q=80" alt="">
+                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=80&q=80" alt="">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=80&q=80" alt="">
+            </div>
+        </a>
+        <a class="card-link" href="22-stories.html">
+            <div class="card-num">#19</div>
+            <div class="card-name">Stories</div>
+            <div class="card-module">drawStories</div>
+            <div class="card-desc">Avatar circle with dark border + dashed add circle</div>
+            <div class="card-imgs">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80" alt="">
+            </div>
+        </a>
+        <a class="card-link" href="08-vegan.html" style="border-color:#2a4a3a;">
+            <div class="card-num" style="color:#4CAF50;">BONUS</div>
+            <div class="card-name">Vegan Cards</div>
+            <div class="card-module">Reference Image 11</div>
+            <div class="card-desc">Green themed product cards with vegan/gluten-free tags</div>
+            <div class="card-imgs">
+                <img src="https://images.unsplash.com/photo-1529042410759-befb1204b468?auto=format&fit=crop&w=80&q=80" alt="">
+                <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=80&q=80" alt="">
+            </div>
+        </a>
+        <a class="card-link" href="12-cart-list.html" style="border-color:#2a4a3a;">
+            <div class="card-num" style="color:#4CAF50;">BONUS</div>
+            <div class="card-name">Cart List</div>
+            <div class="card-module">Reference Image 6</div>
+            <div class="card-desc">Items with thumbnails, names, prices, orange quantity steppers</div>
+            <div class="card-imgs">
+                <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=80&q=80" alt="">
+                <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=80&q=80" alt="">
+            </div>
+        </a>
+        <a class="card-link" href="11-restaurant.html" style="border-color:#2a4a3a;">
+            <div class="card-num" style="color:#4CAF50;">BONUS</div>
+            <div class="card-name">Restaurant Card</div>
+            <div class="card-module">Reference Image 8</div>
+            <div class="card-desc">Hero image with "Free Delivery" badge, bookmark, rating, tags</div>
+            <div class="card-imgs">
+                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=80&q=80" alt="">
+            </div>
+        </a>
+    </div>
+</body>
+</html>

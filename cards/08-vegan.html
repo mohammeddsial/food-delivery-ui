@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vegan Product Card</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #1a3a2a; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 360px; width: 100%; }
+        .card { background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+        .card-img { width: 100%; height: 120px; object-fit: cover; display: block; }
+        .card-body { padding: 12px; }
+        .card-tags { display: flex; gap: 6px; margin-bottom: 8px; }
+        .tag { font-size: 9px; font-weight: 600; padding: 3px 8px; border-radius: 6px; background: #f0f0f0; color: #555; display: flex; align-items: center; gap: 3px; }
+        .tag svg { width: 10px; height: 10px; }
+        .card-title { font-size: 14px; font-weight: 700; color: #1a1a1a; }
+        .card-desc { font-size: 10px; color: #999; margin-top: 3px; line-height: 1.3; }
+        .card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+        .card-price { font-size: 15px; font-weight: 800; color: #1a1a1a; }
+        .card-price-old { font-size: 11px; color: #bbb; text-decoration: line-through; margin-left: 4px; }
+        .card-add { display: inline-flex; align-items: center; gap: 4px; background: #FF6B35; color: #fff; border: none; border-radius: 10px; padding: 6px 12px; font-size: 11px; font-weight: 700; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <!-- MODULE: Vegan product cards (from cats.html reference) -->
+    <!-- IMAGES: photo-1529042410759 (falafel), photo-1512621776951 (salad bowl), photo-1604304971487 (energy bites) -->
+    <div class="grid">
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1529042410759-befb1204b468?auto=format&fit=crop&q=80&w=400&h=400" class="card-img" alt="falafel">
+            <div class="card-body">
+                <div class="card-tags">
+                    <span class="tag"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg> Vegan</span>
+                    <span class="tag"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg> Low-Waste</span>
+                </div>
+                <div class="card-title">Mediterranean Bliss</div>
+                <div class="card-desc">Brown rice, falafel, hummus, cucumber, cherry tomatoes, olives.</div>
+                <div class="card-footer">
+                    <div><span class="card-price">$11.50</span><span class="card-price-old">$14.00</span></div>
+                    <button class="card-add">+</button>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=400&h=400" class="card-img" alt="salad bowl">
+            <div class="card-body">
+                <div class="card-tags">
+                    <span class="tag"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg> Vegan</span>
+                    <span class="tag"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg> Local</span>
+                </div>
+                <div class="card-title">Green Goddess Bowl</div>
+                <div class="card-desc">Spinach, avocado, edamame, cucumber noodles, green goddess dressing.</div>
+                <div class="card-footer">
+                    <span class="card-price">$12.00</span>
+                    <button class="card-add">+ Add to cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

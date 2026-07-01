@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Featured Items</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .section { max-width: 360px; width: 100%; }
+        .section-title { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
+        .card { background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .card-img-wrap { position: relative; }
+        .card-img { width: 100%; height: 160px; object-fit: cover; display: block; }
+        .badge-free { position: absolute; top: 12px; left: 12px; background: #FF6B35; color: #fff; font-size: 10px; font-weight: 700; padding: 5px 12px; border-radius: 10px; z-index: 2; }
+        .badge-bookmark { position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.92); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.12); z-index: 2; cursor: pointer; }
+        .badge-bookmark i { color: #FF6B35; font-size: 16px; }
+        .card-body { padding: 16px; }
+        .card-name { font-size: 18px; font-weight: 700; color: #1a1a1a; }
+        .card-meta { display: flex; align-items: center; gap: 12px; margin-top: 6px; }
+        .meta-item { display: flex; align-items: center; gap: 4px; font-size: 12px; color: #888; font-weight: 600; }
+        .meta-item i { font-size: 14px; }
+        .meta-item .star { color: #FFD700; }
+        .meta-item .clock { color: #FF4444; }
+        .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+        .tag { font-size: 10px; font-weight: 600; padding: 5px 12px; border-radius: 10px; background: #f5f5f5; color: #666; }
+    </style>
+</head>
+<body>
+    <!-- MODULE: drawFeaturedItems -->
+    <!-- IMAGE: photo-1555507036 (cake), photo-1565299624946 (pizza) -->
+    <div class="section">
+        <div class="section-title">Featured Items</div>
+        <div class="card">
+            <div class="card-img-wrap">
+                <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=400&q=80" class="card-img" alt="food">
+                <div class="badge-free">Free Delivery</div>
+                <div class="badge-bookmark"><i class="ri-bookmark-fill"></i></div>
+            </div>
+            <div class="card-body">
+                <div class="card-name">Burger King</div>
+                <div class="card-meta">
+                    <span class="meta-item"><i class="ri-star-fill star"></i> 4.9</span>
+                    <span class="meta-item"><i class="ri-time-line clock"></i> 20-25 Min</span>
+                </div>
+                <div class="card-tags">
+                    <span class="tag">Burger</span>
+                    <span class="tag">Pizza</span>
+                    <span class="tag">Fast Food</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

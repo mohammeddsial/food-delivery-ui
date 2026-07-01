@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Mosaic Grid</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .mosaic { max-width: 300px; width: 100%; display: grid; grid-template-columns: 1.2fr 0.8fr; grid-template-rows: 110px 110px; gap: 6px; }
+        .mosaic-item { border-radius: 16px; overflow: hidden; position: relative; }
+        .mosaic-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .mosaic-item:first-child { grid-row: 1 / 3; }
+        .mosaic-count { position: absolute; inset: 0; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; font-weight: 800; }
+    </style>
+</head>
+<body>
+    <!-- MODULE: drawImageMosaic -->
+    <!-- IMAGES: photo-1565299624946 (skewers), photo-1568901346375 (fish), photo-1504674900247 (plated food) -->
+    <div class="mosaic">
+        <div class="mosaic-item">
+            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=150&q=80" alt="food1">
+        </div>
+        <div class="mosaic-item">
+            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=150&q=80" alt="food2">
+        </div>
+        <div class="mosaic-item">
+            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=150&q=80" alt="food3">
+            <div class="mosaic-count">+19</div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand Header</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .header { max-width: 360px; width: 100%; background: #fff; padding: 16px; display: flex; flex-direction: column; gap: 12px; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        .header-top { display: flex; align-items: center; justify-content: space-between; }
+        .header-address { font-size: 13px; font-weight: 700; color: #1a1a1a; display: flex; align-items: center; gap: 6px; }
+        .header-address i { color: #FF6B35; font-size: 16px; }
+        .header-avatar { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; }
+        .header-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .header-tabs { display: flex; gap: 8px; }
+        .tab { flex: 1; padding: 10px 14px; border-radius: 12px; font-size: 12px; font-weight: 600; text-align: center; cursor: pointer; border: 2px solid #e0e0e0; background: #fff; color: #999; }
+        .tab.active { border-color: #1a1a1a; background: #1a1a1a; color: #fff; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <!-- MODULE: drawBrandHeader -->
+    <div class="header">
+        <div class="header-top">
+            <div class="header-address">
+                <i class="ri-map-pin-2-fill"></i>
+                2715 Ash Dr. San Jose, South Dakota
+            </div>
+            <div class="header-avatar">
+                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&q=80" alt="avatar">
+            </div>
+        </div>
+        <div class="header-tabs">
+            <div class="tab active">Delivery</div>
+            <div class="tab">Pickup</div>
+        </div>
+    </div>
+</body>
+</html>

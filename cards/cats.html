@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Cards</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main class="menu-container">
+        <div class="menu-grid">
+            
+            <!-- Card 1: Mediterranean Bliss -->
+            <article class="card">
+                <div class="card__img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1529042410759-befb1204b468?auto=format&fit=crop&q=80&w=400&h=400" alt="Plate of falafel and hummus" class="card__img">
+                </div>
+                <div class="card__content">
+                    <div class="card__tags">
+                        <span class="tag">
+                            <svg viewBox="0 0 24 24" fill="currentColor" class="tag__icon"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg>
+                            Vegan
+                        </span>
+                        <span class="tag">
+                            <svg viewBox="0 0 24 24" fill="currentColor" class="tag__icon"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg>
+                            Low-Waste
+                        </span>
+                    </div>
+                    <h2 class="card__title">Mediterranean Bliss</h2>
+                    <p class="card__desc">Brown rice, falafel, hummus, cucumber, cherry tomatoes, olives.</p>
+                    <div class="card__footer">
+                        <div class="card__price-group">
+                            <span class="card__price">$11.50</span>
+                            <span class="card__price-old">$14.00</span>
+                        </div>
+                        <button class="btn btn--icon" aria-label="Add Mediterranean Bliss to cart">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn__icon"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Card 2: Green Goddess Bowl -->
+            <article class="card">
+                <div class="card__img-wrapper card__img-wrapper--offset-more">
+                    <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=400&h=400" alt="Green salad bowl" class="card__img">
+                </div>
+                <div class="card__content">
+                    <div class="card__tags">
+                        <span class="tag">
+                            <svg viewBox="0 0 24 24" fill="currentColor" class="tag__icon"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg>
+                            Vegan
+                        </span>
+                        <span class="tag">
+                            <svg viewBox="0 0 24 24" fill="currentColor" class="tag__icon"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg>
+                            Local
+                        </span>
+                    </div>
+                    <h2 class="card__title">Green Goddess Bowl</h2>
+                    <p class="card__desc">Spinach, avocado, edamame, cucumber noodles, green goddess dressing.</p>
+                    <div class="card__footer">
+                        <span class="card__price">$12.00</span>
+                        <button class="btn btn--pill">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn__icon"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            Add to cart
+                        </button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Card 3: Skeleton Placeholder -->
+            <article class="card card--skeleton" aria-hidden="true">
+                <div class="skeleton__content">
+                    <div class="skeleton__tags">
+                        <div class="skeleton__tag"></div>
+                        <div class="skeleton__tag"></div>
+                    </div>
+                    <div class="skeleton__title"></div>
+                    <div class="skeleton__desc">
+                        <div class="skeleton__line"></div>
+                        <div class="skeleton__line skeleton__line--short"></div>
+                    </div>
+                    <div class="skeleton__footer">
+                        <div class="skeleton__price"></div>
+                        <div class="skeleton__btn"></div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Card 4: Energy Bites -->
+            <article class="card">
+                <div class="card__img-wrapper card__img-wrapper--offset-less">
+                    <img src="https://images.unsplash.com/photo-1604304971487-178657688842?auto=format&fit=crop&q=80&w=400&h=400" alt="Plate of energy bites" class="card__img">
+                </div>
+                <div class="card__content">
+                    <div class="card__tags">
+                        <span class="tag">
+                            <svg viewBox="0 0 24 24" fill="currentColor" class="tag__icon"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg>
+                            Vegan
+                        </span>
+                        <span class="tag">
+                            <svg viewBox="0 0 24 24" fill="currentColor" class="tag__icon"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/></svg>
+                            Gluten-Free
+                        </span>
+                    </div>
+                    <h2 class="card__title">Energy Bites (3 pcs)</h2>
+                    <p class="card__desc">Oats, almond butter, cacao nibs, dates.</p>
+                    <div class="card__footer">
+                        <span class="card__price">$4.50</span>
+                        <button class="btn btn--pill">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn__icon"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            Add to cart
+                        </button>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </main>
+</body>
+</html>

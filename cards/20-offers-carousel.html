@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offers Carousel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .rail { display: flex; gap: 14px; overflow-x: auto; max-width: 380px; padding-bottom: 8px; }
+        .rail::-webkit-scrollbar { display: none; }
+        .card-dark { flex-shrink: 0; width: 200px; background: linear-gradient(135deg, #1a1a1a, #333); border-radius: 18px; padding: 18px; color: #fff; border: 2px solid #FF6B35; display: flex; flex-direction: column; justify-content: space-between; min-height: 130px; }
+        .card-light { flex-shrink: 0; width: 200px; background: #fff; border-radius: 18px; padding: 18px; border: 2px solid #e0e0e0; display: flex; flex-direction: column; justify-content: space-between; min-height: 130px; }
+        .card-label { font-size: 10px; color: #aaa; letter-spacing: 1px; text-transform: uppercase; }
+        .card-big { font-size: 22px; font-weight: 900; margin-top: 6px; }
+        .card-sub { font-size: 11px; color: #ccc; margin-top: 3px; }
+        .card-code { font-size: 10px; color: #FF6B35; margin-top: 10px; }
+        .card-light .card-label { color: #999; }
+        .card-light .card-big { color: #1a1a1a; }
+        .card-light .card-sub { color: #666; }
+    </style>
+</head>
+<body>
+    <!-- MODULE: drawOffersCarousel -->
+    <div class="rail">
+        <div class="card-dark">
+            <div>
+                <div class="card-label">Exclusive Offer</div>
+                <div class="card-big">$5 OFF</div>
+                <div class="card-sub">First 3 orders</div>
+            </div>
+            <div class="card-code">Use code: WELCOME5</div>
+        </div>
+        <div class="card-light">
+            <div>
+                <div class="card-label">Weekend Deal</div>
+                <div class="card-big">20% OFF</div>
+                <div class="card-sub">Sat & Sun orders</div>
+            </div>
+            <div class="card-code">Use code: WEEKEND20</div>
+        </div>
+    </div>
+</body>
+</html>

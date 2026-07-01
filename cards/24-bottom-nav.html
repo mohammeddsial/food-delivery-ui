@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bottom Nav</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .phone { width: 375px; height: 600px; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.12); position: relative; display: flex; flex-direction: column; }
+        .content { flex: 1; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 13px; }
+        .bottom-nav { height: 68px; background: #fff; border-top: 1px solid #eee; display: flex; align-items: center; justify-content: space-around; padding: 0 16px; position: absolute; bottom: 0; left: 0; right: 0; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; border: none; background: none; padding: 6px 12px; }
+        .nav-item i { font-size: 20px; color: #999; transition: color 0.2s; }
+        .nav-item span { font-size: 10px; color: #999; font-weight: 500; transition: color 0.2s; }
+        .nav-item.active i { color: #FF6B35; }
+        .nav-item.active span { color: #FF6B35; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <!-- MODULE: Bottom Nav -->
+    <div class="phone">
+        <div class="content">Page Content</div>
+        <div class="bottom-nav">
+            <button class="nav-item active">
+                <i class="ri-home-5-fill"></i>
+                <span>Home</span>
+            </button>
+            <button class="nav-item">
+                <i class="ri-search-line"></i>
+                <span>Search</span>
+            </button>
+            <button class="nav-item">
+                <i class="ri-heart-3-line"></i>
+                <span>Favorites</span>
+            </button>
+            <button class="nav-item">
+                <i class="ri-user-3-line"></i>
+                <span>Profile</span>
+            </button>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('.nav-item').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

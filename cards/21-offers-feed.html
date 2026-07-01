@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offers Feed</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .feed { max-width: 360px; width: 100%; display: flex; flex-direction: column; gap: 10px; }
+        .feed-item { background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: space-between; }
+        .feed-left { display: flex; align-items: center; gap: 12px; }
+        .feed-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+        .feed-icon.green { background: #E8F5E9; }
+        .feed-icon.green i { color: #4CAF50; font-size: 18px; }
+        .feed-icon.orange { background: #FFF3E0; }
+        .feed-icon.orange i { color: #FF6B35; font-size: 18px; }
+        .feed-title { font-size: 13px; font-weight: 600; color: #1a1a1a; }
+        .feed-desc { font-size: 11px; color: #999; margin-top: 2px; }
+    </style>
+</head>
+<body>
+    <!-- MODULE: drawOffersFeed -->
+    <div class="feed">
+        <div class="feed-item">
+            <div class="feed-left">
+                <div class="feed-icon green"><i class="ri-checkbox-circle-fill"></i></div>
+                <div>
+                    <div class="feed-title">Free beverage upgrade</div>
+                    <div class="feed-desc">Valid with any pastry item</div>
+                </div>
+            </div>
+        </div>
+        <div class="feed-item">
+            <div class="feed-left">
+                <div class="feed-icon orange"><i class="ri-star-fill"></i></div>
+                <div>
+                    <div class="feed-title">Double loyalty points</div>
+                    <div class="feed-desc">On orders after 10 PM</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Combo Card</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .card { background: #fff; border-radius: 20px; padding: 18px; max-width: 320px; width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .card-title { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 14px; }
+        .combo-row { display: flex; align-items: center; gap: 10px; background: #f9f9f9; border-radius: 14px; padding: 10px; margin-bottom: 8px; }
+        .combo-img { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; }
+        .combo-name { font-size: 12px; font-weight: 600; color: #1a1a1a; flex: 1; }
+        .combo-price { font-size: 12px; font-weight: 700; color: #FF6B35; white-space: nowrap; }
+    </style>
+</head>
+<body>
+    <!-- MODULE: drawMealCombo -->
+    <!-- IMAGES: photo-1509042239860 (coffee latte), photo-1551024506 (croissant dessert) -->
+    <div class="card">
+        <div class="card-title">Complete the Meal</div>
+        <div class="combo-row">
+            <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=60&q=80" class="combo-img" alt="drink">
+            <span class="combo-name">Add Craft Latte</span>
+            <span class="combo-price">+$3.50</span>
+        </div>
+        <div class="combo-row">
+            <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=60&q=80" class="combo-img" alt="dessert">
+            <span class="combo-name">Add Croissant</span>
+            <span class="combo-price">+$2.50</span>
+        </div>
+    </div>
+</body>
+</html>

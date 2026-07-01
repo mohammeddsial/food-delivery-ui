@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Tiles</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .section { max-width: 360px; width: 100%; }
+        .section-header { margin-bottom: 14px; }
+        .section-title { font-size: 18px; font-weight: 800; color: #1a1a1a; }
+        .section-sub { font-size: 12px; color: #999; margin-top: 2px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .cat-card { background: #fff; border-radius: 18px; padding: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 6px; position: relative; overflow: hidden; min-height: 140px; }
+        .cat-title { font-size: 14px; font-weight: 800; color: #1a1a1a; }
+        .cat-desc { font-size: 10px; color: #888; line-height: 1.3; }
+        .cat-badge { font-size: 9px; font-weight: 700; padding: 4px 10px; border-radius: 8px; background: #FFF3E0; color: #FF6B35; display: inline-block; width: fit-content; }
+        .cat-img { position: absolute; bottom: -8px; right: -8px; width: 80px; height: 80px; object-fit: cover; border-radius: 12px; }
+    </style>
+</head>
+<body>
+    <!-- MODULE: drawCategoryTiles -->
+    <!-- IMAGES: photo-1509440159596 (bakery), photo-1509042239860 (coffee), photo-1551024506 (sweets), photo-1504674900247 (bundles) -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-title">Our Categories</div>
+            <div class="section-sub">Find all your favorite bakery items in one place.</div>
+        </div>
+        <div class="grid">
+            <div class="cat-card">
+                <div class="cat-title">Cakes</div>
+                <div class="cat-desc">Soft, fresh cakes for birthdays, parties, and everyday cravings.</div>
+                <div class="cat-badge">Up To 60% Off</div>
+                <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=100&q=80" class="cat-img" alt="bakery">
+            </div>
+            <div class="cat-card">
+                <div class="cat-title">Pastries</div>
+                <div class="cat-desc">Creamy and flaky pastries made fresh every day.</div>
+                <div class="cat-badge">Up To 35% Off</div>
+                <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=100&q=80" class="cat-img" alt="coffee">
+            </div>
+            <div class="cat-card">
+                <div class="cat-title">Sweets</div>
+                <div class="cat-desc">Crunchy biscuits and cookies, perfect with tea or coffee.</div>
+                <div class="cat-badge">Up To 15% Off</div>
+                <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=100&q=80" class="cat-img" alt="sweets">
+            </div>
+            <div class="cat-card">
+                <div class="cat-title">Bundles</div>
+                <div class="cat-desc">Freshly baked breads, buns, and rolls for daily use.</div>
+                <div class="cat-badge">Up To 18% Off</div>
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=100&q=80" class="cat-img" alt="bundles">
+            </div>
+        </div>
+    </div>
+</body>
+</html>
