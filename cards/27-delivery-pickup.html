@@ -25,12 +25,14 @@
         .cart-badge { position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; background: #1a1a1a; color: #fff; font-size: 9px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
 
         .header { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
-        .address-row { display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
-        .address-left { display: flex; align-items: center; gap: 8px; }
-        .address-icon { width: 32px; height: 32px; border-radius: 10px; background: #FFF3ED; display: flex; align-items: center; justify-content: center; }
+
+        .address-row { display: flex; align-items: center; justify-content: space-between; cursor: pointer; position: relative; }
+        .address-left { display: flex; align-items: center; gap: 8px; flex: 1; }
+        .address-icon { width: 32px; height: 32px; border-radius: 10px; background: #FFF3ED; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .address-icon i { color: #FF6B35; font-size: 16px; }
-        .address-text { font-size: 13px; font-weight: 700; color: #1a1a1a; }
-        .address-chevron { color: #999; font-size: 14px; }
+        .address-text { font-size: 13px; font-weight: 700; color: #1a1a1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .address-chevron { color: #999; font-size: 14px; flex-shrink: 0; transition: transform 0.2s; }
+        .address-chevron.open { transform: rotate(180deg); }
 
         .toggle-tabs { display: flex; gap: 8px; }
         .toggle-tab { flex: 1; padding: 10px 14px; border-radius: 12px; font-size: 12px; font-weight: 600; text-align: center; cursor: pointer; border: 2px solid #e0e0e0; background: #fff; color: #999; transition: all 0.2s; }
@@ -54,10 +56,23 @@
         .pickup-desc { font-size: 11px; color: #999; margin-top: 2px; }
 
         .content { height: 300px; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 13px; }
+
+        /* Address Dropdown */
+        .address-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 100; display: none; overflow: hidden; margin-top: 4px; }
+        .address-dropdown.show { display: block; }
+        .dropdown-item { padding: 12px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: background 0.15s; border-bottom: 1px solid #f5f5f5; }
+        .dropdown-item:last-child { border-bottom: none; }
+        .dropdown-item:hover { background: #f9f9f9; }
+        .dropdown-item.active { background: #FFF3ED; }
+        .dropdown-item i { color: #FF6B35; font-size: 16px; }
+        .dropdown-item .item-text { font-size: 12px; font-weight: 600; color: #1a1a1a; }
+        .dropdown-item .item-sub { font-size: 10px; color: #999; }
+        .dropdown-item .item-check { margin-left: auto; color: #FF6B35; font-size: 16px; display: none; }
+        .dropdown-item.active .item-check { display: block; }
+        .dropdown-header { padding: 10px 16px; font-size: 10px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #f5f5f5; }
     </style>
 </head>
 <body>
-    <!-- MODULE: Delivery / Pickup Toggle + Address Change -->
     <div class="phone">
         <div class="status-bar">
             <div class="notch"></div>
@@ -78,8 +93,67 @@
                     <div class="address-icon"><i class="ri-map-pin-2-fill"></i></div>
                     <span class="address-text" id="addressText">2715 Ash Dr. San Jose, SD</span>
                 </div>
-                <i class="ri-arrow-down-s-fill address-chevron"></i>
+                <i class="ri-arrow-down-s-fill address-chevron" id="addressChevron"></i>
+
+                <!-- Delivery Address Dropdown -->
+                <div class="address-dropdown" id="deliveryDropdown">
+                    <div class="dropdown-header">Saved Addresses</div>
+                    <div class="dropdown-item active" onclick="selectDeliveryAddress(0)">
+                        <i class="ri-home-4-fill"></i>
+                        <div>
+                            <div class="item-text">Home</div>
+                            <div class="item-sub">2715 Ash Dr. San Jose, SD</div>
+                        </div>
+                        <i class="ri-check-line item-check"></i>
+                    </div>
+                    <div class="dropdown-item" onclick="selectDeliveryAddress(1)">
+                        <i class="ri-building-2-fill"></i>
+                        <div>
+                            <div class="item-text">Office</div>
+                            <div class="item-sub">456 Oak Ave. Brooklyn, NY</div>
+                        </div>
+                        <i class="ri-check-line item-check"></i>
+                    </div>
+                    <div class="dropdown-item" onclick="selectDeliveryAddress(2)">
+                        <i class="ri-heart-3-fill"></i>
+                        <div>
+                            <div class="item-text">Partner's Place</div>
+                            <div class="item-sub">789 Pine Rd. Austin, TX</div>
+                        </div>
+                        <i class="ri-check-line item-check"></i>
+                    </div>
+                </div>
+
+                <!-- Pickup Branch Dropdown -->
+                <div class="address-dropdown" id="pickupDropdown">
+                    <div class="dropdown-header">Nearby Branches</div>
+                    <div class="dropdown-item active" onclick="selectPickupBranch(0)">
+                        <i class="ri-store-2-fill"></i>
+                        <div>
+                            <div class="item-text">Downtown Store</div>
+                            <div class="item-sub">0.3 mi · Ready in 15 min</div>
+                        </div>
+                        <i class="ri-check-line item-check"></i>
+                    </div>
+                    <div class="dropdown-item" onclick="selectPickupBranch(1)">
+                        <i class="ri-store-2-fill"></i>
+                        <div>
+                            <div class="item-text">Mall Location</div>
+                            <div class="item-sub">1.2 mi · Ready in 20 min</div>
+                        </div>
+                        <i class="ri-check-line item-check"></i>
+                    </div>
+                    <div class="dropdown-item" onclick="selectPickupBranch(2)">
+                        <i class="ri-store-2-fill"></i>
+                        <div>
+                            <div class="item-text">Airport Terminal</div>
+                            <div class="item-sub">3.5 mi · Ready in 25 min</div>
+                        </div>
+                        <i class="ri-check-line item-check"></i>
+                    </div>
+                </div>
             </div>
+
             <div class="toggle-tabs">
                 <div class="toggle-tab active" id="tabDelivery" onclick="switchTab('delivery')">Delivery</div>
                 <div class="toggle-tab" id="tabPickup" onclick="switchTab('pickup')">Pickup</div>
@@ -100,8 +174,8 @@
             <div class="pickup-card">
                 <div class="pickup-icon"><i class="ri-store-2-fill"></i></div>
                 <div>
-                    <div class="pickup-title">Pickup from store</div>
-                    <div class="pickup-desc">Ready in 15 min · 0.3 miles away</div>
+                    <div class="info-title" id="pickupStoreName">Downtown Store</div>
+                    <div class="info-desc" id="pickupStoreAddr">0.3 mi · Ready in 15 min</div>
                 </div>
             </div>
         </div>
@@ -110,36 +184,105 @@
     </div>
 
     <script>
-        const addresses = [
-            '2715 Ash Dr. San Jose, SD',
-            '456 Oak Ave. Brooklyn, NY',
-            '789 Pine Rd. Austin, TX',
-            '321 Elm St. Portland, OR'
+        let currentMode = 'delivery';
+        let dropdownOpen = false;
+
+        const deliveryAddresses = [
+            { label: 'Home', address: '2715 Ash Dr. San Jose, SD', icon: 'ri-home-4-fill' },
+            { label: 'Office', address: '456 Oak Ave. Brooklyn, NY', icon: 'ri-building-2-fill' },
+            { label: "Partner's Place", address: '789 Pine Rd. Austin, TX', icon: 'ri-heart-3-fill' }
         ];
-        let currentAddr = 0;
+
+        const pickupBranches = [
+            { name: 'Downtown Store', info: '0.3 mi · Ready in 15 min' },
+            { name: 'Mall Location', info: '1.2 mi · Ready in 20 min' },
+            { name: 'Airport Terminal', info: '3.5 mi · Ready in 25 min' }
+        ];
+
+        let selectedDelivery = 0;
+        let selectedPickup = 0;
 
         function switchTab(tab) {
+            currentMode = tab;
             const tabDelivery = document.getElementById('tabDelivery');
             const tabPickup = document.getElementById('tabPickup');
             const deliveryInfo = document.getElementById('deliveryInfo');
             const pickupInfo = document.getElementById('pickupInfo');
+
+            closeDropdown();
 
             if (tab === 'delivery') {
                 tabDelivery.classList.add('active');
                 tabPickup.classList.remove('active');
                 deliveryInfo.classList.add('show');
                 pickupInfo.classList.remove('show');
+                document.getElementById('addressText').textContent = deliveryAddresses[selectedDelivery].address;
             } else {
                 tabPickup.classList.add('active');
                 tabDelivery.classList.remove('active');
                 pickupInfo.classList.add('show');
                 deliveryInfo.classList.remove('show');
+                document.getElementById('addressText').textContent = pickupBranches[selectedPickup].name;
             }
         }
 
-        document.getElementById('addressRow').addEventListener('click', () => {
-            currentAddr = (currentAddr + 1) % addresses.length;
-            document.getElementById('addressText').textContent = addresses[currentAddr];
+        function selectDeliveryAddress(index) {
+            selectedDelivery = index;
+            document.getElementById('addressText').textContent = deliveryAddresses[index].address;
+            updateDropdownActive('deliveryDropdown', index);
+            closeDropdown();
+        }
+
+        function selectPickupBranch(index) {
+            selectedPickup = index;
+            document.getElementById('addressText').textContent = pickupBranches[index].name;
+            document.getElementById('pickupStoreName').textContent = pickupBranches[index].name;
+            document.getElementById('pickupStoreAddr').textContent = pickupBranches[index].info;
+            updateDropdownActive('pickupDropdown', index);
+            closeDropdown();
+        }
+
+        function updateDropdownActive(dropdownId, activeIndex) {
+            const items = document.querySelectorAll(`#${dropdownId} .dropdown-item`);
+            items.forEach((item, i) => {
+                item.classList.toggle('active', i === activeIndex);
+            });
+        }
+
+        function toggleDropdown() {
+            const deliveryDD = document.getElementById('deliveryDropdown');
+            const pickupDD = document.getElementById('pickupDropdown');
+            const chevron = document.getElementById('addressChevron');
+
+            if (dropdownOpen) {
+                closeDropdown();
+            } else {
+                if (currentMode === 'delivery') {
+                    deliveryDD.classList.add('show');
+                } else {
+                    pickupDD.classList.add('show');
+                }
+                chevron.classList.add('open');
+                dropdownOpen = true;
+            }
+        }
+
+        function closeDropdown() {
+            document.getElementById('deliveryDropdown').classList.remove('show');
+            document.getElementById('pickupDropdown').classList.remove('show');
+            document.getElementById('addressChevron').classList.remove('open');
+            dropdownOpen = false;
+        }
+
+        document.getElementById('addressRow').addEventListener('click', (e) => {
+            if (e.target.closest('.dropdown-item')) return;
+            toggleDropdown();
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.address-row')) {
+                closeDropdown();
+            }
         });
     </script>
 </body>
