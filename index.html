@@ -1665,6 +1665,7 @@
             { id: 'profile-settings', name: 'Profile Settings Page', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
             { id: 'splash', name: 'Splash Screen', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
             { id: 'add-location', name: 'Add Location Page', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'deals-page', name: 'Deals & Promotions Page', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
         ];
 
         // Each of the 3 viewports keeps its OWN independent module list (enable/order/style)
@@ -3061,6 +3062,9 @@
                         case 'add-location':
                             pageHtml = drawAddLocationPage(theme, pageStyle);
                             break;
+                        case 'deals-page':
+                            pageHtml = drawDealsPage(theme, pageStyle);
+                            break;
                     }
                     container.innerHTML += pageHtml;
                 }
@@ -3334,11 +3338,11 @@
             const isGlass = theme === 'glassmorphism';
             const isBrut = theme === 'neubrutalism';
 
-            const texts = [
-                'Free delivery on orders $25+',
-                'New: Summer Smoothie Collection',
-                'Earn 2x points this weekend',
-                'Download our app for exclusive deals'
+            const items = [
+                { text: 'Free delivery on orders $25+', page: 'menu-page' },
+                { text: 'New: Summer Smoothie Collection', page: 'menu-page' },
+                { text: 'Earn 2x points this weekend', page: 'rewards-page' },
+                { text: 'Exclusive deals just for you', page: 'deals-page' }
             ];
 
             const variantMap = {
@@ -3358,8 +3362,8 @@
             if (variant === 'v1') {
                 // ── DEFAULT: Coral accent bg, white text, dot dividers, edge fades ──
                 const speed = '18s';
-                const itemsHtml = texts.map(t =>
-                    `<span style="white-space:nowrap;font-size:11px;font-weight:600;color:#fff;letter-spacing:0.3px;padding:0 12px;">${t}</span>` +
+                const itemsHtml = items.map(i =>
+                    `<span onclick="navigateToPage('${theme}','${i.page}')" style="white-space:nowrap;font-size:11px;font-weight:600;color:#fff;letter-spacing:0.3px;padding:0 12px;cursor:pointer;text-decoration:underline;text-decoration-color:rgba(255,255,255,0.3);text-underline-offset:2px;">${i.text}</span>` +
                     `<span style="width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.5);flex-shrink:0;"></span>`
                 ).join('');
 
@@ -3384,9 +3388,9 @@
                     isGlass ? iconMaterial('star-line', iconStyle) : isBrut ? iconBS('star', iconStyle) : iconFA('star', iconStyle),
                     isGlass ? iconMaterial('download-2-line', iconStyle) : isBrut ? iconBS('download', iconStyle) : iconFA('download', iconStyle)
                 ];
-                const itemsHtml = texts.map((t, i) =>
-                    `<span style="display:inline-flex;align-items:center;gap:5px;white-space:nowrap;font-size:11px;font-weight:600;color:var(--accent);text-shadow:0 0 8px var(--accent-light);letter-spacing:0.3px;padding:0 14px;">` +
-                    `${icons[i]}${t}</span>` +
+                const itemsHtml = items.map((item, i) =>
+                    `<span onclick="navigateToPage('${theme}','${item.page}')" style="display:inline-flex;align-items:center;gap:5px;white-space:nowrap;font-size:11px;font-weight:600;color:var(--accent);text-shadow:0 0 8px var(--accent-light);letter-spacing:0.3px;padding:0 14px;cursor:pointer;">` +
+                    `${icons[i]}${item.text}</span>` +
                     `<span style="color:var(--border-color);font-size:10px;opacity:0.4;">&#9670;</span>`
                 ).join('');
 
@@ -3404,9 +3408,9 @@
             } else {
                 // ── OPTION 2: Neubrutalism pill tags, chunky border, offset shadow ──
                 const speed = '22s';
-                const itemsHtml = texts.map((t, i) => {
+                const itemsHtml = items.map((item, i) => {
                     const color = i % 2 === 0 ? 'var(--accent)' : 'var(--highlight)';
-                    return `<span style="display:inline-flex;align-items:center;white-space:nowrap;font-size:10px;font-weight:800;color:${color};background:var(--card-bg);border:2px solid ${color};border-radius:var(--btn-radius);padding:3px 10px;margin:0 5px;letter-spacing:0.2px;text-transform:uppercase;">${t}</span>`;
+                    return `<span onclick="navigateToPage('${theme}','${item.page}')" style="display:inline-flex;align-items:center;white-space:nowrap;font-size:10px;font-weight:800;color:${color};background:var(--card-bg);border:2px solid ${color};border-radius:var(--btn-radius);padding:3px 10px;margin:0 5px;letter-spacing:0.2px;text-transform:uppercase;cursor:pointer;">${item.text}</span>`;
                 }).join('');
 
                 return `${styleTag}
@@ -5333,6 +5337,128 @@
                 </div>
                 <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
                     <div onclick="goBack('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:800;cursor:pointer;${isBrut ? 'border:2px solid var(--border-color);box-shadow:4px 4px 0 var(--border-color);' : ''}">Save Address</div>
+                </div>
+            </div>`;
+        }
+
+        // ─── DEALS & PROMOTIONS PAGE ──────────────────────────────────
+        function drawDealsPage(theme, style = 'default') {
+            const isGlass = theme === 'glassmorphism';
+            const isBrut = theme === 'neubrutalism';
+            const textColor = isGlass ? '#fff' : 'var(--text-primary)';
+            const subColor = isGlass ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
+            const accent = isBrut ? '#FF6B35' : 'var(--accent)';
+            const pageBg = isGlass ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
+            const inputBg = isGlass ? 'rgba(255,255,255,0.08)' : 'var(--pill-bg)';
+            const inputBorder = isGlass ? 'rgba(255,255,255,0.1)' : 'var(--border-color)';
+            const backBtn = `<div onclick="goBack('${theme}')" style="width:36px;height:36px;border-radius:50%;background:${isGlass ? 'rgba(255,255,255,0.1)' : 'var(--pill-bg)'};display:flex;align-items:center;justify-content:center;cursor:pointer;">${isGlass ? iconMaterial('arrow-left-line', 'font-size:16px;color:#fff;') : isBrut ? iconBS('arrow-left', 'font-size:16px;color:var(--text-primary);') : iconFA('arrow-left', 'font-size:16px;color:var(--text-primary);')}</div>`;
+
+            if (style === 'default') {
+                const pills = ['All', 'Delivery', 'Pickup', 'New User'];
+                const deals = [
+                    { gradient: `linear-gradient(135deg,${accent},${accent}88)`, discount: '25% OFF', desc: 'Any burger combo meal', code: 'BURGER25', expiry: 'Expires Jul 15' },
+                    { gradient: `linear-gradient(135deg,#FF6B35,#FFD54F)`, discount: 'Free Delivery', desc: 'Orders over $20 this week', code: 'FREEDEL', expiry: 'Expires Jul 10' },
+                    { gradient: `linear-gradient(135deg,#6C63FF,#48C9B0)`, discount: '$5 OFF', desc: 'Your next breakfast order', code: 'MORNING5', expiry: 'Expires Jul 20' }
+                ];
+                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
+                    <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-color);">
+                        ${backBtn}
+                        <div style="font-size:16px;font-weight:700;color:${textColor};">Deals & Offers</div>
+                    </div>
+                    <div style="flex:1;overflow-y:auto;padding:16px 16px 80px;">
+                        <div style="background:linear-gradient(135deg,${accent},var(--highlight,${accent}88));border-radius:var(--card-radius);padding:24px 20px;color:#fff;margin-bottom:16px;position:relative;overflow:hidden;">
+                            <div style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.1);"></div>
+                            <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;opacity:0.85;">Today's Best</div>
+                            <div style="font-size:36px;font-weight:900;margin:6px 0 4px;">30% OFF</div>
+                            <div style="font-size:13px;opacity:0.9;">On your favorite meals</div>
+                        </div>
+                        <div style="display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px;">
+                            ${pills.map((p, i) => `<div style="white-space:nowrap;padding:8px 16px;border-radius:999px;font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0;${i === 0 ? `background:${accent};color:#fff;` : `background:var(--pill-bg);color:${textColor};border:1px solid var(--border-color);`}">${p}</div>`).join('')}
+                        </div>
+                        ${deals.map(d => `
+                        <div style="background:${d.gradient};border-radius:var(--card-radius);padding:18px;margin-bottom:12px;color:#fff;position:relative;overflow:hidden;">
+                            <div style="position:absolute;top:-10px;right:-10px;width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,0.08);"></div>
+                            <div style="font-size:22px;font-weight:900;margin-bottom:4px;">${d.discount}</div>
+                            <div style="font-size:12px;opacity:0.9;margin-bottom:10px;">${d.desc}</div>
+                            <div style="display:flex;align-items:center;justify-content:space-between;">
+                                <div>
+                                    <span style="display:inline-block;padding:4px 10px;background:rgba(255,255,255,0.2);border-radius:6px;font-size:11px;font-weight:700;letter-spacing:0.5px;backdrop-filter:blur(4px);">${d.code}</span>
+                                    <div style="font-size:9px;opacity:0.7;margin-top:6px;">${d.expiry}</div>
+                                </div>
+                                <div onclick="alert('Claimed: ${d.code}')" style="padding:8px 18px;background:rgba(255,255,255,0.25);border-radius:var(--btn-radius);font-size:11px;font-weight:700;cursor:pointer;backdrop-filter:blur(4px);">Claim</div>
+                            </div>
+                        </div>`).join('')}
+                        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;padding:14px;background:${inputBg};border:1px solid ${inputBorder};border-radius:var(--card-radius);">
+                            <span style="color:${subColor};flex-shrink:0;">${isGlass ? iconMaterial('ticket-line', 'font-size:18px;') : isBrut ? iconBS('ticket', 'font-size:18px;') : iconFA('ticket', 'font-size:18px;')}</span>
+                            <div style="flex:1;font-size:12px;color:${subColor};">Have a promo code?</div>
+                            <div onclick="alert('Enter promo code')" style="padding:6px 14px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:11px;font-weight:700;cursor:pointer;">Apply</div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+            if (style === 'option 1') {
+                const promos = [
+                    { icon: isGlass ? iconMaterial('percent-line', 'font-size:22px;color:#fff;') : isBrut ? iconBS('percent', 'font-size:22px;color:#fff;') : iconFA('percent', 'font-size:22px;color:#fff;'), amount: '20% OFF', desc: 'All pizzas', bg: `linear-gradient(135deg,#FF6B35,#FF9A76)` },
+                    { icon: isGlass ? iconMaterial('truck-line', 'font-size:22px;color:#fff;') : isBrut ? iconBS('truck', 'font-size:22px;color:#fff;') : iconFA('truck', 'font-size:22px;color:#fff;'), amount: 'Free Delivery', desc: 'Orders $15+', bg: `linear-gradient(135deg,#6C63FF,#9B93FF)` },
+                    { icon: isGlass ? iconMaterial('gift-line', 'font-size:22px;color:#fff;') : isBrut ? iconBS('gift', 'font-size:22px;color:#fff;') : iconFA('gift', 'font-size:22px;color:#fff;'), amount: '$10 OFF', desc: 'First order', bg: `linear-gradient(135deg,#00B894,#55E6C1)` },
+                    { icon: isGlass ? iconMaterial('fire-line', 'font-size:22px;color:#fff;') : isBrut ? iconBS('fire', 'font-size:22px;color:#fff;') : iconFA('flame', 'font-size:22px;color:#fff;'), amount: '2-for-1', desc: 'Desserts', bg: `linear-gradient(135deg,#E84393,#FD79A8)` }
+                ];
+                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
+                    <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-color);">
+                        ${backBtn}
+                        <div style="flex:1;font-size:16px;font-weight:700;color:${textColor};">Offers</div>
+                        <div style="width:36px;height:36px;border-radius:50%;background:${isGlass ? 'rgba(255,255,255,0.1)' : 'var(--pill-bg)'};display:flex;align-items:center;justify-content:center;cursor:pointer;">${isGlass ? iconMaterial('filter-3-line', 'font-size:16px;color:#fff;') : isBrut ? iconBS('filter', 'font-size:16px;color:var(--text-primary);') : iconFA('sliders-horizontal', 'font-size:16px;color:var(--text-primary);')}</div>
+                    </div>
+                    <div style="flex:1;overflow-y:auto;padding:16px 16px 80px;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
+                            ${promos.map(p => `
+                            <div onclick="alert('View offer')" style="background:${p.bg};border-radius:var(--card-radius);padding:16px;color:#fff;cursor:pointer;position:relative;overflow:hidden;">
+                                <div style="position:absolute;bottom:-12px;right:-12px;width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,0.1);"></div>
+                                <div style="margin-bottom:10px;">${p.icon}</div>
+                                <div style="font-size:16px;font-weight:900;">${p.amount}</div>
+                                <div style="font-size:11px;opacity:0.85;margin-top:2px;">${p.desc}</div>
+                            </div>`).join('')}
+                        </div>
+                        <div style="background:linear-gradient(135deg,${accent}15,${accent}05);border-radius:var(--card-radius);padding:16px;display:flex;align-items:center;gap:12px;border:1px solid ${accent}30;">
+                            <div style="width:44px;height:44px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;flex-shrink:0;">${isGlass ? iconMaterial('user-add-line', 'font-size:20px;color:#fff;') : isBrut ? iconBS('user-plus', 'font-size:20px;color:#fff;') : iconFA('user-plus', 'font-size:20px;color:#fff;')}</div>
+                            <div style="flex:1;">
+                                <div style="font-size:12px;font-weight:700;color:${textColor};">Refer a Friend</div>
+                                <div style="font-size:10px;color:${subColor};">Give $10, get $10</div>
+                            </div>
+                            <div onclick="alert('Share referral link')" style="padding:8px 14px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:11px;font-weight:700;cursor:pointer;">Share</div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+            // Option 2: timeline
+            const activeDeals = [
+                { icon: isGlass ? iconMaterial('restaurant-line', 'font-size:18px;color:'+accent+';') : isBrut ? iconBS('tools-kitchen-2', 'font-size:18px;color:'+accent+';') : iconFA('utensils', 'font-size:18px;color:'+accent+';'), title: 'Burger Bonanza', desc: '30% off any burger combo', code: 'BURG30', ac: accent },
+                { icon: isGlass ? iconMaterial('cup-line', 'font-size:18px;color:#6C63FF;') : isBrut ? iconBS('coffee', 'font-size:18px;color:#6C63FF;') : iconFA('coffee', 'font-size:18px;color:#6C63FF;'), title: 'Free Coffee Friday', desc: 'Free coffee with orders over $12', code: 'COFRI', ac: '#6C63FF' },
+                { icon: isGlass ? iconMaterial('truck-line', 'font-size:18px;color:#00B894;') : isBrut ? iconBS('truck', 'font-size:18px;color:#00B894;') : iconFA('truck', 'font-size:18px;color:#00B894;'), title: 'Free Delivery Week', desc: 'No delivery fee on orders $15+', code: 'NOSHIP', ac: '#00B894' }
+            ];
+            return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
+                <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-color);">
+                    ${backBtn}
+                    <div style="font-size:16px;font-weight:700;color:${textColor};">Promotions</div>
+                </div>
+                <div style="flex:1;overflow-y:auto;padding:16px 16px 80px;">
+                    ${activeDeals.map(d => `
+                    <div style="display:flex;gap:14px;margin-bottom:14px;">
+                        <div style="display:flex;flex-direction:column;align-items:center;">
+                            <div style="width:40px;height:40px;border-radius:50%;background:${d.ac}15;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${d.icon}</div>
+                            <div style="flex:1;width:2px;background:var(--border-color);margin-top:6px;"></div>
+                        </div>
+                        <div style="flex:1;background:var(--card-bg);border-radius:var(--card-radius);padding:16px;box-shadow:var(--card-shadow);border:1px solid var(--border-color);border-left:3px solid ${d.ac};">
+                            <div style="font-size:13px;font-weight:800;color:${textColor};margin-bottom:4px;">${d.title}</div>
+                            <div style="font-size:11px;color:${subColor};margin-bottom:10px;line-height:1.4;">${d.desc}</div>
+                            <div style="display:flex;align-items:center;justify-content:space-between;">
+                                <span style="padding:4px 10px;background:${d.ac}15;border-radius:6px;font-size:11px;font-weight:700;color:${d.ac};letter-spacing:0.3px;">${d.code}</span>
+                                <div onclick="alert('Applied: ${d.code}')" style="padding:7px 16px;background:${d.ac};color:#fff;border-radius:var(--btn-radius);font-size:11px;font-weight:700;cursor:pointer;">Apply</div>
+                            </div>
+                        </div>
+                    </div>`).join('')}
                 </div>
             </div>`;
         }
