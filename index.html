@@ -2259,13 +2259,26 @@
         }
 
         // ─── ADDRESS DROPDOWN FUNCTIONS ──────────────────────────────────
+        const ADDRESS_DISTANCES = {
+            'Manhattan West, NY': '2.3 km',
+            'Times Square, NY': '4.1 km',
+            'Central Park, NY': '3.7 km',
+            'Brooklyn Bridge, NY': '5.8 km'
+        };
+        const BRANCH_DISTANCES = {
+            'Downtown NYC': '0.5 km',
+            'Midtown Manhattan': '1.2 km',
+            'Brooklyn Heights': '2.8 km'
+        };
+
         function toggleAddressDropdown(theme) {
             const dd = document.getElementById('addressDropdown-' + theme);
             if (dd) { dd.style.display = dd.style.display === 'none' ? 'block' : 'none'; }
         }
         function selectAddress(theme, addr) {
+            const dist = ADDRESS_DISTANCES[addr] || '';
             const el = document.querySelector(`#brandHeader-${theme} [onclick*="toggleAddressDropdown"] div div:last-child`);
-            if (el) { el.innerHTML = addr + (theme === 'glassmorphism' ? ` ${iconMaterial('arrow-drop-down-line', 'color:#FFD54F;')}` : ` ${iconFA('chevron-down', theme === 'neubrutalism' ? 'text-[#00615F]' : 'text-[#00615F]')}`); }
+            if (el) { el.innerHTML = addr + ' <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">' + dist + '</span>' + (theme === 'glassmorphism' ? ` ${iconMaterial('arrow-drop-down-line', 'color:#FFD54F;')}` : ` ${iconFA('chevron-down', theme === 'neubrutalism' ? 'text-[#00615F]' : 'text-[#00615F]')}`); }
             const dd = document.getElementById('addressDropdown-' + theme);
             if (dd) { dd.style.display = 'none'; }
         }
@@ -2302,13 +2315,13 @@
         function selectBranch(theme, branch) {
             const pickupDD = document.getElementById('pickupDropdown-' + theme);
             if (pickupDD) { pickupDD.style.display = 'none'; }
-            // Update address text in header
+            const dist = BRANCH_DISTANCES[branch] || '';
             const header = document.getElementById('brandHeader-' + theme);
             if (header) {
                 const addrDiv = header.querySelector('[onclick*="toggleAddressDropdown"] div div:last-child');
                 if (addrDiv) {
                     const arrow = theme === 'glassmorphism' ? iconMaterial('arrow-drop-down-line', 'color:#FFD54F;') : (theme === 'neubrutalism' ? iconBS('chevron-down', 'text-[#00615F]') : iconFA('chevron-down', 'text-[#00615F]'));
-                    addrDiv.innerHTML = branch + ' ' + arrow;
+                    addrDiv.innerHTML = branch + ' <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">' + dist + '</span> ' + arrow;
                 }
             }
         }
@@ -2842,7 +2855,7 @@
                             <div style="width:32px;height:32px;border-radius:10px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;">${iconFA('map-pin', 'text-[#1A1A1A]')}</div>
                             <div>
                                 <div style="font-size:9px;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;font-weight:600;">Deliver to</div>
-                                <div style="font-size:12px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:4px;">Manhattan West, NY ${iconFA('chevron-down', 'text-[#1A1A1A]')}</div>
+                                <div style="font-size:12px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:4px;">Manhattan West, NY <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">2.3 km</span> ${iconFA('chevron-down', 'text-[#1A1A1A]')}</div>
                             </div>
                         </div>
                         <div style="display:flex;gap:8px;">
@@ -2853,8 +2866,14 @@
                         </div>
                     </div>
                     <div id="addressDropdown-${theme}" style="display:none;background:var(--card-bg);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.12);padding:8px;position:absolute;top:60px;left:16px;right:16px;z-index:100;">
-                        <div onclick="selectAddress('${theme}','Manhattan West, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px;background:var(--pill-bg);">${iconFA('map-pin', 'text-[#1A1A1A]')} Manhattan West, NY</div>
-                        <div onclick="selectAddress('${theme}','Times Square, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px;">${iconFA('map-pin', 'text-gray-400')} Times Square, NY</div>
+                        <div onclick="selectAddress('${theme}','Manhattan West, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;background:var(--pill-bg);">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconFA('map-pin', 'text-[#1A1A1A]')} Manhattan West, NY</span>
+                            <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">2.3 km</span>
+                        </div>
+                        <div onclick="selectAddress('${theme}','Times Square, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconFA('map-pin', 'text-gray-400')} Times Square, NY</span>
+                            <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">4.1 km</span>
+                        </div>
                         <div style="border-top:1px solid var(--border-color);margin:4px 0;"></div>
                         <div onclick="selectAddress('${theme}','Brooklyn Bridge, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;color:var(--text-primary);display:flex;align-items:center;gap:8px;">${iconFA('plus', 'text-[#1A1A1A]')} Add New Address</div>
                     </div>
@@ -2877,7 +2896,7 @@
                             <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&q=80" style="width:100%;height:100%;object-fit:cover;" alt="avatar">
                         </div>
                         <div onclick="toggleAddressDropdown('${theme}')" style="cursor:pointer;">
-                            <div style="font-size:13px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:4px;">Manhattan West, NY ${iconFA('chevron-down', 'text-[#1A1A1A]')}</div>
+                            <div style="font-size:13px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:4px;">Manhattan West, NY <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">2.3 km</span> ${iconFA('chevron-down', 'text-[#1A1A1A]')}</div>
                             <div style="font-size:9px;color:var(--text-secondary);">Deliver now</div>
                         </div>
                     </div>
@@ -2886,8 +2905,14 @@
                         <div style="width:34px;height:34px;border-radius:10px;background:var(--pill-bg);display:flex;align-items:center;justify-content:center;">${iconFA('cart-shopping', 'text-[#1A1A1A]')}</div>
                     </div>
                     <div id="addressDropdown-${theme}" style="display:none;background:var(--card-bg);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.12);padding:8px;position:absolute;top:56px;left:16px;right:16px;z-index:100;">
-                        <div onclick="selectAddress('${theme}','Manhattan West, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px;background:var(--pill-bg);">${iconFA('map-pin', 'text-[#1A1A1A]')} Manhattan West, NY</div>
-                        <div onclick="selectAddress('${theme}','Times Square, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px;">${iconFA('map-pin', 'text-gray-400')} Times Square, NY</div>
+                        <div onclick="selectAddress('${theme}','Manhattan West, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;background:var(--pill-bg);">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconFA('map-pin', 'text-[#1A1A1A]')} Manhattan West, NY</span>
+                            <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">2.3 km</span>
+                        </div>
+                        <div onclick="selectAddress('${theme}','Times Square, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconFA('map-pin', 'text-gray-400')} Times Square, NY</span>
+                            <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">4.1 km</span>
+                        </div>
                         <div style="border-top:1px solid var(--border-color);margin:4px 0;"></div>
                         <div onclick="selectAddress('${theme}','Brooklyn Bridge, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;color:var(--text-primary);display:flex;align-items:center;gap:8px;">${iconFA('plus', 'text-[#1A1A1A]')} Add New Address</div>
                     </div>
@@ -2901,14 +2926,23 @@
                             <div style="width:32px;height:32px;border-radius:10px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;">${iconFA('map-pin', 'text-[#1A1A1A]')}</div>
                             <div>
                                 <div style="font-size:9px;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;font-weight:600;">Deliver to</div>
-                                <div style="font-size:12px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:4px;">Manhattan West, NY ${iconFA('chevron-down', 'text-[#1A1A1A]')}</div>
+                                <div style="font-size:12px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:4px;">Manhattan West, NY <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">2.3 km</span> ${iconFA('chevron-down', 'text-[#1A1A1A]')}</div>
                             </div>
                         </div>
                     </div>
                     <div id="addressDropdown-${theme}" style="display:none;background:var(--card-bg);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.12);padding:8px;position:absolute;top:60px;left:16px;right:16px;z-index:100;">
-                        <div onclick="selectAddress('${theme}','Manhattan West, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px;background:var(--pill-bg);">${iconFA('map-pin', 'text-[#1A1A1A]')} Manhattan West, NY</div>
-                        <div onclick="selectAddress('${theme}','Times Square, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px;">${iconFA('map-pin', 'text-gray-400')} Times Square, NY</div>
-                        <div onclick="selectAddress('${theme}','Central Park, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px;">${iconFA('map-pin', 'text-gray-400')} Central Park, NY</div>
+                        <div onclick="selectAddress('${theme}','Manhattan West, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;background:var(--pill-bg);">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconFA('map-pin', 'text-[#1A1A1A]')} Manhattan West, NY</span>
+                            <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">2.3 km</span>
+                        </div>
+                        <div onclick="selectAddress('${theme}','Times Square, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconFA('map-pin', 'text-gray-400')} Times Square, NY</span>
+                            <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">4.1 km</span>
+                        </div>
+                        <div onclick="selectAddress('${theme}','Central Park, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconFA('map-pin', 'text-gray-400')} Central Park, NY</span>
+                            <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">3.7 km</span>
+                        </div>
                         <div style="border-top:1px solid var(--border-color);margin:4px 0;"></div>
                         <div onclick="selectAddress('${theme}','Brooklyn Bridge, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;color:var(--text-primary);display:flex;align-items:center;gap:8px;">${iconFA('plus', 'text-[#1A1A1A]')} Add New Address</div>
                     </div>
@@ -2917,9 +2951,18 @@
                         <div onclick="setDeliveryMode('${theme}','pickup')" id="pickupBtn-${theme}" style="flex:1;padding:8px 12px;text-align:center;border-radius:9999px;color:var(--text-secondary);font-size:11px;font-weight:500;cursor:pointer;">Pickup</div>
                     </div>
                     <div id="pickupDropdown-${theme}" style="display:none;background:var(--card-bg);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.12);padding:8px;">
-                        <div onclick="selectBranch('${theme}','Downtown NYC')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px;background:var(--pill-bg);">${iconFA('store', 'text-[#1A1A1A]')} Downtown NYC</div>
-                        <div onclick="selectBranch('${theme}','Midtown Manhattan')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px;">${iconFA('store', 'text-gray-400')} Midtown Manhattan</div>
-                        <div onclick="selectBranch('${theme}','Brooklyn Heights')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px;">${iconFA('store', 'text-gray-400')} Brooklyn Heights</div>
+                        <div onclick="selectBranch('${theme}','Downtown NYC')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;background:var(--pill-bg);">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconFA('store', 'text-[#1A1A1A]')} Downtown NYC</span>
+                            <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">0.5 km</span>
+                        </div>
+                        <div onclick="selectBranch('${theme}','Midtown Manhattan')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconFA('store', 'text-gray-400')} Midtown Manhattan</span>
+                            <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">1.2 km</span>
+                        </div>
+                        <div onclick="selectBranch('${theme}','Brooklyn Heights')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconFA('store', 'text-gray-400')} Brooklyn Heights</span>
+                            <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">2.8 km</span>
+                        </div>
                     </div>
                 </div>`;
             } else if (theme === 'glassmorphism') {
@@ -2929,13 +2972,22 @@
                         <div style="width:36px;height:36px;border-radius:12px;background:var(--accent-light);border:1px solid rgba(76,175,80,0.2);display:flex;align-items:center;justify-content:center;">${iconMaterial('map-pin-2-line', 'color:var(--accent);')}</div>
                         <div>
                             <div style="font-size:9px;color:var(--text-secondary);letter-spacing:1.5px;font-weight:600;text-transform:uppercase;">Deliver to</div>
-                            <div style="font-size:12px;font-weight:700;color:#fff;display:flex;align-items:center;gap:4px;">Manhattan West, NY ${iconMaterial('arrow-drop-down-line', 'color:var(--highlight);')}</div>
+                            <div style="font-size:12px;font-weight:700;color:#fff;display:flex;align-items:center;gap:4px;">Manhattan West, NY <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">2.3 km</span> ${iconMaterial('arrow-drop-down-line', 'color:var(--highlight);')}</div>
                         </div>
                     </div>
                     <div id="addressDropdown-${theme}" style="display:none;background:rgba(26,26,26,0.95);backdrop-filter:blur(16px);border:1px solid var(--border-color);border-radius:12px;padding:8px;position:absolute;top:60px;left:16px;right:16px;z-index:100;">
-                        <div onclick="selectAddress('${theme}','Manhattan West, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#fff;display:flex;align-items:center;gap:8px;background:var(--accent-light);">${iconMaterial('map-pin-2-line', 'color:var(--accent);')} Manhattan West, NY</div>
-                        <div onclick="selectAddress('${theme}','Times Square, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px;">${iconMaterial('map-pin-2-line', 'color:var(--text-secondary);')} Times Square, NY</div>
-                        <div onclick="selectAddress('${theme}','Central Park, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px;">${iconMaterial('map-pin-2-line', 'color:var(--text-secondary);')} Central Park, NY</div>
+                        <div onclick="selectAddress('${theme}','Manhattan West, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#fff;display:flex;align-items:center;justify-content:space-between;background:var(--accent-light);">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconMaterial('map-pin-2-line', 'color:var(--accent);')} Manhattan West, NY</span>
+                            <span style="font-size:9px;font-weight:500;color:rgba(255,255,255,0.5);">2.3 km</span>
+                        </div>
+                        <div onclick="selectAddress('${theme}','Times Square, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconMaterial('map-pin-2-line', 'color:var(--text-secondary);')} Times Square, NY</span>
+                            <span style="font-size:9px;font-weight:500;color:rgba(255,255,255,0.5);">4.1 km</span>
+                        </div>
+                        <div onclick="selectAddress('${theme}','Central Park, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconMaterial('map-pin-2-line', 'color:var(--text-secondary);')} Central Park, NY</span>
+                            <span style="font-size:9px;font-weight:500;color:rgba(255,255,255,0.5);">3.7 km</span>
+                        </div>
                         <div style="border-top:1px solid var(--border-color);margin:4px 0;"></div>
                         <div onclick="selectAddress('${theme}','Brooklyn Bridge, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;color:var(--highlight);display:flex;align-items:center;gap:8px;">${iconMaterial('add-line', 'color:var(--highlight);')} Add New Address</div>
                     </div>
@@ -2944,9 +2996,18 @@
                         <span onclick="setDeliveryMode('${theme}','pickup')" id="pickupBtn-${theme}" style="color:var(--text-secondary);font-size:9px;font-weight:600;padding:5px 12px;border-radius:9999px;cursor:pointer;">PICKUP</span>
                     </div>
                     <div id="pickupDropdown-${theme}" style="display:none;background:rgba(26,26,26,0.95);backdrop-filter:blur(16px);border:1px solid var(--border-color);border-radius:12px;padding:8px;position:absolute;top:60px;left:16px;right:16px;z-index:100;">
-                        <div onclick="selectBranch('${theme}','Downtown NYC')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#fff;display:flex;align-items:center;gap:8px;background:var(--accent-light);">${iconMaterial('store-2-line', 'color:var(--accent);')} Downtown NYC</div>
-                        <div onclick="selectBranch('${theme}','Midtown Manhattan')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px;">${iconMaterial('store-2-line', 'color:var(--text-secondary);')} Midtown Manhattan</div>
-                        <div onclick="selectBranch('${theme}','Brooklyn Heights')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px;">${iconMaterial('store-2-line', 'color:var(--text-secondary);')} Brooklyn Heights</div>
+                        <div onclick="selectBranch('${theme}','Downtown NYC')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#fff;display:flex;align-items:center;justify-content:space-between;background:var(--accent-light);">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconMaterial('store-2-line', 'color:var(--accent);')} Downtown NYC</span>
+                            <span style="font-size:9px;font-weight:500;color:rgba(255,255,255,0.5);">0.5 km</span>
+                        </div>
+                        <div onclick="selectBranch('${theme}','Midtown Manhattan')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconMaterial('store-2-line', 'color:var(--text-secondary);')} Midtown Manhattan</span>
+                            <span style="font-size:9px;font-weight:500;color:rgba(255,255,255,0.5);">1.2 km</span>
+                        </div>
+                        <div onclick="selectBranch('${theme}','Brooklyn Heights')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconMaterial('store-2-line', 'color:var(--text-secondary);')} Brooklyn Heights</span>
+                            <span style="font-size:9px;font-weight:500;color:rgba(255,255,255,0.5);">2.8 km</span>
+                        </div>
                     </div>
                 </div>`;
             } else {
@@ -2957,7 +3018,7 @@
                             <div style="width:30px;height:30px;border-radius:10px;background:var(--pill-bg);display:flex;align-items:center;justify-content:center;">${iconBS('map-pin', 'text-[#00615F]')}</div>
                             <div>
                                 <div style="font-size:9px;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;font-weight:600;">Deliver to</div>
-                                <div style="font-size:12px;font-weight:700;color:#3D3229;display:flex;align-items:center;gap:4px;">Manhattan West, NY ${iconBS('chevron-down', 'text-[#00615F]')}</div>
+                                <div style="font-size:12px;font-weight:700;color:#3D3229;display:flex;align-items:center;gap:4px;">Manhattan West, NY <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">2.3 km</span> ${iconBS('chevron-down', 'text-[#00615F]')}</div>
                             </div>
                         </div>
                         <div style="width:32px;height:32px;border-radius:50%;overflow:hidden;border:1px solid var(--border-color);">
@@ -2965,9 +3026,18 @@
                         </div>
                     </div>
                     <div id="addressDropdown-${theme}" style="display:none;background:var(--card-bg);border:1px solid var(--border-color);border-radius:10px;padding:8px;position:absolute;top:60px;left:16px;right:16px;z-index:100;box-shadow:0 4px 16px rgba(61,50,41,0.1);">
-                        <div onclick="selectAddress('${theme}','Manhattan West, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#3D3229;display:flex;align-items:center;gap:8px;background:var(--pill-bg);border:1px solid var(--border-color);">${iconBS('map-pin', 'text-[#00615F]')} Manhattan West, NY</div>
-                        <div onclick="selectAddress('${theme}','Times Square, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#3D3229;display:flex;align-items:center;gap:8px;">${iconBS('map-pin', 'text-gray-400')} Times Square, NY</div>
-                        <div onclick="selectAddress('${theme}','Central Park, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#3D3229;display:flex;align-items:center;gap:8px;">${iconBS('map-pin', 'text-gray-400')} Central Park, NY</div>
+                        <div onclick="selectAddress('${theme}','Manhattan West, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#3D3229;display:flex;align-items:center;justify-content:space-between;background:var(--pill-bg);border:1px solid var(--border-color);">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconBS('map-pin', 'text-[#00615F]')} Manhattan West, NY</span>
+                            <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">2.3 km</span>
+                        </div>
+                        <div onclick="selectAddress('${theme}','Times Square, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#3D3229;display:flex;align-items:center;justify-content:space-between;">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconBS('map-pin', 'text-gray-400')} Times Square, NY</span>
+                            <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">4.1 km</span>
+                        </div>
+                        <div onclick="selectAddress('${theme}','Central Park, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#3D3229;display:flex;align-items:center;justify-content:space-between;">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconBS('map-pin', 'text-gray-400')} Central Park, NY</span>
+                            <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">3.7 km</span>
+                        </div>
                         <div style="border-top:1px dashed #E8DDD3;margin:4px 0;"></div>
                         <div onclick="selectAddress('${theme}','Brooklyn Bridge, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;color:var(--accent);display:flex;align-items:center;gap:8px;">${iconBS('plus', 'text-[#00615F]')} Add New Address</div>
                     </div>
@@ -2976,9 +3046,18 @@
                         <div onclick="setDeliveryMode('${theme}','pickup')" id="pickupBtn-${theme}" style="flex:1;padding:8px 12px;text-align:center;border-radius:8px;color:var(--text-secondary);font-size:11px;font-weight:500;cursor:pointer;">Pickup</div>
                     </div>
                     <div id="pickupDropdown-${theme}" style="display:none;background:var(--card-bg);border:1px solid var(--border-color);border-radius:10px;padding:8px;box-shadow:0 4px 16px rgba(61,50,41,0.1);">
-                        <div onclick="selectBranch('${theme}','Downtown NYC')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#3D3229;display:flex;align-items:center;gap:8px;background:var(--pill-bg);border:1px solid var(--border-color);">${iconBS('shop', 'text-[#00615F]')} Downtown NYC</div>
-                        <div onclick="selectBranch('${theme}','Midtown Manhattan')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#3D3229;display:flex;align-items:center;gap:8px;">${iconBS('shop', 'text-gray-400')} Midtown Manhattan</div>
-                        <div onclick="selectBranch('${theme}','Brooklyn Heights')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#3D3229;display:flex;align-items:center;gap:8px;">${iconBS('shop', 'text-gray-400')} Brooklyn Heights</div>
+                        <div onclick="selectBranch('${theme}','Downtown NYC')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#3D3229;display:flex;align-items:center;justify-content:space-between;background:var(--pill-bg);border:1px solid var(--border-color);">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconBS('shop', 'text-[#00615F]')} Downtown NYC</span>
+                            <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">0.5 km</span>
+                        </div>
+                        <div onclick="selectBranch('${theme}','Midtown Manhattan')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#3D3229;display:flex;align-items:center;justify-content:space-between;">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconBS('shop', 'text-gray-400')} Midtown Manhattan</span>
+                            <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">1.2 km</span>
+                        </div>
+                        <div onclick="selectBranch('${theme}','Brooklyn Heights')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#3D3229;display:flex;align-items:center;justify-content:space-between;">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconBS('shop', 'text-gray-400')} Brooklyn Heights</span>
+                            <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">2.8 km</span>
+                        </div>
                     </div>
                 </div>`;
             }
