@@ -1576,11 +1576,7 @@
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
                 <h3 style="color:#fff; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Color Palettes
                 </h3>
-                <div>
-                    <button class="export-btn" onclick="exportPalette('css')">CSS</button>
-                    <button class="export-btn" onclick="exportPalette('tailwind')">TW</button>
-                    <button class="export-btn" onclick="exportPalette('json')">JSON</button>
-                </div>
+                
             </div>
             <div id="paletteEditorContainer">
                 <!-- Rendered by JavaScript -->
@@ -1668,13 +1664,22 @@
             { id: 'upsell-page', name: 'Upsell Page', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
             { id: 'profile-settings', name: 'Profile Settings Page', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
             { id: 'splash', name: 'Splash Screen', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'add-location', name: 'Add Location Page', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
         ];
 
         // Each of the 3 viewports keeps its OWN independent module list (enable/order/style)
+        // Default style mapping: View 1 (Light) = 'default', View 2 (Dark) = 'option 1', View 3 (Modern) = 'option 2'
+        const DEFAULT_STYLE_BY_THEME = { neumorphism: 'default', glassmorphism: 'option 1', neubrutalism: 'option 2' };
+        function buildModulesForTheme(theme) {
+            return JSON.parse(JSON.stringify(defaultModulesConfig)).map(m => {
+                m.style = DEFAULT_STYLE_BY_THEME[theme] || 'default';
+                return m;
+            });
+        }
         let modulesConfigByTheme = {
-            neumorphism: JSON.parse(JSON.stringify(defaultModulesConfig)),
-            glassmorphism: JSON.parse(JSON.stringify(defaultModulesConfig)),
-            neubrutalism: JSON.parse(JSON.stringify(defaultModulesConfig))
+            neumorphism: buildModulesForTheme('neumorphism'),
+            glassmorphism: buildModulesForTheme('glassmorphism'),
+            neubrutalism: buildModulesForTheme('neubrutalism')
         };
 
         // Fixed defaults previously driven by the removed "State Simulation" panel.
@@ -2077,7 +2082,7 @@
         const MODULES_WITH_REAL_VARIANTS = ['announcement-strip', 'location-header', 'video-reel-hero', 'active-order-tracker', 'loyalty-card', 'limited-time-deal', 'order-again', 'recommended-for-you', 'finish-your-order', 'birthday-reward-banner', 'deals-promos', 'category-tiles', 'meal-deal-combo', 'featured-items', 'popular-rail', 'offers-carousel', 'offers-feed', 'image-mosaic', 'stories'];
 
         let dragSourceIndex = null;
-
+//  
         function buildControllerList() {
             const container = document.getElementById('moduleListContainer');
             if (!container) return;
@@ -2437,6 +2442,7 @@
             if (overlay) { overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none'; }
             if (modal) { modal.style.transform = 'translateY(100%)'; }
         }
+        //  
         function orderTrackingModalHTML(theme) {
             const mapImg = 'https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=600&q=80';
             const driverImg = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80';
@@ -2599,6 +2605,128 @@
             }
             const branchDD = document.getElementById('pickupDropdown-' + theme);
             if (branchDD) branchDD.style.display = 'none';
+        }
+
+        // ─── LOCATION BOTTOM SHEET ──────────────────────────────────────
+        function openLocationSheet(theme) {
+            const mode = deliveryModeByTheme[theme] || 'delivery';
+            const isGlass = theme === 'glassmorphism';
+            const isBrut = theme === 'neubrutalism';
+
+            const sheetBg = isGlass ? 'rgba(26,26,26,0.98)' : 'var(--card-bg)';
+            const textColor = isGlass ? '#fff' : 'var(--text-primary)';
+            const subColor = isGlass ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
+            const inputBg = isGlass ? 'rgba(255,255,255,0.08)' : 'var(--pill-bg)';
+            const searchIcon = isGlass ? iconMaterial('search-line', 'color:var(--text-secondary);') : isBrut ? iconBS('search', 'color:var(--text-secondary);') : iconFA('search', 'color:var(--text-secondary);');
+            const pinIcon = isGlass ? iconMaterial('map-pin-2-line', 'color:var(--accent);') : isBrut ? iconBS('map-pin', 'color:var(--accent);') : iconFA('map-pin', 'color:var(--accent);');
+            const storeIcon = isGlass ? iconMaterial('store-2-line', 'color:var(--accent);') : isBrut ? iconBS('shop', 'color:var(--accent);') : iconFA('store', 'color:var(--accent);');
+            const plusIcon = isGlass ? iconMaterial('add-line', 'color:var(--accent);') : isBrut ? iconBS('plus', 'color:var(--accent);') : iconFA('plus', 'color:var(--accent);');
+            const mapIcon = isGlass ? iconMaterial('map-2-line', 'color:var(--accent);font-size:18px;') : isBrut ? iconBS('map', 'color:var(--accent);font-size:18px;') : iconFA('map', 'color:var(--accent);font-size:18px;');
+            const closeIcon = isGlass ? iconMaterial('close-line', 'color:var(--text-secondary);font-size:18px;') : isBrut ? iconBS('x', 'color:var(--text-secondary);font-size:18px;') : iconFA('x', 'color:var(--text-secondary);font-size:18px;');
+
+            const searchBar = `
+                <div style="display:flex;align-items:center;gap:8px;background:${inputBg};border:1px solid var(--border-color);border-radius:12px;padding:10px 14px;margin-bottom:16px;">
+                    ${searchIcon}
+                    <span style="font-size:12px;color:${subColor};">Search ${mode === 'delivery' ? 'address' : 'branch'}...</span>
+                </div>`;
+
+            let content = '';
+            if (mode === 'delivery') {
+                content = `
+                    ${searchBar}
+                    <div style="display:flex;align-items:center;gap:12px;padding:14px;background:${inputBg};border:1px solid var(--border-color);border-radius:var(--card-radius);margin-bottom:12px;">
+                        <div style="width:44px;height:44px;border-radius:12px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;">${mapIcon}</div>
+                        <div style="flex:1;">
+                            <div style="font-size:9px;color:${subColor};font-weight:600;letter-spacing:0.5px;margin-bottom:2px;">USE MAP</div>
+                            <div style="font-size:12px;font-weight:600;color:${textColor};">Pin location on map</div>
+                        </div>
+                        <span style="color:var(--text-secondary);">${isGlass ? iconMaterial('arrow-right-s-line', 'color:var(--text-secondary);') : isBrut ? iconBS('chevron-right', 'color:var(--text-secondary);') : iconFA('chevron-right', 'color:var(--text-secondary);')}</span>
+                    </div>
+                    <div style="font-size:10px;font-weight:700;color:${subColor};text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Current Address</div>
+                    <div onclick="closeLocationSheet('${theme}')" style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--accent-light);border:1px solid var(--accent);border-radius:var(--card-radius);margin-bottom:16px;cursor:pointer;">
+                        ${pinIcon}
+                        <div style="flex:1;">
+                            <div style="font-size:13px;font-weight:700;color:${textColor};">Manhattan West, NY</div>
+                            <div style="font-size:10px;color:${subColor};margin-top:1px;">2.3 km away</div>
+                        </div>
+                        <div style="width:20px;height:20px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;">
+                            <div style="width:10px;height:10px;border-radius:50%;background:var(--accent);"></div>
+                        </div>
+                    </div>
+                    <div onclick="closeLocationSheet('${theme}');navigateToPage('${theme}','add-location')" style="display:flex;align-items:center;gap:12px;padding:14px;border:1.5px dashed var(--border-color);border-radius:var(--card-radius);cursor:pointer;">
+                        ${plusIcon}
+                        <div style="font-size:13px;font-weight:600;color:var(--accent);">Add New Location</div>
+                    </div>`;
+            } else {
+                const branches = [
+                    { name: 'Downtown NYC', dist: '0.5 km', active: true },
+                    { name: 'Midtown Manhattan', dist: '1.2 km', active: false },
+                    { name: 'Brooklyn Heights', dist: '2.8 km', active: false },
+                    { name: 'Upper East Side', dist: '3.4 km', active: false },
+                    { name: 'SoHo', dist: '2.1 km', active: false },
+                    { name: 'Chelsea Market', dist: '1.8 km', active: false },
+                    { name: 'Financial District', dist: '3.9 km', active: false },
+                    { name: 'Williamsburg', dist: '4.5 km', active: false }
+                ];
+                content = `
+                    ${searchBar}
+                    <div style="font-size:10px;font-weight:700;color:${subColor};text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">8 Branches Near You</div>
+                    <div style="display:flex;flex-direction:column;gap:6px;">
+                        ${branches.map(b => `
+                            <div onclick="selectBranch('${theme}','${b.name}');closeLocationSheet('${theme}')" style="display:flex;align-items:center;gap:12px;padding:12px;${b.active ? 'background:var(--accent-light);border:1px solid var(--accent);' : 'background:' + inputBg + ';border:1px solid var(--border-color);'}border-radius:12px;cursor:pointer;">
+                                ${storeIcon}
+                                <div style="flex:1;">
+                                    <div style="font-size:12px;font-weight:${b.active ? '700' : '600'};color:${textColor};">${b.name}</div>
+                                    <div style="font-size:9px;color:${subColor};">${b.dist}</div>
+                                </div>
+                                ${b.active ? `<div style="width:20px;height:20px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;"><div style="width:10px;height:10px;border-radius:50%;background:var(--accent);"></div></div>` : '<div style="width:20px;height:20px;border-radius:50%;border:2px solid var(--border-color);"></div>'}
+                            </div>
+                        `).join('')}
+                    </div>`;
+            }
+
+            const container = document.getElementById('viewport-' + theme);
+            if (!container) return;
+
+            // Remove existing sheet if any
+            const existing = container.querySelector('.location-sheet-overlay');
+            if (existing) existing.remove();
+
+            const sheetHTML = `
+                <div class="location-sheet-overlay" style="position:absolute;inset:0;z-index:200;pointer-events:auto;">
+                    <div onclick="closeLocationSheet('${theme}')" style="position:absolute;inset:0;background:rgba(0,0,0,0.4);"></div>
+                    <div class="location-sheet-panel" style="position:absolute;bottom:0;left:0;right:0;background:${sheetBg};border-radius:20px 20px 0 0;max-height:75%;overflow-y:auto;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);${isGlass ? 'backdrop-filter:blur(20px);border:1px solid var(--border-color);' : isBrut ? 'border:2px solid var(--border-color);box-shadow:0 -4px 0 var(--border-color);' : 'box-shadow:0 -8px 32px rgba(0,0,0,0.12);'}">
+                        <div style="padding:16px 16px 6px;display:flex;align-items:center;justify-content:space-between;">
+                            <div style="font-size:16px;font-weight:700;color:${textColor};">${mode === 'delivery' ? 'Deliver To' : 'Pickup From'}</div>
+                            <div onclick="closeLocationSheet('${theme}')" style="width:32px;height:32px;border-radius:50%;background:${inputBg};display:flex;align-items:center;justify-content:center;cursor:pointer;">${closeIcon}</div>
+                        </div>
+                        <div style="width:40px;height:4px;background:${isGlass ? 'rgba(255,255,255,0.15)' : 'var(--border-color)'};border-radius:2px;margin:0 auto 16px;"></div>
+                        <div style="padding:0 16px 24px;">
+                            ${content}
+                        </div>
+                    </div>
+                </div>`;
+
+            container.insertAdjacentHTML('beforeend', sheetHTML);
+
+            // Animate in
+            requestAnimationFrame(() => {
+                const panel = container.querySelector('.location-sheet-panel');
+                if (panel) panel.style.transform = 'translateY(0)';
+            });
+        }
+
+        function closeLocationSheet(theme) {
+            const container = document.getElementById('viewport-' + theme);
+            if (!container) return;
+            const panel = container.querySelector('.location-sheet-panel');
+            if (panel) {
+                panel.style.transform = 'translateY(100%)';
+                setTimeout(() => {
+                    const overlay = container.querySelector('.location-sheet-overlay');
+                    if (overlay) overlay.remove();
+                }, 350);
+            }
         }
 
         // ─── RENDER ALL VIEWPORTS ────────────────────────────────────────
@@ -2930,6 +3058,9 @@
                         case 'splash':
                             pageHtml = drawSplashScreen(theme, pageStyle);
                             break;
+                        case 'add-location':
+                            pageHtml = drawAddLocationPage(theme, pageStyle);
+                            break;
                     }
                     container.innerHTML += pageHtml;
                 }
@@ -3258,49 +3389,26 @@
             const isGlass = theme === 'glassmorphism';
             const isBrut = theme === 'neubrutalism';
             const ic = {
-                pin: isGlass ? iconMaterial('map-pin-2-line', 'color:var(--accent);') : isBrut ? iconBS('map-pin', 'text-[#00615F]') : iconFA('map-pin', 'text-[#1A1A1A]'),
-                pinMuted: isGlass ? iconMaterial('map-pin-2-line', 'color:var(--text-secondary);') : isBrut ? iconBS('map-pin', 'text-gray-400') : iconFA('map-pin', 'text-gray-400'),
-                store: isGlass ? iconMaterial('store-2-line', 'color:var(--accent);') : isBrut ? iconBS('shop', 'text-[#00615F]') : iconFA('store', 'text-[#1A1A1A]'),
-                storeMuted: isGlass ? iconMaterial('store-2-line', 'color:var(--text-secondary);') : isBrut ? iconBS('shop', 'text-gray-400') : iconFA('store', 'text-gray-400'),
-                chevron: ddArrowIcon(theme),
-                plus: isGlass ? iconMaterial('add-line', 'color:var(--highlight);') : isBrut ? iconBS('plus', 'text-[#00615F]') : iconFA('plus', 'text-[#1A1A1A]'),
-                search: isGlass ? iconMaterial('search-line', 'color:var(--text-secondary);') : isBrut ? iconBS('search', 'text-[#00615F]') : iconFA('search', 'text-[#999]'),
-                bell: isGlass ? iconMaterial('notification-3-line', 'color:var(--highlight);') : isBrut ? iconBS('bell', 'text-[#00615F]') : iconFA('bell', 'text-[#1A1A1A]'),
-                cart: isGlass ? iconMaterial('shopping-cart-2-line', 'color:var(--highlight);') : isBrut ? iconBS('shopping-cart', 'text-[#00615F]') : iconFA('cart-shopping', 'text-[#1A1A1A]'),
-                arrowRight: isGlass ? iconMaterial('arrow-right-line', 'color:var(--text-secondary);') : isBrut ? iconBS('arrow-right', 'text-gray-400') : iconFA('arrow-right', 'text-gray-400')
+                pin: isGlass ? iconMaterial('map-pin-2-line', 'color:var(--accent);') : isBrut ? iconBS('map-pin', 'color:var(--accent);') : iconFA('map-pin', 'color:var(--accent);'),
+                store: isGlass ? iconMaterial('store-2-line', 'color:var(--accent);') : isBrut ? iconBS('shop', 'color:var(--accent);') : iconFA('store', 'color:var(--accent);'),
+                chevron: isGlass ? iconMaterial('arrow-drop-down-line', 'color:var(--text-secondary);') : isBrut ? iconBS('chevron-down', 'color:var(--text-secondary);') : iconFA('chevron-down', 'color:var(--text-secondary);')
             };
-            const pillActive = theme === 'neumorphism' ? '#1A1A1A' : 'var(--accent)';
-            const ddBg = isGlass
-                ? 'background:rgba(26,26,26,0.95);backdrop-filter:blur(16px);border:1px solid var(--border-color);'
-                : isBrut
-                    ? 'background:var(--card-bg);border:1px solid var(--border-color);box-shadow:0 4px 16px rgba(61,50,41,0.1);'
-                    : 'background:var(--card-bg);box-shadow:0 8px 24px rgba(0,0,0,0.12);';
-
-            const branchItem = (name, dist, active) => `
-                <div onclick="selectBranch('${theme}','${name}')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;${active ? 'background:var(--pill-bg);' : ''}">
-                    <span style="display:flex;align-items:center;gap:8px;">${active ? ic.store : ic.storeMuted} ${name}</span>
-                    <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">${dist}</span>
-                </div>`;
-            const addrItem = (name, dist, active) => `
-                <div onclick="selectAddress('${theme}','${name}')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;${active ? 'background:var(--pill-bg);' : ''}">
-                    <span style="display:flex;align-items:center;gap:8px;">${active ? ic.pin : ic.pinMuted} ${name}</span>
-                    <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">${dist}</span>
-                </div>`;
-
-            const branchDDInner = `
-                <div style="font-size:9px;color:var(--text-secondary);padding:6px 10px 4px;font-weight:600;letter-spacing:0.5px;">BRANCHES</div>
-                ${branchItem('Downtown NYC', '0.5 km', true)}
-                ${branchItem('Midtown Manhattan', '1.2 km', false)}
-                ${branchItem('Brooklyn Heights', '2.8 km', false)}`;
-            const addrDDInner = `
-                <div style="font-size:9px;color:var(--text-secondary);padding:6px 10px 4px;font-weight:600;letter-spacing:0.5px;">DELIVER TO</div>
-                ${addrItem('Manhattan West, NY', '2.3 km', true)}
-                ${addrItem('Times Square, NY', '4.1 km', false)}
-                ${addrItem('Central Park, NY', '3.7 km', false)}
-                <div style="border-top:1px solid var(--border-color);margin:4px 0;"></div>
-                <div onclick="selectAddress('${theme}','Brooklyn Bridge, NY')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;color:var(--text-primary);display:flex;align-items:center;gap:8px;">${ic.plus} Add New Address</div>`;
-
             const isDelivery = deliveryModeByTheme[theme] === 'delivery';
+            const selectorLabel = isDelivery ? 'Deliver to' : 'Pickup from';
+            const selectorValue = isDelivery ? 'Manhattan West, NY' : 'Downtown NYC';
+            const selectorDist = isDelivery ? '2.3 km' : '0.5 km';
+            const selectorIcon = isDelivery ? ic.pin : ic.store;
+
+            const locationSelector = `
+                <div onclick="openLocationSheet('${theme}')" style="display:flex;align-items:center;gap:10px;background:var(--pill-bg);border:1px solid var(--border-color);border-radius:12px;padding:10px 12px;cursor:pointer;">
+                    ${selectorIcon}
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-size:8px;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;font-weight:600;">${selectorLabel}</div>
+                        <div style="font-size:12px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:4px;">${selectorValue} ${ic.chevron}</div>
+                        <div style="font-size:9px;font-weight:500;color:var(--text-secondary);margin-top:1px;">${selectorDist}</div>
+                    </div>
+                </div>`;
+
             const oldPills = `
                 <div style="display:flex;background:var(--pill-bg);border-radius:9999px;padding:3px;">
                     <div onclick="setDeliveryMode('${theme}','delivery')" id="deliveryBtn-${theme}" style="flex:1;padding:8px 12px;text-align:center;border-radius:9999px;background:${isDelivery?'var(--accent)':'transparent'};color:${isDelivery?'#fff':'var(--text-secondary)'};font-size:11px;font-weight:700;cursor:pointer;">Delivery</div>
@@ -3316,96 +3424,31 @@
                     <span style="font-size:13px;font-weight:700;color:${!isDelivery?'var(--accent)':'var(--text-secondary)'};" id="pickupLabel-${theme}">Pickup</span>
                 </div>`;
 
-            if (style === 'option 1') {
-                // option 1: stacked full-width row selects, inline dropdowns
-                const rowSel = (onclick, icon, label, txtId, value, dist) => `
-                <div onclick="${onclick}" style="display:flex;align-items:center;gap:10px;background:var(--pill-bg);border:1px solid var(--border-color);border-radius:12px;padding:10px 12px;cursor:pointer;height:48px;">
-                    ${icon}
-                    <div style="min-width:0;">
-                        <div style="font-size:8px;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;font-weight:600;">${label}</div>
-                        <div id="${txtId}" style="font-size:11px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:4px;">${value} ${ic.chevron}</div>
-                        <div style="font-size:9px;font-weight:500;color:var(--text-secondary);margin-top:1px;">${dist}</div>
-                    </div>
-                </div>`;
-                return `
-                <div style="padding:16px;display:flex;flex-direction:column;gap:10px;" id="brandHeader-${theme}">
-                    <div id="deliverySelects-${theme}" style="display:flex;flex-direction:column;gap:8px;">
-                        ${rowSel(`toggleBranchDropdown('${theme}')`, ic.store, 'Where from', `whereFromTxt-${theme}`, 'Downtown NYC', '0.5 km')}
-                        ${rowSel(`toggleAddressDropdown('${theme}')`, ic.pin, 'Deliver to', `deliverToTxt-${theme}`, 'Manhattan West, NY', '2.3 km')}
-                    </div>
-                    <div id="pickupSelect-${theme}" style="display:none;flex-direction:column;">
-                        ${rowSel(`toggleBranchDropdown('${theme}')`, ic.store, 'Pickup from', `pickupTxt-${theme}`, 'Downtown NYC', '0.5 km')}
-                    </div>
-                    <div id="pickupDropdown-${theme}" style="display:none;${ddBg}border-radius:12px;padding:8px;">${branchDDInner}</div>
-                    <div id="addressDropdown-${theme}" style="display:none;${ddBg}border-radius:12px;padding:8px;">${addrDDInner}</div>
-                    ${bigSwitch}
-                </div>`;
-            }
-            if (style === 'option 2') {
-                // option 2: minimal inline text selects + segmented control
-                const isDelivery = deliveryModeByTheme[theme] === 'delivery';
-                const segControl = `
+            const segControl = `
                 <div style="display:flex;background:var(--pill-bg);border:1px solid var(--border-color);border-radius:10px;padding:3px;position:relative;">
                     <div id="segDelivery-${theme}" onclick="setDeliveryMode('${theme}','delivery')" style="flex:1;text-align:center;padding:7px 0;font-size:10px;font-weight:700;border-radius:8px;cursor:pointer;z-index:1;transition:color 0.2s;color:${isDelivery?'#fff':'var(--text-secondary)'};position:relative;">Delivery</div>
                     <div id="segPickup-${theme}" onclick="setDeliveryMode('${theme}','pickup')" style="flex:1;text-align:center;padding:7px 0;font-size:10px;font-weight:700;border-radius:8px;cursor:pointer;z-index:1;transition:color 0.2s;color:${!isDelivery?'#fff':'var(--text-secondary)'};position:relative;">Pickup</div>
                     <div id="segIndicator-${theme}" style="position:absolute;top:3px;${isDelivery?'left:3px':'left:calc(50% + 1.5px)'};width:calc(50% - 3px);height:calc(100% - 6px);background:var(--accent);border-radius:8px;transition:left 0.3s;z-index:0;"></div>
                 </div>`;
-                const addressLine = (txtId, value, dist) => `
-                <div style="display:flex;flex-direction:column;">
-                    <span id="${txtId}" style="font-size:12px;font-weight:700;color:var(--text-primary);display:inline-flex;align-items:center;gap:3px;">${value} ${ic.chevron}</span>
-                    <span style="font-size:9px;font-weight:500;color:var(--text-secondary);margin-top:1px;">${dist}</span>
+
+            if (style === 'option 1') {
+                return `
+                <div style="padding:16px;display:flex;flex-direction:column;gap:10px;" id="brandHeader-${theme}">
+                    ${locationSelector}
+                    ${bigSwitch}
                 </div>`;
+            }
+            if (style === 'option 2') {
                 return `
                 <div style="padding:12px 16px;display:flex;flex-direction:column;gap:10px;" id="brandHeader-${theme}">
-                    <div style="display:flex;flex-direction:column;gap:8px;">
-                        <div id="deliverySelects-${theme}" style="display:flex;align-items:center;gap:6px;">
-                            <span onclick="toggleBranchDropdown('${theme}')" style="cursor:pointer;">${addressLine(`whereFromTxt-${theme}`, 'Downtown NYC', '0.5 km')}</span>
-                            ${ic.arrowRight}
-                            <span onclick="toggleAddressDropdown('${theme}')" style="cursor:pointer;">${addressLine(`deliverToTxt-${theme}`, 'Manhattan West, NY', '2.3 km')}</span>
-                        </div>
-                        <div id="pickupSelect-${theme}" onclick="toggleBranchDropdown('${theme}')" style="display:none;cursor:pointer;">
-                            ${addressLine(`pickupTxt-${theme}`, 'Downtown NYC', '0.5 km')}
-                        </div>
-                    </div>
-                    <div id="pickupDropdown-${theme}" style="display:none;${ddBg}border-radius:12px;padding:8px;">${branchDDInner}</div>
-                    <div id="addressDropdown-${theme}" style="display:none;${ddBg}border-radius:12px;padding:8px;">${addrDDInner}</div>
+                    ${locationSelector}
                     ${segControl}
                 </div>`;
             }
-            // default: dual selects side by side, dropdowns in-flow under their selects
-            const selBox = 'flex:1;display:flex;align-items:center;gap:8px;background:var(--pill-bg);border:1px solid var(--border-color);border-radius:12px;padding:8px 10px;cursor:pointer;min-width:0;height:48px;';
+            // default
             return `
             <div style="padding:16px;display:flex;flex-direction:column;gap:10px;" id="brandHeader-${theme}">
-                <div id="deliverySelects-${theme}" style="display:flex;flex-direction:column;gap:8px;">
-                    <div style="display:flex;gap:8px;">
-                        <div onclick="toggleBranchDropdown('${theme}')" style="${selBox}">
-                            ${ic.store}
-                            <div style="min-width:0;">
-                                <div style="font-size:8px;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;font-weight:600;">Where from</div>
-                                <div id="whereFromTxt-${theme}" style="font-size:11px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:4px;white-space:nowrap;">Downtown NYC ${ic.chevron}</div>
-                                <div style="font-size:9px;font-weight:500;color:var(--text-secondary);margin-top:1px;">0.5 km</div>
-                            </div>
-                        </div>
-                        <div onclick="toggleAddressDropdown('${theme}')" style="${selBox}">
-                            ${ic.pin}
-                            <div style="min-width:0;">
-                                <div style="font-size:8px;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;font-weight:600;">Deliver to</div>
-                                <div id="deliverToTxt-${theme}" style="font-size:11px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:4px;white-space:nowrap;">Manhattan West ${ic.chevron}</div>
-                                <div style="font-size:9px;font-weight:500;color:var(--text-secondary);margin-top:1px;">2.3 km</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="pickupDropdown-${theme}" style="display:none;${ddBg}border-radius:12px;padding:8px;">${branchDDInner}</div>
-                    <div id="addressDropdown-${theme}" style="display:none;${ddBg}border-radius:12px;padding:8px;">${addrDDInner}</div>
-                </div>
-                <div id="pickupSelect-${theme}" onclick="toggleBranchDropdown('${theme}')" style="display:none;align-items:center;gap:8px;background:var(--pill-bg);border:1px solid var(--border-color);border-radius:12px;padding:8px 10px;cursor:pointer;height:48px;">
-                    ${ic.store}
-                    <div>
-                        <div style="font-size:8px;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;font-weight:600;">Pickup from</div>
-                        <div id="pickupTxt-${theme}" style="font-size:11px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:4px;">Downtown NYC ${ic.chevron}</div>
-                        <div style="font-size:9px;font-weight:500;color:var(--text-secondary);margin-top:1px;">0.5 km</div>
-                    </div>
-                </div>
+                ${locationSelector}
                 ${oldPills}
             </div>`;
         }
@@ -5113,6 +5156,147 @@
                     <div style="height:4px;background:var(--pill-bg);border-radius:999px;overflow:hidden;">
                         <div id="${splashProgressId}" style="height:100%;width:0%;background:${accent};border-radius:999px;transition:width 2s linear;"></div>
                     </div>
+                </div>
+            </div>`;
+        }
+
+        // ─── ADD LOCATION PAGE ──────────────────────────────────────
+        function drawAddLocationPage(theme, style = 'default') {
+            const isGlass = theme === 'glassmorphism';
+            const isBrut = theme === 'neubrutalism';
+            const textColor = isGlass ? '#fff' : 'var(--text-primary)';
+            const subColor = isGlass ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
+            const accent = isBrut ? '#FF6B35' : 'var(--accent)';
+            const pageBg = isGlass ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
+            const inputBg = isGlass ? 'rgba(255,255,255,0.08)' : 'var(--pill-bg)';
+            const inputBorder = isGlass ? 'rgba(255,255,255,0.1)' : 'var(--border-color)';
+
+            const backBtn = `<div onclick="goBack('${theme}')" style="width:36px;height:36px;border-radius:50%;background:${isGlass ? 'rgba(255,255,255,0.1)' : 'var(--pill-bg)'};display:flex;align-items:center;justify-content:center;cursor:pointer;">${isGlass ? iconMaterial('arrow-left-line', 'font-size:16px;color:#fff;') : isBrut ? iconBS('arrow-left', 'font-size:16px;color:var(--text-primary);') : iconFA('arrow-left', 'font-size:16px;color:var(--text-primary);')}</div>`;
+
+            const fieldRow = (label, value, placeholder) => `
+                <div style="margin-bottom:14px;">
+                    <div style="font-size:11px;font-weight:600;color:${subColor};margin-bottom:6px;">${label}</div>
+                    <div style="padding:12px 14px;background:${inputBg};border:1px solid ${inputBorder};border-radius:var(--btn-radius);font-size:13px;font-weight:600;color:${value ? textColor : subColor};">${value || placeholder}</div>
+                </div>`;
+
+            const labelPills = (selected) => {
+                const labels = ['Home', 'Work', 'Other'];
+                const icons = isGlass
+                    ? [iconMaterial('home-4-line', 'font-size:14px;'), iconMaterial('briefcase-line', 'font-size:14px;'), iconMaterial('map-pin-2-line', 'font-size:14px;')]
+                    : isBrut
+                    ? [iconBS('home', 'font-size:14px;'), iconBS('briefcase', 'font-size:14px;'), iconBS('map-pin', 'font-size:14px;')]
+                    : [iconFA('home', 'font-size:14px;'), iconFA('briefcase', 'font-size:14px;'), iconFA('map-pin', 'font-size:14px;')];
+                return `<div style="display:flex;gap:10px;">
+                    ${labels.map((l, i) => {
+                        const isActive = l === selected;
+                        return `<div style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:var(--btn-radius);font-size:12px;font-weight:700;cursor:pointer;${isActive ? `background:${accent};color:#fff;` : `background:${inputBg};color:${textColor};border:1px solid ${inputBorder};`}">${isActive ? '<span style="color:#fff;">' + icons[i] + '</span>' : '<span style="color:' + subColor + ';">' + icons[i] + '</span>'} ${l}</div>`;
+                    }).join('')}
+                </div>`;
+            };
+
+            if (style === 'default') {
+                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
+                    <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-color);">
+                        ${backBtn}
+                        <div style="font-size:16px;font-weight:700;color:${textColor};">Add Location</div>
+                    </div>
+                    <div style="flex:1;overflow-y:auto;padding:16px 16px 100px;">
+                        <div style="width:100%;height:220px;border-radius:var(--card-radius);overflow:hidden;position:relative;margin-bottom:20px;background:${isGlass ? 'rgba(255,255,255,0.04)' : '#E8F5E9'};">
+                            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+                                <div style="width:48px;height:48px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,0.2);">${isGlass ? iconMaterial('map-pin-2-line', 'font-size:22px;color:#fff;') : isBrut ? iconBS('map-pin', 'font-size:22px;color:#fff;') : iconFA('map-pin', 'font-size:22px;color:#fff;')}</div>
+                            </div>
+                        </div>
+                        ${fieldRow('Address Line 1', 'Manhattan West, Tower 3', '')}
+                        ${fieldRow('Address Line 2', '', 'Apt, Suite, Floor')}
+                        ${fieldRow('City', 'New York', '')}
+                        ${fieldRow('ZIP Code', '10001', '')}
+                        <div style="margin-bottom:14px;">
+                            <div style="font-size:11px;font-weight:600;color:${subColor};margin-bottom:8px;">Label</div>
+                            ${labelPills('Home')}
+                        </div>
+                        <div style="margin-bottom:14px;">
+                            <div style="font-size:11px;font-weight:600;color:${subColor};margin-bottom:6px;">Delivery Instructions (optional)</div>
+                            <div style="padding:12px 14px;background:${inputBg};border:1px solid ${inputBorder};border-radius:var(--btn-radius);font-size:12px;color:${subColor};min-height:72px;line-height:1.5;">Leave at the door, ring doorbell</div>
+                        </div>
+                    </div>
+                    <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
+                        <div onclick="goBack('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Save Address</div>
+                    </div>
+                </div>`;
+            }
+
+            if (style === 'option 1') {
+                const cardStyle = `background:var(--card-bg);border-radius:var(--card-radius);box-shadow:var(--card-shadow);border:1px solid var(--border-color);overflow:hidden;margin-bottom:16px;`;
+                const inlineField = (label, value, placeholder, borderBottom = true) => `
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;${borderBottom ? 'border-bottom:1px solid var(--border-color);' : ''}">
+                        <span style="font-size:12px;font-weight:600;color:${subColor};">${label}</span>
+                        <span style="font-size:13px;font-weight:600;color:${value ? textColor : subColor};text-align:right;max-width:60%;">${value || placeholder}</span>
+                    </div>`;
+                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
+                    <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-color);">
+                        ${backBtn}
+                        <div style="flex:1;font-size:16px;font-weight:700;color:${textColor};">Add Location</div>
+                        <div style="font-size:13px;font-weight:600;color:${accent};cursor:pointer;">Save</div>
+                    </div>
+                    <div style="flex:1;overflow-y:auto;padding:16px 16px 100px;">
+                        <div style="width:100%;height:180px;border-radius:var(--card-radius);overflow:hidden;position:relative;margin-bottom:20px;background:${isGlass ? 'rgba(255,255,255,0.04)' : '#E8F5E9'};">
+                            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">${isGlass ? iconMaterial('map-pin-2-line', 'font-size:28px;color:#fff;') : isBrut ? iconBS('map-pin', 'font-size:28px;color:var(--text-primary);') : iconFA('map-pin', 'font-size:28px;color:var(--text-primary);')}</div>
+                            <div style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);padding:6px 14px;background:${isGlass ? 'rgba(0,0,0,0.6)' : 'rgba(255,255,255,0.9)'};border-radius:20px;font-size:10px;font-weight:700;color:${textColor};backdrop-filter:blur(8px);">Tap to adjust pin</div>
+                        </div>
+                        <div style="font-size:10px;font-weight:700;color:${subColor};text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;padding:0 4px;">Address</div>
+                        <div style="${cardStyle}">
+                            ${inlineField('Line 1', 'Manhattan West, Tower 3', '')}
+                            ${inlineField('Line 2', '', 'Apt, Suite, Floor')}
+                            ${inlineField('City', 'New York', '')}
+                            ${inlineField('ZIP', '10001', '', false)}
+                        </div>
+                        <div style="font-size:10px;font-weight:700;color:${subColor};text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;padding:0 4px;">Label</div>
+                        <div style="margin-bottom:16px;">${labelPills('Home')}</div>
+                        <div style="font-size:10px;font-weight:700;color:${subColor};text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;padding:0 4px;">Delivery Instructions</div>
+                        <div style="${cardStyle}padding:14px 16px;font-size:12px;color:${subColor};min-height:60px;line-height:1.5;">Leave at the door, ring doorbell</div>
+                    </div>
+                    <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
+                        <div onclick="goBack('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Save Address</div>
+                    </div>
+                </div>`;
+            }
+
+            // Option 2: floating labels
+            const brutBorder = isBrut ? 'border:2px solid var(--border-color);box-shadow:3px 3px 0 var(--border-color);' : '';
+            const fieldFloat = (label, value, placeholder) => `
+                <div style="margin-bottom:14px;position:relative;">
+                    <div style="position:absolute;top:-8px;left:12px;padding:0 6px;background:${pageBg};font-size:10px;font-weight:700;color:${accent};z-index:1;">${label}</div>
+                    <div style="padding:14px;background:${inputBg};border:1.5px solid ${inputBorder};border-radius:var(--btn-radius);font-size:13px;font-weight:600;color:${value ? textColor : subColor};${brutBorder}">${value || placeholder}</div>
+                </div>`;
+            return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
+                <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-color);">
+                    ${backBtn}
+                    <div style="flex:1;font-size:16px;font-weight:700;color:${textColor};">Add Location</div>
+                </div>
+                <div style="flex:1;overflow-y:auto;padding:16px 16px 100px;">
+                    <div style="width:100%;height:200px;border-radius:var(--card-radius);overflow:hidden;position:relative;margin-bottom:24px;${brutBorder}background:${isGlass ? 'linear-gradient(135deg,rgba(255,255,255,0.03),rgba(255,255,255,0.08))' : isBrut ? '#DFFFD6' : '#E8F5E9'};">
+                        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
+                            <div style="width:52px;height:52px;border-radius:${isBrut ? '12px' : '50%'};background:${accent};display:flex;align-items:center;justify-content:center;${isBrut ? 'border:2px solid var(--border-color);box-shadow:2px 2px 0 var(--border-color);' : 'box-shadow:0 4px 20px rgba(0,0,0,0.25);'}">${isGlass ? iconMaterial('map-pin-2-line', 'font-size:24px;color:#fff;') : isBrut ? iconBS('map-pin', 'font-size:24px;color:#fff;') : iconFA('map-pin', 'font-size:24px;color:#fff;')}</div>
+                            <span style="font-size:10px;font-weight:700;color:${textColor};background:${isGlass ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.85)'};padding:3px 10px;border-radius:10px;">Manhattan, NY</span>
+                        </div>
+                    </div>
+                    ${fieldFloat('ADDRESS LINE 1', 'Manhattan West, Tower 3', '')}
+                    ${fieldFloat('ADDRESS LINE 2', '', 'Apt, Suite, Floor')}
+                    <div style="display:grid;grid-template-columns:2fr 1fr;gap:10px;">
+                        ${fieldFloat('CITY', 'New York', '')}
+                        ${fieldFloat('ZIP CODE', '10001', '')}
+                    </div>
+                    <div style="margin-bottom:14px;">
+                        <div style="font-size:11px;font-weight:700;color:${subColor};margin-bottom:8px;">LABEL</div>
+                        ${labelPills('Home')}
+                    </div>
+                    <div style="margin-bottom:14px;position:relative;">
+                        <div style="position:absolute;top:-8px;left:12px;padding:0 6px;background:${pageBg};font-size:10px;font-weight:700;color:${accent};z-index:1;">DELIVERY INSTRUCTIONS</div>
+                        <div style="padding:14px;background:${inputBg};border:1.5px solid ${inputBorder};border-radius:var(--btn-radius);font-size:12px;color:${subColor};min-height:72px;line-height:1.5;${brutBorder}">Leave at the door, ring doorbell</div>
+                    </div>
+                </div>
+                <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
+                    <div onclick="goBack('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:800;cursor:pointer;${isBrut ? 'border:2px solid var(--border-color);box-shadow:4px 4px 0 var(--border-color);' : ''}">Save Address</div>
                 </div>
             </div>`;
         }
