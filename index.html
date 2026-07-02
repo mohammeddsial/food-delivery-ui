@@ -2278,9 +2278,15 @@
 
         function toggleAddressDropdown(theme) {
             const mode = deliveryModeByTheme[theme] || 'delivery';
-            const id = mode === 'delivery' ? 'addressDropdown-' + theme : 'pickupDropdown-' + theme;
-            const dd = document.getElementById(id);
-            if (dd) { dd.style.display = dd.style.display === 'none' ? 'block' : 'none'; }
+            if (mode === 'delivery') {
+                const addrDD = document.getElementById('addressDropdown-' + theme);
+                const branchDD = document.getElementById('pickupDropdown-' + theme);
+                if (addrDD) addrDD.style.display = addrDD.style.display === 'none' ? 'block' : 'none';
+                if (branchDD) branchDD.style.display = branchDD.style.display === 'none' ? 'block' : 'none';
+            } else {
+                const dd = document.getElementById('pickupDropdown-' + theme);
+                if (dd) dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+            }
         }
         function selectAddress(theme, addr) {
             const dist = ADDRESS_DISTANCES[addr] || '';
@@ -2288,12 +2294,17 @@
             if (el) { el.innerHTML = addr + ' <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">' + dist + '</span>' + (theme === 'glassmorphism' ? ` ${iconMaterial('arrow-drop-down-line', 'color:#FFD54F;')}` : ` ${iconFA('chevron-down', theme === 'neubrutalism' ? 'text-[#00615F]' : 'text-[#00615F]')}`); }
             const dd = document.getElementById('addressDropdown-' + theme);
             if (dd) { dd.style.display = 'none'; }
+            if (deliveryModeByTheme[theme] === 'delivery') {
+                const branchDD = document.getElementById('pickupDropdown-' + theme);
+                if (branchDD) { branchDD.style.display = 'none'; }
+            }
         }
         function setDeliveryMode(theme, mode) {
             deliveryModeByTheme[theme] = mode;
             const deliveryBtn = document.getElementById('deliveryBtn-' + theme);
             const pickupBtn = document.getElementById('pickupBtn-' + theme);
             const pickupDD = document.getElementById('pickupDropdown-' + theme);
+            const addrDD = document.getElementById('addressDropdown-' + theme);
             if (mode === 'delivery') {
                 if (theme === 'glassmorphism') {
                     deliveryBtn.style.cssText = 'background:#4CAF50;color:#fff;font-size:9px;font-weight:700;padding:5px 12px;border-radius:9999px;cursor:pointer;';
@@ -2318,18 +2329,28 @@
                     deliveryBtn.style.cssText = 'flex:1;padding:8px 12px;text-align:center;border-radius:12px;color:#999;font-size:11px;font-weight:500;cursor:pointer;';
                 }
                 if (pickupDD) { pickupDD.style.display = 'block'; }
+                if (addrDD) { addrDD.style.display = 'none'; }
             }
         }
         function selectBranch(theme, branch) {
+            const mode = deliveryModeByTheme[theme] || 'delivery';
             const pickupDD = document.getElementById('pickupDropdown-' + theme);
             if (pickupDD) { pickupDD.style.display = 'none'; }
+            if (mode === 'delivery') {
+                const addrDD = document.getElementById('addressDropdown-' + theme);
+                if (addrDD) { addrDD.style.display = 'none'; }
+            }
             const dist = BRANCH_DISTANCES[branch] || '';
             const header = document.getElementById('brandHeader-' + theme);
             if (header) {
                 const addrDiv = header.querySelector('[onclick*="toggleAddressDropdown"] div div:last-child');
                 if (addrDiv) {
                     const arrow = theme === 'glassmorphism' ? iconMaterial('arrow-drop-down-line', 'color:#FFD54F;') : (theme === 'neubrutalism' ? iconBS('chevron-down', 'text-[#00615F]') : iconFA('chevron-down', 'text-[#00615F]'));
-                    addrDiv.innerHTML = branch + ' <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">' + dist + '</span> ' + arrow;
+                    if (mode === 'delivery') {
+                        addrDiv.innerHTML = branch + ' <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">' + dist + '</span> ' + arrow;
+                    } else {
+                        addrDiv.innerHTML = branch + ' <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">' + dist + '</span> ' + arrow;
+                    }
                 }
             }
         }
@@ -2890,6 +2911,21 @@
                         ${iconFA('search', 'text-[#999]')}
                         <span style="font-size:12px;color:var(--text-secondary);">Search restaurants, dishes...</span>
                     </div>
+                    <div id="pickupDropdown-${theme}" style="display:none;background:var(--card-bg);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.12);padding:8px;">
+                        <div style="font-size:9px;color:var(--text-secondary);padding:6px 10px 4px;font-weight:600;letter-spacing:0.5px;">CHOOSE BRANCH</div>
+                        <div onclick="selectBranch('${theme}','Downtown NYC')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;background:var(--pill-bg);">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconFA('store', 'text-[#1A1A1A]')} Downtown NYC</span>
+                            <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">0.5 km</span>
+                        </div>
+                        <div onclick="selectBranch('${theme}','Midtown Manhattan')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconFA('store', 'text-gray-400')} Midtown Manhattan</span>
+                            <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">1.2 km</span>
+                        </div>
+                        <div onclick="selectBranch('${theme}','Brooklyn Heights')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;">
+                            <span style="display:flex;align-items:center;gap:8px;">${iconFA('store', 'text-gray-400')} Brooklyn Heights</span>
+                            <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">2.8 km</span>
+                        </div>
+                    </div>
                     <div style="display:flex;background:var(--pill-bg);border-radius:9999px;padding:3px;">
                         <div onclick="setDeliveryMode('${theme}','delivery')" id="deliveryBtn-${theme}" style="flex:1;padding:8px 12px;text-align:center;border-radius:9999px;background:#1A1A1A;color:#fff;font-size:11px;font-weight:700;cursor:pointer;">Delivery</div>
                         <div onclick="setDeliveryMode('${theme}','pickup')" id="pickupBtn-${theme}" style="flex:1;padding:8px 12px;text-align:center;border-radius:9999px;color:var(--text-secondary);font-size:11px;font-weight:500;cursor:pointer;">Pickup</div>
@@ -2960,6 +2996,7 @@
                         <div onclick="setDeliveryMode('${theme}','pickup')" id="pickupBtn-${theme}" style="flex:1;padding:8px 12px;text-align:center;border-radius:9999px;color:var(--text-secondary);font-size:11px;font-weight:500;cursor:pointer;">Pickup</div>
                     </div>
                     <div id="pickupDropdown-${theme}" style="display:none;background:var(--card-bg);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.12);padding:8px;">
+                        <div style="font-size:9px;color:var(--text-secondary);padding:6px 10px 4px;font-weight:600;letter-spacing:0.5px;">FROM RESTAURANT</div>
                         <div onclick="selectBranch('${theme}','Downtown NYC')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;background:var(--pill-bg);">
                             <span style="display:flex;align-items:center;gap:8px;">${iconFA('store', 'text-[#1A1A1A]')} Downtown NYC</span>
                             <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">0.5 km</span>
@@ -3005,6 +3042,7 @@
                         <span onclick="setDeliveryMode('${theme}','pickup')" id="pickupBtn-${theme}" style="color:var(--text-secondary);font-size:9px;font-weight:600;padding:5px 12px;border-radius:9999px;cursor:pointer;">PICKUP</span>
                     </div>
                     <div id="pickupDropdown-${theme}" style="display:none;background:rgba(26,26,26,0.95);backdrop-filter:blur(16px);border:1px solid var(--border-color);border-radius:12px;padding:8px;position:absolute;top:60px;left:16px;right:16px;z-index:100;">
+                        <div style="font-size:9px;color:rgba(255,255,255,0.4);padding:6px 10px 4px;font-weight:600;letter-spacing:0.5px;">FROM RESTAURANT</div>
                         <div onclick="selectBranch('${theme}','Downtown NYC')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#fff;display:flex;align-items:center;justify-content:space-between;background:var(--accent-light);">
                             <span style="display:flex;align-items:center;gap:8px;">${iconMaterial('store-2-line', 'color:var(--accent);')} Downtown NYC</span>
                             <span style="font-size:9px;font-weight:500;color:rgba(255,255,255,0.5);">0.5 km</span>
@@ -3055,6 +3093,7 @@
                         <div onclick="setDeliveryMode('${theme}','pickup')" id="pickupBtn-${theme}" style="flex:1;padding:8px 12px;text-align:center;border-radius:8px;color:var(--text-secondary);font-size:11px;font-weight:500;cursor:pointer;">Pickup</div>
                     </div>
                     <div id="pickupDropdown-${theme}" style="display:none;background:var(--card-bg);border:1px solid var(--border-color);border-radius:10px;padding:8px;box-shadow:0 4px 16px rgba(61,50,41,0.1);">
+                        <div style="font-size:9px;color:var(--text-secondary);padding:6px 10px 4px;font-weight:600;letter-spacing:0.5px;">FROM RESTAURANT</div>
                         <div onclick="selectBranch('${theme}','Downtown NYC')" style="padding:10px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:#3D3229;display:flex;align-items:center;justify-content:space-between;background:var(--pill-bg);border:1px solid var(--border-color);">
                             <span style="display:flex;align-items:center;gap:8px;">${iconBS('shop', 'text-[#00615F]')} Downtown NYC</span>
                             <span style="font-size:9px;font-weight:500;color:var(--text-secondary);">0.5 km</span>

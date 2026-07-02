@@ -25,6 +25,8 @@
         .play-btn i { font-size: 22px; color: #1a1a1a; }
         .play-btn-sm { width: 40px; height: 40px; border-radius: 50%; background: #00615F; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
         .play-btn-sm i { font-size: 18px; color: #fff; }
+        .play-btn-md { width:48px; height:48px; border-radius:50%; background:#00615F; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; }
+        .play-btn-md i { font-size:22px; color:#fff; }
         .slide { min-width: 100%; scroll-snap-align: start; position: relative; overflow: hidden; }
         .slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .slide-overlay { position: absolute; inset: 0; background: linear-gradient(0%, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.8) 100%); }
@@ -39,17 +41,19 @@
         .dot { width: 8px; height: 8px; border-radius: 50%; }
         .dot.active { background: #00615F; }
         .dot.inactive { background: #444; }
-        .dark-card { background: linear-gradient(135deg, #1a1a1a, #2d2d2d); border-radius: 18px; padding: 24px 20px; color: #fff; position: relative; overflow: hidden; margin: 0 16px 16px; }
-        .accent-circle-1 { position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; border-radius: 50%; background: rgba(139,90,43,0.25); }
-        .accent-circle-2 { position: absolute; bottom: -20px; left: -20px; width: 80px; height: 80px; border-radius: 50%; background: rgba(0,97,95,0.2); }
-        .dark-card-content { position: relative; z-index: 1; }
-        .featured-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,107,53,0.2); color: #FF8F65; font-size: 10px; font-weight: 700; padding: 6px 12px; border-radius: 20px; margin-bottom: 14px; }
-        .dark-title { font-size: 22px; font-weight: 800; line-height: 1.2; margin-bottom: 10px; }
-        .dark-meta { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
-        .dark-meta span { font-size: 11px; color: rgba(255,255,255,0.55); display: flex; align-items: center; gap: 5px; }
-        .dark-meta i { font-size: 12px; }
-        .watch-row { display: flex; align-items: center; gap: 10px; }
-        .watch-text { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.7); }
+        .full-bleed-video { margin-bottom:16px; position:relative; overflow:hidden; }
+        .full-bleed-video img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; display:block; }
+        .full-bleed-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.7); }
+        .accent-circle-1 { position: absolute; top: -30px; right: -30px; width: 140px; height: 140px; border-radius: 50%; background: rgba(139,90,43,0.3); }
+        .accent-circle-2 { position: absolute; bottom: -40px; left: -40px; width: 120px; height: 120px; border-radius: 50%; background: rgba(0,97,95,0.25); }
+        .fb-content { position:relative; z-index:1; padding:40px 20px 32px; }
+        .featured-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,107,53,0.25); color: #FF8F65; font-size: 10px; font-weight: 700; padding: 6px 12px; border-radius: 20px; margin-bottom: 14px; }
+        .fb-title { font-size:24px; font-weight:800; color:#fff; line-height:1.15; margin-bottom:8px; }
+        .fb-meta { display:flex; align-items:center; gap:14px; margin-bottom:20px; }
+        .fb-meta span { font-size:11px; color:rgba(255,255,255,0.6); display:flex; align-items:center; gap:5px; }
+        .fb-meta i { font-size:12px; }
+        .fb-play-row { display:flex; align-items:center; gap:10px; }
+        .play-btn-md { width:48px; height:48px; border-radius:50%; background:#00615F; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; }
         .text-area { background: #1a1a1a; padding: 20px 16px; }
         .text-area-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,97,95,0.1); color: #00615F; font-size: 9px; font-weight: 700; padding: 4px 10px; border-radius: 20px; margin-bottom: 10px; }
         .text-area-title { font-size: 20px; font-weight: 800; color: #fff; line-height: 1.2; margin-bottom: 6px; }
@@ -143,7 +147,7 @@
         </div>
     </div>
 
-    <!-- V3: Dark Card with Top Overlay (reference style) -->
+    <!-- V3: Full-Bleed Food Image + Overlay + Circles -->
     <div class="variant" id="v3">
         <div class="phone">
             <div class="status-bar">
@@ -151,20 +155,22 @@
                 <span class="time">19:02</span>
                 <span class="icons"><i class="ri-signal-wifi-fill"></i><i class="ri-wifi-fill"></i><i class="ri-battery-2-fill"></i></span>
             </div>
-            <div class="scroll-area" style="padding-top:16px;">
-                <div class="dark-card">
+            <div class="scroll-area">
+                <div class="full-bleed-video">
+                    <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80" alt="food">
+                    <div class="full-bleed-overlay"></div>
                     <div class="accent-circle-1"></div>
                     <div class="accent-circle-2"></div>
-                    <div class="dark-card-content">
+                    <div class="fb-content">
                         <div class="featured-badge"><i class="ri-play-circle-fill"></i> Featured Video</div>
-                        <div class="dark-title">Premium Heavy Interface Concept</div>
-                        <div class="dark-meta">
+                        <div class="fb-title">Premium Heavy Interface Concept</div>
+                        <div class="fb-meta">
                             <span><i class="ri-eye-fill"></i> 12.4K views</span>
                             <span><i class="ri-time-fill"></i> 2:30</span>
                         </div>
-                        <div class="watch-row">
-                            <div class="play-btn-sm"><i class="ri-play-fill"></i></div>
-                            <span class="watch-text">Watch the full reel</span>
+                        <div class="fb-play-row">
+                            <div class="play-btn-md"><i class="ri-play-fill"></i></div>
+                            <span style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.8);">Watch the full reel</span>
                         </div>
                     </div>
                 </div>
