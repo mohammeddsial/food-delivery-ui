@@ -1490,6 +1490,16 @@
             <div style="font-size:11px;color:#666;margin-bottom:12px;">19 components · 3 design systems · 3 icon libs
             </div>
 
+            <!-- CARDS + REFRESH BUTTONS -->
+            <div style="display:flex;gap:6px;margin-bottom:12px;">
+                <a href="cards/index.html" onclick="localStorage.removeItem('foodDelivery_modulesByTheme');localStorage.removeItem('foodDelivery_cardConfig');localStorage.removeItem('foodDelivery_colorPalettes');localStorage.removeItem('foodDelivery_topNavStyle');" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px;background:#00615F;color:#fff;border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;transition:all 0.15s ease;" onmouseover="this.style.background='#004d4a'" onmouseout="this.style.background='#00615F'">
+                    <i class="ri-layout-grid-fill" style="font-size:13px;"></i> Cards
+                </a>
+                <button onclick="localStorage.removeItem('foodDelivery_modulesByTheme');localStorage.removeItem('foodDelivery_cardConfig');localStorage.removeItem('foodDelivery_colorPalettes');localStorage.removeItem('foodDelivery_topNavStyle');location.reload();" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px;background:#222;color:#aaa;border:1px solid #333;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.15s ease;" onmouseover="this.style.background='#333';this.style.color='#fff'" onmouseout="this.style.background='#222';this.style.color='#aaa'">
+                    <i class="fas fa-sync-alt" style="font-size:11px;"></i> Refresh
+                </button>
+            </div>
+
             <!-- PER-VIEW WRAPPER: controls which viewport's settings the panel below edits -->
             <div class="ctrl-section" style="margin-top:0;">
                 <h3>Editing View</h3>
@@ -1943,6 +1953,29 @@
         }
 
         // ─── CONTROLLER UI ───────────────────────────────────────────────
+        // Card number mapping (module id → card file number)
+        const CARD_NUMBERS = {
+            'announcement-strip': '#01',
+            'location-header': '#02',
+            'video-reel-hero': '#03',
+            'active-order-tracker': '#04',
+            'loyalty-card': '#05',
+            'finish-your-order': '#06',
+            'limited-time-deal': '#07',
+            'order-again': '#08',
+            'recommended-for-you': '#09',
+            'deals-promos': '#10',
+            'birthday-reward-banner': '#11',
+            'category-tiles': '#12',
+            'meal-deal-combo': '#13',
+            'featured-items': '#14',
+            'popular-rail': '#15',
+            'offers-carousel': '#16',
+            'offers-feed': '#17',
+            'image-mosaic': '#18',
+            'stories': '#19'
+        };
+
         // Modules whose drawXXX() function actually implements more than one
         // visual layout (checked against the render functions below). All other
         // modules currently only render their "default" look regardless of the
@@ -1962,10 +1995,12 @@
                 row.draggable = true;
                 row.dataset.index = index;
                 const hasVariants = MODULES_WITH_REAL_VARIANTS.includes(mod.id);
+                const cardNum = CARD_NUMBERS[mod.id] || '';
                 row.innerHTML = `
                     <div class="drag-handle" title="Drag to reorder">${iconFA('grip-vertical')}</div>
                     <div class="left">
                         <input type="checkbox" ${mod.enabled ? 'checked' : ''} onchange="toggleModule('${mod.id}')">
+                        <span style="font-size:8px;font-weight:700;color:#00615F;background:rgba(0,97,95,0.15);padding:1px 5px;border-radius:4px;white-space:nowrap;">${cardNum}</span>
                         ${mod.core ? '<span class="core-badge">core</span>' : ''}
                         <span class="mod-label">${mod.name}</span>
                     </div>
@@ -2103,7 +2138,7 @@
             if (!container) return;
             const c = window.cardConfig[activeViewTheme];
 
-            let html = `<div style="font-size:9px;color:#666;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;">Editing <strong style="color:${VIEW_COLORS[activeViewTheme]};">${VIEW_NAMES[activeViewTheme]}</strong> view cards</div>`;
+            let html = ``;
 
             const settings = [
                 { key: 'borderRadius', label: 'Corner Radius', min: 0, max: 32, step: 1, unit: 'px' },
