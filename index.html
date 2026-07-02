@@ -1603,7 +1603,7 @@
         // ─── MASTER CONFIG (default module set, cloned per view) ──────────
         const defaultModulesConfig = [
             { id: 'announcement-strip', name: 'Announcement Strip', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
-            { id: 'brand-header', name: 'Brand Header Base', core: true, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'location-header', name: 'Location Header Base', core: true, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
             { id: 'video-reel-hero', name: 'Video Reel Hero Layer', core: true, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
             { id: 'active-order-tracker', name: 'Active Order Tracker', core: true, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
             { id: 'loyalty-card', name: 'Loyalty Metrics Card', core: true, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
@@ -1947,7 +1947,7 @@
         // visual layout (checked against the render functions below). All other
         // modules currently only render their "default" look regardless of the
         // style picked - the picker still works, it's flagged with a dim dot.
-        const MODULES_WITH_REAL_VARIANTS = ['announcement-strip', 'brand-header', 'video-reel-hero', 'active-order-tracker', 'loyalty-card', 'limited-time-deal', 'order-again', 'recommended-for-you', 'finish-your-order', 'birthday-reward-banner', 'deals-promos', 'category-tiles', 'meal-deal-combo', 'featured-items', 'popular-rail', 'offers-carousel', 'offers-feed', 'image-mosaic', 'stories'];
+        const MODULES_WITH_REAL_VARIANTS = ['announcement-strip', 'location-header', 'video-reel-hero', 'active-order-tracker', 'loyalty-card', 'limited-time-deal', 'order-again', 'recommended-for-you', 'finish-your-order', 'birthday-reward-banner', 'deals-promos', 'category-tiles', 'meal-deal-combo', 'featured-items', 'popular-rail', 'offers-carousel', 'offers-feed', 'image-mosaic', 'stories'];
 
         let dragSourceIndex = null;
 
@@ -2305,7 +2305,7 @@
                         case 'announcement-strip':
                             html = drawAnnouncementStrip(theme, style);
                             break;
-                        case 'brand-header':
+                        case 'location-header':
                             html = drawBrandHeader(theme, style);
                             break;
                         case 'video-reel-hero':
