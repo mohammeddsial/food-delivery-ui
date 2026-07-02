@@ -3,102 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Birthday Reward</title>
+    <title>Birthday Reward Banner</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: var(--font-family, 'Plus Jakarta Sans', sans-serif); background: var(--page-bg, #f5f5f5); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
-        .tabs { display: flex; gap: 8px; margin-bottom: 20px; background: #fff; padding: 6px; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-        .tab { padding: 10px 18px; border-radius: var(--btn-radius, 10px); font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: #999; transition: all 0.2s; }
-        .tab.active { background: var(--accent, #00615F); color: #fff; }
-        .tab:hover:not(.active) { background: #f5f5f5; }
-        .variant { display: none; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .tabs { display: flex; gap: 6px; margin-bottom: 16px; justify-content: center; max-width: 360px; width: 100%; }
+        .tab { padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; border: 1.5px solid #ddd; background: #fff; color: #666; transition: all 0.2s; }
+        .tab.active { background: #00615F; color: #fff; border-color: #00615F; }
+        .variant { display: none; max-width: 360px; width: 100%; }
         .variant.active { display: block; }
-
-        /* V1: Image Top */
-        .v1-card { max-width: 360px; width: 100%; background: var(--card-bg, #fff); border-radius: var(--card-radius, 18px); overflow: hidden; box-shadow: var(--card-shadow, 0 4px 20px rgba(0,0,0,0.08)); }
-        .v1-img { width: 100%; height: 120px; background: linear-gradient(135deg, #00615F, #FFD700); display: flex; align-items: center; justify-content: center; }
-        .v1-img i { font-size: 42px; color: #fff; }
-        .v1-body { padding: 18px; text-align: center; }
-        .v1-title { font-size: 18px; font-weight: 800; color: var(--text-primary, #1a1a1a); }
-        .v1-sub { font-size: 12px; color: #999; margin-top: 4px; }
-        .v1-reward { display: inline-flex; align-items: center; gap: 6px; background: #FFF3ED; color: var(--accent, #00615F); font-size: 12px; font-weight: 700; padding: 8px 16px; border-radius: var(--card-radius, 20px); margin-top: 12px; }
-        .v1-btn { margin-top: 14px; width: 100%; padding: 12px; border-radius: var(--card-radius, 12px); background: var(--accent, #00615F); color: #fff; font-size: 13px; font-weight: 700; border: none; cursor: pointer; }
-
-        /* V2: Image Left */
-        .v2-card { max-width: 360px; width: 100%; background: var(--card-bg, #fff); border-radius: var(--card-radius, 18px); padding: 14px; box-shadow: var(--card-shadow, 0 4px 20px rgba(0,0,0,0.08)); display: flex; align-items: center; gap: 14px; }
-        .v2-icon { width: 56px; height: 56px; border-radius: var(--card-radius, 16px); background: linear-gradient(135deg, #00615F, #FFD700); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .v2-icon i { color: #fff; font-size: 24px; }
-        .v2-body { flex: 1; }
-        .v2-title { font-size: 14px; font-weight: 800; color: var(--text-primary, #1a1a1a); }
-        .v2-sub { font-size: 11px; color: #999; margin-top: 2px; }
-        .v2-reward { font-size: 11px; font-weight: 700; color: var(--accent, #00615F); margin-top: 6px; }
-        .v2-btn { padding: 10px 16px; border-radius: var(--card-radius, 10px); background: var(--accent, #00615F); color: #fff; font-size: 12px; font-weight: 700; border: none; cursor: pointer; flex-shrink: 0; }
-
-        /* V3: Minimal */
-        .v3-card { max-width: 360px; width: 100%; background: #FFF3ED; border: 1px solid #FFE0D0; border-radius: var(--card-radius, 16px); padding: 14px; display: flex; align-items: center; justify-content: space-between; }
-        .v3-left { display: flex; align-items: center; gap: 10px; }
-        .v3-icon { width: 36px; height: 36px; border-radius: 50%; background: var(--accent, #00615F); display: flex; align-items: center; justify-content: center; }
-        .v3-icon i { color: #fff; font-size: 16px; }
-        .v3-text { font-size: 13px; font-weight: 700; color: var(--accent, #00615F); }
-        .v3-sub { font-size: 10px; color: #999; margin-top: 1px; }
-        .v3-btn { padding: 8px 14px; border-radius: var(--card-radius, 10px); background: var(--accent, #00615F); color: #fff; font-size: 11px; font-weight: 700; border: none; cursor: pointer; }
+        :root { --card-bg: #ffffff; --card-radius: 16px; --card-shadow: 0 2px 12px rgba(0,0,0,0.06); --accent: #00615F; --accent-light: #F0F7F6; --text-primary: #1a1a1a; --text-secondary: #888; --btn-radius: 12px; }
     </style>
 </head>
 <body>
-    <div class="tabs">
-        <button class="tab active" onclick="switchTab('v1')">Image Top</button>
-        <button class="tab" onclick="switchTab('v2')">Image Left</button>
-        <button class="tab" onclick="switchTab('v3')">Minimal</button>
-    </div>
-
-    <!-- V1: Image Top -->
-    <div class="variant active" id="v1">
-        <div class="v1-card">
-            <div class="v1-img"><i class="ri-gift-fill"></i></div>
-            <div class="v1-body">
-                <div class="v1-title">Happy Birthday!</div>
-                <div class="v1-sub">We have a special treat for you</div>
-                <div class="v1-reward"><i class="ri-cake-2-fill"></i> Free Dessert</div>
-                <button class="v1-btn">Claim Reward</button>
-            </div>
+    <div style="display:flex;flex-direction:column;align-items:center;width:100%;">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab(0)">Default</div>
+            <div class="tab" onclick="switchTab(1)">Option 1</div>
+            <div class="tab" onclick="switchTab(2)">Option 2</div>
         </div>
-    </div>
 
-    <!-- V2: Image Left -->
-    <div class="variant" id="v2">
-        <div class="v2-card">
-            <div class="v2-icon"><i class="ri-gift-fill"></i></div>
-            <div class="v2-body">
-                <div class="v2-title">Happy Birthday!</div>
-                <div class="v2-sub">Free treat unlocked</div>
-                <div class="v2-reward">Free Dessert</div>
-            </div>
-            <button class="v2-btn">Claim</button>
-        </div>
-    </div>
-
-    <!-- V3: Minimal -->
-    <div class="variant" id="v3">
-        <div class="v3-card">
-            <div class="v3-left">
-                <div class="v3-icon"><i class="ri-gift-fill"></i></div>
-                <div>
-                    <div class="v3-text">Happy Birthday! Free treat unlocked</div>
-                    <div class="v3-sub">Claim your free dessert today</div>
+        <!-- V1: Center-aligned strip with cake icon + text + gift icon -->
+        <div class="variant active" id="v1">
+            <div style="width:375px;height:812px;background:#f5f5f5;border-radius:40px;overflow:hidden;border:10px solid #1a1a1a;position:relative;">
+                <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:12px;font-weight:600;">
+                    <span>19:02</span>
+                    <div style="width:80px;height:28px;background:#000;border-radius:20px;position:absolute;left:50%;transform:translateX(-50%);top:4px;"></div>
+                    <div style="display:flex;gap:6px;align-items:center;">
+                        <i class="ri-signal-wifi-fill" style="font-size:14px;"></i>
+                        <i class="ri-battery-fill" style="font-size:14px;"></i>
+                    </div>
+                </div>
+                <div style="padding:16px;">
+                    <div style="padding:14px;background:var(--card-bg);border-radius:16px;box-shadow:var(--card-shadow);text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;">
+                        <i class="ri-cake-2-fill" style="font-size:18px;color:var(--text-primary);"></i>
+                        <div style="font-size:11px;font-weight:700;color:var(--text-primary);">Happy Birthday! Your free treat is ready</div>
+                        <i class="ri-gift-fill" style="font-size:18px;color:#FFC200;"></i>
+                    </div>
                 </div>
             </div>
-            <button class="v3-btn">Claim</button>
+        </div>
+
+        <!-- V2: Full-width gradient banner -->
+        <div class="variant" id="v2">
+            <div style="width:375px;height:812px;background:#f5f5f5;border-radius:40px;overflow:hidden;border:10px solid #1a1a1a;position:relative;">
+                <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:12px;font-weight:600;">
+                    <span>19:02</span>
+                    <div style="width:80px;height:28px;background:#000;border-radius:20px;position:absolute;left:50%;transform:translateX(-50%);top:4px;"></div>
+                    <div style="display:flex;gap:6px;align-items:center;">
+                        <i class="ri-signal-wifi-fill" style="font-size:14px;"></i>
+                        <i class="ri-battery-fill" style="font-size:14px;"></i>
+                    </div>
+                </div>
+                <div style="padding:0 16px 16px;">
+                    <div style="background:linear-gradient(135deg,var(--accent),var(--accent-light));border-radius:16px;padding:16px;color:#fff;display:flex;align-items:center;justify-content:space-between;">
+                        <div>
+                            <div style="font-size:16px;font-weight:800;">Happy Birthday!</div>
+                            <div style="font-size:10px;opacity:0.9;margin-top:2px;">Your free treat is ready</div>
+                        </div>
+                        <div style="font-size:32px;">&#127874;</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- V3: Minimal text strip with bottom accent border -->
+        <div class="variant" id="v3">
+            <div style="width:375px;height:812px;background:#f5f5f5;border-radius:40px;overflow:hidden;border:10px solid #1a1a1a;position:relative;">
+                <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:12px;font-weight:600;">
+                    <span>19:02</span>
+                    <div style="width:80px;height:28px;background:#000;border-radius:20px;position:absolute;left:50%;transform:translateX(-50%);top:4px;"></div>
+                    <div style="display:flex;gap:6px;align-items:center;">
+                        <i class="ri-signal-wifi-fill" style="font-size:14px;"></i>
+                        <i class="ri-battery-fill" style="font-size:14px;"></i>
+                    </div>
+                </div>
+                <div style="padding:0 16px 16px;">
+                    <div style="padding:10px 16px;border-bottom:2px solid var(--accent);display:flex;align-items:center;justify-content:center;gap:8px;">
+                        <span style="font-size:11px;font-weight:700;color:var(--text-primary);">Happy Birthday! Your free treat is ready</span>
+                        <span style="font-size:14px;">&#127873;</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        function switchTab(id) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.variant').forEach(v => v.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            event.target.classList.add('active');
+        function switchTab(idx) {
+            document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+            document.querySelectorAll('.variant').forEach((v,i) => v.classList.toggle('active', i===idx));
         }
     </script>
 </body>

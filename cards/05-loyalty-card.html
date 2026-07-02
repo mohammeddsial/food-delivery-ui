@@ -5,148 +5,161 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loyalty Card</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: var(--font-family, 'Plus Jakarta Sans', sans-serif); background: var(--page-bg, #f5f5f5); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
-        .tabs { display: flex; gap: 8px; margin-bottom: 20px; background: #fff; padding: 6px; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-        .tab { padding: 10px 18px; border-radius: var(--btn-radius, 10px); font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: #999; transition: all 0.2s; }
-        .tab.active { background: var(--accent, #00615F); color: #fff; }
-        .tab:hover:not(.active) { background: #f5f5f5; }
-        .variant { display: none; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .tabs { display: flex; gap: 6px; margin-bottom: 16px; justify-content: center; max-width: 360px; width: 100%; }
+        .tab { padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; border: 1.5px solid #ddd; background: #fff; color: #666; transition: all 0.2s; }
+        .tab.active { background: #00615F; color: #fff; border-color: #00615F; }
+        .variant { display: none; max-width: 360px; width: 100%; }
         .variant.active { display: block; }
 
-        /* V1: Image Top */
-        .v1-card { max-width: 320px; width: 100%; background: var(--card-bg, #fff); border-radius: var(--card-radius, 20px); overflow: hidden; box-shadow: var(--card-shadow, 0 4px 20px rgba(0,0,0,0.08)); }
-        .v1-img { width: 100%; height: 100px; object-fit: cover; display: block; background: linear-gradient(135deg, #00615F, #FF8F65); }
-        .v1-body { padding: 18px; }
-        .v1-tier { font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: 1px; }
-        .v1-name { font-size: 20px; font-weight: 900; color: var(--text-primary, #1a1a1a); margin-top: 2px; }
-        .v1-pts { display: inline-block; font-size: 12px; font-weight: 700; color: var(--accent, #00615F); background: #FFF3ED; padding: 5px 14px; border-radius: var(--card-radius, 20px); margin-top: 8px; }
-        .v1-progress { margin-top: 14px; }
-        .v1-prog-head { display: flex; justify-content: space-between; font-size: 10px; color: #999; margin-bottom: 6px; }
-        .v1-prog-bar { height: 6px; background: #f0f0f0; border-radius: 3px; overflow: hidden; }
-        .v1-prog-fill { height: 100%; width: 75%; background: linear-gradient(90deg, #00615F, #FFD700); border-radius: 3px; }
-        .v1-badges { display: flex; gap: 8px; margin-top: 14px; }
-        .v1-badge { font-size: 10px; font-weight: 600; background: #f5f5f5; padding: 6px 12px; border-radius: var(--card-radius, 10px); color: #666; display: flex; align-items: center; gap: 4px; }
-        .v1-badge i { color: #00615F; font-size: 12px; }
-
-        /* V2: Image Left */
-        .v2-card { max-width: 360px; width: 100%; background: var(--card-bg, #fff); border-radius: var(--card-radius, 20px); overflow: hidden; box-shadow: var(--card-shadow, 0 4px 20px rgba(0,0,0,0.08)); display: flex; flex-direction: row; }
-        .v2-img { width: 100px; min-height: 140px; background: linear-gradient(135deg, #1a1a1a, #333); flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 14px; }
-        .v2-tier-icon { width: 48px; height: 48px; border-radius: 50%; background: rgba(255,107,53,0.2); display: flex; align-items: center; justify-content: center; }
-        .v2-tier-icon i { color: #00615F; font-size: 22px; }
-        .v2-tier-label { font-size: 9px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1px; margin-top: 8px; }
-        .v2-body { padding: 16px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
-        .v2-name { font-size: 18px; font-weight: 900; color: var(--text-primary, #1a1a1a); }
-        .v2-pts { font-size: 11px; font-weight: 700; color: var(--accent, #00615F); margin-top: 4px; }
-        .v2-prog-bar { height: 5px; background: #f0f0f0; border-radius: 3px; overflow: hidden; margin-top: 10px; }
-        .v2-prog-fill { height: 100%; width: 75%; background: linear-gradient(90deg, #00615F, #FFD700); border-radius: 3px; }
-        .v2-prog-text { font-size: 10px; color: #999; margin-top: 4px; }
-        .v2-badges { display: flex; gap: 6px; margin-top: 10px; }
-        .v2-badge { font-size: 9px; font-weight: 600; background: #FFF3ED; color: var(--accent, #00615F); padding: 4px 10px; border-radius: var(--card-radius, 8px); }
-
-        /* V3: Minimal */
-        .v3-card { max-width: 320px; width: 100%; background: linear-gradient(135deg, #1a1a1a, #2d2d2d); border-radius: var(--card-radius, 20px); padding: 20px; color: #fff; position: relative; overflow: hidden; }
-        .v3-circle1 { position: absolute; top: -20px; right: -20px; width: 100px; height: 100px; border-radius: 50%; background: rgba(255,107,53,0.15); }
-        .v3-circle2 { position: absolute; bottom: -30px; left: -10px; width: 80px; height: 80px; border-radius: 50%; background: rgba(255,107,53,0.1); }
-        .v3-content { position: relative; z-index: 1; }
-        .v3-top { display: flex; justify-content: space-between; align-items: start; }
-        .v3-tier-label { font-size: 10px; color: var(--text-secondary, #aaa); letter-spacing: 1px; text-transform: uppercase; }
-        .v3-tier-name { font-size: 18px; font-weight: 900; margin-top: 2px; }
-        .v3-pts { font-size: 11px; color: #FF8F65; background: rgba(255,107,53,0.2); padding: 5px 12px; border-radius: var(--card-radius, 20px); }
-        .v3-progress { margin-top: 18px; }
-        .v3-progress-header { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-secondary, #aaa); margin-bottom: 6px; }
-        .v3-progress-bar { height: 5px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
-        .v3-progress-fill { height: 100%; width: 75%; background: linear-gradient(90deg, #00615F, #FFD700); border-radius: 3px; }
-        .v3-badges { margin-top: 16px; display: flex; gap: 8px; }
-        .v3-badge { font-size: 10px; background: rgba(255,255,255,0.08); padding: 5px 12px; border-radius: var(--card-radius, 10px); color: #ccc; }
+        .phone-frame { background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.1); border: 3px solid #1a1a1a; }
+        .status-bar { display: flex; justify-content: space-between; align-items: center; padding: 6px 16px; background: #fff; }
+        .status-bar .notch { width: 100px; height: 24px; background: #1a1a1a; border-radius: 0 0 16px 16px; }
+        .status-bar .status-icons { display: flex; gap: 6px; align-items: center; font-size: 11px; font-weight: 600; color: #1a1a1a; }
+        .status-bar .time { font-size: 11px; font-weight: 700; color: #1a1a1a; }
     </style>
 </head>
 <body>
-    <div class="tabs">
-        <button class="tab active" onclick="switchTab('v1')">Image Top</button>
-        <button class="tab" onclick="switchTab('v2')">Image Left</button>
-        <button class="tab" onclick="switchTab('v3')">Minimal</button>
-    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;width:100%;">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab(0)">Default</div>
+            <div class="tab" onclick="switchTab(1)">Option 1</div>
+            <div class="tab" onclick="switchTab(2)">Option 2</div>
+        </div>
 
-    <!-- V1: Image Top -->
-    <div class="variant active" id="v1">
-        <div class="v1-card">
-            <div class="v1-img"></div>
-            <div class="v1-body">
-                <div class="v1-tier">Membership Tier</div>
-                <div class="v1-name">Gold Member</div>
-                <div class="v1-pts">420 pts</div>
-                <div class="v1-progress">
-                    <div class="v1-prog-head">
-                        <span>Progress to Platinum</span>
-                        <span>80 pts away</span>
+        <!-- V1: Default -->
+        <div class="variant active" id="v1">
+            <div class="phone-frame">
+                <div class="status-bar">
+                    <span class="time">19:02</span>
+                    <div class="notch"></div>
+                    <div class="status-icons">
+                        <i class="ri-signal-wifi-fill"></i>
+                        <i class="ri-battery-fill"></i>
                     </div>
-                    <div class="v1-prog-bar"><div class="v1-prog-fill"></div></div>
                 </div>
-                <div class="v1-badges">
-                    <span class="v1-badge"><i class="ri-percent-fill"></i> 5% Cashback</span>
-                    <span class="v1-badge"><i class="ri-truck-fill"></i> Free Delivery</span>
+                <div style="padding:0 16px 16px;">
+                    <div style="background:#fff;border-radius:16px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);position:relative;overflow:hidden;">
+                        <div style="position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(232,93,74,0.06);filter:blur(30px);"></div>
+                        <div style="display:flex;justify-content:space-between;align-items:start;position:relative;z-index:1;">
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div style="width:40px;height:40px;border-radius:12px;background:#F0F7F6;display:flex;align-items:center;justify-content:center;"><i class="ri-vip-crown-fill" style="font-size:18px;color:#1a1a1a;"></i></div>
+                                <div>
+                                    <div style="font-size:9px;color:#888;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;">Membership Tier</div>
+                                    <div style="font-size:14px;font-weight:900;color:#1a1a1a;margin-top:2px;">Gold Member</div>
+                                </div>
+                            </div>
+                            <div style="background:#F0F7F6;padding:4px 12px;border-radius:9999px;font-size:11px;font-weight:700;color:#1a1a1a;">820 pts</div>
+                        </div>
+                        <div style="margin-top:16px;position:relative;z-index:1;">
+                            <div style="display:flex;justify-content:space-between;font-size:9px;color:#888;margin-bottom:6px;font-weight:600;">
+                                <span>Progress to Platinum</span><span style="color:#1a1a1a;">180 pts away</span>
+                            </div>
+                            <div style="height:4px;background:#F9F3F0;border-radius:9999px;overflow:hidden;">
+                                <div style="height:100%;width:82%;background:linear-gradient(90deg,#1A1A1A,#FFC200);border-radius:9999px;"></div>
+                            </div>
+                        </div>
+                        <div style="margin-top:14px;display:flex;gap:8px;position:relative;z-index:1;">
+                            <span style="font-size:9px;font-weight:600;background:#F9F3F0;padding:5px 12px;border-radius:9999px;color:#666;">5% Cashback</span>
+                            <span style="font-size:9px;font-weight:600;background:#F9F3F0;padding:5px 12px;border-radius:9999px;color:#666;">Free Delivery</span>
+                            <span style="font-size:9px;font-weight:600;background:#F0F7F6;padding:5px 12px;border-radius:9999px;color:#1a1a1a;">Priority</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- V2: Image Left -->
-    <div class="variant" id="v2">
-        <div class="v2-card">
-            <div class="v2-img">
-                <div class="v2-tier-icon"><i class="ri-vip-crown-fill"></i></div>
-                <div class="v2-tier-label">Gold</div>
-            </div>
-            <div class="v2-body">
-                <div class="v2-name">Gold Member</div>
-                <div class="v2-pts">420 pts</div>
-                <div class="v2-prog-bar"><div class="v2-prog-fill"></div></div>
-                <div class="v2-prog-text">80 pts to Platinum</div>
-                <div class="v2-badges">
-                    <span class="v2-badge">5% Cashback</span>
-                    <span class="v2-badge">Free Delivery</span>
+        <!-- V2: Option 1 -->
+        <div class="variant" id="v2">
+            <div class="phone-frame">
+                <div class="status-bar">
+                    <span class="time">19:02</span>
+                    <div class="notch"></div>
+                    <div class="status-icons">
+                        <i class="ri-signal-wifi-fill"></i>
+                        <i class="ri-battery-fill"></i>
+                    </div>
+                </div>
+                <div style="padding:0 16px 16px;">
+                    <div style="background:#fff;border-radius:16px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;align-items:center;gap:16px;">
+                        <div style="position:relative;width:64px;height:64px;flex-shrink:0;">
+                            <svg width="64" height="64" viewBox="0 0 64 64">
+                                <circle cx="32" cy="32" r="28" fill="none" stroke="#F0F7F6" stroke-width="5"/>
+                                <circle cx="32" cy="32" r="28" fill="none" stroke="#00615F" stroke-width="5" stroke-dasharray="175.9" stroke-dashoffset="31.7" stroke-linecap="round" transform="rotate(-90 32 32)"/>
+                            </svg>
+                            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#1a1a1a;">820</div>
+                        </div>
+                        <div style="flex:1;">
+                            <div style="font-size:9px;color:#888;letter-spacing:1px;text-transform:uppercase;font-weight:600;">Gold Member</div>
+                            <div style="font-size:12px;font-weight:700;color:#1a1a1a;margin-top:2px;">180 pts to Platinum</div>
+                            <div style="display:flex;gap:6px;margin-top:8px;">
+                                <span style="font-size:8px;font-weight:600;background:#F0F7F6;padding:3px 8px;border-radius:9999px;color:#1a1a1a;">5% Cashback</span>
+                                <span style="font-size:8px;font-weight:600;background:#F0F7F6;padding:3px 8px;border-radius:9999px;color:#1a1a1a;">Free Delivery</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- V3: Minimal -->
-    <div class="variant" id="v3">
-        <div class="v3-card">
-            <div class="v3-circle1"></div>
-            <div class="v3-circle2"></div>
-            <div class="v3-content">
-                <div class="v3-top">
-                    <div>
-                        <div class="v3-tier-label">Membership Tier</div>
-                        <div class="v3-tier-name">Gold Member</div>
+        <!-- V3: Option 2 -->
+        <div class="variant" id="v3">
+            <div class="phone-frame">
+                <div class="status-bar">
+                    <span class="time">19:02</span>
+                    <div class="notch"></div>
+                    <div class="status-icons">
+                        <i class="ri-signal-wifi-fill"></i>
+                        <i class="ri-battery-fill"></i>
                     </div>
-                    <div class="v3-pts">420 pts</div>
                 </div>
-                <div class="v3-progress">
-                    <div class="v3-progress-header">
-                        <span>Progress to Platinum</span>
-                        <span>80 pts away</span>
+                <div style="padding:0 16px 16px;">
+                    <div style="background:linear-gradient(135deg,#00615F,#F0F7F6);border-radius:16px;padding:16px;color:#fff;">
+                        <div style="display:flex;justify-content:space-between;align-items:start;">
+                            <div>
+                                <div style="font-size:9px;opacity:0.8;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;">Membership</div>
+                                <div style="font-size:18px;font-weight:900;margin-top:2px;">Gold Member</div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-size:24px;font-weight:900;">820</div>
+                                <div style="font-size:9px;opacity:0.8;">points</div>
+                            </div>
+                        </div>
+                        <div style="margin-top:12px;">
+                            <div style="display:flex;justify-content:space-between;font-size:9px;opacity:0.8;margin-bottom:4px;">
+                                <span>Progress to Platinum</span><span>180 pts away</span>
+                            </div>
+                            <div style="height:4px;background:rgba(255,255,255,0.2);border-radius:9999px;overflow:hidden;">
+                                <div style="height:100%;width:82%;background:#fff;border-radius:9999px;"></div>
+                            </div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px;">
+                            <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:8px;text-align:center;">
+                                <div style="font-size:16px;">&#128176;</div>
+                                <div style="font-size:8px;margin-top:2px;">5% Back</div>
+                            </div>
+                            <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:8px;text-align:center;">
+                                <div style="font-size:16px;">&#128666;</div>
+                                <div style="font-size:8px;margin-top:2px;">Free Delivery</div>
+                            </div>
+                            <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:8px;text-align:center;">
+                                <div style="font-size:16px;">&#11088;</div>
+                                <div style="font-size:8px;margin-top:2px;">Priority</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="v3-progress-bar"><div class="v3-progress-fill"></div></div>
-                </div>
-                <div class="v3-badges">
-                    <span class="v3-badge">5% Cashback</span>
-                    <span class="v3-badge">Free Delivery</span>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        function switchTab(id) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.variant').forEach(v => v.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            event.target.classList.add('active');
+        function switchTab(idx) {
+            document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+            document.querySelectorAll('.variant').forEach((v,i) => v.classList.toggle('active', i===idx));
         }
     </script>
 </body>

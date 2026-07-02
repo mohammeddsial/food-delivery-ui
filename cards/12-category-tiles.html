@@ -3,110 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Category Tiles Card</title>
+    <title>Category Tiles</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: var(--font-family, 'Plus Jakarta Sans', sans-serif); background: var(--page-bg, #f5f5f5); display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .variant-tabs { display: flex; gap: 8px; margin-bottom: 24px; }
-        .variant-tab { padding: 8px 16px; border-radius: var(--btn-radius, 8px); border: 1px solid var(--border-color, #ddd); background: var(--card-bg, #fff); cursor: pointer; font-size: 12px; font-weight: 600; color: var(--text-secondary, #666); transition: all 0.2s; }
-        .variant-tab.active { background: var(--accent, #00615F); color: #fff; border-color: var(--accent, #00615F); }
-        .variant { display: none; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .tabs { display: flex; gap: 6px; margin-bottom: 16px; justify-content: center; max-width: 360px; width: 100%; }
+        .tab { padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; border: 1.5px solid #ddd; background: #fff; color: #666; transition: all 0.2s; }
+        .tab.active { background: #00615F; color: #fff; border-color: #00615F; }
+        .variant { display: none; max-width: 360px; width: 100%; }
         .variant.active { display: block; }
-
-        /* V1: Image Top */
-        .v1-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 320px; }
-        .v1-card { background: var(--card-bg, #fff); border-radius: var(--card-radius, 16px); overflow: hidden; box-shadow: var(--card-shadow, 0 4px 16px rgba(0,0,0,0.08)); position: relative; }
-        .v1-img { width: 100%; height: 120px; object-fit: cover; }
-        .v1-badge { position: absolute; top: 8px; left: 8px; background: var(--accent, #00615F); color: #fff; padding: 3px 8px; border-radius: var(--card-radius, 6px); font-size: 10px; font-weight: 700; }
-        .v1-body { padding: 10px; }
-        .v1-title { font-size: 13px; font-weight: 700; color: var(--text-primary, #1a1a1a); }
-        .v1-desc { font-size: 10px; color: var(--text-secondary, #888); margin-top: 2px; }
-
-        /* V2: Image Left */
-        .v2-list { display: flex; flex-direction: column; gap: 10px; max-width: 340px; }
-        .v2-card { background: var(--card-bg, #fff); border-radius: var(--card-radius, 14px); overflow: hidden; box-shadow: var(--card-shadow, 0 4px 16px rgba(0,0,0,0.08)); display: flex; height: 90px; }
-        .v2-img { width: 90px; height: 100%; object-fit: cover; flex-shrink: 0; }
-        .v2-body { padding: 12px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
-        .v2-title { font-size: 13px; font-weight: 700; color: var(--text-primary, #1a1a1a); }
-        .v2-desc { font-size: 11px; color: var(--text-secondary, #888); margin-top: 2px; }
-
-        /* V3: Minimal */
-        .v3-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 320px; }
-        .v3-card { background: var(--card-bg, #fff); border-radius: var(--card-radius, 12px); padding: 14px; box-shadow: var(--card-shadow, 0 4px 16px rgba(0,0,0,0.08)); text-align: center; }
-        .v3-icon { width: 48px; height: 48px; border-radius: 50%; background: #FFF3E0; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; }
-        .v3-icon i { font-size: 20px; color: #00615F; }
-        .v3-title { font-size: 12px; font-weight: 700; color: var(--text-primary, #1a1a1a); }
+        :root { --card-bg: #ffffff; --card-radius: 16px; --card-shadow: 0 2px 12px rgba(0,0,0,0.06); --accent: #00615F; --accent-light: #F0F7F6; --text-primary: #1a1a1a; --text-secondary: #888; --btn-radius: 12px; }
     </style>
 </head>
 <body>
-    <div class="variant-tabs">
-        <div class="variant-tab active" onclick="showVariant(1)">Image Top</div>
-        <div class="variant-tab" onclick="showVariant(2)">Image Left</div>
-        <div class="variant-tab" onclick="showVariant(3)">Minimal</div>
-    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;width:100%;">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab(0)">Default</div>
+            <div class="tab" onclick="switchTab(1)">Option 1</div>
+            <div class="tab" onclick="switchTab(2)">Option 2</div>
+        </div>
 
-    <div class="variant v1 active" id="v1">
-        <div class="v1-grid">
-            <div class="v1-card">
-                <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=300&q=80" class="v1-img" alt="burger">
-                <div class="v1-badge">20% OFF</div>
-                <div class="v1-body"><div class="v1-title">Burgers</div><div class="v1-desc">Juicy beef patties</div></div>
-            </div>
-            <div class="v1-card">
-                <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=300&q=80" class="v1-img" alt="coffee">
-                <div class="v1-body"><div class="v1-title">Coffee</div><div class="v1-desc">Freshly brewed</div></div>
-            </div>
-            <div class="v1-card">
-                <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=300&q=80" class="v1-img" alt="dessert">
-                <div class="v1-badge">NEW</div>
-                <div class="v1-body"><div class="v1-title">Desserts</div><div class="v1-desc">Sweet treats</div></div>
-            </div>
-            <div class="v1-card">
-                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80" class="v1-img" alt="healthy">
-                <div class="v1-body"><div class="v1-title">Healthy</div><div class="v1-desc">Fresh salads</div></div>
+        <!-- V1: Horizontal scrollable tiles -->
+        <div class="variant active" id="v1">
+            <div style="width:375px;height:812px;background:#f5f5f5;border-radius:40px;overflow:hidden;border:10px solid #1a1a1a;position:relative;">
+                <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:12px;font-weight:600;">
+                    <span>19:02</span>
+                    <div style="width:80px;height:28px;background:#000;border-radius:20px;position:absolute;left:50%;transform:translateX(-50%);top:4px;"></div>
+                    <div style="display:flex;gap:6px;align-items:center;">
+                        <i class="ri-signal-wifi-fill" style="font-size:14px;"></i>
+                        <i class="ri-battery-fill" style="font-size:14px;"></i>
+                    </div>
+                </div>
+                <div style="padding:0 16px 16px;">
+                    <div style="margin-bottom:10px;">
+                        <span style="font-size:12px;font-weight:700;color:var(--text-primary);">Categories</span>
+                        <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">Find all your favorite items in one place.</div>
+                    </div>
+                    <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;">
+                        <div style="flex-shrink:0;width:80px;background:var(--card-bg);border-radius:16px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:var(--card-shadow);">
+                            <div style="width:48px;height:48px;border-radius:12px;overflow:hidden;">
+                                <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=100&q=80" style="width:100%;height:100%;object-fit:cover;" alt="Bakery">
+                            </div>
+                            <span style="font-size:10px;font-weight:600;color:var(--text-primary);text-align:center;">Bakery</span>
+                        </div>
+                        <div style="flex-shrink:0;width:80px;background:var(--card-bg);border-radius:16px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:var(--card-shadow);">
+                            <div style="width:48px;height:48px;border-radius:12px;overflow:hidden;">
+                                <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=100&q=80" style="width:100%;height:100%;object-fit:cover;" alt="Brew">
+                            </div>
+                            <span style="font-size:10px;font-weight:600;color:var(--text-primary);text-align:center;">Brew</span>
+                        </div>
+                        <div style="flex-shrink:0;width:80px;background:var(--card-bg);border-radius:16px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:var(--card-shadow);">
+                            <div style="width:48px;height:48px;border-radius:12px;overflow:hidden;">
+                                <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=100&q=80" style="width:100%;height:100%;object-fit:cover;" alt="Sweets">
+                            </div>
+                            <span style="font-size:10px;font-weight:600;color:var(--text-primary);text-align:center;">Sweets</span>
+                        </div>
+                        <div style="flex-shrink:0;width:80px;background:var(--card-bg);border-radius:16px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:var(--card-shadow);">
+                            <div style="width:48px;height:48px;border-radius:12px;overflow:hidden;">
+                                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=100&q=80" style="width:100%;height:100%;object-fit:cover;" alt="Bundles">
+                            </div>
+                            <span style="font-size:10px;font-weight:600;color:var(--text-primary);text-align:center;">Bundles</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="variant" id="v2">
-        <div class="v2-list">
-            <div class="v2-card">
-                <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=300&q=80" class="v2-img" alt="burger">
-                <div class="v2-body"><div class="v2-title">Burgers</div><div class="v2-desc">Juicy beef patties  20% OFF</div></div>
-            </div>
-            <div class="v2-card">
-                <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=300&q=80" class="v2-img" alt="coffee">
-                <div class="v2-body"><div class="v2-title">Coffee</div><div class="v2-desc">Freshly brewed daily</div></div>
-            </div>
-            <div class="v2-card">
-                <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=300&q=80" class="v2-img" alt="dessert">
-                <div class="v2-body"><div class="v2-title">Desserts</div><div class="v2-desc">Sweet treats  NEW</div></div>
-            </div>
-            <div class="v2-card">
-                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80" class="v2-img" alt="healthy">
-                <div class="v2-body"><div class="v2-title">Healthy</div><div class="v2-desc">Fresh salads & bowls</div></div>
+        <!-- V2: 2x2 grid layout -->
+        <div class="variant" id="v2">
+            <div style="width:375px;height:812px;background:#f5f5f5;border-radius:40px;overflow:hidden;border:10px solid #1a1a1a;position:relative;">
+                <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:12px;font-weight:600;">
+                    <span>19:02</span>
+                    <div style="width:80px;height:28px;background:#000;border-radius:20px;position:absolute;left:50%;transform:translateX(-50%);top:4px;"></div>
+                    <div style="display:flex;gap:6px;align-items:center;">
+                        <i class="ri-signal-wifi-fill" style="font-size:14px;"></i>
+                        <i class="ri-battery-fill" style="font-size:14px;"></i>
+                    </div>
+                </div>
+                <div style="padding:0 16px 16px;">
+                    <div style="font-size:10px;font-weight:700;color:var(--text-secondary);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;">Categories</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                        <div style="background:var(--card-bg);border-radius:12px;padding:10px;display:flex;align-items:center;gap:10px;box-shadow:var(--card-shadow);">
+                            <div style="width:40px;height:40px;border-radius:10px;overflow:hidden;flex-shrink:0;">
+                                <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=100&q=80" style="width:100%;height:100%;object-fit:cover;" alt="Bakery">
+                            </div>
+                            <span style="font-size:11px;font-weight:600;color:var(--text-primary);">Bakery</span>
+                        </div>
+                        <div style="background:var(--card-bg);border-radius:12px;padding:10px;display:flex;align-items:center;gap:10px;box-shadow:var(--card-shadow);">
+                            <div style="width:40px;height:40px;border-radius:10px;overflow:hidden;flex-shrink:0;">
+                                <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=100&q=80" style="width:100%;height:100%;object-fit:cover;" alt="Brew">
+                            </div>
+                            <span style="font-size:11px;font-weight:600;color:var(--text-primary);">Brew</span>
+                        </div>
+                        <div style="background:var(--card-bg);border-radius:12px;padding:10px;display:flex;align-items:center;gap:10px;box-shadow:var(--card-shadow);">
+                            <div style="width:40px;height:40px;border-radius:10px;overflow:hidden;flex-shrink:0;">
+                                <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=100&q=80" style="width:100%;height:100%;object-fit:cover;" alt="Sweets">
+                            </div>
+                            <span style="font-size:11px;font-weight:600;color:var(--text-primary);">Sweets</span>
+                        </div>
+                        <div style="background:var(--card-bg);border-radius:12px;padding:10px;display:flex;align-items:center;gap:10px;box-shadow:var(--card-shadow);">
+                            <div style="width:40px;height:40px;border-radius:10px;overflow:hidden;flex-shrink:0;">
+                                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=100&q=80" style="width:100%;height:100%;object-fit:cover;" alt="Bundles">
+                            </div>
+                            <span style="font-size:11px;font-weight:600;color:var(--text-primary);">Bundles</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="variant" id="v3">
-        <div class="v3-grid">
-            <div class="v3-card"><div class="v3-icon"><i class="ri-restaurant-line"></i></div><div class="v3-title">Burgers</div></div>
-            <div class="v3-card"><div class="v3-icon"><i class="ri-cup-line"></i></div><div class="v3-title">Coffee</div></div>
-            <div class="v3-card"><div class="v3-icon"><i class="ri-cake-3-line"></i></div><div class="v3-title">Desserts</div></div>
-            <div class="v3-card"><div class="v3-icon"><i class="ri-leaf-line"></i></div><div class="v3-title">Healthy</div></div>
+        <!-- V3: Vertical list with chevron -->
+        <div class="variant" id="v3">
+            <div style="width:375px;height:812px;background:#f5f5f5;border-radius:40px;overflow:hidden;border:10px solid #1a1a1a;position:relative;">
+                <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:12px;font-weight:600;">
+                    <span>19:02</span>
+                    <div style="width:80px;height:28px;background:#000;border-radius:20px;position:absolute;left:50%;transform:translateX(-50%);top:4px;"></div>
+                    <div style="display:flex;gap:6px;align-items:center;">
+                        <i class="ri-signal-wifi-fill" style="font-size:14px;"></i>
+                        <i class="ri-battery-fill" style="font-size:14px;"></i>
+                    </div>
+                </div>
+                <div style="padding:0 16px 16px;">
+                    <div style="font-size:10px;font-weight:700;color:var(--text-secondary);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;">Categories</div>
+                    <div style="display:flex;flex-direction:column;gap:6px;">
+                        <div style="background:var(--card-bg);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px;box-shadow:var(--card-shadow);">
+                            <div style="width:32px;height:32px;border-radius:8px;overflow:hidden;flex-shrink:0;">
+                                <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=100&q=80" style="width:100%;height:100%;object-fit:cover;" alt="Bakery">
+                            </div>
+                            <span style="font-size:11px;font-weight:600;color:var(--text-primary);flex:1;">Bakery</span>
+                            <i class="ri-arrow-right-s-line" style="font-size:16px;color:var(--text-secondary);"></i>
+                        </div>
+                        <div style="background:var(--card-bg);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px;box-shadow:var(--card-shadow);">
+                            <div style="width:32px;height:32px;border-radius:8px;overflow:hidden;flex-shrink:0;">
+                                <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=100&q=80" style="width:100%;height:100%;object-fit:cover;" alt="Brew">
+                            </div>
+                            <span style="font-size:11px;font-weight:600;color:var(--text-primary);flex:1;">Brew</span>
+                            <i class="ri-arrow-right-s-line" style="font-size:16px;color:var(--text-secondary);"></i>
+                        </div>
+                        <div style="background:var(--card-bg);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px;box-shadow:var(--card-shadow);">
+                            <div style="width:32px;height:32px;border-radius:8px;overflow:hidden;flex-shrink:0;">
+                                <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=100&q=80" style="width:100%;height:100%;object-fit:cover;" alt="Sweets">
+                            </div>
+                            <span style="font-size:11px;font-weight:600;color:var(--text-primary);flex:1;">Sweets</span>
+                            <i class="ri-arrow-right-s-line" style="font-size:16px;color:var(--text-secondary);"></i>
+                        </div>
+                        <div style="background:var(--card-bg);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px;box-shadow:var(--card-shadow);">
+                            <div style="width:32px;height:32px;border-radius:8px;overflow:hidden;flex-shrink:0;">
+                                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=100&q=80" style="width:100%;height:100%;object-fit:cover;" alt="Bundles">
+                            </div>
+                            <span style="font-size:11px;font-weight:600;color:var(--text-primary);flex:1;">Bundles</span>
+                            <i class="ri-arrow-right-s-line" style="font-size:16px;color:var(--text-secondary);"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-    function showVariant(n) {
-        document.querySelectorAll('.variant').forEach(v => v.classList.remove('active'));
-        document.querySelectorAll('.variant-tab').forEach(t => t.classList.remove('active'));
-        document.getElementById('v' + n).classList.add('active');
-        document.querySelectorAll('.variant-tab')[n - 1].classList.add('active');
-    }
+        function switchTab(idx) {
+            document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+            document.querySelectorAll('.variant').forEach((v,i) => v.classList.toggle('active', i===idx));
+        }
     </script>
 </body>
 </html>

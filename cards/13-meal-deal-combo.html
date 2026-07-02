@@ -8,113 +8,155 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: var(--font-family, 'Plus Jakarta Sans', sans-serif); background: var(--page-bg, #f5f5f5); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         .tabs { display: flex; gap: 6px; margin-bottom: 16px; justify-content: center; max-width: 360px; width: 100%; }
-        .tab { padding: 8px 14px; border-radius: var(--btn-radius, 10px); font-size: 11px; font-weight: 700; cursor: pointer; border: 1.5px solid var(--border-color, #ddd); background: var(--card-bg, #fff); color: var(--text-secondary, #666); transition: all 0.2s; }
-        .tab.active { background: var(--accent, #00615F); color: #fff; border-color: var(--accent, #00615F); }
+        .tab { padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; border: 1.5px solid #ddd; background: #fff; color: #666; transition: all 0.2s; }
+        .tab.active { background: #00615F; color: #fff; border-color: #00615F; }
         .variant { display: none; max-width: 360px; width: 100%; }
         .variant.active { display: block; }
-        .section-title { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 14px; }
-
-        .add-row { display: flex; align-items: center; gap: 10px; background: #fff; border-radius: 12px; padding: 10px 12px; margin-top: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
-        .add-row img { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; }
-        .add-info { flex: 1; }
-        .add-name { font-size: 12px; font-weight: 600; color: #1a1a1a; }
-        .add-price { font-size: 11px; color: #00615F; font-weight: 700; }
-        .add-btn { width: 24px; height: 24px; border-radius: 8px; background: #F0F7F6; color: #00615F; border: none; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .combo-save { display: inline-flex; align-items: center; gap: 4px; background: #F0F7F6; color: #00615F; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 8px; margin-top: 10px; }
-
-        /* V1: Image Top */
-        .v1-card { background: var(--card-bg, #fff); border-radius: var(--card-radius, 18px); overflow: hidden; box-shadow: var(--card-shadow, 0 2px 12px rgba(0,0,0,0.06)); }
-        .v1-card .card-img { width: 100%; height: 140px; object-fit: cover; }
-        .v1-card .card-body { padding: 14px; }
-        .v1-card .card-title { font-size: 16px; font-weight: 700; color: #1a1a1a; }
-        .v1-card .card-desc { font-size: 11px; color: #888; margin-top: 3px; }
-        .v1-card .card-row { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
-        .v1-card .card-price { font-size: 16px; font-weight: 800; color: #00615F; }
-        .v1-card .card-btn { background: #00615F; color: #fff; border: none; padding: 10px 20px; border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer; }
-
-        /* V2: Image Left */
-        .v2-card { display: flex; background: var(--card-bg, #fff); border-radius: var(--card-radius, 18px); overflow: hidden; box-shadow: var(--card-shadow, 0 2px 12px rgba(0,0,0,0.06)); align-items: center; padding: 14px; gap: 14px; }
-        .v2-card .card-img { width: 100px; height: 100px; border-radius: 14px; object-fit: cover; flex-shrink: 0; }
-        .v2-card .card-body { flex: 1; }
-        .v2-card .card-title { font-size: 15px; font-weight: 700; color: #1a1a1a; }
-        .v2-card .card-desc { font-size: 11px; color: #888; margin-top: 2px; }
-        .v2-card .card-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
-        .v2-card .card-price { font-size: 15px; font-weight: 800; color: #00615F; }
-        .v2-card .card-btn { background: #00615F; color: #fff; border: none; padding: 8px 16px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; }
-
-        /* V3: Minimal */
-        .v3-card { background: var(--card-bg, #fff); border-radius: var(--card-radius, 18px); padding: 18px; box-shadow: var(--card-shadow, 0 2px 12px rgba(0,0,0,0.06)); text-align: center; }
-        .v3-card .v3-header { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; }
-        .v3-card .v3-icon { width: 48px; height: 48px; background: #F0F7F6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--accent, #00615F); }
-        .v3-card .card-title { font-size: 16px; font-weight: 700; color: #1a1a1a; }
-        .v3-card .card-desc { font-size: 11px; color: #888; margin-top: 4px; }
-        .v3-card .card-row { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 14px; }
-        .v3-card .card-price { font-size: 16px; font-weight: 800; color: #00615F; }
-        .v3-card .card-btn { background: #00615F; color: #fff; border: none; padding: 10px 24px; border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer; }
+        :root { --card-bg: #ffffff; --card-radius: 16px; --card-shadow: 0 2px 12px rgba(0,0,0,0.06); --accent: #00615F; --accent-light: #F0F7F6; --text-primary: #1a1a1a; --text-secondary: #888; --btn-radius: 12px; }
     </style>
 </head>
 <body>
     <div style="display:flex;flex-direction:column;align-items:center;width:100%;">
         <div class="tabs">
-            <div class="tab active" onclick="switchTab(0)">Image Top</div>
-            <div class="tab" onclick="switchTab(1)">Image Left</div>
-            <div class="tab" onclick="switchTab(2)">Minimal</div>
+            <div class="tab active" onclick="switchTab(0)">Default</div>
+            <div class="tab" onclick="switchTab(1)">Option 1</div>
+            <div class="tab" onclick="switchTab(2)">Option 2</div>
         </div>
 
-        <!-- V1: Image Top -->
+        <!-- V1: Vertical list of items with images -->
         <div class="variant active" id="v1">
-            <div class="section-title">Complete the Meal</div>
-            <div class="v1-card">
-                <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=80" class="card-img" alt="food">
-                <div class="card-body">
-                    <div class="card-title">Burger Combo Deal</div>
-                    <div class="card-desc">Add a drink & dessert to save 20%</div>
-                    <div class="card-row"><span class="card-price">$12.99</span><button class="card-btn"><i class="ri-add-line"></i> Add to Cart</button></div>
-                    <div class="add-row"><img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=80&q=80" alt="drink"><div class="add-info"><div class="add-name">Cola Drink</div><div class="add-price">+$1.99</div></div><button class="add-btn">+</button></div>
-                    <div class="add-row"><img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=80&q=80" alt="dessert"><div class="add-info"><div class="add-name">Chocolate Cake</div><div class="add-price">+$3.99</div></div><button class="add-btn">+</button></div>
-                    <div class="combo-save"><i class="ri-save-line"></i> Save $4.00 with combo</div>
+            <div style="width:375px;height:812px;background:#f5f5f5;border-radius:40px;overflow:hidden;border:10px solid #1a1a1a;position:relative;">
+                <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:12px;font-weight:600;">
+                    <span>19:02</span>
+                    <div style="width:80px;height:28px;background:#000;border-radius:20px;position:absolute;left:50%;transform:translateX(-50%);top:4px;"></div>
+                    <div style="display:flex;gap:6px;align-items:center;">
+                        <i class="ri-signal-wifi-fill" style="font-size:14px;"></i>
+                        <i class="ri-battery-fill" style="font-size:14px;"></i>
+                    </div>
+                </div>
+                <div style="padding:0 16px 16px;">
+                    <div style="background:var(--card-bg);border-radius:16px;padding:16px;box-shadow:var(--card-shadow);">
+                        <div style="font-size:12px;font-weight:700;color:var(--text-primary);margin-bottom:12px;display:flex;align-items:center;gap:6px;">
+                            <i class="ri-layers-fill" style="font-size:14px;color:var(--text-primary);"></i> Complete the Meal
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:8px;">
+                            <div style="background:#F9F3F0;border-radius:12px;padding:10px;display:flex;align-items:center;justify-content:space-between;">
+                                <div style="display:flex;align-items:center;gap:10px;">
+                                    <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=100&q=80" style="width:40px;height:40px;border-radius:10px;object-fit:cover;" alt="Craft Latte">
+                                    <span style="font-size:11px;font-weight:600;color:var(--text-primary);">Craft Latte</span>
+                                </div>
+                                <span style="font-size:11px;font-weight:700;color:var(--accent);">+$3.50</span>
+                            </div>
+                            <div style="background:#F9F3F0;border-radius:12px;padding:10px;display:flex;align-items:center;justify-content:space-between;">
+                                <div style="display:flex;align-items:center;gap:10px;">
+                                    <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=100&q=80" style="width:40px;height:40px;border-radius:10px;object-fit:cover;" alt="Croissant">
+                                    <span style="font-size:11px;font-weight:600;color:var(--text-primary);">Croissant</span>
+                                </div>
+                                <span style="font-size:11px;font-weight:700;color:var(--accent);">+$2.50</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- V2: Image Left -->
+        <!-- V2: Horizontal scroll cards -->
         <div class="variant" id="v2">
-            <div class="section-title">Complete the Meal</div>
-            <div class="v2-card">
-                <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=200&q=80" class="card-img" alt="food">
-                <div class="card-body">
-                    <div class="card-title">Burger Combo Deal</div>
-                    <div class="card-desc">Add a drink & dessert to save 20%</div>
-                    <div class="card-row"><span class="card-price">$12.99</span><button class="card-btn"><i class="ri-add-line"></i> Add</button></div>
-                    <div class="add-row" style="margin-top:8px;"><img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=80&q=80" alt="drink"><div class="add-info"><div class="add-name">Cola Drink</div><div class="add-price">+$1.99</div></div><button class="add-btn">+</button></div>
-                    <div class="combo-save"><i class="ri-save-line"></i> Save $4.00</div>
+            <div style="width:375px;height:812px;background:#f5f5f5;border-radius:40px;overflow:hidden;border:10px solid #1a1a1a;position:relative;">
+                <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:12px;font-weight:600;">
+                    <span>19:02</span>
+                    <div style="width:80px;height:28px;background:#000;border-radius:20px;position:absolute;left:50%;transform:translateX(-50%);top:4px;"></div>
+                    <div style="display:flex;gap:6px;align-items:center;">
+                        <i class="ri-signal-wifi-fill" style="font-size:14px;"></i>
+                        <i class="ri-battery-fill" style="font-size:14px;"></i>
+                    </div>
+                </div>
+                <div style="padding:0 16px 16px;">
+                    <div style="font-size:12px;font-weight:700;color:var(--text-primary);margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+                        <i class="ri-layers-fill" style="font-size:14px;color:var(--text-primary);"></i> Complete the Meal
+                    </div>
+                    <div style="display:flex;gap:10px;overflow-x:auto;">
+                        <div style="flex-shrink:0;width:140px;background:var(--card-bg);border-radius:12px;overflow:hidden;box-shadow:var(--card-shadow);">
+                            <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=200&q=80" style="width:100%;height:80px;object-fit:cover;" alt="Craft Latte">
+                            <div style="padding:8px;">
+                                <div style="font-size:10px;font-weight:600;color:var(--text-primary);">Craft Latte</div>
+                                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
+                                    <span style="font-size:11px;font-weight:700;color:var(--accent);">+$3.50</span>
+                                    <div style="width:20px;height:20px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+                                        <i class="ri-add-line" style="font-size:12px;color:#fff;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="flex-shrink:0;width:140px;background:var(--card-bg);border-radius:12px;overflow:hidden;box-shadow:var(--card-shadow);">
+                            <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=200&q=80" style="width:100%;height:80px;object-fit:cover;" alt="Croissant">
+                            <div style="padding:8px;">
+                                <div style="font-size:10px;font-weight:600;color:var(--text-primary);">Croissant</div>
+                                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
+                                    <span style="font-size:11px;font-weight:700;color:var(--accent);">+$2.50</span>
+                                    <div style="width:20px;height:20px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+                                        <i class="ri-add-line" style="font-size:12px;color:#fff;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- V3: Minimal -->
+        <!-- V3: Compact list with toggle switches -->
         <div class="variant" id="v3">
-            <div class="section-title">Complete the Meal</div>
-            <div class="v3-card">
-                <div class="v3-header">
-                    <div class="v3-icon"><i class="ri-shopping-bag-3-fill"></i></div>
+            <div style="width:375px;height:812px;background:#f5f5f5;border-radius:40px;overflow:hidden;border:10px solid #1a1a1a;position:relative;">
+                <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:12px;font-weight:600;">
+                    <span>19:02</span>
+                    <div style="width:80px;height:28px;background:#000;border-radius:20px;position:absolute;left:50%;transform:translateX(-50%);top:4px;"></div>
+                    <div style="display:flex;gap:6px;align-items:center;">
+                        <i class="ri-signal-wifi-fill" style="font-size:14px;"></i>
+                        <i class="ri-battery-fill" style="font-size:14px;"></i>
+                    </div>
                 </div>
-                <div class="card-title">Burger Combo Deal</div>
-                <div class="card-desc">Add a drink & dessert to save 20%</div>
-                <div class="card-row"><span class="card-price">$12.99</span><button class="card-btn"><i class="ri-add-line"></i> Add to Cart</button></div>
-                <div class="add-row" style="margin-top:12px;"><img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=80&q=80" alt="drink"><div class="add-info"><div class="add-name">Cola Drink</div><div class="add-price">+$1.99</div></div><button class="add-btn">+</button></div>
-                <div class="add-row"><img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=80&q=80" alt="dessert"><div class="add-info"><div class="add-name">Chocolate Cake</div><div class="add-price">+$3.99</div></div><button class="add-btn">+</button></div>
-                <div class="combo-save" style="margin-top:12px;"><i class="ri-save-line"></i> Save $4.00 with combo</div>
+                <div style="padding:0 16px 16px;">
+                    <div style="background:var(--card-bg);border-radius:14px;padding:14px;box-shadow:var(--card-shadow);">
+                        <div style="font-size:12px;font-weight:700;color:var(--text-primary);margin-bottom:10px;">Complete the Meal</div>
+                        <div style="display:flex;flex-direction:column;gap:8px;">
+                            <div style="display:flex;align-items:center;justify-content:space-between;">
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=60&q=80" style="width:32px;height:32px;border-radius:6px;object-fit:cover;" alt="Craft Latte">
+                                    <div>
+                                        <div style="font-size:11px;font-weight:600;color:var(--text-primary);">Add Craft Latte</div>
+                                        <div style="font-size:9px;color:var(--text-secondary);">+$3.50</div>
+                                    </div>
+                                </div>
+                                <div style="width:36px;height:20px;border-radius:10px;background:var(--pill-bg);position:relative;cursor:pointer;">
+                                    <div style="width:16px;height:16px;border-radius:50%;background:var(--text-secondary);position:absolute;top:2px;left:2px;"></div>
+                                </div>
+                            </div>
+                            <div style="display:flex;align-items:center;justify-content:space-between;">
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=60&q=80" style="width:32px;height:32px;border-radius:6px;object-fit:cover;" alt="Croissant">
+                                    <div>
+                                        <div style="font-size:11px;font-weight:600;color:var(--text-primary);">Add Croissant</div>
+                                        <div style="font-size:9px;color:var(--text-secondary);">+$2.50</div>
+                                    </div>
+                                </div>
+                                <div style="width:36px;height:20px;border-radius:10px;background:var(--accent);position:relative;cursor:pointer;">
+                                    <div style="width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:2px;right:2px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
         function switchTab(idx) {
-            document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === idx));
-            document.querySelectorAll('.variant').forEach((v, i) => v.classList.toggle('active', i === idx));
+            document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+            document.querySelectorAll('.variant').forEach((v,i) => v.classList.toggle('active', i===idx));
         }
     </script>
 </body>

@@ -5,135 +5,127 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stories</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: var(--font-family, 'Plus Jakarta Sans', sans-serif); background: var(--page-bg, #f5f5f5); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
-        .tabs { display: flex; gap: 8px; margin-bottom: 20px; background: #fff; padding: 6px; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-        .tab { padding: 10px 18px; border-radius: var(--btn-radius, 10px); font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: #999; transition: all 0.2s; }
-        .tab.active { background: var(--accent, #00615F); color: #fff; }
-        .tab:hover:not(.active) { background: #f5f5f5; }
-        .variant { display: none; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .tabs { display: flex; gap: 6px; margin-bottom: 16px; justify-content: center; max-width: 360px; width: 100%; }
+        .tab { padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; border: 1.5px solid #ddd; background: #fff; color: #666; transition: all 0.2s; }
+        .tab.active { background: #00615F; color: #fff; border-color: #00615F; }
+        .variant { display: none; max-width: 360px; width: 100%; }
         .variant.active { display: block; }
+        :root { --card-bg: #ffffff; --card-radius: 16px; --card-shadow: 0 2px 12px rgba(0,0,0,0.06); --accent: #00615F; --accent-light: #F0F7F6; --text-primary: #1a1a1a; --text-secondary: #888; --btn-radius: 12px; --pill-bg: #F5EDE4; }
 
-        /* V1: Image Top */
-        .v1-stories { max-width: 360px; width: 100%; display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; }
-        .v1-stories::-webkit-scrollbar { display: none; }
-        .v1-story { width: 60px; height: 60px; border-radius: 50%; border: 3px solid #00615F; overflow: hidden; flex-shrink: 0; cursor: pointer; }
-        .v1-story img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .v1-story-add { width: 60px; height: 60px; border-radius: 50%; border: 3px dashed #ccc; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: #f9f9f9; cursor: pointer; }
-        .v1-story-add span { font-size: 20px; color: #ccc; }
-
-        /* V2: Image Left */
-        .v2-stories { max-width: 360px; width: 100%; display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
-        .v2-stories::-webkit-scrollbar { display: none; }
-        .v2-story { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; cursor: pointer; }
-        .v2-avatar { width: 56px; height: 56px; border-radius: var(--card-radius, 16px); border: 3px solid #00615F; overflow: hidden; }
-        .v2-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .v2-name { font-size: 10px; font-weight: 600; color: #333; text-align: center; max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .v2-story-add { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; cursor: pointer; }
-        .v2-add-circle { width: 56px; height: 56px; border-radius: 16px; border: 2px dashed #00615F; display: flex; align-items: center; justify-content: center; background: #FFF3ED; }
-        .v2-add-circle i { color: #00615F; font-size: 20px; }
-        .v2-add-label { font-size: 10px; font-weight: 600; color: var(--accent, #00615F); }
-
-        /* V3: Minimal */
-        .v3-stories { max-width: 360px; width: 100%; display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; }
-        .v3-stories::-webkit-scrollbar { display: none; }
-        .v3-story { display: flex; align-items: center; gap: 8px; background: var(--card-bg, #fff); border-radius: var(--card-radius, 12px); padding: 8px 12px; box-shadow: var(--card-shadow, 0 2px 10px rgba(0,0,0,0.06)); flex-shrink: 0; cursor: pointer; }
-        .v3-avatar { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; flex-shrink: 0; }
-        .v3-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .v3-name { font-size: 11px; font-weight: 600; color: #333; }
-        .v3-story-add { display: flex; align-items: center; gap: 8px; background: #fff; border-radius: 12px; padding: 8px 12px; border: 1px dashed #00615F; flex-shrink: 0; cursor: pointer; }
-        .v3-add-icon { border-radius: 20px; padding: 6px 14px; width: auto; background: #FFF3ED; display: flex; align-items: center; justify-content: center; }
-        .v3-add-icon i { color: #00615F; font-size: 14px; }
-        .v3-add-label { font-size: 11px; font-weight: 600; color: var(--accent, #00615F); }
+        .phone-mockup { width: 375px; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.12); }
+        .status-bar { height: 44px; background: #fff; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 24px 8px; position: relative; }
+        .notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 120px; height: 28px; background: #000; border-radius: 0 0 20px 20px; }
+        .time { font-size: 15px; font-weight: 700; color: #1a1a1a; }
+        .icons { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #666; }
+        .icons i { font-size: 13px; }
+        .content { height: 200px; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 13px; }
     </style>
 </head>
 <body>
-    <div class="tabs">
-        <button class="tab active" onclick="switchTab('v1')">Image Top</button>
-        <button class="tab" onclick="switchTab('v2')">Image Left</button>
-        <button class="tab" onclick="switchTab('v3')">Minimal</button>
-    </div>
-
-    <!-- V1: Image Top -->
-    <div class="variant active" id="v1">
-        <div class="v1-stories">
-            <div class="v1-story">
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80" alt="story">
-            </div>
-            <div class="v1-story">
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&q=80" alt="story">
-            </div>
-            <div class="v1-story">
-                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&q=80" alt="story">
-            </div>
-            <div class="v1-story-add"><span>+</span></div>
+    <div style="display:flex;flex-direction:column;align-items:center;width:100%;">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab(0)">Default</div>
+            <div class="tab" onclick="switchTab(1)">Option 1</div>
+            <div class="tab" onclick="switchTab(2)">Option 2</div>
         </div>
-    </div>
 
-    <!-- V2: Image Left -->
-    <div class="variant" id="v2">
-        <div class="v2-stories">
-            <div class="v2-story">
-                <div class="v2-avatar">
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80" alt="story">
+        <!-- V1: Horizontal scroll of circular story bubbles (avatar with ring + "add" circle) -->
+        <div class="variant active" id="v1">
+            <div class="phone-mockup">
+                <div class="status-bar">
+                    <div class="notch"></div>
+                    <span class="time">19:02</span>
+                    <span class="icons"><i class="ri-signal-wifi-fill"></i><i class="ri-wifi-fill"></i><i class="ri-battery-2-fill"></i></span>
                 </div>
-                <span class="v2-name">Sarah</span>
-            </div>
-            <div class="v2-story">
-                <div class="v2-avatar">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&q=80" alt="story">
+                <div style="padding:0 16px 16px;display:flex;gap:12px;overflow-x:auto;">
+                    <div style="width:56px;height:56px;border-radius:50%;padding:2px;border:2px solid #00615F;flex-shrink:0;">
+                        <div style="width:100%;height:100%;border-radius:50%;overflow:hidden;">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80" style="width:100%;height:100%;object-fit:cover;" alt="story">
+                        </div>
+                    </div>
+                    <div style="width:56px;height:56px;border-radius:50%;padding:2px;border:2px solid #00615F;flex-shrink:0;">
+                        <div style="width:100%;height:100%;border-radius:50%;overflow:hidden;">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&q=80" style="width:100%;height:100%;object-fit:cover;" alt="story">
+                        </div>
+                    </div>
+                    <div style="width:56px;height:56px;border-radius:50%;padding:2px;border:2px dashed #E8DDD3;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#F5EDE4;">
+                        <span style="font-size:18px;color:#00615F;">+</span>
+                    </div>
                 </div>
-                <span class="v2-name">Mike</span>
-            </div>
-            <div class="v2-story">
-                <div class="v2-avatar">
-                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&q=80" alt="story">
-                </div>
-                <span class="v2-name">Emma</span>
-            </div>
-            <div class="v2-story-add">
-                <div class="v2-add-circle"><i class="ri-add-fill"></i></div>
-                <span class="v2-add-label">Add</span>
+                <div class="content">Page Content</div>
             </div>
         </div>
-    </div>
 
-    <!-- V3: Minimal -->
-    <div class="variant" id="v3">
-        <div class="v3-stories">
-            <div class="v3-story">
-                <div class="v3-avatar">
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=60&q=80" alt="story">
+        <!-- V2: 2-row grid with avatars and names (Sarah, Mike, Add) -->
+        <div class="variant" id="v2">
+            <div class="phone-mockup">
+                <div class="status-bar">
+                    <div class="notch"></div>
+                    <span class="time">19:02</span>
+                    <span class="icons"><i class="ri-signal-wifi-fill"></i><i class="ri-wifi-fill"></i><i class="ri-battery-2-fill"></i></span>
                 </div>
-                <span class="v3-name">Sarah</span>
-            </div>
-            <div class="v3-story">
-                <div class="v3-avatar">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=60&q=80" alt="story">
+                <div style="padding:0 16px 16px;">
+                    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+                        <div style="text-align:center;">
+                            <div style="width:48px;height:48px;border-radius:50%;padding:2px;border:2px solid #00615F;margin:0 auto;"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" alt="avatar"></div>
+                            <div style="font-size:8px;color:#888;margin-top:4px;">Sarah</div>
+                        </div>
+                        <div style="text-align:center;">
+                            <div style="width:48px;height:48px;border-radius:50%;padding:2px;border:2px solid #00615F;margin:0 auto;"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&q=80" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" alt="avatar"></div>
+                            <div style="font-size:8px;color:#888;margin-top:4px;">Mike</div>
+                        </div>
+                        <div style="text-align:center;">
+                            <div style="width:48px;height:48px;border-radius:50%;padding:2px;border:2px dashed #E8DDD3;margin:0 auto;display:flex;align-items:center;justify-content:center;background:#F5EDE4;">
+                                <span style="font-size:16px;color:#00615F;">+</span>
+                            </div>
+                            <div style="font-size:8px;color:#888;margin-top:4px;">Add</div>
+                        </div>
+                    </div>
                 </div>
-                <span class="v3-name">Mike</span>
+                <div class="content">Page Content</div>
             </div>
-            <div class="v3-story">
-                <div class="v3-avatar">
-                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=60&q=80" alt="story">
+        </div>
+
+        <!-- V3: Vertical list with avatar + name + timestamp + play button -->
+        <div class="variant" id="v3">
+            <div class="phone-mockup">
+                <div class="status-bar">
+                    <div class="notch"></div>
+                    <span class="time">19:02</span>
+                    <span class="icons"><i class="ri-signal-wifi-fill"></i><i class="ri-wifi-fill"></i><i class="ri-battery-2-fill"></i></span>
                 </div>
-                <span class="v3-name">Emma</span>
-            </div>
-            <div class="v3-story-add">
-                <div class="v3-add-icon"><i class="ri-add-fill"></i></div>
-                <span class="v3-add-label">Add</span>
+                <div style="padding:0 16px 16px;display:flex;flex-direction:column;gap:8px;">
+                    <div style="display:flex;align-items:center;gap:10px;background:#fff;border-radius:10px;padding:8px 12px;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+                        <div style="width:40px;height:40px;border-radius:50%;padding:2px;border:2px solid #00615F;flex-shrink:0;"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" alt="avatar"></div>
+                        <div style="flex:1;">
+                            <div style="font-size:11px;font-weight:600;color:#1a1a1a;">Sarah's story</div>
+                            <div style="font-size:9px;color:#888;">2h ago</div>
+                        </div>
+                        <div style="width:28px;height:28px;border-radius:50%;background:#F5EDE4;display:flex;align-items:center;justify-content:center;"><i class="ri-play-fill" style="color:#1A1A1A;font-size:12px;"></i></div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;background:#fff;border-radius:10px;padding:8px 12px;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+                        <div style="width:40px;height:40px;border-radius:50%;padding:2px;border:2px dashed #E8DDD3;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#F5EDE4;">
+                            <span style="font-size:14px;color:#00615F;">+</span>
+                        </div>
+                        <div style="flex:1;">
+                            <div style="font-size:11px;font-weight:600;color:#1a1a1a;">Add Story</div>
+                            <div style="font-size:9px;color:#888;">Share your moment</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content">Page Content</div>
             </div>
         </div>
     </div>
 
     <script>
-        function switchTab(id) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.variant').forEach(v => v.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            event.target.classList.add('active');
+        function switchTab(idx) {
+            document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+            document.querySelectorAll('.variant').forEach((v,i) => v.classList.toggle('active', i===idx));
         }
     </script>
 </body>

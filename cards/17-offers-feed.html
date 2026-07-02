@@ -5,143 +5,122 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Offers Feed</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: var(--font-family, 'Plus Jakarta Sans', sans-serif); background: var(--page-bg, #f5f5f5); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
-        .tabs { display: flex; gap: 8px; margin-bottom: 20px; background: #fff; padding: 6px; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-        .tab { padding: 10px 18px; border-radius: var(--btn-radius, 10px); font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: #999; transition: all 0.2s; }
-        .tab.active { background: var(--accent, #00615F); color: #fff; }
-        .tab:hover:not(.active) { background: #f5f5f5; }
-        .variant { display: none; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .tabs { display: flex; gap: 6px; margin-bottom: 16px; justify-content: center; max-width: 360px; width: 100%; }
+        .tab { padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; border: 1.5px solid #ddd; background: #fff; color: #666; transition: all 0.2s; }
+        .tab.active { background: #00615F; color: #fff; border-color: #00615F; }
+        .variant { display: none; max-width: 360px; width: 100%; }
         .variant.active { display: block; }
+        :root { --card-bg: #ffffff; --card-radius: 16px; --card-shadow: 0 2px 12px rgba(0,0,0,0.06); --accent: #00615F; --accent-light: #F0F7F6; --text-primary: #1a1a1a; --text-secondary: #888; --btn-radius: 12px; }
 
-        /* V1: Image Top */
-        .v1-feed { max-width: 360px; width: 100%; display: flex; flex-direction: column; gap: 10px; }
-        .v1-item { background: var(--card-bg, #fff); border-radius: var(--card-radius, 18px); overflow: hidden; box-shadow: var(--card-shadow, 0 4px 20px rgba(0,0,0,0.08)); }
-        .v1-item-img { width: 100%; height: 80px; object-fit: cover; }
-        .v1-item-body { padding: 14px; display: flex; align-items: center; justify-content: space-between; }
-        .v1-left { display: flex; align-items: center; gap: 10px; }
-        .v1-icon { width: 36px; height: 36px; border-radius: var(--card-radius, 10px); display: flex; align-items: center; justify-content: center; }
-        .v1-icon.green { background: #E8F5E9; }
-        .v1-icon.green i { color: #4CAF50; font-size: 16px; }
-        .v1-icon.orange { background: #FFF3E0; }
-        .v1-icon.orange i { color: #00615F; font-size: 16px; }
-        .v1-title { font-size: 13px; font-weight: 600; color: var(--text-primary, #1a1a1a); }
-        .v1-desc { font-size: 11px; color: #999; margin-top: 2px; }
-
-        /* V2: Image Left */
-        .v2-feed { max-width: 360px; width: 100%; display: flex; flex-direction: column; gap: 10px; }
-        .v2-item { background: var(--card-bg, #fff); border-radius: var(--card-radius, 18px); padding: 14px; box-shadow: var(--card-shadow, 0 4px 20px rgba(0,0,0,0.08)); display: flex; align-items: center; gap: 12px; }
-        .v2-img { width: 56px; height: 56px; border-radius: var(--card-radius, 14px); object-fit: cover; flex-shrink: 0; }
-        .v2-body { flex: 1; }
-        .v2-title { font-size: 13px; font-weight: 700; color: var(--text-primary, #1a1a1a); }
-        .v2-desc { font-size: 11px; color: #999; margin-top: 2px; }
-        .v2-badge { padding: 4px 10px; border-radius: var(--card-radius, 8px); font-size: 10px; font-weight: 700; flex-shrink: 0; }
-        .v2-badge.green { background: #E8F5E9; color: #4CAF50; }
-        .v2-badge.orange { background: #FFF3ED; color: #00615F; }
-
-        /* V3: Minimal */
-        .v3-feed { max-width: 360px; width: 100%; display: flex; flex-direction: column; gap: 8px; }
-        .v3-item { background: var(--card-bg, #fff); border-radius: var(--card-radius, 14px); padding: 14px 16px; box-shadow: var(--card-shadow, 0 4px 20px rgba(0,0,0,0.08)); display: flex; align-items: center; gap: 12px; }
-        .v3-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .v3-icon.green { background: #E8F5E9; }
-        .v3-icon.green i { color: #4CAF50; font-size: 18px; }
-        .v3-icon.orange { background: #FFF3ED; }
-        .v3-icon.orange i { color: #00615F; font-size: 18px; }
-        .v3-body { flex: 1; }
-        .v3-title { font-size: 13px; font-weight: 600; color: var(--text-primary, #1a1a1a); }
-        .v3-desc { font-size: 10px; color: #999; margin-top: 1px; }
-        .v3-check i { color: #4CAF50; font-size: 18px; }
+        .phone-mockup { width: 375px; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.12); }
+        .status-bar { height: 44px; background: #fff; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 24px 8px; position: relative; }
+        .notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 120px; height: 28px; background: #000; border-radius: 0 0 20px 20px; }
+        .time { font-size: 15px; font-weight: 700; color: #1a1a1a; }
+        .icons { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #666; }
+        .icons i { font-size: 13px; }
+        .content { height: 200px; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 13px; }
     </style>
 </head>
 <body>
-    <div class="tabs">
-        <button class="tab active" onclick="switchTab('v1')">Image Top</button>
-        <button class="tab" onclick="switchTab('v2')">Image Left</button>
-        <button class="tab" onclick="switchTab('v3')">Minimal</button>
-    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;width:100%;">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab(0)">Default</div>
+            <div class="tab" onclick="switchTab(1)">Option 1</div>
+            <div class="tab" onclick="switchTab(2)">Option 2</div>
+        </div>
 
-    <!-- V1: Image Top -->
-    <div class="variant active" id="v1">
-        <div class="v1-feed">
-            <div class="v1-item">
-                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" class="v1-item-img" alt="offer">
-                <div class="v1-item-body">
-                    <div class="v1-left">
-                        <div class="v1-icon green"><i class="ri-checkbox-circle-fill"></i></div>
-                        <div>
-                            <div class="v1-title">Free beverage upgrade</div>
-                            <div class="v1-desc">Valid with any pastry item</div>
+        <!-- V1: Vertical list of promo cards with icons -->
+        <div class="variant active" id="v1">
+            <div class="phone-mockup">
+                <div class="status-bar">
+                    <div class="notch"></div>
+                    <span class="time">19:02</span>
+                    <span class="icons"><i class="ri-signal-wifi-fill"></i><i class="ri-wifi-fill"></i><i class="ri-battery-2-fill"></i></span>
+                </div>
+                <div style="padding:0 16px 16px;display:flex;flex-direction:column;gap:8px;">
+                    <div style="background:#fff;border-radius:16px;padding:14px;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:space-between;">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <div style="width:36px;height:36px;border-radius:10px;background:#E8F5E9;display:flex;align-items:center;justify-content:center;"><i class="ri-checkbox-circle-fill" style="color:#4CAF50;"></i></div>
+                            <div>
+                                <div style="font-size:12px;font-weight:600;color:#1a1a1a;">Free beverage upgrade</div>
+                                <div style="font-size:10px;color:#888;">Valid with any pastry item</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="background:#fff;border-radius:16px;padding:14px;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:space-between;">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <div style="width:36px;height:36px;border-radius:10px;background:#FFF3E0;display:flex;align-items:center;justify-content:center;"><i class="ri-star-fill" style="color:#FFC200;"></i></div>
+                            <div>
+                                <div style="font-size:12px;font-weight:600;color:#1a1a1a;">Double loyalty points</div>
+                                <div style="font-size:10px;color:#888;">On orders after 10 PM</div>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div class="content">Page Content</div>
             </div>
-            <div class="v1-item">
-                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=400&q=80" class="v1-item-img" alt="offer">
-                <div class="v1-item-body">
-                    <div class="v1-left">
-                        <div class="v1-icon orange"><i class="ri-star-fill"></i></div>
-                        <div>
-                            <div class="v1-title">Double loyalty points</div>
-                            <div class="v1-desc">On orders after 10 PM</div>
+        </div>
+
+        <!-- V2: 2-column card grid with emoji icons -->
+        <div class="variant" id="v2">
+            <div class="phone-mockup">
+                <div class="status-bar">
+                    <div class="notch"></div>
+                    <span class="time">19:02</span>
+                    <span class="icons"><i class="ri-signal-wifi-fill"></i><i class="ri-wifi-fill"></i><i class="ri-battery-2-fill"></i></span>
+                </div>
+                <div style="padding:0 16px 16px;">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                        <div style="background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 12px rgba(0,0,0,0.06);text-align:center;">
+                            <div style="font-size:20px;margin-bottom:4px;">&#9749;</div>
+                            <div style="font-size:10px;font-weight:600;color:#1a1a1a;">Free Beverage</div>
+                            <div style="font-size:8px;color:#888;margin-top:2px;">With any pastry</div>
+                        </div>
+                        <div style="background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 12px rgba(0,0,0,0.06);text-align:center;">
+                            <div style="font-size:20px;margin-bottom:4px;">&#11088;</div>
+                            <div style="font-size:10px;font-weight:600;color:#1a1a1a;">Double Points</div>
+                            <div style="font-size:8px;color:#888;margin-top:2px;">After 10 PM</div>
                         </div>
                     </div>
                 </div>
+                <div class="content">Page Content</div>
             </div>
         </div>
-    </div>
 
-    <!-- V2: Image Left -->
-    <div class="variant" id="v2">
-        <div class="v2-feed">
-            <div class="v2-item">
-                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=100&q=80" class="v2-img" alt="offer">
-                <div class="v2-body">
-                    <div class="v2-title">Free beverage upgrade</div>
-                    <div class="v2-desc">Valid with any pastry item</div>
+        <!-- V3: Minimal text list with "Active Promos" header and border separators -->
+        <div class="variant" id="v3">
+            <div class="phone-mockup">
+                <div class="status-bar">
+                    <div class="notch"></div>
+                    <span class="time">19:02</span>
+                    <span class="icons"><i class="ri-signal-wifi-fill"></i><i class="ri-wifi-fill"></i><i class="ri-battery-2-fill"></i></span>
                 </div>
-                <div class="v2-badge green">NEW</div>
-            </div>
-            <div class="v2-item">
-                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=100&q=80" class="v2-img" alt="offer">
-                <div class="v2-body">
-                    <div class="v2-title">Double loyalty points</div>
-                    <div class="v2-desc">On orders after 10 PM</div>
+                <div style="padding:0 16px 16px;">
+                    <div style="font-size:11px;font-weight:700;color:#1a1a1a;margin-bottom:8px;">Active Promos</div>
+                    <div style="border-top:1px solid #E8DDD3;">
+                        <div style="padding:10px 0;border-bottom:1px solid #E8DDD3;display:flex;align-items:center;justify-content:space-between;">
+                            <span style="font-size:11px;color:#1a1a1a;">Free beverage upgrade</span>
+                            <span style="font-size:9px;color:#00615F;font-weight:600;">Active</span>
+                        </div>
+                        <div style="padding:10px 0;border-bottom:1px solid #E8DDD3;display:flex;align-items:center;justify-content:space-between;">
+                            <span style="font-size:11px;color:#1a1a1a;">Double loyalty points</span>
+                            <span style="font-size:9px;color:#00615F;font-weight:600;">Active</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="v2-badge orange">2X</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- V3: Minimal -->
-    <div class="variant" id="v3">
-        <div class="v3-feed">
-            <div class="v3-item">
-                <div class="v3-icon green"><i class="ri-checkbox-circle-fill"></i></div>
-                <div class="v3-body">
-                    <div class="v3-title">Free beverage upgrade</div>
-                    <div class="v3-desc">Valid with any pastry item</div>
-                </div>
-                <div class="v3-check"><i class="ri-arrow-right-s-fill"></i></div>
-            </div>
-            <div class="v3-item">
-                <div class="v3-icon orange"><i class="ri-star-fill"></i></div>
-                <div class="v3-body">
-                    <div class="v3-title">Double loyalty points</div>
-                    <div class="v3-desc">On orders after 10 PM</div>
-                </div>
-                <div class="v3-check"><i class="ri-arrow-right-s-fill"></i></div>
+                <div class="content">Page Content</div>
             </div>
         </div>
     </div>
 
     <script>
-        function switchTab(id) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.variant').forEach(v => v.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            event.target.classList.add('active');
+        function switchTab(idx) {
+            document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+            document.querySelectorAll('.variant').forEach((v,i) => v.classList.toggle('active', i===idx));
         }
     </script>
 </body>

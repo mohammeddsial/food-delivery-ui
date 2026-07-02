@@ -8,107 +8,133 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: var(--font-family, 'Plus Jakarta Sans', sans-serif); background: var(--page-bg, #f5f5f5); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         .tabs { display: flex; gap: 6px; margin-bottom: 16px; justify-content: center; max-width: 360px; width: 100%; }
-        .tab { padding: 8px 14px; border-radius: var(--btn-radius, 10px); font-size: 11px; font-weight: 700; cursor: pointer; border: 1.5px solid var(--border-color, #ddd); background: var(--card-bg, #fff); color: var(--text-secondary, #666); transition: all 0.2s; }
-        .tab.active { background: var(--accent, #00615F); color: #fff; border-color: var(--accent, #00615F); }
+        .tab { padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; border: 1.5px solid #ddd; background: #fff; color: #666; transition: all 0.2s; }
+        .tab.active { background: #00615F; color: #fff; border-color: #00615F; }
         .variant { display: none; max-width: 360px; width: 100%; }
         .variant.active { display: block; }
-        .section-title { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 14px; }
 
-        .progress-bar { height: 4px; background: #eee; border-radius: 4px; margin-top: 10px; overflow: hidden; }
-        .progress-fill { height: 100%; background: #00615F; border-radius: 4px; transition: width 0.3s; }
-
-        /* V1: Image Top */
-        .v1-card { background: var(--card-bg, #fff); border-radius: var(--card-radius, 18px); overflow: hidden; box-shadow: var(--card-shadow, 0 2px 12px rgba(0,0,0,0.06)); }
-        .v1-card .card-img { width: 100%; height: 120px; object-fit: cover; }
-        .v1-card .card-body { padding: 14px; }
-        .v1-card .card-title { font-size: 14px; font-weight: 700; color: #1a1a1a; }
-        .v1-card .card-desc { font-size: 11px; color: #888; margin-top: 2px; }
-        .v1-card .status-pill { display: inline-flex; align-items: center; gap: 4px; background: #F0F7F6; color: #00615F; font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 20px; margin-top: 10px; }
-        .v1-card .eta { font-size: 22px; font-weight: 800; color: #00615F; margin-top: 10px; }
-        .v1-card .eta span { font-size: 11px; font-weight: 600; color: #888; }
-
-        /* V2: Image Left */
-        .v2-card { display: flex; background: var(--card-bg, #fff); border-radius: var(--card-radius, 18px); overflow: hidden; box-shadow: var(--card-shadow, 0 2px 12px rgba(0,0,0,0.06)); align-items: center; padding: 14px; gap: 14px; }
-        .v2-card .card-img { width: 72px; height: 72px; border-radius: 14px; object-fit: cover; flex-shrink: 0; }
-        .v2-card .card-body { flex: 1; }
-        .v2-card .card-title { font-size: 14px; font-weight: 700; color: #1a1a1a; }
-        .v2-card .card-desc { font-size: 10px; color: #888; margin-top: 2px; }
-        .v2-card .card-row { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
-        .v2-card .status-pill { display: inline-flex; align-items: center; gap: 4px; background: #F0F7F6; color: #00615F; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 16px; }
-        .v2-card .eta { font-size: 16px; font-weight: 800; color: #00615F; }
-
-        /* V3: Minimal */
-        .v3-card { background: var(--card-bg, #fff); border-radius: var(--card-radius, 18px); padding: 18px; box-shadow: var(--card-shadow, 0 2px 12px rgba(0,0,0,0.06)); text-align: center; }
-        .v3-card .v3-icon { width: 56px; height: 56px; background: #F0F7F6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; color: var(--accent, #00615F); margin: 0 auto 12px; }
-        .v3-card .card-title { font-size: 15px; font-weight: 700; color: #1a1a1a; }
-        .v3-card .card-desc { font-size: 11px; color: #888; margin-top: 3px; }
-        .v3-card .status-pill { display: inline-flex; align-items: center; gap: 4px; background: #F0F7F6; color: #00615F; font-size: 11px; font-weight: 700; padding: 5px 14px; border-radius: 20px; margin-top: 10px; }
-        .v3-card .eta { font-size: 28px; font-weight: 800; color: #00615F; margin-top: 12px; }
-        .v3-card .eta span { font-size: 11px; font-weight: 600; color: #888; }
-        .v3-steps { display: flex; justify-content: space-between; margin-top: 16px; padding: 0 8px; }
-        .v3-step { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .v3-step .step-dot { width: 10px; height: 10px; border-radius: 50%; background: #ddd; }
-        .v3-step .step-dot.active { background: #00615F; }
-        .v3-step .step-label { font-size: 9px; color: #888; font-weight: 600; }
+        .phone-frame { background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.1); border: 3px solid #1a1a1a; }
+        .status-bar { display: flex; justify-content: space-between; align-items: center; padding: 6px 16px; background: #fff; }
+        .status-bar .notch { width: 100px; height: 24px; background: #1a1a1a; border-radius: 0 0 16px 16px; }
+        .status-bar .status-icons { display: flex; gap: 6px; align-items: center; font-size: 11px; font-weight: 600; color: #1a1a1a; }
+        .status-bar .time { font-size: 11px; font-weight: 700; color: #1a1a1a; }
     </style>
 </head>
 <body>
     <div style="display:flex;flex-direction:column;align-items:center;width:100%;">
         <div class="tabs">
-            <div class="tab active" onclick="switchTab(0)">Image Top</div>
-            <div class="tab" onclick="switchTab(1)">Image Left</div>
-            <div class="tab" onclick="switchTab(2)">Minimal</div>
+            <div class="tab active" onclick="switchTab(0)">Default</div>
+            <div class="tab" onclick="switchTab(1)">Option 1</div>
+            <div class="tab" onclick="switchTab(2)">Option 2</div>
         </div>
 
-        <!-- V1: Image Top -->
+        <!-- V1: Default -->
         <div class="variant active" id="v1">
-            <div class="section-title">Active Order</div>
-            <div class="v1-card">
-                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80" class="card-img" alt="food">
-                <div class="card-body">
-                    <div class="card-title">Beef Burger & Fries</div>
-                    <div class="card-desc">Order #ORD-7842</div>
-                    <div class="status-pill"><i class="ri-motorcycle-fill"></i> Delivery In Progress</div>
-                    <div class="eta">12 <span>min remaining</span></div>
-                    <div class="progress-bar"><div class="progress-fill" style="width:65%;"></div></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- V2: Image Left -->
-        <div class="variant" id="v2">
-            <div class="section-title">Active Order</div>
-            <div class="v2-card">
-                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=150&q=80" class="card-img" alt="food">
-                <div class="card-body">
-                    <div class="card-title">Beef Burger & Fries</div>
-                    <div class="card-desc">Order #ORD-7842</div>
-                    <div class="card-row">
-                        <div class="status-pill"><i class="ri-motorcycle-fill"></i> In Progress</div>
-                        <div class="eta">12m</div>
+            <div class="phone-frame">
+                <div class="status-bar">
+                    <span class="time">19:02</span>
+                    <div class="notch"></div>
+                    <div class="status-icons">
+                        <i class="ri-signal-wifi-fill"></i>
+                        <i class="ri-battery-fill"></i>
                     </div>
-                    <div class="progress-bar"><div class="progress-fill" style="width:65%;"></div></div>
+                </div>
+                <div style="padding:16px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                        <div style="width:32px;height:32px;border-radius:50%;background:#F0F7F6;display:flex;align-items:center;justify-content:center;cursor:pointer;"><i class="ri-close-fill" style="font-size:16px;color:#1a1a1a;"></i></div>
+                        <span style="font-size:14px;font-weight:700;color:#888;">#2145</span>
+                    </div>
+                    <div style="display:flex;justify-content:center;margin-bottom:20px;">
+                        <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=400&q=80" style="width:240px;height:200px;object-fit:cover;border-radius:24px;" alt="food">
+                    </div>
+                    <div style="text-align:center;margin-bottom:16px;">
+                        <div style="font-size:22px;font-weight:700;color:#1a1a1a;">Whipping cream</div>
+                        <div style="font-size:20px;font-weight:700;color:#1a1a1a;margin-top:4px;">$03.99</div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;margin-bottom:16px;padding:0 8px;">
+                        <span style="font-size:13px;color:#888;">Items: <strong style="color:#1a1a1a;">5</strong></span>
+                        <span style="font-size:13px;color:#888;">Delivery time: <strong style="color:#1a1a1a;">20 Min</strong></span>
+                    </div>
+                    <div style="display:flex;gap:12px;">
+                        <button style="flex:1;padding:14px;background:#1A1A1A;color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;">Track Order</button>
+                        <button style="flex:1;padding:14px;background:#F9F3F0;color:#666;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;">Cancel</button>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- V3: Minimal -->
+        <!-- V2: Option 1 -->
+        <div class="variant" id="v2">
+            <div class="phone-frame">
+                <div class="status-bar">
+                    <span class="time">19:02</span>
+                    <div class="notch"></div>
+                    <div class="status-icons">
+                        <i class="ri-signal-wifi-fill"></i>
+                        <i class="ri-battery-fill"></i>
+                    </div>
+                </div>
+                <div style="padding:16px;">
+                    <div style="background:#fff;border-radius:14px;padding:12px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+                        <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=80&q=80" style="width:48px;height:48px;border-radius:10px;object-fit:cover;" alt="food">
+                        <div style="flex:1;">
+                            <div style="font-size:12px;font-weight:700;color:#1a1a1a;">Order #2145 Active</div>
+                            <div style="font-size:10px;color:#888;">5 items · 20 min delivery</div>
+                        </div>
+                        <button style="background:#00615F;color:#fff;font-size:10px;font-weight:700;padding:8px 14px;border-radius:10px;border:none;cursor:pointer;">Track</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- V3: Option 2 -->
         <div class="variant" id="v3">
-            <div class="section-title">Active Order</div>
-            <div class="v3-card">
-                <div class="v3-icon"><i class="ri-motorcycle-fill"></i></div>
-                <div class="card-title">Beef Burger & Fries</div>
-                <div class="card-desc">Order #ORD-7842</div>
-                <div class="status-pill"><i class="ri-map-pin-line"></i> 0.8 km away</div>
-                <div class="eta">12 <span>min remaining</span></div>
-                <div class="progress-bar" style="margin-top:8px;"><div class="progress-fill" style="width:65%;"></div></div>
-                <div class="v3-steps">
-                    <div class="v3-step"><div class="step-dot active"></div><div class="step-label">Confirmed</div></div>
-                    <div class="v3-step"><div class="step-dot active"></div><div class="step-label">Preparing</div></div>
-                    <div class="v3-step"><div class="step-dot active"></div><div class="step-label">On the way</div></div>
-                    <div class="v3-step"><div class="step-dot"></div><div class="step-label">Delivered</div></div>
+            <div class="phone-frame">
+                <div class="status-bar">
+                    <span class="time">19:02</span>
+                    <div class="notch"></div>
+                    <div class="status-icons">
+                        <i class="ri-signal-wifi-fill"></i>
+                        <i class="ri-battery-fill"></i>
+                    </div>
+                </div>
+                <div style="padding:16px;">
+                    <div style="background:#fff;border-radius:16px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+                        <div style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:16px;">Order #2145</div>
+                        <div style="display:flex;flex-direction:column;gap:0;">
+                            <div style="display:flex;align-items:center;gap:12px;">
+                                <div style="width:24px;height:24px;border-radius:50%;background:#00615F;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="ri-check-line" style="font-size:12px;color:#fff;"></i></div>
+                                <div style="flex:1;border-left:2px solid #00615F;padding:0 0 12px 0;margin-left:-13px;padding-left:26px;">
+                                    <div style="font-size:11px;font-weight:700;color:#1a1a1a;">Order Confirmed</div>
+                                    <div style="font-size:9px;color:#888;">2 min ago</div>
+                                </div>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:12px;">
+                                <div style="width:24px;height:24px;border-radius:50%;background:#00615F;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="ri-check-line" style="font-size:12px;color:#fff;"></i></div>
+                                <div style="flex:1;border-left:2px solid #00615F;padding:0 0 12px 0;margin-left:-13px;padding-left:26px;">
+                                    <div style="font-size:11px;font-weight:700;color:#1a1a1a;">Being Prepared</div>
+                                    <div style="font-size:9px;color:#888;">Chef is cooking</div>
+                                </div>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:12px;">
+                                <div style="width:24px;height:24px;border-radius:50%;background:#F0F7F6;border:2px solid #00615F;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                    <div style="width:8px;height:8px;border-radius:50%;background:#00615F;"></div>
+                                </div>
+                                <div style="flex:1;padding:0 0 0 0;margin-left:-13px;padding-left:26px;">
+                                    <div style="font-size:11px;font-weight:700;color:#1a1a1a;">Out for Delivery</div>
+                                    <div style="font-size:9px;color:#888;">Arriving in ~20 min</div>
+                                </div>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:12px;">
+                                <div style="width:24px;height:24px;border-radius:50%;background:#f5f5f5;border:2px solid #ddd;display:flex;align-items:center;justify-content:center;flex-shrink:0;"></div>
+                                <div style="flex:1;margin-left:-13px;padding-left:26px;">
+                                    <div style="font-size:11px;font-weight:600;color:#888;">Delivered</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -116,8 +142,8 @@
 
     <script>
         function switchTab(idx) {
-            document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === idx));
-            document.querySelectorAll('.variant').forEach((v, i) => v.classList.toggle('active', i === idx));
+            document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+            document.querySelectorAll('.variant').forEach((v,i) => v.classList.toggle('active', i===idx));
         }
     </script>
 </body>
