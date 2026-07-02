@@ -1671,9 +1671,11 @@
         // Each of the 3 viewports keeps its OWN independent module list (enable/order/style)
         // Default style mapping: View 1 (Light) = 'default', View 2 (Dark) = 'option 1', View 3 (Modern) = 'option 2'
         const DEFAULT_STYLE_BY_THEME = { neumorphism: 'default', glassmorphism: 'option 1', neubrutalism: 'option 2' };
+        // Modules that should always use 'default' regardless of theme mapping
+        const FORCE_DEFAULT_STYLE = new Set(['splash']);
         function buildModulesForTheme(theme) {
             return JSON.parse(JSON.stringify(defaultModulesConfig)).map(m => {
-                m.style = DEFAULT_STYLE_BY_THEME[theme] || 'default';
+                m.style = FORCE_DEFAULT_STYLE.has(m.id) ? 'default' : (DEFAULT_STYLE_BY_THEME[theme] || 'default');
                 return m;
             });
         }
@@ -2505,6 +2507,11 @@
 
         // ─── ADDRESS DROPDOWN FUNCTIONS ──────────────────────────────────
         const deliveryModeByTheme = { neumorphism: 'delivery', glassmorphism: 'delivery', neubrutalism: 'delivery' };
+        window.selectedLocation = {
+            neumorphism: { address: 'Manhattan West, NY', branch: 'Downtown NYC' },
+            glassmorphism: { address: 'Manhattan West, NY', branch: 'Downtown NYC' },
+            neubrutalism: { address: 'Manhattan West, NY', branch: 'Downtown NYC' }
+        };
         const ADDRESS_DISTANCES = {
             'Manhattan West, NY': '2.3 km',
             'Times Square, NY': '4.1 km',
@@ -2626,7 +2633,7 @@
             const closeIcon = isGlass ? iconMaterial('close-line', 'color:var(--text-secondary);font-size:18px;') : isBrut ? iconBS('x', 'color:var(--text-secondary);font-size:18px;') : iconFA('x', 'color:var(--text-secondary);font-size:18px;');
 
             const searchBar = `
-                <div style="display:flex;align-items:center;gap:8px;background:${inputBg};border:1px solid var(--border-color);border-radius:12px;padding:10px 14px;margin-bottom:16px;">
+                <div onclick="closeLocationSheet('${theme}');navigateToPage('${theme}','add-location')" style="display:flex;align-items:center;gap:8px;background:${inputBg};border:1px solid var(--border-color);border-radius:12px;padding:10px 14px;margin-bottom:16px;cursor:pointer;">
                     ${searchIcon}
                     <span style="font-size:12px;color:${subColor};">Search ${mode === 'delivery' ? 'address' : 'branch'}...</span>
                 </div>`;
@@ -2644,7 +2651,7 @@
                         <span style="color:var(--text-secondary);">${isGlass ? iconMaterial('arrow-right-s-line', 'color:var(--text-secondary);') : isBrut ? iconBS('chevron-right', 'color:var(--text-secondary);') : iconFA('chevron-right', 'color:var(--text-secondary);')}</span>
                     </div>
                     <div style="font-size:10px;font-weight:700;color:${subColor};text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Current Address</div>
-                    <div onclick="closeLocationSheet('${theme}')" style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--accent-light);border:1px solid var(--accent);border-radius:var(--card-radius);margin-bottom:16px;cursor:pointer;">
+                    <div onclick="selectLocationAddress('${theme}','Manhattan West, NY');closeLocationSheet('${theme}')" style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--accent-light);border:1px solid var(--accent);border-radius:var(--card-radius);margin-bottom:16px;cursor:pointer;">
                         ${pinIcon}
                         <div style="flex:1;">
                             <div style="font-size:13px;font-weight:700;color:${textColor};">Manhattan West, NY</div>
@@ -2674,7 +2681,7 @@
                     <div style="font-size:10px;font-weight:700;color:${subColor};text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">8 Branches Near You</div>
                     <div style="display:flex;flex-direction:column;gap:6px;">
                         ${branches.map(b => `
-                            <div onclick="selectBranch('${theme}','${b.name}');closeLocationSheet('${theme}')" style="display:flex;align-items:center;gap:12px;padding:12px;${b.active ? 'background:var(--accent-light);border:1px solid var(--accent);' : 'background:' + inputBg + ';border:1px solid var(--border-color);'}border-radius:12px;cursor:pointer;">
+                            <div onclick="selectLocationBranch('${theme}','${b.name}');closeLocationSheet('${theme}')" style="display:flex;align-items:center;gap:12px;padding:12px;${b.active ? 'background:var(--accent-light);border:1px solid var(--accent);' : 'background:' + inputBg + ';border:1px solid var(--border-color);'}border-radius:12px;cursor:pointer;">
                                 ${storeIcon}
                                 <div style="flex:1;">
                                     <div style="font-size:12px;font-weight:${b.active ? '700' : '600'};color:${textColor};">${b.name}</div>
@@ -2715,6 +2722,30 @@
                 const panel = container.querySelector('.location-sheet-panel');
                 if (panel) panel.style.transform = 'translateY(0)';
             });
+        }
+
+        function selectLocationAddress(theme, addr) {
+            if (!window.selectedLocation[theme]) window.selectedLocation[theme] = {};
+            window.selectedLocation[theme].address = addr;
+            const el = document.getElementById('locValue-' + theme);
+            if (el) {
+                const isGlass = theme === 'glassmorphism';
+                const isBrut = theme === 'neubrutalism';
+                const chevron = isGlass ? iconMaterial('arrow-drop-down-line', 'color:var(--text-secondary);') : isBrut ? iconBS('chevron-down', 'color:var(--text-secondary);') : iconFA('chevron-down', 'color:var(--text-secondary);');
+                el.innerHTML = addr + ' ' + chevron;
+            }
+        }
+
+        function selectLocationBranch(theme, branch) {
+            if (!window.selectedLocation[theme]) window.selectedLocation[theme] = {};
+            window.selectedLocation[theme].branch = branch;
+            const el = document.getElementById('locValue-' + theme);
+            if (el) {
+                const isGlass = theme === 'glassmorphism';
+                const isBrut = theme === 'neubrutalism';
+                const chevron = isGlass ? iconMaterial('arrow-drop-down-line', 'color:var(--text-secondary);') : isBrut ? iconBS('chevron-down', 'color:var(--text-secondary);') : iconFA('chevron-down', 'color:var(--text-secondary);');
+                el.innerHTML = branch + ' ' + chevron;
+            }
         }
 
         function closeLocationSheet(theme) {
@@ -3434,62 +3465,69 @@
                 chevron: isGlass ? iconMaterial('arrow-drop-down-line', 'color:var(--text-secondary);') : isBrut ? iconBS('chevron-down', 'color:var(--text-secondary);') : iconFA('chevron-down', 'color:var(--text-secondary);')
             };
             const isDelivery = deliveryModeByTheme[theme] === 'delivery';
+            const loc = window.selectedLocation && window.selectedLocation[theme] || {};
             const selectorLabel = isDelivery ? 'Deliver to' : 'Pickup from';
-            const selectorValue = isDelivery ? 'Manhattan West, NY' : 'Downtown NYC';
-            const selectorDist = isDelivery ? '2.3 km' : '0.5 km';
+            const selectorValue = isDelivery ? (loc.address || 'Manhattan West, NY') : (loc.branch || 'Downtown NYC');
             const selectorIcon = isDelivery ? ic.pin : ic.store;
 
             const locationSelector = `
-                <div onclick="openLocationSheet('${theme}')" style="display:flex;align-items:center;gap:10px;background:var(--pill-bg);border:1px solid var(--border-color);border-radius:12px;padding:10px 12px;cursor:pointer;">
+                <div onclick="openLocationSheet('${theme}')" style="flex:1;display:flex;align-items:center;gap:8px;background:var(--pill-bg);border:1px solid var(--border-color);border-radius:12px;padding:8px 10px;cursor:pointer;min-width:0;" id="locSelector-${theme}">
                     ${selectorIcon}
                     <div style="flex:1;min-width:0;">
-                        <div style="font-size:8px;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;font-weight:600;">${selectorLabel}</div>
-                        <div style="font-size:12px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:4px;">${selectorValue} ${ic.chevron}</div>
-                        <div style="font-size:9px;font-weight:500;color:var(--text-secondary);margin-top:1px;">${selectorDist}</div>
+                        <div id="locValue-${theme}" style="font-size:12px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${selectorValue} ${ic.chevron}</div>
                     </div>
                 </div>`;
 
             const oldPills = `
-                <div style="display:flex;background:var(--pill-bg);border-radius:9999px;padding:3px;">
-                    <div onclick="setDeliveryMode('${theme}','delivery')" id="deliveryBtn-${theme}" style="flex:1;padding:8px 12px;text-align:center;border-radius:9999px;background:${isDelivery?'var(--accent)':'transparent'};color:${isDelivery?'#fff':'var(--text-secondary)'};font-size:11px;font-weight:700;cursor:pointer;">Delivery</div>
-                    <div onclick="setDeliveryMode('${theme}','pickup')" id="pickupBtn-${theme}" style="flex:1;padding:8px 12px;text-align:center;border-radius:9999px;background:${!isDelivery?'var(--accent)':'transparent'};color:${!isDelivery?'#fff':'var(--text-secondary)'};font-size:11px;font-weight:500;cursor:pointer;">Pickup</div>
+                <div style="display:flex;background:var(--pill-bg);border-radius:9999px;padding:3px;flex-shrink:0;">
+                    <div onclick="setDeliveryMode('${theme}','delivery')" id="deliveryBtn-${theme}" style="padding:8px 12px;text-align:center;border-radius:9999px;background:${isDelivery?'var(--accent)':'transparent'};color:${isDelivery?'#fff':'var(--text-secondary)'};font-size:11px;font-weight:700;cursor:pointer;">Delivery</div>
+                    <div onclick="setDeliveryMode('${theme}','pickup')" id="pickupBtn-${theme}" style="padding:8px 12px;text-align:center;border-radius:9999px;background:${!isDelivery?'var(--accent)':'transparent'};color:${!isDelivery?'#fff':'var(--text-secondary)'};font-size:11px;font-weight:500;cursor:pointer;">Pickup</div>
                 </div>`;
 
             const bigSwitch = `
-                <div style="display:flex;align-items:center;justify-content:center;gap:16px;">
-                    <span style="font-size:13px;font-weight:700;color:${isDelivery?'var(--accent)':'var(--text-secondary)'};" id="deliveryLabel-${theme}">Delivery</span>
-                    <div onclick="toggleDeliveryMode('${theme}')" style="width:56px;height:28px;border-radius:14px;background:${isDelivery?'var(--accent)':'var(--border-color)'};position:relative;cursor:pointer;transition:background 0.3s;" id="modeSwitch-${theme}">
-                        <div style="width:24px;height:24px;border-radius:50%;background:#fff;position:absolute;top:2px;left:${isDelivery?'30px':'2px'};transition:left 0.3s;box-shadow:0 2px 6px rgba(0,0,0,0.25);"></div>
+                <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+                    <span style="font-size:11px;font-weight:700;color:${isDelivery?'var(--accent)':'var(--text-secondary)'};" id="deliveryLabel-${theme}">Delivery</span>
+                    <div onclick="toggleDeliveryMode('${theme}')" style="width:44px;height:24px;border-radius:12px;background:${isDelivery?'var(--accent)':'var(--border-color)'};position:relative;cursor:pointer;transition:background 0.3s;" id="modeSwitch-${theme}">
+                        <div style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:${isDelivery?'22px':'2px'};transition:left 0.3s;box-shadow:0 2px 6px rgba(0,0,0,0.25);"></div>
                     </div>
-                    <span style="font-size:13px;font-weight:700;color:${!isDelivery?'var(--accent)':'var(--text-secondary)'};" id="pickupLabel-${theme}">Pickup</span>
+                    <span style="font-size:11px;font-weight:700;color:${!isDelivery?'var(--accent)':'var(--text-secondary)'};" id="pickupLabel-${theme}">Pickup</span>
                 </div>`;
 
             const segControl = `
-                <div style="display:flex;background:var(--pill-bg);border:1px solid var(--border-color);border-radius:10px;padding:3px;position:relative;">
-                    <div id="segDelivery-${theme}" onclick="setDeliveryMode('${theme}','delivery')" style="flex:1;text-align:center;padding:7px 0;font-size:10px;font-weight:700;border-radius:8px;cursor:pointer;z-index:1;transition:color 0.2s;color:${isDelivery?'#fff':'var(--text-secondary)'};position:relative;">Delivery</div>
-                    <div id="segPickup-${theme}" onclick="setDeliveryMode('${theme}','pickup')" style="flex:1;text-align:center;padding:7px 0;font-size:10px;font-weight:700;border-radius:8px;cursor:pointer;z-index:1;transition:color 0.2s;color:${!isDelivery?'#fff':'var(--text-secondary)'};position:relative;">Pickup</div>
-                    <div id="segIndicator-${theme}" style="position:absolute;top:3px;${isDelivery?'left:3px':'left:calc(50% + 1.5px)'};width:calc(50% - 3px);height:calc(100% - 6px);background:var(--accent);border-radius:8px;transition:left 0.3s;z-index:0;"></div>
+                <div style="display:flex;background:var(--pill-bg);border:1px solid var(--border-color);border-radius:10px;padding:2px;position:relative;flex-shrink:0;width:140px;">
+                    <div id="segDelivery-${theme}" onclick="setDeliveryMode('${theme}','delivery')" style="flex:1;text-align:center;padding:6px 0;font-size:9px;font-weight:700;border-radius:8px;cursor:pointer;z-index:1;transition:color 0.2s;color:${isDelivery?'#fff':'var(--text-secondary)'};position:relative;">Delivery</div>
+                    <div id="segPickup-${theme}" onclick="setDeliveryMode('${theme}','pickup')" style="flex:1;text-align:center;padding:6px 0;font-size:9px;font-weight:700;border-radius:8px;cursor:pointer;z-index:1;transition:color 0.2s;color:${!isDelivery?'#fff':'var(--text-secondary)'};position:relative;">Pickup</div>
+                    <div id="segIndicator-${theme}" style="position:absolute;top:2px;${isDelivery?'left:2px':'left:calc(50% + 1px)'};width:calc(50% - 2px);height:calc(100% - 4px);background:var(--accent);border-radius:8px;transition:left 0.3s;z-index:0;"></div>
                 </div>`;
 
             if (style === 'option 1') {
                 return `
-                <div style="padding:16px;display:flex;flex-direction:column;gap:10px;" id="brandHeader-${theme}">
-                    ${locationSelector}
-                    ${bigSwitch}
+                <div style="padding:12px 16px;" id="brandHeader-${theme}">
+                    <div style="font-size:9px;font-weight:700;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">${selectorLabel}</div>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        ${locationSelector}
+                        ${bigSwitch}
+                    </div>
                 </div>`;
             }
             if (style === 'option 2') {
                 return `
-                <div style="padding:12px 16px;display:flex;flex-direction:column;gap:10px;" id="brandHeader-${theme}">
-                    ${locationSelector}
-                    ${segControl}
+                <div style="padding:12px 16px;" id="brandHeader-${theme}">
+                    <div style="font-size:9px;font-weight:700;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">${selectorLabel}</div>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        ${locationSelector}
+                        ${segControl}
+                    </div>
                 </div>`;
             }
             // default
             return `
-            <div style="padding:16px;display:flex;flex-direction:column;gap:10px;" id="brandHeader-${theme}">
-                ${locationSelector}
-                ${oldPills}
+            <div style="padding:12px 16px;" id="brandHeader-${theme}">
+                <div style="font-size:9px;font-weight:700;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">${selectorLabel}</div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                    ${locationSelector}
+                    ${oldPills}
+                </div>
             </div>`;
         }
 
