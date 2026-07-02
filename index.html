@@ -1485,8 +1485,9 @@
         <div class="controller" id="controllerPanel" style="width:100%; border-right:none; height:auto; flex-shrink:0;">
             <div class="panel-title">
                 <i class="fas fa-sliders-h" style="color:#00615F;font-size:14px;"></i> Design Engine
-                <span>v1.0</span>
+                <span id="versionBadge" style="font-size:9px;color:#888;margin-left:auto;"></span>
             </div>
+            <div style="font-size:10px;color:#555;margin-bottom:10px;text-align:center;letter-spacing:0.5px;border-bottom:1px solid #222;padding-bottom:8px;">HIGH-FIDELITY DESIGN STRATIFICATION WORKBENCH</div>
             <div style="font-size:11px;color:#666;margin-bottom:12px;">19 components · 3 design systems · 3 icon libs
             </div>
 
@@ -1553,7 +1554,6 @@
     <!-- MAIN VIEWPORT GRID -->
     <div class="flex-1 h-full flex flex-col overflow-hidden">
         <div class="flex items-center justify-between mb-4 bg-slate-900 border border-slate-800 rounded-xl px-4 py-2">
-            <div class="text-sm font-bold text-slate-300">HIGH-FIDELITY DESIGN STRATIFICATION WORKBENCH</div>
             <div class="flex gap-3 text-xs items-center">
                 <a href="cards/index.html"
                     style="background:#00615F;color:#fff;padding:4px 12px;border-radius:6px;text-decoration:none;font-weight:600;font-size:11px;display:flex;align-items:center;gap:4px;"><i
@@ -3064,110 +3064,121 @@
         }
 
         function drawVideoHero(theme, style = 'default') {
-            const heroH = window.cardConfig[theme].heroHeight;
+            const pal = window.colorPalettes[theme] || {};
 
-            // Style variations
+            // ─── V1 (default): HORIZONTAL CAROUSEL – 2 slides, 75%vh ──────────
+            if (style === 'default') {
+                const slideH = Math.round(812 * 0.75);
+                const img1 = 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80';
+                const img2 = 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=600&q=80';
+
+                function carouselSlide(img, title, views, duration, accentBg) {
+                    const playIcon = theme === 'glassmorphism' ? iconMaterial('play-fill', 'font-size:22px;color:#1a1a1a;') : theme === 'neubrutalism' ? iconBS('player-play', 'font-size:20px;color:#1a1a1a;') : iconFA('play', 'font-size:20px;color:#1a1a1a;');
+                    const eyeIcon = theme === 'glassmorphism' ? iconMaterial('eye-line', 'font-size:12px;') : theme === 'neubrutalism' ? iconBS('eye', 'font-size:12px;') : iconFA('eye', 'font-size:12px;');
+                    const timeIcon = theme === 'glassmorphism' ? iconMaterial('time-line', 'font-size:12px;') : theme === 'neubrutalism' ? iconBS('clock', 'font-size:12px;') : iconFA('clock', 'font-size:12px;');
+                    return `
+                    <div style="min-width:100%;height:${slideH}px;position:relative;overflow:hidden;scroll-snap-align:start;">
+                        <img src="${img}" style="width:100%;height:100%;object-fit:cover;display:block;" alt="${title}">
+                        <div style="position:absolute;inset:0;background:linear-gradient(0%,rgba(0,0,0,0.7) 0%,rgba(0,0,0,0) 40%,rgba(0,0,0,0) 60%,rgba(0,0,0,0.8) 100%);"></div>
+                        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(0,0,0,0.3);cursor:pointer;" class="btn-morph">${playIcon}</div>
+                        <div style="position:absolute;bottom:24px;left:16px;right:16px;">
+                            <h2 style="font-size:22px;font-weight:800;color:#fff;line-height:1.15;margin-bottom:8px;">${title}</h2>
+                            <div style="display:flex;align-items:center;gap:12px;">
+                                <span style="font-size:11px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:4px;">${eyeIcon} ${views}</span>
+                                <span style="font-size:11px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:4px;">${timeIcon} ${duration}</span>
+                            </div>
+                        </div>
+                        <div style="position:absolute;top:16px;left:16px;background:${accentBg};color:#fff;padding:5px 12px;border-radius:20px;font-size:9px;font-weight:700;letter-spacing:0.5px;">FEATURED</div>
+                    </div>`;
+                }
+
+                const slide1 = carouselSlide(img1, 'Fresh Pizza Perfection', '12.4K views', '2:30', theme === 'glassmorphism' ? 'rgba(0,191,165,0.8)' : theme === 'neubrutalism' ? '#1a1a1a' : '#00615F');
+                const slide2 = carouselSlide(img2, 'Premium Sushi Platter', '8.1K views', '3:15', theme === 'glassmorphism' ? 'rgba(255,107,53,0.8)' : theme === 'neubrutalism' ? '#E91E63' : '#FF6B35');
+
+                return `
+                <div style="margin-bottom:16px;" class="animate-fade-in-up">
+                    <div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:0;" id="videoCarousel-${theme}">
+                        ${slide1}${slide2}
+                    </div>
+                    <div style="display:flex;justify-content:center;gap:6px;padding:12px 0;">
+                        <div style="width:8px;height:8px;border-radius:50%;background:${pal.Primary || '#00615F'};"></div>
+                        <div style="width:8px;height:8px;border-radius:50%;background:var(--border-color);"></div>
+                    </div>
+                </div>`;
+            }
+
+            // ─── V2 (option 1): SINGLE SLIDE 50%vh + DARK TEXT OVERLAY ──────
             if (style === 'option 1') {
-                // Card style - smaller, contained
-                if (theme === 'neumorphism') {
-                    return `
-                    <div style="padding:0 16px;margin-bottom:16px;" class="animate-fade-in-up">
-                        <div style="height:180px;width:100%;border-radius:20px;overflow:hidden;position:relative;background:linear-gradient(rgba(0,0,0,0) 30%, rgba(0,0,0,0.85) 100%),url('https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=600&q=80');background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
-                            <div style="position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;" class="btn-morph">${iconFA('play', 'text-[#1A1A1A]')}</div>
-                            <h2 style="font-size:18px;font-weight:700;color:#fff;">Fresh Pizza Perfection</h2>
-                            <p style="font-size:11px;color:var(--text-primary);margin-top:4px;">Watch our chefs craft signature dishes</p>
-                        </div>
-                    </div>`;
-                } else if (theme === 'glassmorphism') {
-                    return `
-                    <div style="padding:0 16px;margin-bottom:16px;" class="animate-fade-in-up">
-                        <div style="height:180px;width:100%;border-radius:20px;overflow:hidden;position:relative;background:linear-gradient(rgba(0,0,0,0) 25%, rgba(26,26,26,0.95) 100%),url('https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80');background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;backdrop-filter:blur(8px);border:1px solid var(--border-color);">
-                            <div style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);border-radius:9999px;padding:4px 10px;display:flex;align-items:center;gap:4px;font-size:8px;font-weight:700;color:var(--highlight);">${iconMaterial('play-circle-line', 'color:#00BFA5;')} LIVE</div>
-                            <h2 style="font-size:18px;font-weight:700;color:#fff;">Premium Fresh Bowls</h2>
-                            <p style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:4px;">Watch our chefs craft signature dishes</p>
-                        </div>
-                    </div>`;
-                } else {
-                    return `
-                    <div style="padding:0 16px 16px;" class="animate-fade-in-up">
-                        <div style="height:180px;width:100%;border-radius:16px;overflow:hidden;position:relative;background:linear-gradient(rgba(0,0,0,0) 35%, rgba(0,0,0,0.8) 100%),url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80');background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;border:1px solid var(--border-color);">
-                            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-                                <div style="width:28px;height:28px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;">${iconBS('player-play', 'color:#fff;')}</div>
-                                <span style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.9);text-transform:uppercase;letter-spacing:1px;">Featured Video</span>
+                const slideH = Math.round(812 * 0.50);
+                const img = 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80';
+                const darkBg = theme === 'glassmorphism' ? 'rgba(20,20,20,0.95)' : '#1a1a1a';
+                const playIcon = theme === 'glassmorphism' ? iconMaterial('play-fill', 'font-size:26px;color:#1a1a1a;') : theme === 'neubrutalism' ? iconBS('player-play', 'font-size:24px;color:#1a1a1a;') : iconFA('play', 'font-size:24px;color:#1a1a1a;');
+                const liveIcon = theme === 'glassmorphism' ? iconMaterial('play-circle-line', 'font-size:12px;color:#fff;') : theme === 'neubrutalism' ? iconBS('player-play', 'font-size:11px;color:#fff;') : iconFA('play', 'font-size:11px;color:#fff;');
+                const eyeIcon = theme === 'glassmorphism' ? iconMaterial('eye-line', 'font-size:12px;') : theme === 'neubrutalism' ? iconBS('eye', 'font-size:12px;') : iconFA('eye', 'font-size:12px;');
+                const thumbIcon = theme === 'glassmorphism' ? iconMaterial('thumb-up-line', 'font-size:12px;') : theme === 'neubrutalism' ? iconBS('thumb-up', 'font-size:12px;') : iconFA('thumbs-up', 'font-size:12px;');
+                const accentBg = theme === 'glassmorphism' ? 'rgba(0,191,165,0.2)' : theme === 'neubrutalism' ? 'rgba(255,107,53,0.15)' : 'rgba(0,97,95,0.1)';
+                const accentColor = theme === 'glassmorphism' ? '#00BFA5' : theme === 'neubrutalism' ? '#FF6B35' : '#00615F';
+
+                return `
+                <div style="margin-bottom:16px;" class="animate-fade-in-up">
+                    <div style="height:${slideH}px;width:100%;position:relative;overflow:hidden;">
+                        <img src="${img}" style="width:100%;height:100%;object-fit:cover;display:block;" alt="video">
+                        <div style="position:absolute;inset:0;background:linear-gradient(0%,rgba(0,0,0,0) 50%,rgba(0,0,0,0.85) 100%);"></div>
+                        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 30px rgba(0,0,0,0.4);cursor:pointer;" class="btn-morph">${playIcon}</div>
+                        <div style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);border-radius:9999px;padding:6px 14px;display:flex;align-items:center;gap:5px;font-size:9px;font-weight:700;color:#fff;">${liveIcon} 03:45</div>
+                    </div>
+                    <div style="background:${darkBg};padding:20px 16px;">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                            <div style="background:${accentBg};color:${accentColor};font-size:9px;font-weight:700;padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:4px;width:fit-content;">
+                                ${theme === 'glassmorphism' ? iconMaterial('play-circle-line', 'font-size:10px;') : theme === 'neubrutalism' ? iconBS('player-play', 'font-size:9px;') : iconFA('play', 'font-size:9px;')}
+                                Featured Video
                             </div>
-                            <h3 style="font-size:16px;font-weight:700;color:#fff;">Fresh Pizza Perfection</h3>
-                            <p style="font-size:10px;color:var(--text-primary);margin-top:2px;">Watch our chefs craft signature dishes</p>
                         </div>
-                    </div>`;
-                }
-            } else if (style === 'option 2') {
-                // Fullscreen style - edge to edge
-                if (theme === 'neumorphism') {
-                    return `
-                    <div style="margin-bottom:16px;" class="animate-fade-in-up">
-                        <div style="height:${heroH + 60}px;width:100%;overflow:hidden;position:relative;background:linear-gradient(rgba(0,0,0,0) 20%, rgba(0,0,0,0.9) 100%),url('https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80');background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:flex-end;padding:24px 16px;">
-                            <div style="position:absolute;top:16px;right:16px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,0.2);" class="btn-morph">${iconFA('play', 'text-[#1A1A1A]')}</div>
-                            <h2 class="editorial-heading" style="font-size:32px;color:#fff;margin-bottom:8px;">FRESH PIZZA<br>PERFECTION</h2>
-                            <p class="editorial-subheading" style="color:rgba(255,255,255,0.8);">Watch our chefs craft signature dishes</p>
+                        <h2 style="font-size:20px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:6px;">Premium Bakery Collection</h2>
+                        <p style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5;margin-bottom:16px;">Watch our master bakers craft artisan breads and pastries from scratch using traditional techniques.</p>
+                        <div style="display:flex;align-items:center;gap:16px;">
+                            <span style="font-size:11px;color:rgba(255,255,255,0.5);display:flex;align-items:center;gap:4px;">${eyeIcon} 24.8K views</span>
+                            <span style="font-size:11px;color:rgba(255,255,255,0.5);display:flex;align-items:center;gap:4px;">${thumbIcon} 1.2K</span>
                         </div>
-                    </div>`;
-                } else if (theme === 'glassmorphism') {
-                    return `
-                    <div style="margin-bottom:16px;" class="animate-fade-in-up">
-                        <div style="height:${heroH + 60}px;width:100%;overflow:hidden;position:relative;background:linear-gradient(rgba(0,0,0,0) 20%, rgba(26,26,26,0.95) 100%),url('https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80');background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:flex-end;padding:24px 16px;">
-                            <div style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);border:1px solid var(--border-color);border-radius:9999px;padding:8px 16px;display:flex;align-items:center;gap:6px;font-size:10px;font-weight:700;color:var(--highlight);letter-spacing:1px;">${iconMaterial('play-circle-line', 'color:#00BFA5;')} LIVE</div>
-                            <h2 style="font-size:30px;font-weight:900;color:#fff;letter-spacing:-0.5px;line-height:1.05;">PREMIUM FRESH<br>BOWLS</h2>
-                            <p style="font-size:13px;color:var(--text-primary);margin-top:8px;">Watch our chefs craft signature dishes in real-time</p>
-                        </div>
-                    </div>`;
-                } else {
-                    return `
-                    <div style="margin-bottom:16px;" class="animate-fade-in-up">
-                        <div style="height:${heroH + 40}px;width:100%;overflow:hidden;position:relative;background:linear-gradient(rgba(0,0,0,0) 25%, rgba(0,0,0,0.85) 100%),url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80');background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:flex-end;padding:20px 16px;">
-                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                                <div style="width:36px;height:36px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;">${iconBS('player-play', 'color:#fff;')}</div>
-                                <span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.9);text-transform:uppercase;letter-spacing:1.5px;">Featured Video</span>
-                            </div>
-                            <h3 style="font-size:26px;font-weight:700;color:#fff;line-height:1.05;">PREMIUM FRESH<br>PIZZA PERFECTION</h3>
-                            <p style="font-size:12px;color:var(--text-primary);margin-top:6px;">Watch our chefs craft signature dishes</p>
-                        </div>
-                    </div>`;
-                }
+                    </div>
+                </div>`;
             }
 
-            // Default style
-            if (theme === 'neumorphism') {
-                return `
-                <div style="padding:0 16px;margin-bottom:16px;" class="animate-fade-in-up">
-                    <div style="height:${heroH + 40}px;width:100%;border-radius:16px;overflow:hidden;position:relative;background:linear-gradient(rgba(0,0,0,0) 30%, rgba(0,0,0,0.85) 100%),url('https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=600&q=80');background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:flex-end;padding:20px;">
-                        <div style="position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.15);" class="btn-morph">${iconFA('play', 'text-[#1A1A1A]')}</div>
-                        <div style="position:absolute;top:16px;left:16px;background:#1A1A1A;color:#fff;padding:6px 14px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:0.5px;">FEATURED</div>
-                        <h2 class="editorial-heading" style="font-size:28px;color:#fff;margin-bottom:6px;">FRESH PIZZA<br>PERFECTION</h2>
-                        <p class="editorial-subheading" style="color:var(--text-primary);">Watch our chefs craft signature dishes</p>
-                    </div>
-                </div>`;
-            } else if (theme === 'glassmorphism') {
-                return `
-                <div style="padding:0 16px;margin-bottom:16px;" class="animate-fade-in-up">
-                    <div style="height:${heroH + 40}px;width:100%;border-radius:16px;overflow:hidden;position:relative;background:linear-gradient(rgba(0,0,0,0) 25%, rgba(26,26,26,0.95) 100%),url('https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80');background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:flex-end;padding:20px;">
-                        <div style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);border:1px solid var(--border-color);border-radius:9999px;padding:6px 12px;display:flex;align-items:center;gap:6px;font-size:9px;font-weight:700;color:var(--highlight);letter-spacing:1px;text-transform:uppercase;">${iconMaterial('play-circle-line', 'color:#00BFA5;')} LIVE</div>
-                        <h2 style="font-size:26px;font-weight:900;color:#fff;letter-spacing:-0.5px;line-height:1.05;">PREMIUM FRESH<br>BOWLS</h2>
-                        <p style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:6px;line-height:1.4;">Watch our chefs craft signature dishes in real-time</p>
-                    </div>
-                </div>`;
-            } else {
-                return `
-                <div style="padding:0 16px 16px;" class="animate-fade-in-up">
-                    <div style="height:${heroH + 20}px;width:100%;border-radius:14px;overflow:hidden;position:relative;background:linear-gradient(rgba(0,0,0,0) 35%, rgba(0,0,0,0.8) 100%),url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80');background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;border:1px solid var(--border-color);box-shadow:0 4px 16px rgba(61,50,41,0.1);">
-                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-                            <div style="width:32px;height:32px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;">${iconBS('player-play', 'color:#fff;')}</div>
-                            <span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.9);text-transform:uppercase;letter-spacing:1.5px;">Featured Video</span>
+            // ─── V3 (option 2): VIDEO TOP + TEXT OVERLAY (dark card style) ───
+            const img = 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=600&q=80';
+            const cardBg = theme === 'glassmorphism' ? 'linear-gradient(135deg, rgba(20,20,20,0.9), rgba(40,40,40,0.9))' : 'linear-gradient(135deg, #1a1a1a, #2d2d2d)';
+            const badgeBg = theme === 'glassmorphism' ? 'rgba(0,191,165,0.2)' : 'rgba(255,107,53,0.2)';
+            const badgeColor = theme === 'glassmorphism' ? '#00BFA5' : '#FF8F65';
+            const accentCircle1 = theme === 'glassmorphism' ? 'rgba(0,191,165,0.12)' : 'rgba(139,90,43,0.25)';
+            const accentCircle2 = theme === 'glassmorphism' ? 'rgba(0,191,165,0.08)' : 'rgba(0,97,95,0.2)';
+            const playBg = theme === 'glassmorphism' ? '#00BFA5' : theme === 'neubrutalism' ? '#FF6B35' : '#00615F';
+            const borderColor = theme === 'glassmorphism' ? '1px solid rgba(255,255,255,0.08)' : theme === 'neubrutalism' ? '2px solid #1a1a1a' : 'none';
+            const cardRadius = theme === 'neubrutalism' ? '14px' : '18px';
+            const playIcon = theme === 'glassmorphism' ? iconMaterial('play-fill', 'font-size:18px;color:#fff;') : theme === 'neubrutalism' ? iconBS('player-play', 'font-size:16px;color:#fff;') : iconFA('play', 'font-size:16px;color:#fff;');
+            const badgeIcon = theme === 'glassmorphism' ? iconMaterial('play-circle-fill', 'font-size:12px;') : theme === 'neubrutalism' ? iconBS('player-play', 'font-size:10px;') : iconFA('play', 'font-size:10px;');
+            const eyeIcon = theme === 'glassmorphism' ? iconMaterial('eye-line', 'font-size:12px;') : theme === 'neubrutalism' ? iconBS('eye', 'font-size:12px;') : iconFA('eye', 'font-size:12px;');
+            const timeIcon = theme === 'glassmorphism' ? iconMaterial('time-line', 'font-size:12px;') : theme === 'neubrutalism' ? iconBS('clock', 'font-size:12px;') : iconFA('clock', 'font-size:12px;');
+            const boxShadow = theme === 'neumorphism' ? '0 8px 32px rgba(0,0,0,0.2)' : theme === 'glassmorphism' ? '0 8px 32px rgba(0,0,0,0.3);backdrop-filter:blur(12px)' : '4px 4px 0 #1a1a1a';
+
+            return `
+            <div style="padding:0 16px;margin-bottom:16px;" class="animate-fade-in-up">
+                <div style="background:${cardBg};border-radius:${cardRadius};padding:24px 20px;color:#fff;position:relative;overflow:hidden;border:${borderColor};box-shadow:${boxShadow};">
+                    <div style="position:absolute;top:-30px;right:-30px;width:100px;height:100px;border-radius:50%;background:${accentCircle1};"></div>
+                    <div style="position:absolute;bottom:-20px;left:-20px;width:80px;height:80px;border-radius:50%;background:${accentCircle2};"></div>
+                    <div style="position:relative;z-index:1;">
+                        <div style="display:inline-flex;align-items:center;gap:6px;background:${badgeBg};color:${badgeColor};font-size:10px;font-weight:700;padding:6px 12px;border-radius:20px;margin-bottom:14px;">${badgeIcon} Featured Video</div>
+                        <h2 style="font-size:22px;font-weight:800;line-height:1.2;margin-bottom:10px;">Premium Heavy Interface Concept</h2>
+                        <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
+                            <span style="font-size:11px;color:rgba(255,255,255,0.55);display:flex;align-items:center;gap:5px;">${eyeIcon} 12.4K views</span>
+                            <span style="font-size:11px;color:rgba(255,255,255,0.55);display:flex;align-items:center;gap:5px;">${timeIcon} 2:30</span>
                         </div>
-                        <h3 style="font-size:22px;font-weight:700;color:#fff;line-height:1.05;">PREMIUM FRESH<br>PIZZA PERFECTION</h3>
-                        <p style="font-size:11px;color:var(--text-primary);margin-top:4px;">Watch our chefs craft signature dishes</p>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <div style="width:40px;height:40px;border-radius:50%;background:${playBg};display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;" class="btn-morph">${playIcon}</div>
+                            <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.7);">Watch the full reel</span>
+                        </div>
                     </div>
-                </div>`;
-            }
+                </div>
+            </div>`;
         }
 
         function drawActiveOrderTracker(theme, style = 'default') {
@@ -5192,7 +5203,15 @@
         }
 
         // ─── BOOT ──────────────────────────────────────────────────────────
+        function setVersionBadge() {
+            const d = new Date();
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            document.getElementById('versionBadge').textContent = 'v' + y + '-' + m + '-' + day;
+        }
         window.onload = function () {
+            setVersionBadge();
             renderViewSwitcher();
             renderTopBarStylePicker();
             buildControllerList();
