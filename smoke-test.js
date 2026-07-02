@@ -89,7 +89,7 @@ async function main() {
     page.on('pageerror', e => errors.push('PAGEERROR: ' + e.message));
     page.on('console', msg => { if (msg.type() === 'error') errors.push('CONSOLE: ' + msg.text()); });
 
-    await page.goto('file:///' + INDEX_PATH.replace(/\\/g, '/'), { waitUntil: 'networkidle', timeout: 30000 });
+    await page.goto('file:///' + INDEX_PATH.replace(/\\/g, '/'), { waitUntil: 'load', timeout: 30000 });
     await page.waitForTimeout(1200);
 
     check('No console/page errors on boot', errors.length === 0, errors.join(' | '));
