@@ -1553,18 +1553,7 @@
 
     <!-- MAIN VIEWPORT GRID -->
     <div class="flex-1 h-full flex flex-col overflow-hidden">
-        <div class="flex items-center justify-between mb-4 bg-slate-900 border border-slate-800 rounded-xl px-4 py-2">
-            <div class="flex gap-3 text-xs items-center">
-                <a href="cards/index.html"
-                    style="background:#00615F;color:#fff;padding:4px 12px;border-radius:6px;text-decoration:none;font-weight:600;font-size:11px;display:flex;align-items:center;gap:4px;"><i
-                        class="ri-layout-grid-fill" style="font-size:12px;"></i> Cards</a>
-                <span style="color:#555;">|</span>
-                <span> Lucide</span>
-                <span>Remix</span>
-                <span> Tabler</span>
-            </div>
-        </div>
-
+       
         <div class="flex-1 flex gap-4 overflow-x-auto justify-start items-center pb-4">
 
             <!-- VIEWPORT 1: LIGHT · Lucide -->
@@ -2251,6 +2240,20 @@
             if (modal) { modal.style.transform = 'translateY(100%)'; }
         }
 
+        // ─── MENU MODAL ───────────────────────────────────────────────────
+        function openMenuModal(theme) {
+            const overlay = document.getElementById('menuOverlay-' + theme);
+            const modal = document.getElementById('menuModal-' + theme);
+            if (overlay) { overlay.style.opacity = '1'; overlay.style.pointerEvents = 'auto'; }
+            if (modal) { modal.style.transform = 'translateY(0)'; }
+        }
+        function closeMenuModal(theme) {
+            const overlay = document.getElementById('menuOverlay-' + theme);
+            const modal = document.getElementById('menuModal-' + theme);
+            if (overlay) { overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none'; }
+            if (modal) { modal.style.transform = 'translateY(100%)'; }
+        }
+
         // ─── HEART TOGGLE ────────────────────────────────────────────────
         const heartState = { neumorphism: false, glassmorphism: false, neubrutalism: false };
         function toggleHeart(theme) {
@@ -2801,39 +2804,40 @@
             };
             const variant = variantMap[style] || 'v1';
 
+            const clickAttr = `onclick="openMenuModal('${theme}')"`;
             if (variant === 'v1') {
                 // --- V1: Left Border + Dot + Headline + Description + Tag ---
                 return `
-        <div style="padding:0 16px;margin-bottom:8px;">
-            <div style="display:flex;align-items:center;gap:12px;background:var(--card-bg);border-radius:var(--card-radius);padding:12px 16px;box-shadow:var(--card-shadow);border-left:4px solid var(--accent);">
+        <div style="padding:0 16px;margin-bottom:8px;" ${clickAttr}>
+            <div style="display:flex;align-items:center;gap:12px;background:var(--card-bg);border-radius:var(--card-radius);padding:12px 16px;box-shadow:var(--card-shadow);border-left:4px solid var(--accent);cursor:pointer;" class="btn-morph">
                 <div style="width:36px;height:36px;border-radius:50%;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent);font-size:18px;">${iconTruck}</div>
                 <div style="flex:1;">
                     <div style="font-size:14px;font-weight:700;color:var(--text-primary);">FREE DELIVERY</div>
                     <div style="font-size:11px;color:var(--text-secondary);">On orders over $25</div>
                 </div>
-                <span style="background:var(--accent);color:#fff;border-radius:var(--btn-radius);padding:4px 12px;font-size:10px;font-weight:700;white-space:nowrap;">Limited Time</span>
+                <span style="background:var(--accent);color:#fff;border-radius:var(--btn-radius);padding:4px 12px;font-size:10px;font-weight:700;white-space:nowrap;">View Menu</span>
             </div>
         </div>`;
             } else if (variant === 'v2') {
                 // --- V2: No icon, text left, due date + tag on right ---
                 return `
-        <div style="padding:0 16px;margin-bottom:8px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;background:var(--card-bg);border-radius:var(--card-radius);padding:12px 16px;box-shadow:var(--card-shadow);">
+        <div style="padding:0 16px;margin-bottom:8px;" ${clickAttr}>
+            <div style="display:flex;align-items:center;justify-content:space-between;background:var(--card-bg);border-radius:var(--card-radius);padding:12px 16px;box-shadow:var(--card-shadow);cursor:pointer;" class="btn-morph">
                 <div>
                     <div style="font-size:14px;font-weight:700;color:var(--text-primary);">FREE DELIVERY</div>
                     <div style="font-size:11px;color:var(--text-secondary);">On orders over $25</div>
                 </div>
                 <div style="display:flex;align-items:center;gap:12px;">
                     <span style="font-size:10px;color:var(--text-secondary);">Ends 04/22</span>
-                    <span style="background:var(--accent);color:#fff;border-radius:var(--btn-radius);padding:4px 12px;font-size:10px;font-weight:700;">Claim Offer</span>
+                    <span style="background:var(--accent);color:#fff;border-radius:var(--btn-radius);padding:4px 12px;font-size:10px;font-weight:700;">View Menu</span>
                 </div>
             </div>
         </div>`;
             } else {
                 // --- V3: Right Border + Icon + Headline + Description ---
                 return `
-        <div style="padding:0 16px;margin-bottom:8px;">
-            <div style="display:flex;align-items:center;gap:12px;background:var(--card-bg);border-radius:var(--card-radius);padding:12px 16px;box-shadow:var(--card-shadow);border-right:4px solid var(--accent);">
+        <div style="padding:0 16px;margin-bottom:8px;" ${clickAttr}>
+            <div style="display:flex;align-items:center;gap:12px;background:var(--card-bg);border-radius:var(--card-radius);padding:12px 16px;box-shadow:var(--card-shadow);border-right:4px solid var(--accent);cursor:pointer;" class="btn-morph">
                 <div style="flex:1;">
                     <div style="font-size:14px;font-weight:700;color:var(--text-primary);">FREE DELIVERY</div>
                     <div style="font-size:11px;color:var(--text-secondary);">On orders over $25</div>
@@ -5112,9 +5116,71 @@
                     <div style="font-size:10px; font-weight:600; color:${textColor}; margin-bottom:6px;">Theme Colors</div>
                     <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center;">
                         ${swatches}
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+
+                // Menu modal
+                const menuBg = theme === 'glassmorphism' ? 'rgba(30,30,30,0.95)' : (theme === 'neubrutalism' ? '#fff' : '#fff');
+                const menuText = theme === 'glassmorphism' ? '#fff' : '#1a1a1a';
+                const menuSub = theme === 'glassmorphism' ? 'rgba(255,255,255,0.5)' : '#888';
+                const menuItemBg = theme === 'glassmorphism' ? 'rgba(255,255,255,0.04)' : '#f8f8f8';
+                const menuAccent = theme === 'glassmorphism' ? '#00BFA5' : (theme === 'neubrutalism' ? '#FF6B35' : '#00615F');
+                container.innerHTML += `
+                    <div id="menuOverlay-${theme}" onclick="closeMenuModal('${theme}')" style="position:absolute;inset:0;background:rgba(0,0,0,0.5);opacity:0;pointer-events:none;transition:opacity 0.4s;z-index:50;border-radius:24px;backdrop-filter:blur(4px);"></div>
+                    <div id="menuModal-${theme}" style="position:absolute;bottom:0;left:0;right:0;background:${menuBg};border-radius:24px 24px 0 0;padding:20px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);z-index:60;max-height:80%;overflow-y:auto;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                            <div>
+                                <span style="font-size:18px;font-weight:800;color:${menuText};">Our Menu</span>
+                                <div style="font-size:10px;color:${menuSub};margin-top:2px;">Fresh · Fast · Delicious</div>
+                            </div>
+                            <button onclick="closeMenuModal('${theme}')" style="background:none;border:none;font-size:20px;color:${menuSub};cursor:pointer;">&times;</button>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:14px;">
+                            <div style="font-size:11px;font-weight:700;color:${menuAccent};text-transform:uppercase;letter-spacing:1px;">Appetizers</div>
+                            <div style="display:flex;align-items:center;gap:10px;padding:10px;background:${menuItemBg};border-radius:12px;">
+                                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=100&q=80" style="width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt="">
+                                <div style="flex:1;"><div style="font-size:13px;font-weight:700;color:${menuText};">Caesar Salad</div><div style="font-size:10px;color:${menuSub};margin-top:2px;">Fresh romaine, parmesan, croutons</div></div>
+                                <span style="font-size:12px;font-weight:700;color:${menuAccent};">$8.99</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px;padding:10px;background:${menuItemBg};border-radius:12px;">
+                                <img src="https://images.unsplash.com/photo-1625943553852-781c6dd46faa?auto=format&fit=crop&w=100&q=80" style="width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt="">
+                                <div style="flex:1;"><div style="font-size:13px;font-weight:700;color:${menuText};">Bruschetta</div><div style="font-size:10px;color:${menuSub};margin-top:2px;">Tomato, basil, balsamic glaze</div></div>
+                                <span style="font-size:12px;font-weight:700;color:${menuAccent};">$6.99</span>
+                            </div>
+                            <div style="font-size:11px;font-weight:700;color:${menuAccent};text-transform:uppercase;letter-spacing:1px;margin-top:4px;">Mains</div>
+                            <div style="display:flex;align-items:center;gap:10px;padding:10px;background:${menuItemBg};border-radius:12px;">
+                                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=100&q=80" style="width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt="">
+                                <div style="flex:1;"><div style="font-size:13px;font-weight:700;color:${menuText};">Classic Beef Burger</div><div style="font-size:10px;color:${menuSub};margin-top:2px;">Double patty, cheddar, lettuce</div></div>
+                                <span style="font-size:12px;font-weight:700;color:${menuAccent};">$12.99</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px;padding:10px;background:${menuItemBg};border-radius:12px;">
+                                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=100&q=80" style="width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt="">
+                                <div style="flex:1;"><div style="font-size:13px;font-weight:700;color:${menuText};">Margherita Pizza</div><div style="font-size:10px;color:${menuSub};margin-top:2px;">San Marzano, mozzarella, basil</div></div>
+                                <span style="font-size:12px;font-weight:700;color:${menuAccent};">$14.99</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px;padding:10px;background:${menuItemBg};border-radius:12px;">
+                                <img src="https://images.unsplash.com/photo-1546069901-d5bfd2cbfb1f?auto=format&fit=crop&w=100&q=80" style="width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt="">
+                                <div style="flex:1;"><div style="font-size:13px;font-weight:700;color:${menuText};">Grilled Salmon Bowl</div><div style="font-size:10px;color:${menuSub};margin-top:2px;">Quinoa, avocado, citrus dressing</div></div>
+                                <span style="font-size:12px;font-weight:700;color:${menuAccent};">$16.99</span>
+                            </div>
+                            <div style="font-size:11px;font-weight:700;color:${menuAccent};text-transform:uppercase;letter-spacing:1px;margin-top:4px;">Beverages</div>
+                            <div style="display:flex;align-items:center;gap:10px;padding:10px;background:${menuItemBg};border-radius:12px;">
+                                <img src="https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=100&q=80" style="width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt="">
+                                <div style="flex:1;"><div style="font-size:13px;font-weight:700;color:${menuText};">Fresh Lemonade</div><div style="font-size:10px;color:${menuSub};margin-top:2px;">Hand-squeezed, mint sprig</div></div>
+                                <span style="font-size:12px;font-weight:700;color:${menuAccent};">$3.99</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px;padding:10px;background:${menuItemBg};border-radius:12px;">
+                                <img src="https://images.unsplash.com/photo-1579954115545-a95591f28bfc?auto=format&fit=crop&w=100&q=80" style="width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt="">
+                                <div style="flex:1;"><div style="font-size:13px;font-weight:700;color:${menuText};">Iced Latte</div><div style="font-size:10px;color:${menuSub};margin-top:2px;">Espresso, oat milk, vanilla</div></div>
+                                <span style="font-size:12px;font-weight:700;color:${menuAccent};">$4.99</span>
+                            </div>
+                        </div>
+                        <div style="text-align:center;margin-top:16px;padding-top:12px;border-top:1px solid ${theme === 'glassmorphism' ? 'rgba(255,255,255,0.08)' : '#eee'};">
+                            <span style="font-size:9px;color:${menuSub};">Free delivery on orders over $25</span>
+                        </div>
+                    </div>
+                `;
         }
 
         // ─── PALETTE EDITOR ──────────────────────────────────────────────
