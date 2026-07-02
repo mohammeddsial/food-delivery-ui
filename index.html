@@ -84,6 +84,7 @@
             flex: 1;
             overflow-y: auto;
             overflow-x: hidden;
+            padding-top: 16px;
             padding-bottom: 80px;
         }
 
@@ -2812,7 +2813,7 @@
             if (variant === 'v1') {
                 // --- V1: Left Border + Dot + Headline + Description + Tag ---
                 return `
-        <div style="padding:0 16px;margin-bottom:8px;" ${clickAttr}>
+        <div style="padding:0 16px 16px;" ${clickAttr}>
             <div style="display:flex;align-items:center;gap:12px;background:var(--card-bg);border-radius:var(--card-radius);padding:12px 16px;box-shadow:var(--card-shadow);border-left:4px solid var(--accent);cursor:pointer;" class="btn-morph">
                 <div style="width:36px;height:36px;border-radius:50%;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent);font-size:18px;">${iconTruck}</div>
                 <div style="flex:1;">
@@ -2825,7 +2826,7 @@
             } else if (variant === 'v2') {
                 // --- V2: No icon, text left, due date + tag on right ---
                 return `
-        <div style="padding:0 16px;margin-bottom:8px;" ${clickAttr}>
+        <div style="padding:0 16px 16px;" ${clickAttr}>
             <div style="display:flex;align-items:center;justify-content:space-between;background:var(--card-bg);border-radius:var(--card-radius);padding:12px 16px;box-shadow:var(--card-shadow);cursor:pointer;" class="btn-morph">
                 <div>
                     <div style="font-size:14px;font-weight:700;color:var(--text-primary);">FREE DELIVERY</div>
@@ -2840,7 +2841,7 @@
             } else {
                 // --- V3: Right Border + Icon + Headline + Description ---
                 return `
-        <div style="padding:0 16px;margin-bottom:8px;" ${clickAttr}>
+        <div style="padding:0 16px 16px;" ${clickAttr}>
             <div style="display:flex;align-items:center;gap:12px;background:var(--card-bg);border-radius:var(--card-radius);padding:12px 16px;box-shadow:var(--card-shadow);border-right:4px solid var(--accent);cursor:pointer;" class="btn-morph">
                 <div style="flex:1;">
                     <div style="font-size:14px;font-weight:700;color:var(--text-primary);">FREE DELIVERY</div>
@@ -3020,7 +3021,7 @@
                 </div>`;
             } else {
                 return `
-                <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px;position:relative;" id="brandHeader-${theme}">
+                <div style="padding:0 16px 16px;display:flex;flex-direction:column;gap:10px;position:relative;" id="brandHeader-${theme}">
                     <div style="display:flex;justify-content:space-between;align-items:center;">
                         <div onclick="toggleAddressDropdown('${theme}')" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
                             <div style="width:30px;height:30px;border-radius:10px;background:var(--pill-bg);display:flex;align-items:center;justify-content:center;">${iconBS('map-pin', 'text-[#00615F]')}</div>
