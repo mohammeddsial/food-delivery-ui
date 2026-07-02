@@ -3329,56 +3329,92 @@
         }
 
         // ─── Announcement Strip──────────────────────────────
+        // ─── Announcement Strip (Marquee) ──────────────────────────────
         function drawAnnouncementStrip(theme, style = 'default') {
+            const isGlass = theme === 'glassmorphism';
+            const isBrut = theme === 'neubrutalism';
 
-            const iconTruck = iconFor(theme, 'truck');
+            const texts = [
+                'Free delivery on orders $25+',
+                'New: Summer Smoothie Collection',
+                'Earn 2x points this weekend',
+                'Download our app for exclusive deals'
+            ];
 
             const variantMap = {
-                'default': 'v1',      // Left Border + Icon + Tag (icon-headline)
-                'option 1': 'v2',     // No icon, due date + tag (deadline-badge)
-                'option 2': 'v3'      // Right Border + Icon (image-side layout)
+                'default': 'v1',
+                'option 1': 'v2',
+                'option 2': 'v3'
             };
             const variant = variantMap[style] || 'v1';
 
-            const clickAttr = `onclick="openMenuModal('${theme}')"`;
+            const styleTag = `<style>
+                @keyframes marqueeScroll {
+                    0% { transform: translateX(0); }
+                    100% { transform: translateX(-50%); }
+                }
+            </style>`;
+
             if (variant === 'v1') {
-                // --- V1: Left Border + Dot + Headline + Description + Tag ---
-                return `
-        <div style="padding:0 16px 16px;" ${clickAttr}>
-            <div style="display:flex;align-items:center;gap:12px;background:var(--card-bg);border-radius:var(--card-radius);padding:12px 16px;box-shadow:var(--card-shadow);border-left:4px solid var(--accent);cursor:pointer;" class="btn-morph">
-                <div style="width:36px;height:36px;border-radius:50%;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent);font-size:18px;">${iconTruck}</div>
-                <div style="flex:1;">
-                    <div style="font-size:14px;font-weight:700;color:var(--text-primary);">FREE DELIVERY</div>
-                    <div style="font-size:11px;color:var(--text-secondary);">On orders over $25</div>
+                // ── DEFAULT: Coral accent bg, white text, dot dividers, edge fades ──
+                const speed = '18s';
+                const itemsHtml = texts.map(t =>
+                    `<span style="white-space:nowrap;font-size:11px;font-weight:600;color:#fff;letter-spacing:0.3px;padding:0 12px;">${t}</span>` +
+                    `<span style="width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.5);flex-shrink:0;"></span>`
+                ).join('');
+
+                return `${styleTag}
+        <div style="padding:0 16px 12px;">
+            <div style="position:relative;overflow:hidden;background:var(--accent);border-radius:var(--card-radius);height:34px;">
+                <div style="position:absolute;left:0;top:0;bottom:0;width:28px;background:linear-gradient(to right,var(--accent),transparent);z-index:2;pointer-events:none;border-radius:var(--card-radius) 0 0 var(--card-radius);"></div>
+                <div style="position:absolute;right:0;top:0;bottom:0;width:28px;background:linear-gradient(to left,var(--accent),transparent);z-index:2;pointer-events:none;border-radius:0 var(--card-radius) var(--card-radius) 0;"></div>
+                <div style="display:flex;align-items:center;height:100%;animation:marqueeScroll ${speed} linear infinite;width:max-content;">
+                    ${itemsHtml}${itemsHtml}
                 </div>
-                <span style="background:var(--accent);color:#fff;border-radius:var(--btn-radius);padding:4px 12px;font-size:10px;font-weight:700;white-space:nowrap;">View Menu</span>
             </div>
         </div>`;
+
             } else if (variant === 'v2') {
-                // --- V2: No icon, text left, due date + tag on right ---
-                return `
-        <div style="padding:0 16px 16px;" ${clickAttr}>
-            <div style="display:flex;align-items:center;justify-content:space-between;background:var(--card-bg);border-radius:var(--card-radius);padding:12px 16px;box-shadow:var(--card-shadow);cursor:pointer;" class="btn-morph">
-                <div>
-                    <div style="font-size:14px;font-weight:700;color:var(--text-primary);">FREE DELIVERY</div>
-                    <div style="font-size:11px;color:var(--text-secondary);">On orders over $25</div>
-                </div>
-                <div style="display:flex;align-items:center;gap:12px;">
-                    <span style="font-size:10px;color:var(--text-secondary);">Ends 04/22</span>
-                    <span style="background:var(--accent);color:#fff;border-radius:var(--btn-radius);padding:4px 12px;font-size:10px;font-weight:700;">View Menu</span>
+                // ── OPTION 1: Glass panel, amber/gold text, icon-led, glow, slower ──
+                const speed = '26s';
+                const iconStyle = 'font-size:13px;color:var(--accent);';
+                const icons = [
+                    isGlass ? iconMaterial('gift-line', iconStyle) : isBrut ? iconBS('gift', iconStyle) : iconFA('gift', iconStyle),
+                    isGlass ? iconMaterial('truck-line', iconStyle) : isBrut ? iconBS('truck', iconStyle) : iconFA('truck', iconStyle),
+                    isGlass ? iconMaterial('star-line', iconStyle) : isBrut ? iconBS('star', iconStyle) : iconFA('star', iconStyle),
+                    isGlass ? iconMaterial('download-2-line', iconStyle) : isBrut ? iconBS('download', iconStyle) : iconFA('download', iconStyle)
+                ];
+                const itemsHtml = texts.map((t, i) =>
+                    `<span style="display:inline-flex;align-items:center;gap:5px;white-space:nowrap;font-size:11px;font-weight:600;color:var(--accent);text-shadow:0 0 8px var(--accent-light);letter-spacing:0.3px;padding:0 14px;">` +
+                    `${icons[i]}${t}</span>` +
+                    `<span style="color:var(--border-color);font-size:10px;opacity:0.4;">&#9670;</span>`
+                ).join('');
+
+                return `${styleTag}
+        <div style="padding:0 16px 12px;">
+            <div style="position:relative;overflow:hidden;background:rgba(255,255,255,0.04);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--border-color);border-radius:var(--card-radius);height:36px;">
+                <div style="position:absolute;left:0;top:0;bottom:0;width:24px;background:linear-gradient(to right,var(--card-bg),transparent);z-index:2;pointer-events:none;border-radius:var(--card-radius) 0 0 var(--card-radius);"></div>
+                <div style="position:absolute;right:0;top:0;bottom:0;width:24px;background:linear-gradient(to left,var(--card-bg),transparent);z-index:2;pointer-events:none;border-radius:0 var(--card-radius) var(--card-radius) 0;"></div>
+                <div style="display:flex;align-items:center;height:100%;animation:marqueeScroll ${speed} linear infinite;width:max-content;">
+                    ${itemsHtml}${itemsHtml}
                 </div>
             </div>
         </div>`;
+
             } else {
-                // --- V3: Right Border + Icon + Headline + Description ---
-                return `
-        <div style="padding:0 16px 16px;" ${clickAttr}>
-            <div style="display:flex;align-items:center;gap:12px;background:var(--card-bg);border-radius:var(--card-radius);padding:12px 16px;box-shadow:var(--card-shadow);border-right:4px solid var(--accent);cursor:pointer;" class="btn-morph">
-                <div style="flex:1;">
-                    <div style="font-size:14px;font-weight:700;color:var(--text-primary);">FREE DELIVERY</div>
-                    <div style="font-size:11px;color:var(--text-secondary);">On orders over $25</div>
+                // ── OPTION 2: Neubrutalism pill tags, chunky border, offset shadow ──
+                const speed = '22s';
+                const itemsHtml = texts.map((t, i) => {
+                    const color = i % 2 === 0 ? 'var(--accent)' : 'var(--highlight)';
+                    return `<span style="display:inline-flex;align-items:center;white-space:nowrap;font-size:10px;font-weight:800;color:${color};background:var(--card-bg);border:2px solid ${color};border-radius:var(--btn-radius);padding:3px 10px;margin:0 5px;letter-spacing:0.2px;text-transform:uppercase;">${t}</span>`;
+                }).join('');
+
+                return `${styleTag}
+        <div style="padding:0 16px 12px;">
+            <div style="position:relative;overflow:hidden;background:var(--pill-bg);border:2.5px solid var(--border-color);border-radius:var(--card-radius);height:36px;box-shadow:3px 3px 0 var(--border-color);">
+                <div style="display:flex;align-items:center;height:100%;animation:marqueeScroll ${speed} linear infinite;width:max-content;">
+                    ${itemsHtml}${itemsHtml}
                 </div>
-                <div style="width:36px;height:36px;border-radius:50%;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent);font-size:18px;">${iconTruck}</div>
             </div>
         </div>`;
             }
