@@ -22,13 +22,14 @@
         .toggle { display: flex; background: #f0f0f0; border-radius: 9999px; padding: 3px; }
         .toggle-btn { flex: 1; padding: 8px 12px; border-radius: 9999px; font-size: 11px; font-weight: 700; border: none; cursor: pointer; background: transparent; color: #888; transition: all 0.2s; }
         .toggle-btn.active { background: #1a1a1a; color: #fff; }
-        .dropdown { display: none; background: #fff; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); padding: 8px; position: absolute; left: 16px; right: 16px; z-index: 100; }
-        .dropdown-item { padding: 10px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: space-between; transition: background 0.15s; }
-        .dropdown-item:hover { background: #f0f7f6; }
-        .dropdown-item.active { background: #f0f7f6; font-weight: 700; }
-        .dropdown-header { font-size: 9px; color: #888; padding: 6px 10px 4px; font-weight: 600; letter-spacing: 0.5px; }
+        .dd { display: none; background: #fff; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); border: 1px solid #eee; overflow: hidden; }
+        .dd-item { padding: 10px 14px; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: space-between; transition: background 0.15s; }
+        .dd-item:hover { background: #f0f7f6; }
+        .dd-item.active { background: #f0f7f6; font-weight: 700; }
+        .dd-hdr { font-size: 9px; color: #888; padding: 8px 14px 4px; font-weight: 600; letter-spacing: 0.5px; background: #fafafa; border-bottom: 1px solid #eee; }
         .scroll-area { max-height: 600px; overflow-y: auto; }
-        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 50; }
+        .addr-click { cursor: pointer; }
+        .addr-click:hover { opacity: 0.8; }
     </style>
 </head>
 <body>
@@ -39,8 +40,6 @@
             <div class="tab" onclick="switchTab(2)">Option 2</div>
         </div>
 
-        <div id="overlay" class="overlay" onclick="closeDropdowns()"></div>
-
         <!-- V1: Default -->
         <div class="variant active" id="v1">
             <div class="phone-frame">
@@ -50,59 +49,78 @@
                     <div class="status-icons"><i class="ri-signal-wifi-fill"></i><i class="ri-battery-fill"></i></div>
                 </div>
                 <div class="scroll-area">
-                    <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px;position:relative;" id="header-v1">
+                    <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px;position:relative;">
                         <div style="display:flex;justify-content:space-between;align-items:center;">
-                            <div onclick="toggleDropdown('v1')" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-                                <div style="width:32px;height:32px;border-radius:10px;background:#F0F7F6;display:flex;align-items:center;justify-content:center;"><i class="ri-map-pin-2-fill" style="font-size:16px;color:#00615F;"></i></div>
-                                <div>
-                                    <div style="font-size:9px;color:#888;letter-spacing:1px;text-transform:uppercase;font-weight:600;">Deliver to</div>
-                                    <div style="font-size:12px;font-weight:700;color:#1a1a1a;display:flex;align-items:center;gap:4px;" id="addrText-v1">Manhattan West, NY <span style="font-size:9px;font-weight:500;color:#888;">2.3 km</span> <i class="ri-arrow-down-s-fill" style="font-size:12px;color:#1a1a1a;"></i></div>
+                            <!-- Delivery mode: dual selects -->
+                            <div id="ds-v1" style="display:flex;gap:8px;flex:1;">
+                                <div class="addr-click" onclick="toggleBranchDD('v1')" style="flex:1;display:flex;align-items:center;gap:8px;background:#F0F7F6;border-radius:10px;padding:8px 10px;">
+                                    <i class="ri-store-2-line" style="font-size:16px;color:#00615F;"></i>
+                                    <div style="min-width:0;">
+                                        <div style="font-size:8px;color:#888;letter-spacing:1px;text-transform:uppercase;font-weight:600;">Where from</div>
+                                        <div style="font-size:11px;font-weight:700;color:#1a1a1a;display:flex;align-items:center;gap:4px;white-space:nowrap;" id="wf-v1">Downtown NYC <span style="font-size:9px;font-weight:500;color:#888;">0.5 km</span> <i class="ri-arrow-down-s-fill" style="font-size:12px;color:#1a1a1a;"></i></div>
+                                    </div>
+                                </div>
+                                <div class="addr-click" onclick="toggleAddrDD('v1')" style="flex:1;display:flex;align-items:center;gap:8px;background:#F0F7F6;border-radius:10px;padding:8px 10px;">
+                                    <i class="ri-map-pin-2-line" style="font-size:16px;color:#00615F;"></i>
+                                    <div style="min-width:0;">
+                                        <div style="font-size:8px;color:#888;letter-spacing:1px;text-transform:uppercase;font-weight:600;">Deliver to</div>
+                                        <div style="font-size:11px;font-weight:700;color:#1a1a1a;display:flex;align-items:center;gap:4px;white-space:nowrap;" id="dt-v1">Manhattan West <span style="font-size:9px;font-weight:500;color:#888;">2.3 km</span> <i class="ri-arrow-down-s-fill" style="font-size:12px;color:#1a1a1a;"></i></div>
+                                    </div>
                                 </div>
                             </div>
-                            <div style="width:32px;height:32px;border-radius:50%;overflow:hidden;border:1px solid #f0f0f0;">
-                                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&q=80" style="width:100%;height:100%;object-fit:cover;" alt="avatar">
+                            <!-- Pickup mode: single select -->
+                            <div id="ps-v1" class="addr-click" onclick="toggleBranchDD('v1')" style="display:none;align-items:center;gap:8px;background:#F0F7F6;border-radius:10px;padding:8px 10px;flex:1;">
+                                <i class="ri-store-2-line" style="font-size:16px;color:#00615F;"></i>
+                                <div>
+                                    <div style="font-size:8px;color:#888;letter-spacing:1px;text-transform:uppercase;font-weight:600;">Pickup from</div>
+                                    <div style="font-size:11px;font-weight:700;color:#1a1a1a;display:flex;align-items:center;gap:4px;" id="pt-v1">Downtown NYC <span style="font-size:9px;font-weight:500;color:#888;">0.5 km</span> <i class="ri-arrow-down-s-fill" style="font-size:12px;color:#1a1a1a;"></i></div>
+                                </div>
+                            </div>
+                           
+                        </div>
+                        <!-- Branches dropdown (Where from / Pickup from) -->
+                        <div id="bd-v1" style="display:none;position:absolute;top:57px;left:16px;width:70%;z-index:60;">
+                            <div class="dd" style="display:block;">
+                                <div class="dd-hdr">BRANCHES</div>
+                                <div class="dd-item active" onclick="pickBranch('v1','Downtown NYC','0.5 km')">
+                                    <span><i class="ri-store-2-fill" style="color:#00615F;"></i> Downtown NYC</span>
+                                    <span style="font-size:9px;color:#888;">0.5 km</span>
+                                </div>
+                                <div class="dd-item" onclick="pickBranch('v1','Midtown Manhattan','1.2 km')">
+                                    <span><i class="ri-store-2-line" style="color:#999;"></i> Midtown Manhattan</span>
+                                    <span style="font-size:9px;color:#888;">1.2 km</span>
+                                </div>
+                                <div class="dd-item" onclick="pickBranch('v1','Brooklyn Heights','2.8 km')">
+                                    <span><i class="ri-store-2-line" style="color:#999;"></i> Brooklyn Heights</span>
+                                    <span style="font-size:9px;color:#888;">2.8 km</span>
+                                </div>
                             </div>
                         </div>
-                        <div id="addrDropdown-v1" class="dropdown" style="top:60px;">
-                            <div class="dropdown-item active" onclick="selectAddr('v1','Manhattan West, NY','2.3 km')">
-                                <span><i class="ri-map-pin-2-fill" style="color:#00615F;"></i> Manhattan West, NY</span>
-                                <span style="font-size:9px;color:#888;">2.3 km</span>
+                        <!-- Address dropdown (Deliver to) -->
+                        <div id="ad-v1" style="display:none;position:absolute;top:57px;right:16px;width:70%;z-index:60;">
+                            <div class="dd" style="display:block;">
+                                <div class="dd-hdr">DELIVER TO</div>
+                                <div class="dd-item active" onclick="pickAddr('v1','Manhattan West, NY','2.3 km')">
+                                    <span><i class="ri-map-pin-2-fill" style="color:#00615F;"></i> Manhattan West, NY</span>
+                                    <span style="font-size:9px;color:#888;">2.3 km</span>
+                                </div>
+                                <div class="dd-item" onclick="pickAddr('v1','Times Square, NY','4.1 km')">
+                                    <span><i class="ri-map-pin-2-line" style="color:#999;"></i> Times Square, NY</span>
+                                    <span style="font-size:9px;color:#888;">4.1 km</span>
+                                </div>
+                                <div class="dd-item" onclick="pickAddr('v1','Central Park, NY','3.7 km')">
+                                    <span><i class="ri-map-pin-2-line" style="color:#999;"></i> Central Park, NY</span>
+                                    <span style="font-size:9px;color:#888;">3.7 km</span>
+                                </div>
+                                <div style="border-top:1px solid #eee;"></div>
+                                <div class="dd-item" onclick="pickAddr('v1','Add New Address','')">
+                                    <span><i class="ri-add-line" style="color:#00615F;"></i> Add New Address</span>
+                                </div>
                             </div>
-                            <div class="dropdown-item" onclick="selectAddr('v1','Times Square, NY','4.1 km')">
-                                <span><i class="ri-map-pin-2-line" style="color:#999;"></i> Times Square, NY</span>
-                                <span style="font-size:9px;color:#888;">4.1 km</span>
-                            </div>
-                            <div class="dropdown-item" onclick="selectAddr('v1','Central Park, NY','3.7 km')">
-                                <span><i class="ri-map-pin-2-line" style="color:#999;"></i> Central Park, NY</span>
-                                <span style="font-size:9px;color:#888;">3.7 km</span>
-                            </div>
-                            <div style="border-top:1px solid #eee;margin:4px 0;"></div>
-                            <div class="dropdown-item" onclick="selectAddr('v1','Brooklyn Bridge, NY','')">
-                                <span><i class="ri-add-line" style="color:#00615F;"></i> Add New Address</span>
-                            </div>
-                        </div>
-                        <div id="branchDropdown-v1" class="dropdown" style="top:110px;">
-                            <div class="dropdown-header">FROM RESTAURANT</div>
-                            <div class="dropdown-item active" onclick="selectBranch('v1','Downtown NYC','0.5 km')">
-                                <span><i class="ri-store-2-fill" style="color:#00615F;"></i> Downtown NYC</span>
-                                <span style="font-size:9px;color:#888;">0.5 km</span>
-                            </div>
-                            <div class="dropdown-item" onclick="selectBranch('v1','Midtown Manhattan','1.2 km')">
-                                <span><i class="ri-store-2-line" style="color:#999;"></i> Midtown Manhattan</span>
-                                <span style="font-size:9px;color:#888;">1.2 km</span>
-                            </div>
-                            <div class="dropdown-item" onclick="selectBranch('v1','Brooklyn Heights','2.8 km')">
-                                <span><i class="ri-store-2-line" style="color:#999;"></i> Brooklyn Heights</span>
-                                <span style="font-size:9px;color:#888;">2.8 km</span>
-                            </div>
-                        </div>
-                        <div style="display:flex;background:#F0F7F6;border-radius:10px;padding:8px 12px;align-items:center;gap:8px;">
-                            <i class="ri-search-line" style="color:#999;font-size:16px;"></i>
-                            <span style="font-size:12px;color:#888;">Search restaurants, dishes...</span>
                         </div>
                         <div class="toggle">
-                            <button class="toggle-btn active" onclick="setMode('v1','delivery')" id="delBtn-v1">Delivery</button>
-                            <button class="toggle-btn" onclick="setMode('v1','pickup')" id="pickBtn-v1">Pickup</button>
+                            <button class="toggle-btn active" onclick="setMode('v1','delivery')" id="del-v1">Delivery</button>
+                            <button class="toggle-btn" onclick="setMode('v1','pickup')" id="pick-v1">Pickup</button>
                         </div>
                     </div>
                 </div>
@@ -118,46 +136,69 @@
                     <div class="status-icons"><i class="ri-signal-wifi-fill"></i><i class="ri-battery-fill"></i></div>
                 </div>
                 <div class="scroll-area">
-                    <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px;position:relative;" id="header-v2">
+                    <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px;">
                         <div style="display:flex;justify-content:space-between;align-items:center;">
-                            <div onclick="toggleDropdown('v2')" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-                                <div style="width:32px;height:32px;border-radius:10px;background:#F0F7F6;display:flex;align-items:center;justify-content:center;"><i class="ri-map-pin-2-fill" style="font-size:16px;color:#00615F;"></i></div>
-                                <div>
-                                    <div style="font-size:9px;color:#888;letter-spacing:1px;text-transform:uppercase;font-weight:600;">Deliver to</div>
-                                    <div style="font-size:12px;font-weight:700;color:#1a1a1a;display:flex;align-items:center;gap:4px;" id="addrText-v2">Manhattan West, NY <span style="font-size:9px;font-weight:500;color:#888;">2.3 km</span> <i class="ri-arrow-down-s-fill" style="font-size:12px;color:#1a1a1a;"></i></div>
+                            <div class="addr-click" onclick="toggleDD('v2')">
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    <div style="width:32px;height:32px;border-radius:10px;background:#F0F7F6;display:flex;align-items:center;justify-content:center;"><i class="ri-map-pin-2-fill" style="font-size:16px;color:#00615F;"></i></div>
+                                    <div>
+                                        <div style="font-size:9px;color:#888;letter-spacing:1px;text-transform:uppercase;font-weight:600;">Deliver to</div>
+                                        <div style="font-size:12px;font-weight:700;color:#1a1a1a;display:flex;align-items:center;gap:4px;" id="txt-v2">Manhattan West, NY <span style="font-size:9px;font-weight:500;color:#888;">2.3 km</span> <i class="ri-arrow-down-s-fill" style="font-size:12px;color:#1a1a1a;"></i></div>
+                                    </div>
                                 </div>
                             </div>
                             <div style="width:32px;height:32px;border-radius:50%;overflow:hidden;border:1px solid #f0f0f0;">
                                 <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&q=80" style="width:100%;height:100%;object-fit:cover;" alt="avatar">
                             </div>
                         </div>
-                        <div id="addrDropdown-v2" class="dropdown" style="top:60px;">
-                            <div class="dropdown-item active" onclick="selectAddr('v2','Manhattan West, NY','2.3 km')">
-                                <span><i class="ri-map-pin-2-fill" style="color:#00615F;"></i> Manhattan West, NY</span>
-                                <span style="font-size:9px;color:#888;">2.3 km</span>
+                        <div id="dd-v2" style="display:none;">
+                            <div class="dd">
+                                <div class="dd-hdr">DELIVER TO</div>
+                                <div class="dd-item active" onclick="pickAddr('v2','Manhattan West, NY','2.3 km')">
+                                    <span><i class="ri-map-pin-2-fill" style="color:#00615F;"></i> Manhattan West, NY</span>
+                                    <span style="font-size:9px;color:#888;">2.3 km</span>
+                                </div>
+                                <div class="dd-item" onclick="pickAddr('v2','Times Square, NY','4.1 km')">
+                                    <span><i class="ri-map-pin-2-line" style="color:#999;"></i> Times Square, NY</span>
+                                    <span style="font-size:9px;color:#888;">4.1 km</span>
+                                </div>
+                                <div style="border-top:1px solid #eee;"></div>
+                                <div class="dd-item" onclick="pickAddr('v2','Add New Address','')">
+                                    <span><i class="ri-add-line" style="color:#00615F;"></i> Add New Address</span>
+                                </div>
                             </div>
-                            <div class="dropdown-item" onclick="selectAddr('v2','Times Square, NY','4.1 km')">
-                                <span><i class="ri-map-pin-2-line" style="color:#999;"></i> Times Square, NY</span>
-                                <span style="font-size:9px;color:#888;">4.1 km</span>
-                            </div>
-                            <div style="border-top:1px solid #eee;margin:4px 0;"></div>
-                            <div class="dropdown-item" onclick="selectAddr('v2','Brooklyn Bridge, NY','')">
-                                <span><i class="ri-add-line" style="color:#00615F;"></i> Add New Address</span>
+                            <div style="height:8px;"></div>
+                            <div class="dd">
+                                <div class="dd-hdr">FROM RESTAURANT</div>
+                                <div class="dd-item active" onclick="pickBranch('v2','Downtown NYC','0.5 km')">
+                                    <span><i class="ri-store-2-fill" style="color:#00615F;"></i> Downtown NYC</span>
+                                    <span style="font-size:9px;color:#888;">0.5 km</span>
+                                </div>
+                                <div class="dd-item" onclick="pickBranch('v2','Midtown Manhattan','1.2 km')">
+                                    <span><i class="ri-store-2-line" style="color:#999;"></i> Midtown Manhattan</span>
+                                    <span style="font-size:9px;color:#888;">1.2 km</span>
+                                </div>
+                                <div class="dd-item" onclick="pickBranch('v2','Brooklyn Heights','2.8 km')">
+                                    <span><i class="ri-store-2-line" style="color:#999;"></i> Brooklyn Heights</span>
+                                    <span style="font-size:9px;color:#888;">2.8 km</span>
+                                </div>
                             </div>
                         </div>
-                        <div id="branchDropdown-v2" class="dropdown" style="top:110px;">
-                            <div class="dropdown-header">FROM RESTAURANT</div>
-                            <div class="dropdown-item active" onclick="selectBranch('v2','Downtown NYC','0.5 km')">
-                                <span><i class="ri-store-2-fill" style="color:#00615F;"></i> Downtown NYC</span>
-                                <span style="font-size:9px;color:#888;">0.5 km</span>
-                            </div>
-                            <div class="dropdown-item" onclick="selectBranch('v2','Midtown Manhattan','1.2 km')">
-                                <span><i class="ri-store-2-line" style="color:#999;"></i> Midtown Manhattan</span>
-                                <span style="font-size:9px;color:#888;">1.2 km</span>
-                            </div>
-                            <div class="dropdown-item" onclick="selectBranch('v2','Brooklyn Heights','2.8 km')">
-                                <span><i class="ri-store-2-line" style="color:#999;"></i> Brooklyn Heights</span>
-                                <span style="font-size:9px;color:#888;">2.8 km</span>
+                        <div id="pd-v2" style="display:none;">
+                            <div class="dd">
+                                <div class="dd-hdr">PICKUP FROM</div>
+                                <div class="dd-item active" onclick="pickBranch('v2','Downtown NYC','0.5 km')">
+                                    <span><i class="ri-store-2-fill" style="color:#00615F;"></i> Downtown NYC</span>
+                                    <span style="font-size:9px;color:#888;">0.5 km</span>
+                                </div>
+                                <div class="dd-item" onclick="pickBranch('v2','Midtown Manhattan','1.2 km')">
+                                    <span><i class="ri-store-2-line" style="color:#999;"></i> Midtown Manhattan</span>
+                                    <span style="font-size:9px;color:#888;">1.2 km</span>
+                                </div>
+                                <div class="dd-item" onclick="pickBranch('v2','Brooklyn Heights','2.8 km')">
+                                    <span><i class="ri-store-2-line" style="color:#999;"></i> Brooklyn Heights</span>
+                                    <span style="font-size:9px;color:#888;">2.8 km</span>
+                                </div>
                             </div>
                         </div>
                         <div style="display:flex;background:#F0F7F6;border-radius:10px;padding:8px 12px;align-items:center;gap:8px;">
@@ -165,15 +206,15 @@
                             <span style="font-size:12px;color:#888;">Search restaurants, dishes...</span>
                         </div>
                         <div class="toggle">
-                            <button class="toggle-btn active" onclick="setMode('v2','delivery')" id="delBtn-v2">Delivery</button>
-                            <button class="toggle-btn" onclick="setMode('v2','pickup')" id="pickBtn-v2">Pickup</button>
+                            <button class="toggle-btn active" onclick="setMode('v2','delivery')" id="del-v2">Delivery</button>
+                            <button class="toggle-btn" onclick="setMode('v2','pickup')" id="pick-v2">Pickup</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- V3: Option 2 (Minimal single-line) -->
+        <!-- V3: Option 2 (Minimal) -->
         <div class="variant" id="v3">
             <div class="phone-frame">
                 <div class="status-bar">
@@ -182,13 +223,13 @@
                     <div class="status-icons"><i class="ri-signal-wifi-fill"></i><i class="ri-battery-fill"></i></div>
                 </div>
                 <div class="scroll-area">
-                    <div style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:relative;" id="header-v3">
+                    <div style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
                         <div style="display:flex;align-items:center;gap:10px;">
                             <div style="width:36px;height:36px;border-radius:50%;overflow:hidden;border:2px solid #00615F;">
                                 <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&q=80" style="width:100%;height:100%;object-fit:cover;" alt="avatar">
                             </div>
-                            <div onclick="toggleDropdown('v3')" style="cursor:pointer;">
-                                <div style="font-size:13px;font-weight:700;color:#1a1a1a;display:flex;align-items:center;gap:4px;" id="addrText-v3">Manhattan West, NY <span style="font-size:9px;font-weight:500;color:#888;">2.3 km</span> <i class="ri-arrow-down-s-fill" style="font-size:12px;color:#1a1a1a;"></i></div>
+                            <div class="addr-click" onclick="toggleDD('v3')">
+                                <div style="font-size:13px;font-weight:700;color:#1a1a1a;display:flex;align-items:center;gap:4px;" id="txt-v3">Manhattan West, NY <span style="font-size:9px;font-weight:500;color:#888;">2.3 km</span> <i class="ri-arrow-down-s-fill" style="font-size:12px;color:#1a1a1a;"></i></div>
                                 <div style="font-size:9px;color:#888;">Deliver now</div>
                             </div>
                         </div>
@@ -196,41 +237,61 @@
                             <div style="width:34px;height:34px;border-radius:10px;background:#F0F7F6;display:flex;align-items:center;justify-content:center;"><i class="ri-notification-3-line" style="font-size:18px;color:#1a1a1a;"></i></div>
                             <div style="width:34px;height:34px;border-radius:10px;background:#F0F7F6;display:flex;align-items:center;justify-content:center;"><i class="ri-shopping-cart-2-line" style="font-size:18px;color:#1a1a1a;"></i></div>
                         </div>
-                        <div id="addrDropdown-v3" class="dropdown" style="top:56px;">
-                            <div class="dropdown-header">DELIVER TO</div>
-                            <div class="dropdown-item active" onclick="selectAddr('v3','Manhattan West, NY','2.3 km')">
-                                <span><i class="ri-map-pin-2-fill" style="color:#00615F;"></i> Manhattan West, NY</span>
-                                <span style="font-size:9px;color:#888;">2.3 km</span>
-                            </div>
-                            <div class="dropdown-item" onclick="selectAddr('v3','Times Square, NY','4.1 km')">
-                                <span><i class="ri-map-pin-2-line" style="color:#999;"></i> Times Square, NY</span>
-                                <span style="font-size:9px;color:#888;">4.1 km</span>
-                            </div>
-                            <div style="border-top:1px solid #eee;margin:4px 0;"></div>
-                            <div class="dropdown-item" onclick="selectAddr('v3','Brooklyn Bridge, NY','')">
-                                <span><i class="ri-add-line" style="color:#00615F;"></i> Add New Address</span>
-                            </div>
-                        </div>
-                        <div id="branchDropdown-v3" class="dropdown" style="top:100px;">
-                            <div class="dropdown-header">FROM RESTAURANT</div>
-                            <div class="dropdown-item active" onclick="selectBranch('v3','Downtown NYC','0.5 km')">
-                                <span><i class="ri-store-2-fill" style="color:#00615F;"></i> Downtown NYC</span>
-                                <span style="font-size:9px;color:#888;">0.5 km</span>
-                            </div>
-                            <div class="dropdown-item" onclick="selectBranch('v3','Midtown Manhattan','1.2 km')">
-                                <span><i class="ri-store-2-line" style="color:#999;"></i> Midtown Manhattan</span>
-                                <span style="font-size:9px;color:#888;">1.2 km</span>
-                            </div>
-                            <div class="dropdown-item" onclick="selectBranch('v3','Brooklyn Heights','2.8 km')">
-                                <span><i class="ri-store-2-line" style="color:#999;"></i> Brooklyn Heights</span>
-                                <span style="font-size:9px;color:#888;">2.8 km</span>
-                            </div>
-                        </div>
                     </div>
-                    <div style="padding:0 16px 16px;">
+                    <div style="padding:0 16px 16px;display:flex;flex-direction:column;gap:10px;">
+                        <div id="dd-v3" style="display:none;">
+                            <div class="dd">
+                                <div class="dd-hdr">DELIVER TO</div>
+                                <div class="dd-item active" onclick="pickAddr('v3','Manhattan West, NY','2.3 km')">
+                                    <span><i class="ri-map-pin-2-fill" style="color:#00615F;"></i> Manhattan West, NY</span>
+                                    <span style="font-size:9px;color:#888;">2.3 km</span>
+                                </div>
+                                <div class="dd-item" onclick="pickAddr('v3','Times Square, NY','4.1 km')">
+                                    <span><i class="ri-map-pin-2-line" style="color:#999;"></i> Times Square, NY</span>
+                                    <span style="font-size:9px;color:#888;">4.1 km</span>
+                                </div>
+                                <div style="border-top:1px solid #eee;"></div>
+                                <div class="dd-item" onclick="pickAddr('v3','Add New Address','')">
+                                    <span><i class="ri-add-line" style="color:#00615F;"></i> Add New Address</span>
+                                </div>
+                            </div>
+                            <div style="height:8px;"></div>
+                            <div class="dd">
+                                <div class="dd-hdr">FROM RESTAURANT</div>
+                                <div class="dd-item active" onclick="pickBranch('v3','Downtown NYC','0.5 km')">
+                                    <span><i class="ri-store-2-fill" style="color:#00615F;"></i> Downtown NYC</span>
+                                    <span style="font-size:9px;color:#888;">0.5 km</span>
+                                </div>
+                                <div class="dd-item" onclick="pickBranch('v3','Midtown Manhattan','1.2 km')">
+                                    <span><i class="ri-store-2-line" style="color:#999;"></i> Midtown Manhattan</span>
+                                    <span style="font-size:9px;color:#888;">1.2 km</span>
+                                </div>
+                                <div class="dd-item" onclick="pickBranch('v3','Brooklyn Heights','2.8 km')">
+                                    <span><i class="ri-store-2-line" style="color:#999;"></i> Brooklyn Heights</span>
+                                    <span style="font-size:9px;color:#888;">2.8 km</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="pd-v3" style="display:none;">
+                            <div class="dd">
+                                <div class="dd-hdr">PICKUP FROM</div>
+                                <div class="dd-item active" onclick="pickBranch('v3','Downtown NYC','0.5 km')">
+                                    <span><i class="ri-store-2-fill" style="color:#00615F;"></i> Downtown NYC</span>
+                                    <span style="font-size:9px;color:#888;">0.5 km</span>
+                                </div>
+                                <div class="dd-item" onclick="pickBranch('v3','Midtown Manhattan','1.2 km')">
+                                    <span><i class="ri-store-2-line" style="color:#999;"></i> Midtown Manhattan</span>
+                                    <span style="font-size:9px;color:#888;">1.2 km</span>
+                                </div>
+                                <div class="dd-item" onclick="pickBranch('v3','Brooklyn Heights','2.8 km')">
+                                    <span><i class="ri-store-2-line" style="color:#999;"></i> Brooklyn Heights</span>
+                                    <span style="font-size:9px;color:#888;">2.8 km</span>
+                                </div>
+                            </div>
+                        </div>
                         <div class="toggle">
-                            <button class="toggle-btn active" onclick="setMode('v3','delivery')" id="delBtn-v3">Delivery</button>
-                            <button class="toggle-btn" onclick="setMode('v3','pickup')" id="pickBtn-v3">Pickup</button>
+                            <button class="toggle-btn active" onclick="setMode('v3','delivery')" id="del-v3">Delivery</button>
+                            <button class="toggle-btn" onclick="setMode('v3','pickup')" id="pick-v3">Pickup</button>
                         </div>
                     </div>
                 </div>
@@ -240,53 +301,97 @@
 
     <script>
         const modes = { v1: 'delivery', v2: 'delivery', v3: 'delivery' };
+        const open = { v2: false, v3: false };
 
         function switchTab(idx) {
             document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===idx));
             document.querySelectorAll('.variant').forEach((v,i) => v.classList.toggle('active', i===idx));
-            closeDropdowns();
+            Object.keys(open).forEach(k => { open[k] = false; showDD(k); });
+            document.getElementById('bd-v1').style.display = 'none';
+            document.getElementById('ad-v1').style.display = 'none';
         }
 
-        function toggleDropdown(id) {
-            const addrDD = document.getElementById('addrDropdown-' + id);
-            const branchDD = document.getElementById('branchDropdown-' + id);
-            const overlay = document.getElementById('overlay');
+        function ddLabel(text, dist) {
+            return text + ' <span style="font-size:9px;font-weight:500;color:#888;">' + dist + '</span> <i class="ri-arrow-down-s-fill" style="font-size:12px;color:#1a1a1a;"></i>';
+        }
+
+        // V1: independent dropdowns per select
+        function toggleBranchDD(id) {
+            const bd = document.getElementById('bd-' + id);
+            const ad = document.getElementById('ad-' + id);
+            if (ad) ad.style.display = 'none';
+            if (bd) bd.style.display = bd.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleAddrDD(id) {
+            const bd = document.getElementById('bd-' + id);
+            const ad = document.getElementById('ad-' + id);
+            if (bd) bd.style.display = 'none';
+            if (ad) ad.style.display = ad.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // V2/V3: combined dropdown behavior
+        function toggleDD(id) {
+            open[id] = !open[id];
+            showDD(id);
+        }
+
+        function showDD(id) {
+            const ddEl = document.getElementById('dd-' + id);
+            const pdEl = document.getElementById('pd-' + id);
+            if (!ddEl || !pdEl) return;
             if (modes[id] === 'delivery') {
-                const aShow = addrDD.style.display !== 'block';
-                addrDD.style.display = aShow ? 'block' : 'none';
-                branchDD.style.display = aShow ? 'block' : 'none';
-                overlay.style.display = aShow ? 'block' : 'none';
+                ddEl.style.display = open[id] ? 'block' : 'none';
+                pdEl.style.display = open[id] ? 'block' : 'none';
             } else {
-                const bShow = branchDD.style.display !== 'block';
-                branchDD.style.display = bShow ? 'block' : 'none';
-                overlay.style.display = bShow ? 'block' : 'none';
+                ddEl.style.display = 'none';
+                pdEl.style.display = open[id] ? 'block' : 'none';
             }
         }
 
-        function closeDropdowns() {
-            document.querySelectorAll('.dropdown').forEach(d => d.style.display = 'none');
-            document.getElementById('overlay').style.display = 'none';
+        function pickAddr(id, addr, dist) {
+            if (id === 'v1') {
+                document.getElementById('dt-v1').innerHTML = ddLabel(addr, dist);
+                document.getElementById('ad-v1').style.display = 'none';
+                return;
+            }
+            const el = document.getElementById('txt-' + id);
+            if (el) el.innerHTML = ddLabel(addr, dist);
+            open[id] = false;
+            showDD(id);
         }
 
-        function selectAddr(id, addr, dist) {
-            const el = document.getElementById('addrText-' + id);
-            if (el) el.innerHTML = addr + ' <span style="font-size:9px;font-weight:500;color:#888;">' + dist + '</span> <i class="ri-arrow-down-s-fill" style="font-size:12px;color:#1a1a1a;"></i>';
-            closeDropdowns();
-        }
-
-        function selectBranch(id, branch, dist) {
-            const el = document.getElementById('addrText-' + id);
-            if (el) el.innerHTML = branch + ' <span style="font-size:9px;font-weight:500;color:#888;">' + dist + '</span> <i class="ri-arrow-down-s-fill" style="font-size:12px;color:#1a1a1a;"></i>';
-            closeDropdowns();
+        function pickBranch(id, branch, dist) {
+            if (id === 'v1') {
+                const target = modes.v1 === 'delivery' ? 'wf-v1' : 'pt-v1';
+                document.getElementById(target).innerHTML = ddLabel(branch, dist);
+                document.getElementById('bd-v1').style.display = 'none';
+                return;
+            }
+            if (modes[id] === 'delivery') {
+                open[id] = false;
+                showDD(id);
+                return;
+            }
+            const el = document.getElementById('txt-' + id);
+            if (el) el.innerHTML = ddLabel(branch, dist);
+            open[id] = false;
+            showDD(id);
         }
 
         function setMode(id, mode) {
             modes[id] = mode;
-            const delBtn = document.getElementById('delBtn-' + id);
-            const pickBtn = document.getElementById('pickBtn-' + id);
-            delBtn.className = 'toggle-btn' + (mode === 'delivery' ? ' active' : '');
-            pickBtn.className = 'toggle-btn' + (mode === 'pickup' ? ' active' : '');
-            closeDropdowns();
+            document.getElementById('del-' + id).className = 'toggle-btn' + (mode === 'delivery' ? ' active' : '');
+            document.getElementById('pick-' + id).className = 'toggle-btn' + (mode === 'pickup' ? ' active' : '');
+            if (id === 'v1') {
+                document.getElementById('ds-v1').style.display = mode === 'delivery' ? 'flex' : 'none';
+                document.getElementById('ps-v1').style.display = mode === 'pickup' ? 'flex' : 'none';
+                document.getElementById('bd-v1').style.display = 'none';
+                document.getElementById('ad-v1').style.display = 'none';
+                return;
+            }
+            open[id] = false;
+            showDD(id);
         }
     </script>
 </body>
