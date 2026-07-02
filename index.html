@@ -2198,6 +2198,27 @@
             if (popup) { popup.style.transform = 'translateY(100%)'; }
         }
 
+        // ─── NOTIFICATION MODAL ──────────────────────────────────────────
+        function openNotifModal(theme) {
+            const overlay = document.getElementById('notifOverlay-' + theme);
+            const modal = document.getElementById('notifModal-' + theme);
+            if (overlay) { overlay.style.opacity = '1'; overlay.style.pointerEvents = 'auto'; }
+            if (modal) { modal.style.transform = 'translateY(0)'; }
+        }
+        function closeNotifModal(theme) {
+            const overlay = document.getElementById('notifOverlay-' + theme);
+            const modal = document.getElementById('notifModal-' + theme);
+            if (overlay) { overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none'; }
+            if (modal) { modal.style.transform = 'translateY(100%)'; }
+        }
+
+        // ─── HEART TOGGLE ────────────────────────────────────────────────
+        const heartState = { neumorphism: false, glassmorphism: false, neubrutalism: false };
+        function toggleHeart(theme) {
+            heartState[theme] = !heartState[theme];
+            renderAllViewports();
+        }
+
         // ─── ADDRESS DROPDOWN FUNCTIONS ──────────────────────────────────
         function toggleAddressDropdown(theme) {
             const dd = document.getElementById('addressDropdown-' + theme);
@@ -2430,6 +2451,34 @@
                         </div>
                     </div>
                 `;
+
+                // Notification modal
+                const notifBg = theme === 'glassmorphism' ? 'rgba(30,30,30,0.95)' : (theme === 'neubrutalism' ? '#fff' : '#fff');
+                const notifText = theme === 'glassmorphism' ? '#fff' : '#1a1a1a';
+                const notifSub = theme === 'glassmorphism' ? 'rgba(255,255,255,0.5)' : '#888';
+                container.innerHTML += `
+                    <div id="notifOverlay-${theme}" onclick="closeNotifModal('${theme}')" style="position:absolute;inset:0;background:rgba(0,0,0,0.5);opacity:0;pointer-events:none;transition:opacity 0.4s;z-index:50;border-radius:24px;backdrop-filter:blur(4px);"></div>
+                    <div id="notifModal-${theme}" style="position:absolute;bottom:0;left:0;right:0;background:${notifBg};border-radius:24px 24px 0 0;padding:20px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);z-index:60;max-height:70%;overflow-y:auto;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                            <span style="font-size:18px;font-weight:700;color:${notifText};">Notifications</span>
+                            <button onclick="closeNotifModal('${theme}')" style="background:none;border:none;font-size:20px;color:${notifSub};cursor:pointer;">&times;</button>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:10px;">
+                            <div style="display:flex;align-items:start;gap:10px;padding:10px;background:${theme === 'glassmorphism' ? 'rgba(255,255,255,0.05)' : '#f8f8f8'};border-radius:12px;">
+                                <div style="width:36px;height:36px;border-radius:10px;background:${theme === 'glassmorphism' ? 'rgba(76,175,80,0.15)' : '#E8F5E9'};display:flex;align-items:center;justify-content:center;flex-shrink:0;">${iconFor(theme, 'check-line', 'color:#4CAF50;font-size:16px;')}</div>
+                                <div><div style="font-size:12px;font-weight:600;color:${notifText};">Order Delivered</div><div style="font-size:10px;color:${notifSub};margin-top:2px;">Your order #2145 has been delivered</div><div style="font-size:9px;color:${notifSub};margin-top:4px;">2 min ago</div></div>
+                            </div>
+                            <div style="display:flex;align-items:start;gap:10px;padding:10px;background:${theme === 'glassmorphism' ? 'rgba(255,255,255,0.05)' : '#f8f8f8'};border-radius:12px;">
+                                <div style="width:36px;height:36px;border-radius:10px;background:${theme === 'glassmorphism' ? 'rgba(255,213,79,0.15)' : '#FFF3E0'};display:flex;align-items:center;justify-content:center;flex-shrink:0;">${iconFor(theme, 'ticket-line', 'color:#FFC200;font-size:16px;')}</div>
+                                <div><div style="font-size:12px;font-weight:600;color:${notifText};">New Offer</div><div style="font-size:10px;color:${notifSub};margin-top:2px;">20% OFF on weekend orders</div><div style="font-size:9px;color:${notifSub};margin-top:4px;">1 hour ago</div></div>
+                            </div>
+                            <div style="display:flex;align-items:start;gap:10px;padding:10px;background:${theme === 'glassmorphism' ? 'rgba(255,255,255,0.05)' : '#f8f8f8'};border-radius:12px;">
+                                <div style="width:36px;height:36px;border-radius:10px;background:${theme === 'glassmorphism' ? 'rgba(255,107,157,0.15)' : '#FCE4EC'};display:flex;align-items:center;justify-content:center;flex-shrink:0;">${iconFor(theme, 'gift-line', 'color:#E91E63;font-size:16px;')}</div>
+                                <div><div style="font-size:12px;font-weight:600;color:${notifText};">Birthday Reward</div><div style="font-size:10px;color:${notifSub};margin-top:2px;">Claim your free birthday treat</div><div style="font-size:9px;color:${notifSub};margin-top:4px;">3 hours ago</div></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
             });
 
             if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -2474,13 +2523,14 @@
                 </div>`;
 
             // Helper: icon button for the right side
-            function iconBtn(icon, badge) {
+            function iconBtn(icon, badge, onClick) {
+                const clickAttr = onClick ? `onclick="${onClick}"` : '';
                 if (theme === 'neumorphism') {
-                    return `<div style="width:32px;height:32px;border-radius:10px;background:#F5F5F5;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;">${iconFor(theme, icon, 'font-size:15px;color:#333;')}${badge ? `<span style="position:absolute;top:-4px;right:-4px;width:16px;height:16px;background:#1A1A1A;color:#fff;font-size:8px;font-weight:700;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #fff;">${badge}</span>` : ''}</div>`;
+                    return `<div ${clickAttr} style="width:32px;height:32px;border-radius:10px;background:#F5F5F5;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;">${iconFor(theme, icon, 'font-size:15px;color:#333;')}${badge ? `<span style="position:absolute;top:-4px;right:-4px;width:16px;height:16px;background:#1A1A1A;color:#fff;font-size:8px;font-weight:700;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #fff;">${badge}</span>` : ''}</div>`;
                 } else if (theme === 'glassmorphism') {
-                    return `<div style="width:32px;height:32px;border-radius:10px;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;">${iconFor(theme, icon, 'font-size:15px;color:#fff;')}${badge ? `<span style="position:absolute;top:-4px;right:-4px;width:16px;height:16px;background:#4CAF50;color:#fff;font-size:8px;font-weight:700;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid rgba(26,26,26,0.9);">${badge}</span>` : ''}</div>`;
+                    return `<div ${clickAttr} style="width:32px;height:32px;border-radius:10px;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;">${iconFor(theme, icon, 'font-size:15px;color:#fff;')}${badge ? `<span style="position:absolute;top:-4px;right:-4px;width:16px;height:16px;background:#4CAF50;color:#fff;font-size:8px;font-weight:700;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid rgba(26,26,26,0.9);">${badge}</span>` : ''}</div>`;
                 } else {
-                    return `<div style="width:34px;height:34px;border-radius:50%;background:#fff;border:1px solid #E0E0E0;box-shadow:0 2px 8px rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;">${iconFor(theme, icon, 'font-size:15px;color:#333;')}${badge ? `<span style="position:absolute;top:-2px;right:-2px;width:14px;height:14px;background:#00615F;color:#fff;font-size:8px;font-weight:700;border-radius:50%;display:flex;align-items:center;justify-content:center;">${badge}</span>` : ''}</div>`;
+                    return `<div ${clickAttr} style="width:34px;height:34px;border-radius:50%;background:#fff;border:1px solid #E0E0E0;box-shadow:0 2px 8px rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;">${iconFor(theme, icon, 'font-size:15px;color:#333;')}${badge ? `<span style="position:absolute;top:-2px;right:-2px;width:14px;height:14px;background:#00615F;color:#fff;font-size:8px;font-weight:700;border-radius:50%;display:flex;align-items:center;justify-content:center;">${badge}</span>` : ''}</div>`;
                 }
             }
 
@@ -2519,6 +2569,8 @@
 
             // ─── VARIANT 1: Hamburger + Logo + Name (left) + 3 icons (right) ──
             if (style === 'default') {
+                const heartIcon = heartState[theme] ? 'heart-fill' : 'heart-line';
+                const heartColor = heartState[theme] ? (theme === 'glassmorphism' ? 'color:#E91E63;' : 'color:#E91E63;') : '';
                 const secondRow = `
                     <div style="padding:8px 16px;display:flex;align-items:center;justify-content:space-between;${topBarBg}z-index:30;">
                         <div style="display:flex;align-items:center;gap:8px;">
@@ -2527,16 +2579,17 @@
                             <span style="font-size:14px;font-weight:800;${theme === 'glassmorphism' ? 'color:#fff;' : 'color:' + (theme === 'neubrutalism' ? '#3D3229' : '#1a1a1a') + ';'}">${brandName}</span>
                         </div>
                         <div style="display:flex;align-items:center;gap:6px;">
-                            ${iconBtn('heart-line')}
-                            ${iconBtn('notification-3-line')}
-                            ${iconBtn('shopping-bag-3-fill', 2)}
+                            ${iconBtn(heartIcon, null, `toggleHeart('${theme}')`)}
+                            ${iconBtn('notification-3-line', 3, `openNotifModal('${theme}')`)}
+                            ${iconBtn('shopping-bag-3-fill', 2, `openCartPopup('${theme}')`)}
                         </div>
                     </div>`;
                 return statusBar + secondRow;
             }
 
-            // ─── VARIANT 2: Hamburger (left) + Logo + Name (center) + 3 icons (right) ──
+            // ─── VARIANT 2: Hamburger (left) + Logo (center) + 3 icons (right) ──
             if (style === 'option 1') {
+                const heartIcon = heartState[theme] ? 'heart-fill' : 'heart-line';
                 const secondRow = `
                     <div style="padding:8px 16px;display:flex;align-items:center;justify-content:space-between;${topBarBg}z-index:30;">
                         <div style="flex-shrink:0;">
@@ -2544,18 +2597,18 @@
                         </div>
                         <div style="display:flex;align-items:center;gap:6px;position:absolute;left:50%;transform:translateX(-50%);">
                             ${logoMonogram()}
-                            <span style="font-size:14px;font-weight:800;${theme === 'glassmorphism' ? 'color:#fff;' : 'color:' + (theme === 'neubrutalism' ? '#3D3229' : '#1a1a1a') + ';'}">${brandName}</span>
                         </div>
                         <div style="display:flex;align-items:center;gap:6px;">
-                            ${iconBtn('heart-line')}
-                            ${iconBtn('notification-3-line')}
-                            ${iconBtn('shopping-bag-3-fill', 2)}
+                            ${iconBtn(heartIcon, null, `toggleHeart('${theme}')`)}
+                            ${iconBtn('notification-3-line', 3, `openNotifModal('${theme}')`)}
+                            ${iconBtn('shopping-bag-3-fill', 2, `openCartPopup('${theme}')`)}
                         </div>
                     </div>`;
                 return statusBar + secondRow;
             }
 
-            // ─── VARIANT 3: Hamburger + Name + Logo center + 1 icon + dots ──
+            // ─── VARIANT 3: Hamburger + Name (left) + heart + notification + cart (right) ──
+            const heartIcon = heartState[theme] ? 'heart-fill' : 'heart-line';
             const secondRow = `
                 <div style="padding:8px 16px;display:flex;align-items:center;justify-content:space-between;${topBarBg}z-index:30;">
                     <div style="display:flex;align-items:center;gap:8px;">
@@ -2563,8 +2616,9 @@
                         <span style="font-size:13px;font-weight:800;${theme === 'glassmorphism' ? 'color:#fff;' : 'color:' + (theme === 'neubrutalism' ? '#3D3229' : '#1a1a1a') + ';'}">${brandName}</span>
                     </div>
                     <div style="display:flex;align-items:center;gap:8px;">
-                        ${iconBtn('shopping-bag-3-fill', 2)}
-                        ${dotsBtn()}
+                        ${iconBtn(heartIcon, null, `toggleHeart('${theme}')`)}
+                        ${iconBtn('notification-3-line', null, `openNotifModal('${theme}')`)}
+                        ${iconBtn('shopping-bag-3-fill', 2, `openCartPopup('${theme}')`)}
                     </div>
                 </div>`;
             return statusBar + secondRow;
