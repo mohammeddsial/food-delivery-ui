@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        body { font-family: var(--font-family, 'Plus Jakarta Sans', sans-serif); background: var(--page-bg, #f5f5f5); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
         .tabs { display: flex; gap: 8px; margin-bottom: 20px; background: #fff; padding: 6px; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-        .tab { padding: 10px 18px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: #999; transition: all 0.2s; }
-        .tab.active { background: #00615F; color: #fff; }
+        .tab { padding: 10px 18px; border-radius: var(--btn-radius, 10px); font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: #999; transition: all 0.2s; }
+        .tab.active { background: var(--accent, #00615F); color: #fff; }
         .tab:hover:not(.active) { background: #f5f5f5; }
         .variant { display: none; }
         .variant.active { display: block; }
@@ -28,25 +28,25 @@
         .v2-stories { max-width: 360px; width: 100%; display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
         .v2-stories::-webkit-scrollbar { display: none; }
         .v2-story { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; cursor: pointer; }
-        .v2-avatar { width: 56px; height: 56px; border-radius: 16px; border: 3px solid #00615F; overflow: hidden; }
+        .v2-avatar { width: 56px; height: 56px; border-radius: var(--card-radius, 16px); border: 3px solid #00615F; overflow: hidden; }
         .v2-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .v2-name { font-size: 10px; font-weight: 600; color: #333; text-align: center; max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .v2-story-add { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; cursor: pointer; }
         .v2-add-circle { width: 56px; height: 56px; border-radius: 16px; border: 2px dashed #00615F; display: flex; align-items: center; justify-content: center; background: #FFF3ED; }
         .v2-add-circle i { color: #00615F; font-size: 20px; }
-        .v2-add-label { font-size: 10px; font-weight: 600; color: #00615F; }
+        .v2-add-label { font-size: 10px; font-weight: 600; color: var(--accent, #00615F); }
 
         /* V3: Minimal */
         .v3-stories { max-width: 360px; width: 100%; display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; }
         .v3-stories::-webkit-scrollbar { display: none; }
-        .v3-story { display: flex; align-items: center; gap: 8px; background: #fff; border-radius: 12px; padding: 8px 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); flex-shrink: 0; cursor: pointer; }
+        .v3-story { display: flex; align-items: center; gap: 8px; background: var(--card-bg, #fff); border-radius: var(--card-radius, 12px); padding: 8px 12px; box-shadow: var(--card-shadow, 0 2px 10px rgba(0,0,0,0.06)); flex-shrink: 0; cursor: pointer; }
         .v3-avatar { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; flex-shrink: 0; }
         .v3-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .v3-name { font-size: 11px; font-weight: 600; color: #333; }
         .v3-story-add { display: flex; align-items: center; gap: 8px; background: #fff; border-radius: 12px; padding: 8px 12px; border: 1px dashed #00615F; flex-shrink: 0; cursor: pointer; }
         .v3-add-icon { border-radius: 20px; padding: 6px 14px; width: auto; background: #FFF3ED; display: flex; align-items: center; justify-content: center; }
         .v3-add-icon i { color: #00615F; font-size: 14px; }
-        .v3-add-label { font-size: 11px; font-weight: 600; color: #00615F; }
+        .v3-add-label { font-size: 11px; font-weight: 600; color: var(--accent, #00615F); }
     </style>
 </head>
 <body>

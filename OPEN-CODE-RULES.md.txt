@@ -1,0 +1,84 @@
+# OPEN-CODE-RULES.md (v3.0 – Image-to-Code & Parent-Driven Styling)
+
+**Project:** Food Delivery UI Playground – 3‑theme design engine + 28+ component cards  
+**Maintainer:** M. Zahid Sher Sial (16+ years, Senior CMS/Front‑End Architect)  
+**Core Principle:** *Design images → Layout extraction → Theme variables injection. No hardcoded styles!*
+
+---
+
+## 1. The New Workflow: "Image-to-Code"
+
+From now on, when you are handed a **design image** (PNG, Figma screenshot, or mockup) to build a new card:
+
+1. **Analyze the Layout** – identify the structure: Image top? Image left? Minimal? How many columns? What are the spacing and alignment rules?
+2. **Extract Content** – note the text, prices, ratings, badges, and icons.
+3. **Apply Parent-Driven Styling** – **DO NOT** copy the colors, font families, border-radius, or shadows from the image directly. Instead, map those visual properties to the CSS variables provided by the parent viewport (see Section 4.1).
+4. **Test in All Three Themes** – open the main `index.html` and toggle between Neumorphism, Glassmorphism, and Neubrutalism. The card should adapt its look automatically without changing a single line of its own CSS.
+
+---
+
+## 2. The Golden Rule: "Ask First, Code Second"
+
+No UI code shall be written without first clarifying the design parameters.
+
+Before starting a new component from an image or modifying an existing one, you **MUST** ask:
+
+1. **What is the layout variant?** (Image Top, Image Left, or Minimal?)
+2. **Does it require RTL/LTR support?** (This project serves GCC/MENA clients – assume eventually yes.)
+3. **What is the performance budget?** (Target: Lighthouse 90+ desktop / 80+ mobile.)
+4. **Does the image contain brand-specific colors that must remain constant across themes?** (If yes, isolate them. If not, make them variables.)
+
+---
+
+## 3. The "Parent-Driven Styling" Rule (NON-NEGOTIABLE)
+
+This is the most important rule in this document. **All visual styling must be inherited from the parent viewport.**
+
+### 3.1. CSS Variables You MUST Use
+
+The main `index.html` defines a set of CSS variables on each `.phone-viewport`. Your component **MUST** use these variables instead of hardcoded values:
+
+| Category | CSS Variable | Example Use Case |
+| :--- | :--- | :--- |
+| **Corners** | `var(--card-radius)` | `border-radius: var(--card-radius) !important;` |
+| **Borders** | `var(--card-border)` | `border: var(--card-border);` |
+| **Shadows** | `var(--card-shadow)` | `box-shadow: var(--card-shadow);` |
+| **Padding/Spacing** | `var(--card-padding)`, `var(--card-gap)` | `padding: var(--card-padding); gap: var(--card-gap);` |
+| **Typography** | `var(--card-font-size)`, `var(--card-line-height)` | `font-size: var(--card-font-size); line-height: var(--card-line-height);` |
+| **Image Corners** | `var(--card-img-radius)` | `border-radius: var(--card-img-radius);` |
+| **Hero Height** | `var(--card-hero-height)` | `height: var(--card-hero-height);` |
+| **Theme Colours** | `var(--text-primary)`, `var(--text-secondary)`, `var(--card-bg)`, `var(--accent)` | `color: var(--text-primary); background: var(--card-bg);` |
+| **Font Family** | **Inherited** – do not hardcode `font-family` on child elements; let the parent `.phone-viewport` handle it. Only set it if the component *requires* a specific font for branding (e.g., a serif heading). |
+
+### 3.2. Forbidden Hardcodes
+
+The following are **FORBIDDEN** inside your component's HTML/CSS unless specifically approved:
+- `border-radius: 16px;` (use `var(--card-radius)`)
+- `box-shadow: 0 4px 20px ...;` (use `var(--card-shadow)`)
+- `font-family: 'Inter', sans-serif;` (use parent inheritance)
+- `color: #1A1A1A;` (use `var(--text-primary)`)
+- `background: #FFFFFF;` (use `var(--card-bg)`)
+
+### 3.3. Exception: Brand/Utility Elements
+
+Some elements (e.g., the gold "FREE DELIVERY" text in the announcement strip, or a green "Vegan" tag) are **brand identifiers** that should remain consistent across all themes. These can be hardcoded, but they should be limited to small, accent-level elements (badges, icons, logos). The main card structure **must** be variable-driven.
+
+---
+
+## 4. Component Development Workflow (Image → Code)
+
+### 4.0. Planning Phase
+1. **Receive the image** – study the layout, content, and visual hierarchy.
+2. **Open a discussion** – describe the component and confirm which variants are needed.
+3. **Create a new branch** from `main`: `feature/component-name`.
+
+### 4.1. Building the Component (The Right Way)
+1. **Create the HTML file** in `/cards/` (e.g., `XX-component-name.html`).
+2. **Structure the three variants** (`v1` = Image Top, `v2` = Image Left, `v3` = Minimal).
+3. **Apply Parent-Driven Styling**:
+   ```html
+   <!-- WRONG: Hardcoded -->
+   <div style="border-radius: 16px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+   
+   <!-- RIGHT: Variable-driven -->
+   <div style="border-radius: var(--card-radius); background: var(--card-bg); box-shadow: var(--card-shadow);">

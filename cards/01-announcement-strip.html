@@ -3,84 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Announcement Strip</title>
+    <title>Announcement Strip – 3 Variants</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
         .tabs { display: flex; gap: 6px; margin-bottom: 16px; justify-content: center; max-width: 360px; width: 100%; }
-        .tab { padding: 8px 14px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; border: 1.5px solid #ddd; background: #fff; color: #666; transition: all 0.2s; }
-        .tab.active { background: #00615F; color: #fff; border-color: #00615F; }
+        .tab {
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1.5px solid #ddd;
+            background: #fff;
+            color: #666;
+            transition: all 0.2s;
+        }
+        .tab.active {
+            background: #00615F;
+            color: #fff;
+            border-color: #00615F;
+        }
         .variant { display: none; max-width: 360px; width: 100%; }
         .variant.active { display: block; }
 
-        /* V1: Image Top */
-        .v1-strip { background: #1a1a1a; border-radius: 16px; overflow: hidden; }
-        .v1-strip .strip-img { width: 100%; height: 100px; object-fit: cover; display: block; }
-        .v1-strip .strip-body { padding: 14px 18px; text-align: center; }
-        .v1-strip .strip-title { font-size: 14px; font-weight: 800; color: #D4A843; letter-spacing: 2px; }
-        .v1-strip .strip-sub { font-size: 11px; color: #888; margin-top: 4px; }
-        .v1-strip .strip-badge { display: inline-flex; align-items: center; gap: 4px; background: #D4A843; color: #1a1a1a; font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 8px; margin-top: 8px; }
+        /* ----- CSS Variables (matching main viewport) ----- */
+        :root {
+            --card-bg: #ffffff;
+            --card-radius: 16px;
+            --card-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            --accent: #00615F;
+            --accent-light: #F0F7F6;
+            --text-primary: #1a1a1a;
+            --text-secondary: #888;
+            --btn-radius: 12px;
+        }
 
-        /* V2: Image Left */
-        .v2-strip { display: flex; align-items: center; background: #1a1a1a; border-radius: 16px; overflow: hidden; gap: 0; }
-        .v2-strip .strip-img { width: 90px; height: 70px; object-fit: cover; flex-shrink: 0; }
-        .v2-strip .strip-body { padding: 12px 16px; flex: 1; }
-        .v2-strip .strip-title { font-size: 13px; font-weight: 800; color: #D4A843; letter-spacing: 1.5px; }
-        .v2-strip .strip-sub { font-size: 10px; color: #888; margin-top: 2px; }
-        .v2-strip .strip-badge { display: inline-flex; align-items: center; gap: 4px; background: #D4A843; color: #1a1a1a; font-size: 9px; font-weight: 700; padding: 3px 10px; border-radius: 6px; margin-top: 6px; }
-
-        /* V3: Minimal */
-        .v3-strip { background: #1a1a1a; border-radius: 16px; padding: 16px 18px; text-align: center; }
-        .v3-strip .strip-icon { width: 44px; height: 44px; background: rgba(212,168,67,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #D4A843; margin: 0 auto 10px; }
-        .v3-strip .strip-title { font-size: 15px; font-weight: 800; color: #D4A843; letter-spacing: 2px; }
-        .v3-strip .strip-sub { font-size: 11px; color: #888; margin-top: 4px; }
-        .v3-strip .strip-details { display: flex; justify-content: center; gap: 16px; margin-top: 10px; }
-        .v3-strip .strip-detail { font-size: 10px; color: #aaa; display: flex; align-items: center; gap: 4px; }
+        /* Shared card wrapper */
+        .strip-card {
+            background: var(--card-bg);
+            border-radius: var(--card-radius);
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+        .btn-morph {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .btn-morph:hover { transform: scale(1.05); }
+        .btn-morph:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
     <div style="display:flex;flex-direction:column;align-items:center;width:100%;">
         <div class="tabs">
-            <div class="tab active" onclick="switchTab(0)">Image Top</div>
-            <div class="tab" onclick="switchTab(1)">Image Left</div>
-            <div class="tab" onclick="switchTab(2)">Minimal</div>
+            <div class="tab active" onclick="switchTab(0)">Default (Variant 1)</div>
+            <div class="tab" onclick="switchTab(1)">Variant 2</div>
+            <div class="tab" onclick="switchTab(2)">Variant 3</div>
         </div>
 
-        <!-- V1: Image Top -->
+        <!-- V1: Left Border + Dot + Headline + Description + Tag (3.png) -->
         <div class="variant active" id="v1">
-            <div class="v1-strip">
-                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80" class="strip-img" alt="promo">
-                <div class="strip-body">
-                    <div class="strip-title">FREE DELIVERY</div>
-                    <div class="strip-sub">On orders over $25</div>
-                    <div class="strip-badge"><i class="ri-truck-line"></i> Limited Time</div>
+            <div class="strip-card" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-left:4px solid var(--accent);">
+                <div style="width:36px;height:36px;border-radius:50%;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent);font-size:18px;">
+                    <i class="ri-truck-fill"></i>
                 </div>
+                <div style="flex:1;">
+                    <div style="font-size:14px;font-weight:700;color:var(--text-primary);">FREE DELIVERY</div>
+                    <div style="font-size:11px;color:var(--text-secondary);">On orders over $25</div>
+                </div>
+                <span style="background:var(--accent);color:#fff;border-radius:var(--btn-radius);padding:4px 12px;font-size:10px;font-weight:700;white-space:nowrap;">Limited Time</span>
             </div>
         </div>
 
-        <!-- V2: Image Left -->
+        <!-- V2: No icon, text left, due date + tag on right (9.png) -->
         <div class="variant" id="v2">
-            <div class="v2-strip">
-                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=150&q=80" class="strip-img" alt="promo">
-                <div class="strip-body">
-                    <div class="strip-title">FREE DELIVERY</div>
-                    <div class="strip-sub">On orders over $25</div>
-                    <div class="strip-badge"><i class="ri-truck-line"></i> Limited Time</div>
+            <div class="strip-card" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;">
+                <div>
+                    <div style="font-size:14px;font-weight:700;color:var(--text-primary);">FREE DELIVERY</div>
+                    <div style="font-size:11px;color:var(--text-secondary);">On orders over $25</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <span style="font-size:10px;color:var(--text-secondary);">Ends 04/22</span>
+                    <span style="background:var(--accent);color:#fff;border-radius:var(--btn-radius);padding:4px 12px;font-size:10px;font-weight:700;">Claim Offer</span>
                 </div>
             </div>
         </div>
 
-        <!-- V3: Minimal -->
+        <!-- V3: Right Border + Icon + Headline + Description (11.png) -->
         <div class="variant" id="v3">
-            <div class="v3-strip">
-                <div class="strip-icon"><i class="ri-truck-fill"></i></div>
-                <div class="strip-title">FREE DELIVERY</div>
-                <div class="strip-sub">On orders over $25</div>
-                <div class="strip-details">
-                    <div class="strip-detail"><i class="ri-time-line"></i> Ends midnight</div>
-                    <div class="strip-detail"><i class="ri-coupon-3-line"></i> No code needed</div>
+            <div class="strip-card" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-right:4px solid var(--accent);">
+                <div style="flex:1;">
+                    <div style="font-size:14px;font-weight:700;color:var(--text-primary);">FREE DELIVERY</div>
+                    <div style="font-size:11px;color:var(--text-secondary);">On orders over $25</div>
+                </div>
+                <div style="width:36px;height:36px;border-radius:50%;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent);font-size:18px;">
+                    <i class="ri-truck-fill"></i>
                 </div>
             </div>
         </div>

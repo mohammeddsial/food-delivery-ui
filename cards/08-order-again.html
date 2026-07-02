@@ -8,10 +8,10 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        body { font-family: var(--font-family, 'Plus Jakarta Sans', sans-serif); background: var(--page-bg, #f5f5f5); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         .tabs { display: flex; gap: 6px; margin-bottom: 16px; justify-content: center; max-width: 360px; width: 100%; }
-        .tab { padding: 8px 14px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; border: 1.5px solid #ddd; background: #fff; color: #666; transition: all 0.2s; }
-        .tab.active { background: #00615F; color: #fff; border-color: #00615F; }
+        .tab { padding: 8px 14px; border-radius: var(--btn-radius, 10px); font-size: 11px; font-weight: 700; cursor: pointer; border: 1.5px solid var(--border-color, #ddd); background: var(--card-bg, #fff); color: var(--text-secondary, #666); transition: all 0.2s; }
+        .tab.active { background: var(--accent, #00615F); color: #fff; border-color: var(--accent, #00615F); }
         .variant { display: none; max-width: 360px; width: 100%; }
         .variant.active { display: block; }
         .section-title { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 14px; }
@@ -31,7 +31,7 @@
 
         /* V2: Image Left */
         .v2-rail { flex-direction: column; gap: 10px; }
-        .v2-card { width: 100%; display: flex; align-items: center; padding: 10px; border-radius: 16px; background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        .v2-card { width: 100%; display: flex; align-items: center; padding: 10px; border-radius: var(--card-radius, 16px); background: var(--card-bg, #fff); box-shadow: var(--card-shadow, 0 2px 12px rgba(0,0,0,0.06)); }
         .v2-card .card-img { width: 64px; height: 64px; border-radius: 12px; flex-shrink: 0; }
         .v2-card .card-body { flex: 1; padding: 0 0 0 12px; }
         .v2-card .card-title { font-size: 13px; font-weight: 700; }
@@ -41,8 +41,8 @@
 
         /* V3: Minimal */
         .v3-list { display: flex; flex-direction: column; gap: 8px; }
-        .v3-item { display: flex; align-items: center; gap: 12px; background: #fff; padding: 12px 14px; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-        .v3-icon { width: 40px; height: 40px; background: #F0F7F6; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #00615F; flex-shrink: 0; }
+        .v3-item { display: flex; align-items: center; gap: 12px; background: var(--card-bg, #fff); padding: 12px 14px; border-radius: var(--card-radius, 14px); box-shadow: var(--card-shadow, 0 2px 8px rgba(0,0,0,0.04)); }
+        .v3-icon { width: 40px; height: 40px; background: #F0F7F6; border-radius: var(--card-radius, 10px); display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--accent, #00615F); flex-shrink: 0; }
         .v3-info { flex: 1; }
         .v3-info .card-title { font-size: 13px; font-weight: 700; }
         .v3-info .card-meta { font-size: 10px; color: #888; margin-top: 2px; }

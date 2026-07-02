@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        body { font-family: var(--font-family, 'Plus Jakarta Sans', sans-serif); background: var(--page-bg, #f5f5f5); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
         .tabs { display: flex; gap: 8px; margin-bottom: 20px; background: #fff; padding: 6px; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-        .tab { padding: 10px 18px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: #999; transition: all 0.2s; }
-        .tab.active { background: #00615F; color: #fff; }
+        .tab { padding: 10px 18px; border-radius: var(--btn-radius, 10px); font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: #999; transition: all 0.2s; }
+        .tab.active { background: var(--accent, #00615F); color: #fff; }
         .tab:hover:not(.active) { background: #f5f5f5; }
         .variant { display: none; }
         .variant.active { display: block; }
@@ -28,43 +28,43 @@
         /* V1: Image Top */
         .v1-nav { padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; }
         .v1-left { display: flex; align-items: center; gap: 10px; }
-        .v1-hamburger { width: 32px; height: 32px; border-radius: 10px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; flex-shrink: 0; }
+        .v1-hamburger { width: 32px; height: 32px; border-radius: var(--card-radius, 10px); background: #f5f5f5; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; flex-shrink: 0; }
         .v1-hamburger i { font-size: 16px; color: #333; }
-        .v1-logo { width: 32px; height: 32px; border-radius: 9px; background: #00615F; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 11px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
-        .v1-brand { font-size: 14px; font-weight: 800; color: #1a1a1a; letter-spacing: 0.5px; }
+        .v1-logo { width: 32px; height: 32px; border-radius: var(--card-radius, 9px); background: var(--accent, #00615F); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 11px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
+        .v1-brand { font-size: 14px; font-weight: 800; color: var(--text-primary, #1a1a1a); letter-spacing: 0.5px; }
         .v1-right { display: flex; align-items: center; gap: 6px; }
         .v1-icon-btn { width: 32px; height: 32px; border-radius: 10px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
         .v1-icon-btn i { font-size: 15px; color: #333; }
-        .v1-cart { width: 36px; height: 36px; border-radius: 12px; background: #00615F; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; border: none; flex-shrink: 0; }
+        .v1-cart { width: 36px; height: 36px; border-radius: var(--card-radius, 12px); background: var(--accent, #00615F); display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; border: none; flex-shrink: 0; }
         .v1-cart i { color: #fff; font-size: 18px; }
-        .v1-badge { position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; background: #1a1a1a; color: #fff; font-size: 9px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
+        .v1-badge { position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; background: var(--card-bg, #1a1a1a); color: #fff; font-size: 9px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
 
         /* V2: Image Left */
-        .v2-nav { padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; background: #1a1a1a; }
+        .v2-nav { padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; background: var(--card-bg, #1a1a1a); }
         .v2-left { display: flex; align-items: center; gap: 10px; }
-        .v2-hamburger { width: 32px; height: 32px; border-radius: 10px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; flex-shrink: 0; }
+        .v2-hamburger { width: 32px; height: 32px; border-radius: var(--card-radius, 10px); background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; flex-shrink: 0; }
         .v2-hamburger i { font-size: 16px; color: #fff; }
-        .v2-logo { width: 32px; height: 32px; border-radius: 9px; background: #00615F; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 11px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
+        .v2-logo { width: 32px; height: 32px; border-radius: var(--card-radius, 9px); background: var(--accent, #00615F); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 11px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
         .v2-brand { font-size: 14px; font-weight: 800; color: #fff; }
         .v2-right { display: flex; align-items: center; gap: 6px; }
         .v2-icon-btn { width: 32px; height: 32px; border-radius: 10px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
         .v2-icon-btn i { font-size: 15px; color: #fff; }
-        .v2-cart { width: 36px; height: 36px; border-radius: 12px; background: #00615F; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; border: none; flex-shrink: 0; }
+        .v2-cart { width: 36px; height: 36px; border-radius: var(--card-radius, 12px); background: var(--accent, #00615F); display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; border: none; flex-shrink: 0; }
         .v2-cart i { color: #fff; font-size: 18px; }
-        .v2-badge { position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; background: #00615F; color: #fff; font-size: 9px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #1a1a1a; }
+        .v2-badge { position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; background: var(--accent, #00615F); color: #fff; font-size: 9px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #1a1a1a; }
 
         /* V3: Minimal */
         .v3-nav { padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; background: linear-gradient(180deg, #FFF3ED, #fff); }
         .v3-left { display: flex; align-items: center; gap: 8px; }
-        .v3-hamburger { width: 34px; height: 34px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #eee; box-shadow: 0 2px 8px rgba(0,0,0,0.06); flex-shrink: 0; }
+        .v3-hamburger { width: 34px; height: 34px; border-radius: 50%; background: var(--card-bg, #fff); display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #eee; box-shadow: var(--card-shadow, 0 2px 8px rgba(0,0,0,0.06)); flex-shrink: 0; }
         .v3-hamburger i { font-size: 15px; color: #333; }
-        .v3-logo { width: 34px; height: 34px; border-radius: 50%; background: #00615F; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 11px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
-        .v3-brand { font-size: 14px; font-weight: 800; color: #1a1a1a; }
+        .v3-logo { width: 34px; height: 34px; border-radius: 50%; background: var(--accent, #00615F); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 11px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
+        .v3-brand { font-size: 14px; font-weight: 800; color: var(--text-primary, #1a1a1a); }
         .v3-right { display: flex; align-items: center; gap: 8px; }
-        .v3-icon { width: 36px; height: 36px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #eee; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .v3-icon { width: 36px; height: 36px; border-radius: 50%; background: var(--card-bg, #fff); display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #eee; box-shadow: var(--card-shadow, 0 2px 8px rgba(0,0,0,0.06)); }
         .v3-icon i { font-size: 16px; color: #333; }
         .v3-cart { position: relative; }
-        .v3-badge { position: absolute; top: -2px; right: -2px; width: 16px; height: 16px; background: #00615F; color: #fff; font-size: 9px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .v3-badge { position: absolute; top: -2px; right: -2px; width: 16px; height: 16px; background: var(--accent, #00615F); color: #fff; font-size: 9px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>

@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f5; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        body { font-family: var(--font-family, 'Plus Jakarta Sans', sans-serif); background: var(--page-bg, #f5f5f5); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
         .tabs { display: flex; gap: 8px; margin-bottom: 20px; background: #fff; padding: 6px; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-        .tab { padding: 10px 18px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: #999; transition: all 0.2s; }
-        .tab.active { background: #00615F; color: #fff; }
+        .tab { padding: 10px 18px; border-radius: var(--btn-radius, 10px); font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: #999; transition: all 0.2s; }
+        .tab.active { background: var(--accent, #00615F); color: #fff; }
         .tab:hover:not(.active) { background: #f5f5f5; }
         .variant { display: none; }
         .variant.active { display: block; }
@@ -20,7 +20,7 @@
         .content { flex: 1; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 13px; }
 
         /* V1: Image Top */
-        .v1-nav { height: 68px; background: #fff; border-top: 1px solid #eee; display: flex; align-items: center; justify-content: space-around; padding: 0 16px; }
+        .v1-nav { height: 68px; background: var(--card-bg, #fff); border-top: 1px solid #eee; display: flex; align-items: center; justify-content: space-around; padding: 0 16px; }
         .v1-item { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; border: none; background: none; padding: 6px 12px; }
         .v1-item i { font-size: 20px; color: #999; transition: color 0.2s; }
         .v1-item span { font-size: 10px; color: #999; font-weight: 500; transition: color 0.2s; }
@@ -28,7 +28,7 @@
         .v1-item.active span { color: #00615F; font-weight: 700; }
 
         /* V2: Image Left */
-        .v2-nav { height: 72px; background: #1a1a1a; display: flex; align-items: center; justify-content: space-around; padding: 0 20px; border-radius: 20px 20px 0 0; }
+        .v2-nav { height: 72px; background: var(--card-bg, #1a1a1a); display: flex; align-items: center; justify-content: space-around; padding: 0 20px; border-radius: 20px 20px 0 0; }
         .v2-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; border: none; background: none; padding: 8px 14px; position: relative; }
         .v2-item i { font-size: 20px; color: rgba(255,255,255,0.5); transition: color 0.2s; }
         .v2-item span { font-size: 10px; color: rgba(255,255,255,0.5); font-weight: 500; transition: color 0.2s; }
@@ -37,7 +37,7 @@
         .v2-item.active::before { content: ''; position: absolute; top: -8px; width: 24px; height: 3px; background: #00615F; border-radius: 2px; }
 
         /* V3: Minimal */
-        .v3-nav { height: 64px; background: #fff; border-top: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; position: absolute; bottom: 0; left: 0; right: 0; }
+        .v3-nav { height: 64px; background: var(--card-bg, #fff); border-top: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; position: absolute; bottom: 0; left: 0; right: 0; }
         .v3-item { display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; border: none; background: none; padding: 6px 10px; }
         .v3-item i { font-size: 20px; color: #999; transition: color 0.2s; }
         .v3-item span { font-size: 9px; color: #999; font-weight: 500; transition: all 0.2s; }
