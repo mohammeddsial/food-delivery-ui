@@ -92,20 +92,21 @@
         .theme-neumorphism {
             font-family: 'Inter', sans-serif;
             background: #FFFFFF !important;
-            color: #1A1A1A !important;
-            --accent: #1A1A1A;
-            --accent-light: #F7F7F7;
-            --accent-text: #1A1A1A;
+            color: #1F1F1F !important;
+            --accent: #E67361;
+            --accent-light: #FCE8E3;
+            --accent-text: #E67361;
             --card-bg: #FFFFFF;
             --card-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
-            --text-primary: #1A1A1A;
+            --text-primary: #1F1F1F;
             --text-secondary: #999;
             --border-color: #F0F0F0;
-            --badge-bg: #1A1A1A;
+            --badge-bg: #E67361;
             --badge-text: #FFFFFF;
-            --pill-bg: #F7F7F7;
+            --pill-bg: #F2F2F0;
             --btn-radius: 9999px;
             --card-radius: 20px;
+            --highlight: #A5AB8B;
         }
 
         .neu-flat {
@@ -178,22 +179,22 @@
         /* --- THEME 2: GLASSMORPHISM (Remix Icon) --- */
         .theme-glassmorphism {
             font-family: 'Outfit', sans-serif;
-            background: #1a1a1a !important;
+            background: #0D0D0D !important;
             color: #ffffff !important;
-            --accent: #4CAF50;
-            --accent-light: rgba(76, 175, 80, 0.15);
-            --accent-text: #4CAF50;
+            --accent: #D4A574;
+            --accent-light: rgba(212, 165, 116, 0.15);
+            --accent-text: #D4A574;
             --card-bg: rgba(255, 255, 255, 0.06);
             --card-bg-solid: #1e1e1e;
             --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             --text-primary: #ffffff;
             --text-secondary: rgba(255, 255, 255, 0.5);
-            --border-color: rgba(255, 255, 255, 0.1);
-            --badge-bg: #4CAF50;
-            --badge-text: #ffffff;
+            --border-color: rgba(255, 255, 255, 0.06);
+            --badge-bg: #D4A574;
+            --badge-text: #0D0D0D;
             --pill-bg: rgba(255, 255, 255, 0.08);
             --btn-radius: 9999px;
-            --highlight: #FFD54F;
+            --highlight: #C8956C;
         }
 
         .theme-glassmorphism::before {
@@ -251,22 +252,22 @@
         /* --- THEME 3: NATURAL/ORGANIC (Tabler) --- */
         .theme-neubrutalism {
             font-family: 'Poppins', sans-serif;
-            background: #F9F3F0 !important;
-            color: #1A1A1A !important;
+            background: #F5EDE4 !important;
+            color: #3D3229 !important;
             --accent: #00615F;
             --accent-light: #F0F7F6;
             --accent-text: #00615F;
             --card-bg: #FFFFFF;
             --card-bg-solid: #FFFFFF;
             --card-shadow: 0 2px 8px rgba(0, 97, 95, 0.08);
-            --text-primary: #1A1A1A;
-            --text-secondary: #888;
+            --text-primary: #3D3229;
+            --text-secondary: #8A7A6A;
             --border-color: #E8DDD3;
             --badge-bg: #00615F;
             --badge-text: #ffffff;
             --pill-bg: #F5EDE4;
             --btn-radius: 12px;
-            --highlight: #FFD54F;
+            --highlight: #FF6B35;
         }
 
         .brutal-card {
@@ -1703,42 +1704,42 @@
             neumorphism: {
                 name: 'Light',
                 colors: {
-                    Background: '#F9F3F0',
+                    Background: '#FFFFFF',
                     'Card BG': '#FFFFFF',
                     'Shadow Dark': '#E0E0E0',
                     'Shadow Light': '#FFFFFF',
-                    Text: '#1A1A1A',
-                    Primary: '#00615F',
-                    Accent: '#4CAF50',
-                    Secondary: '#FFC200'
+                    Text: '#1F1F1F',
+                    Primary: '#E67361',
+                    Accent: '#E67361',
+                    Secondary: '#A5AB8B'
                 }
             },
             glassmorphism: {
                 name: 'Dark',
                 colors: {
-                    Background: '#1a1a1a',
-                    Glass: 'rgba(255,255,255,0.08)',
-                    Border: 'rgba(255,255,255,0.1)',
+                    Background: '#0D0D0D',
+                    Glass: 'rgba(255,255,255,0.06)',
+                    Border: 'rgba(255,255,255,0.06)',
                     Text: '#ffffff',
-                    Primary: '#4CAF50',
-                    Accent: '#FFD54F',
-                    Secondary: '#00BFA5'
+                    Primary: '#D4A574',
+                    Accent: '#D4A574',
+                    Secondary: '#C8956C'
                 }
             },
             neubrutalism: {
                 name: 'Modern',
                 colors: {
-                    Background: '#F8F8F8',
+                    Background: '#F5EDE4',
                     'Card BG': '#ffffff',
-                    Border: '#E0E0E0',
-                    Text: '#1a1a1a',
+                    Border: '#E8DDD3',
+                    Text: '#3D3229',
                     Primary: '#00615F',
-                    Secondary: '#FFD54F',
-                    Accent: '#4CAF50',
-                    Pink: '#00615F',
+                    Secondary: '#FF6B35',
+                    Accent: '#00615F',
+                    Pink: '#FF6B35',
                     'Price BG': '#00615F',
-                    'Star': '#FFD54F',
-                    'Delivery': '#4CAF50',
+                    'Star': '#FF6B35',
+                    'Delivery': '#00615F',
                     'Discount BG': '#F0F7F6'
                 }
             }
@@ -4531,7 +4532,7 @@
             if (style === 'option 1') {
                 return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
                     <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:24px;">
-                        <div style="font-size:48px;margin-bottom:12px;">🎉</div>
+                        <div style="font-size:48px;margin-bottom:12px;">${iconFA('party-popper', 'font-size:44px;color:'+accent+';')}</div>
                         <div style="font-size:22px;font-weight:800;color:${textColor};margin-bottom:4px;">Order Confirmed!</div>
                         <div style="font-size:13px;color:${subColor};margin-bottom:20px;">Your delicious food is on its way</div>
                         <div style="background:var(--pill-bg);border-radius:16px;padding:20px;width:100%;margin-bottom:20px;">
@@ -4723,10 +4724,10 @@
                         </div>
                         <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:10px;">Perks & Benefits</div>
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
-                            <div style="background:var(--card-bg);border-radius:var(--card-radius);padding:14px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);"><div style="font-size:24px;">💰</div><div style="font-size:11px;font-weight:700;color:${textColor};margin-top:6px;">5% Cashback</div><div style="font-size:9px;color:${subColor};">On every order</div></div>
-                            <div style="background:var(--card-bg);border-radius:var(--card-radius);padding:14px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);"><div style="font-size:24px;">⭐</div><div style="font-size:11px;font-weight:700;color:${textColor};margin-top:6px;">Priority</div><div style="font-size:9px;color:${subColor};">Faster delivery</div></div>
-                            <div style="background:var(--card-bg);border-radius:var(--card-radius);padding:14px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);"><div style="font-size:24px;">🚚</div><div style="font-size:11px;font-weight:700;color:${textColor};margin-top:6px;">Free Delivery</div><div style="font-size:9px;color:${subColor};">Orders over $15</div></div>
-                            <div style="background:var(--card-bg);border-radius:var(--card-radius);padding:14px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);"><div style="font-size:24px;">🎁</div><div style="font-size:11px;font-weight:700;color:${textColor};margin-top:6px;">Birthday Treat</div><div style="font-size:9px;color:${subColor};">Free dessert</div></div>
+                            <div style="background:var(--card-bg);border-radius:var(--card-radius);padding:14px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);"><div style="font-size:24px;">${iconFA("coins", "font-size:22px;color:"+accent+";")}</div><div style="font-size:11px;font-weight:700;color:${textColor};margin-top:6px;">5% Cashback</div><div style="font-size:9px;color:${subColor};">On every order</div></div>
+                            <div style="background:var(--card-bg);border-radius:var(--card-radius);padding:14px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);"><div style="font-size:24px;">${iconFA("star", "font-size:22px;color:#FFC200;")}</div><div style="font-size:11px;font-weight:700;color:${textColor};margin-top:6px;">Priority</div><div style="font-size:9px;color:${subColor};">Faster delivery</div></div>
+                            <div style="background:var(--card-bg);border-radius:var(--card-radius);padding:14px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);"><div style="font-size:24px;">${iconFA("truck", "font-size:22px;color:"+accent+";")}</div><div style="font-size:11px;font-weight:700;color:${textColor};margin-top:6px;">Free Delivery</div><div style="font-size:9px;color:${subColor};">Orders over $15</div></div>
+                            <div style="background:var(--card-bg);border-radius:var(--card-radius);padding:14px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);"><div style="font-size:24px;">${iconFA("gift", "font-size:22px;color:"+accent+";")}</div><div style="font-size:11px;font-weight:700;color:${textColor};margin-top:6px;">Birthday Treat</div><div style="font-size:9px;color:${subColor};">Free dessert</div></div>
                         </div>
                         <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:10px;">Recent Activity</div>
                         <div style="background:var(--card-bg);border-radius:var(--card-radius);padding:14px;box-shadow:var(--card-shadow);border:1px solid var(--border-color);margin-bottom:16px;">
@@ -4735,7 +4736,7 @@
                             <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;"><div><div style="font-size:11px;font-weight:600;color:${textColor};">Welcome Bonus</div><div style="font-size:9px;color:${subColor};">Mar 15</div></div><span style="font-size:12px;font-weight:700;color:${accent};">+200 pts</span></div>
                         </div>
                         <div onclick="alert('Refer a friend!')" style="background:var(--pill-bg);border-radius:var(--card-radius);padding:16px;display:flex;align-items:center;gap:12px;cursor:pointer;border:1px solid var(--border-color);">
-                            <div style="font-size:28px;">🎉</div>
+                            <div style="font-size:28px;">${iconFA("party-popper", "font-size:26px;color:"+accent+";")}</div>
                             <div style="flex:1;"><div style="font-size:12px;font-weight:700;color:${textColor};">Refer & Earn</div><div style="font-size:10px;color:${subColor};">Get 50 pts for each friend</div></div>
                             <span style="font-size:12px;color:${subColor};">${iconFA('chevron-right', 'font-size:14px;')}</span>
                         </div>
@@ -4751,7 +4752,7 @@
                     </div>
                     <div style="flex:1;overflow-y:auto;padding:16px 16px 80px;">
                         <div style="text-align:center;margin-bottom:16px;">
-                            <div style="font-size:64px;margin-bottom:8px;">🏆</div>
+                            <div style="font-size:64px;margin-bottom:8px;">${iconFA("trophy", "font-size:56px;color:"+accent+";")}</div>
                             <div style="font-size:20px;font-weight:900;color:${textColor};">Gold Member</div>
                             <div style="font-size:12px;color:${subColor};">820 pts earned</div>
                         </div>
@@ -4763,19 +4764,19 @@
                         </div>
                         <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:8px;">Your Perks</div>
                         <div style="display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;">
-                            <div style="min-width:100px;background:var(--card-bg);border-radius:var(--card-radius);padding:12px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);"><div style="font-size:22px;">💰</div><div style="font-size:9px;font-weight:700;color:${textColor};margin-top:4px;">5% Cashback</div></div>
-                            <div style="min-width:100px;background:var(--card-bg);border-radius:var(--card-radius);padding:12px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);"><div style="font-size:22px;">⭐</div><div style="font-size:9px;font-weight:700;color:${textColor};margin-top:4px;">Priority</div></div>
-                            <div style="min-width:100px;background:var(--card-bg);border-radius:var(--card-radius);padding:12px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);"><div style="font-size:22px;">🚚</div><div style="font-size:9px;font-weight:700;color:${textColor};margin-top:4px;">Free Delivery</div></div>
-                            <div style="min-width:100px;background:var(--pill-bg);border-radius:var(--card-radius);padding:12px;text-align:center;opacity:0.5;"><div style="font-size:22px;">🎁</div><div style="font-size:9px;font-weight:700;color:${textColor};margin-top:4px;">Birthday</div></div>
-                            <div style="min-width:100px;background:var(--pill-bg);border-radius:var(--card-radius);padding:12px;text-align:center;opacity:0.5;"><div style="font-size:22px;">🎟️</div><div style="font-size:9px;font-weight:700;color:${textColor};margin-top:4px;">VIP Event</div></div>
+                            <div style="min-width:100px;background:var(--card-bg);border-radius:var(--card-radius);padding:12px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);"><div style="font-size:22px;">${iconFA("coins", "font-size:20px;color:"+accent+";")}</div><div style="font-size:9px;font-weight:700;color:${textColor};margin-top:4px;">5% Cashback</div></div>
+                            <div style="min-width:100px;background:var(--card-bg);border-radius:var(--card-radius);padding:12px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);"><div style="font-size:22px;">${iconFA("star", "font-size:20px;color:#FFC200;")}</div><div style="font-size:9px;font-weight:700;color:${textColor};margin-top:4px;">Priority</div></div>
+                            <div style="min-width:100px;background:var(--card-bg);border-radius:var(--card-radius);padding:12px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);"><div style="font-size:22px;">${iconFA("truck", "font-size:20px;color:"+accent+";")}</div><div style="font-size:9px;font-weight:700;color:${textColor};margin-top:4px;">Free Delivery</div></div>
+                            <div style="min-width:100px;background:var(--pill-bg);border-radius:var(--card-radius);padding:12px;text-align:center;opacity:0.5;"><div style="font-size:22px;">${iconFA("gift", "font-size:20px;color:"+accent+";")}</div><div style="font-size:9px;font-weight:700;color:${textColor};margin-top:4px;">Birthday</div></div>
+                            <div style="min-width:100px;background:var(--pill-bg);border-radius:var(--card-radius);padding:12px;text-align:center;opacity:0.5;"><div style="font-size:22px;">${iconFA("ticket", "font-size:20px;color:"+accent+";")}</div><div style="font-size:9px;font-weight:700;color:${textColor};margin-top:4px;">VIP Event</div></div>
                         </div>
                         <div style="background:var(--card-bg);border-radius:var(--card-radius);padding:14px;box-shadow:var(--card-shadow);border:1px solid var(--border-color);margin-bottom:12px;display:flex;align-items:center;gap:10px;">
-                            <div style="font-size:24px;">🔥</div>
+                            <div style="font-size:24px;">${iconFA("flame", "font-size:22px;color:#FF6B35;")}</div>
                             <div><div style="font-size:12px;font-weight:700;color:${textColor};">5-week streak!</div><div style="font-size:9px;color:${subColor};">Keep ordering to maintain</div></div>
                             <div style="margin-left:auto;font-size:20px;">${iconFA('flame', 'font-size:18px;color:#FF6B35;')}</div>
                         </div>
                         <div style="background:linear-gradient(135deg,#FF6B35,#FFD54F);border-radius:var(--card-radius);padding:14px;display:flex;align-items:center;gap:10px;color:#fff;">
-                            <div style="font-size:24px;">🎂</div>
+                            <div style="font-size:24px;">${iconFA("cake-slice", "font-size:22px;color:#fff;")}</div>
                             <div><div style="font-size:12px;font-weight:700;">Birthday Bonus</div><div style="font-size:10px;opacity:0.9;">Free dessert on your birthday!</div></div>
                             <div onclick="alert('Claim your birthday reward!')" style="margin-left:auto;background:rgba(255,255,255,0.3);padding:6px 12px;border-radius:999px;font-size:10px;font-weight:700;cursor:pointer;">Claim</div>
                         </div>
@@ -4796,12 +4797,12 @@
                     </div>
                     <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:10px;">Quick Redeem</div>
                     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;">
-                        <div style="background:var(--card-bg);border-radius:var(--card-radius);padding:12px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);cursor:pointer;"><div style="font-size:20px;">🍔</div><div style="font-size:10px;font-weight:600;color:${textColor};margin-top:4px;">Free Burger</div><div style="font-size:9px;color:${subColor};">500 pts</div></div>
-                        <div style="background:var(--card-bg);border-radius:var(--card-radius);padding:12px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);cursor:pointer;"><div style="font-size:20px;">☕</div><div style="font-size:10px;font-weight:600;color:${textColor};margin-top:4px;">Free Coffee</div><div style="font-size:9px;color:${subColor};">200 pts</div></div>
-                        <div style="background:var(--card-bg);border-radius:var(--card-radius);padding:12px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);cursor:pointer;"><div style="font-size:20px;">🍟</div><div style="font-size:10px;font-weight:600;color:${textColor};margin-top:4px;">Free Fries</div><div style="font-size:9px;color:${subColor};">150 pts</div></div>
-                        <div style="background:var(--card-bg);border-radius:var(--card-radius);padding:12px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);cursor:pointer;"><div style="font-size:20px;">🍕</div><div style="font-size:10px;font-weight:600;color:${textColor};margin-top:4px;">Free Pizza</div><div style="font-size:9px;color:${subColor};">800 pts</div></div>
-                        <div style="background:var(--card-bg);border-radius:var(--card-radius);padding:12px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);cursor:pointer;"><div style="font-size:20px;">🧁</div><div style="font-size:10px;font-weight:600;color:${textColor};margin-top:4px;">Free Dessert</div><div style="font-size:9px;color:${subColor};">300 pts</div></div>
-                        <div style="background:var(--card-bg);border-radius:var(--card-radius);padding:12px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);cursor:pointer;"><div style="font-size:20px;">🥤</div><div style="font-size:10px;font-weight:600;color:${textColor};margin-top:4px;">Free Drink</div><div style="font-size:9px;color:${subColor};">100 pts</div></div>
+                        <div style="background:var(--card-bg);border-radius:var(--card-radius);padding:12px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);cursor:pointer;"><div style="font-size:20px;">${iconFA("sandwich", "font-size:18px;color:"+accent+";")}</div><div style="font-size:10px;font-weight:600;color:${textColor};margin-top:4px;">Free Burger</div><div style="font-size:9px;color:${subColor};">500 pts</div></div>
+                        <div style="background:var(--card-bg);border-radius:var(--card-radius);padding:12px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);cursor:pointer;"><div style="font-size:20px;">${iconFA("coffee", "font-size:18px;color:"+accent+";")}</div><div style="font-size:10px;font-weight:600;color:${textColor};margin-top:4px;">Free Coffee</div><div style="font-size:9px;color:${subColor};">200 pts</div></div>
+                        <div style="background:var(--card-bg);border-radius:var(--card-radius);padding:12px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);cursor:pointer;"><div style="font-size:20px;">${iconFA("utensils", "font-size:18px;color:"+accent+";")}</div><div style="font-size:10px;font-weight:600;color:${textColor};margin-top:4px;">Free Fries</div><div style="font-size:9px;color:${subColor};">150 pts</div></div>
+                        <div style="background:var(--card-bg);border-radius:var(--card-radius);padding:12px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);cursor:pointer;"><div style="font-size:20px;">${iconFA("pizza", "font-size:18px;color:"+accent+";")}</div><div style="font-size:10px;font-weight:600;color:${textColor};margin-top:4px;">Free Pizza</div><div style="font-size:9px;color:${subColor};">800 pts</div></div>
+                        <div style="background:var(--card-bg);border-radius:var(--card-radius);padding:12px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);cursor:pointer;"><div style="font-size:20px;">${iconFA("cake-slice", "font-size:18px;color:"+accent+";")}</div><div style="font-size:10px;font-weight:600;color:${textColor};margin-top:4px;">Free Dessert</div><div style="font-size:9px;color:${subColor};">300 pts</div></div>
+                        <div style="background:var(--card-bg);border-radius:var(--card-radius);padding:12px;text-align:center;box-shadow:var(--card-shadow);border:1px solid var(--border-color);cursor:pointer;"><div style="font-size:20px;">${iconFA("cup-soda", "font-size:18px;color:"+accent+";")}</div><div style="font-size:10px;font-weight:600;color:${textColor};margin-top:4px;">Free Drink</div><div style="font-size:9px;color:${subColor};">100 pts</div></div>
                     </div>
                     <div style="background:var(--pill-bg);border-radius:var(--card-radius);padding:14px;margin-bottom:12px;">
                         <div style="font-size:11px;font-weight:600;color:${textColor};margin-bottom:4px;">Earn Rate</div>
@@ -4850,7 +4851,7 @@
                             </div>`).join('')}
                         </div>
                         <div style="margin:0 16px 16px;background:linear-gradient(135deg,${accent}15,${accent}05);border-radius:var(--card-radius);padding:16px;border:1px solid ${accent}30;text-align:center;">
-                            <div style="font-size:14px;font-weight:800;color:${textColor};">🔥 Make it a Meal Bundle</div>
+                            <div style="font-size:14px;font-weight:800;color:${textColor};display:flex;align-items:center;justify-content:center;gap:6px;">${iconFA('flame', 'font-size:13px;color:#FF6B35;')} Make it a Meal Bundle</div>
                             <div style="font-size:12px;color:${subColor};margin:6px 0;">Add any 2 items & save $2.00</div>
                             <div style="font-size:18px;font-weight:900;color:${accent};">$6.99</div>
                             <div style="font-size:10px;color:${subColor};text-decoration:line-through;">$8.99</div>
@@ -5074,7 +5075,7 @@
                 const id = 'splash-' + theme;
                 setTimeout(() => { if (currentPageByTheme[theme] === 'splash') { navigateToPage(theme, 'feed'); } }, 2000);
                 return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-                    <div style="font-size:64px;margin-bottom:16px;">🍽️</div>
+                    <div style="font-size:64px;margin-bottom:16px;">${iconFA('utensils', 'font-size:56px;color:'+accent+';')}</div>
                     <div style="font-size:28px;font-weight:900;color:${textColor};margin-bottom:4px;">Foodie</div>
                     <div style="font-size:13px;color:${subColor};letter-spacing:2px;">Fresh · Fast · Delicious</div>
                     <div style="margin-top:40px;width:24px;height:24px;border:3px solid var(--border-color);border-top-color:${accent};border-radius:50%;animation:spSplash${theme} 0.8s linear infinite;"></div>
@@ -5088,7 +5089,7 @@
                     <div style="position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:40px 20px;opacity:0.15;font-size:32px;transform:rotate(-15deg) scale(1.3);">${bgEmojis.map(e => `<span style="text-align:center;">${e}</span>`).join('')}</div>
                     <div style="position:relative;z-index:1;text-align:center;animation:fadeInSplash 1s ease-out;">
                         <style>@keyframes fadeInSplash{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}</style>
-                        <div style="font-size:72px;margin-bottom:16px;animation:fadeInSplash 1.2s ease-out 0.2s both;">🍽️</div>
+                        <div style="font-size:72px;margin-bottom:16px;animation:fadeInSplash 1.2s ease-out 0.2s both;">${iconFA('utensils', 'font-size:64px;color:#fff;')}</div>
                         <div style="font-size:32px;font-weight:900;color:#fff;margin-bottom:4px;animation:fadeInSplash 1.2s ease-out 0.4s both;">Foodie</div>
                         <div style="font-size:14px;color:rgba(255,255,255,0.8);letter-spacing:3px;animation:fadeInSplash 1.2s ease-out 0.6s both;">Fresh · Fast · Delicious</div>
                         <div onclick="navigateToPage('${theme}','feed')" style="display:inline-block;margin-top:32px;padding:14px 40px;background:#fff;color:${accent};border-radius:999px;font-size:15px;font-weight:800;cursor:pointer;animation:fadeInSplash 1.2s ease-out 0.8s both;box-shadow:0 4px 16px rgba(0,0,0,0.15);">Get Started</div>
@@ -5104,7 +5105,7 @@
             }, 50);
             setTimeout(() => { if (currentPageByTheme[theme] === 'splash') { navigateToPage(theme, 'feed'); } }, 2000);
             return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-                <div style="font-size:64px;margin-bottom:16px;animation:pulseSplash${theme} 2s ease-in-out infinite;">🍽️</div>
+                <div style="font-size:64px;margin-bottom:16px;animation:pulseSplash${theme} 2s ease-in-out infinite;">${iconFA('utensils', 'font-size:56px;color:'+accent+';')}</div>
                 <style>@keyframes pulseSplash${theme}{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}</style>
                 <div style="font-size:28px;font-weight:900;color:${textColor};margin-bottom:4px;">Foodie</div>
                 <div style="font-size:12px;color:${subColor};letter-spacing:2px;">Fresh · Fast · Delicious</div>
@@ -5138,7 +5139,7 @@
                                     <span style="font-size:8px;font-weight:600;background:var(--pill-bg);padding:3px 8px;border-radius:9999px;color:var(--text-secondary);">Free Delivery</span>
                                 </div>
                             </div>
-                            <div style="position:absolute;top:0;right:0;font-size:14px;cursor:pointer;" onclick="alert('Share your referral link')">🔗</div>
+                            <div style="position:absolute;top:0;right:0;font-size:14px;cursor:pointer;color:var(--text-secondary);" onclick="alert('Share your referral link')">${iconFA('link', 'font-size:14px;')}</div>
                         </div>
                         <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--border-color);">
                             <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:var(--text-secondary);">
@@ -5147,7 +5148,7 @@
                             <div style="font-size:9px;color:var(--text-secondary);">= $8.20 value</div>
                         </div>
                         <div style="display:flex;align-items:center;gap:4px;margin-top:6px;font-size:9px;color:var(--text-secondary);">
-                            <span>🚚</span><span>Save $2.50 more for free delivery</span>
+                            <span style="display:flex;align-items:center;gap:4px;">${iconFA('truck', 'font-size:11px;')}</span><span>Save $2.50 more for free delivery</span>
                         </div>
                     </div>
                 </div>`;
@@ -5177,30 +5178,30 @@
                         </div>
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;">
                             <div style="background:rgba(255,255,255,0.25);border-radius:10px;padding:8px;text-align:center;">
-                                <div style="font-size:16px;">💰</div>
+                                <div style="font-size:16px;">${iconFA('coins', 'font-size:16px;')}</div>
                                 <div style="font-size:8px;margin-top:2px;">5% Back</div>
                             </div>
                             <div style="background:rgba(255,255,255,0.25);border-radius:10px;padding:8px;text-align:center;">
-                                <div style="font-size:16px;">⭐</div>
+                                <div style="font-size:16px;">${iconFA('star', 'font-size:16px;')}</div>
                                 <div style="font-size:8px;margin-top:2px;">Priority</div>
                             </div>
                             <div style="background:rgba(255,255,255,0.08);border-radius:10px;padding:8px;text-align:center;opacity:0.4;">
-                                <div style="font-size:16px;">🚚</div>
+                                <div style="font-size:16px;">${iconFA('truck', 'font-size:16px;')}</div>
                                 <div style="font-size:8px;margin-top:2px;">Free Delivery</div>
                             </div>
                             <div style="background:rgba(255,255,255,0.08);border-radius:10px;padding:8px;text-align:center;opacity:0.4;">
-                                <div style="font-size:16px;">🎁</div>
+                                <div style="font-size:16px;">${iconFA('gift', 'font-size:16px;')}</div>
                                 <div style="font-size:8px;margin-top:2px;">Birthday Perk</div>
                             </div>
                         </div>
                         <div style="margin-top:8px;display:flex;align-items:center;justify-content:space-between;">
                             <div style="font-size:9px;opacity:0.6;">Points expire Dec 31, 2026</div>
                             <div style="display:flex;align-items:center;gap:4px;font-size:9px;opacity:0.8;">
-                                <span>Silver</span><span style="opacity:0.4;">→</span><span style="font-weight:700;">Gold ★</span><span style="opacity:0.4;">→</span><span style="opacity:0.6;">Platinum</span>
+                                <span>Silver</span><span style="opacity:0.4;">${iconFA('arrow-right', 'font-size:9px;')}</span><span style="font-weight:700;">Gold ★</span><span style="opacity:0.4;">${iconFA('arrow-right', 'font-size:9px;')}</span><span style="opacity:0.6;">Platinum</span>
                             </div>
                         </div>
                         <div onclick="alert('Refer a friend!')" style="margin-top:10px;background:rgba(255,255,255,0.2);border-radius:10px;padding:10px;text-align:center;font-size:10px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
-                            🎁 Invite friends, earn 50 pts
+                            ${iconFA('gift', 'font-size:12px;')} Invite friends, earn 50 pts
                         </div>
                     </div>
                 </div>`;
@@ -5208,50 +5209,50 @@
             if (theme === 'neumorphism') {
                 return `
                 <div style="padding:0 16px 16px;">
-                    <div style="background:#f0ebe6;border-radius:16px;padding:12px;box-shadow:6px 6px 12px rgba(0,0,0,0.06),-6px -6px 12px rgba(255,255,255,0.8);">
+                    <div style="background:var(--card-bg);border-radius:16px;padding:12px;box-shadow:6px 6px 12px rgba(0,0,0,0.06),-6px -6px 12px rgba(255,255,255,0.8);">
                         <div style="display:flex;justify-content:space-between;align-items:center;">
                             <div style="display:flex;align-items:center;gap:8px;">
-                                <div style="width:32px;height:32px;border-radius:8px;background:#e8e3de;box-shadow:2px 2px 5px rgba(0,0,0,0.06),-2px -2px 5px rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:center;">${iconFA('crown', 'text-[#1A1A1A]')}</div>
+                                <div style="width:32px;height:32px;border-radius:8px;background:var(--pill-bg);box-shadow:2px 2px 5px rgba(0,0,0,0.06),-2px -2px 5px rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:center;">${iconFA('crown', 'text-[#1A1A1A]')}</div>
                                 <div>
-                                    <div style="font-size:7px;color:#888;letter-spacing:1px;text-transform:uppercase;font-weight:600;">Membership</div>
-                                    <div style="font-size:12px;font-weight:900;color:#1A1A1A;margin-top:1px;">Gold Member</div>
+                                    <div style="font-size:7px;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;font-weight:600;">Membership</div>
+                                    <div style="font-size:12px;font-weight:900;color:var(--text-primary);margin-top:1px;">Gold Member</div>
                                 </div>
                             </div>
                             <div style="display:flex;align-items:center;gap:6px;">
-                                <span style="font-size:8px;font-weight:700;color:#1A1A1A;">🔥 5wk</span>
-                                <span style="background:#e8e3de;box-shadow:2px 2px 5px rgba(0,0,0,0.06),-2px -2px 5px rgba(255,255,255,0.7);padding:3px 10px;border-radius:999px;font-size:10px;font-weight:700;color:#1A1A1A;">820 pts</span>
+                                <span style="font-size:8px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:2px;">${iconFA('flame', 'text-[10px] text-[#FF6B35]')} 5wk</span>
+                                <span style="background:var(--pill-bg);box-shadow:2px 2px 5px rgba(0,0,0,0.06),-2px -2px 5px rgba(255,255,255,0.7);padding:3px 10px;border-radius:999px;font-size:10px;font-weight:700;color:var(--text-primary);">820 pts</span>
                             </div>
                         </div>
-                        <div style="display:flex;align-items:center;gap:4px;margin-top:6px;font-size:7px;color:#888;font-weight:600;">
+                        <div style="display:flex;align-items:center;gap:4px;margin-top:6px;font-size:7px;color:var(--text-secondary);font-weight:600;">
                             <span>Silver</span>
                             <span style="font-size:3px;">●</span>
-                            <span style="color:#1A1A1A;font-weight:800;">Gold ★</span>
+                            <span style="color:var(--text-primary);font-weight:800;">Gold ★</span>
                             <span style="font-size:3px;">●</span>
                             <span>Platinum</span>
                             <span style="font-size:3px;">●</span>
                             <span>Diamond</span>
                         </div>
                         <div style="margin-top:6px;">
-                            <div style="display:flex;justify-content:space-between;font-size:8px;color:#888;margin-bottom:3px;font-weight:600;">
-                                <span>Progress</span><span style="color:#1A1A1A;font-weight:700;">180 pts away</span>
+                            <div style="display:flex;justify-content:space-between;font-size:8px;color:var(--text-secondary);margin-bottom:3px;font-weight:600;">
+                                <span>Progress</span><span style="color:var(--text-primary);font-weight:700;">180 pts away</span>
                             </div>
-                            <div style="height:4px;background:#e0dbd6;box-shadow:inset 2px 2px 4px rgba(0,0,0,0.08),inset -2px -2px 4px rgba(255,255,255,0.6);border-radius:999px;overflow:hidden;">
-                                <div style="height:100%;width:82%;background:#1A1A1A;border-radius:999px;"></div>
+                            <div style="height:4px;background:var(--pill-bg);box-shadow:inset 2px 2px 4px rgba(0,0,0,0.08),inset -2px -2px 4px rgba(255,255,255,0.6);border-radius:999px;overflow:hidden;">
+                                <div style="height:100%;width:82%;background:var(--text-primary);border-radius:999px;"></div>
                             </div>
-                            <div style="font-size:7px;color:#1A1A1A;font-weight:700;margin-top:3px;">Only 2 more visits to reach Platinum!</div>
+                            <div style="font-size:7px;color:var(--text-primary);font-weight:700;margin-top:3px;">Only 2 more visits to reach Platinum!</div>
                         </div>
                         <div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap;">
-                            <span style="font-size:7px;color:#888;font-weight:600;">⭐ 2pts/$1</span>
-                            <span style="font-size:7px;font-weight:600;background:#e8e3de;box-shadow:2px 2px 4px rgba(0,0,0,0.04),-2px -2px 4px rgba(255,255,255,0.7);padding:3px 8px;border-radius:999px;color:#1A1A1A;">5% Cashback</span>
-                            <span style="font-size:7px;font-weight:600;background:#e8e3de;box-shadow:2px 2px 4px rgba(0,0,0,0.04),-2px -2px 4px rgba(255,255,255,0.7);padding:3px 8px;border-radius:999px;color:#1A1A1A;">Free Delivery</span>
-                            <span style="font-size:7px;font-weight:600;background:#e8e3de;box-shadow:2px 2px 4px rgba(0,0,0,0.04),-2px -2px 4px rgba(255,255,255,0.7);padding:3px 8px;border-radius:999px;color:#1A1A1A;">Priority</span>
+                            <span style="font-size:7px;color:var(--text-secondary);font-weight:600;display:flex;align-items:center;gap:2px;">${iconFA('star', 'text-[9px] text-[#FFC200]')} 2pts/$1</span>
+                            <span style="font-size:7px;font-weight:600;background:var(--pill-bg);box-shadow:2px 2px 4px rgba(0,0,0,0.04),-2px -2px 4px rgba(255,255,255,0.7);padding:3px 8px;border-radius:999px;color:var(--text-primary);">5% Cashback</span>
+                            <span style="font-size:7px;font-weight:600;background:var(--pill-bg);box-shadow:2px 2px 4px rgba(0,0,0,0.04),-2px -2px 4px rgba(255,255,255,0.7);padding:3px 8px;border-radius:999px;color:var(--text-primary);">Free Delivery</span>
+                            <span style="font-size:7px;font-weight:600;background:var(--pill-bg);box-shadow:2px 2px 4px rgba(0,0,0,0.04),-2px -2px 4px rgba(255,255,255,0.7);padding:3px 8px;border-radius:999px;color:var(--text-primary);">Priority</span>
                         </div>
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;padding-top:5px;border-top:1px solid rgba(0,0,0,0.06);">
-                            <div style="display:flex;align-items:center;gap:4px;font-size:8px;color:#888;cursor:pointer;">
-                                <span>💰 Refer & Earn</span>
-                                <span style="font-size:7px;">↗</span>
+                            <div style="display:flex;align-items:center;gap:4px;font-size:8px;color:var(--text-secondary);cursor:pointer;">
+                                <span style="display:flex;align-items:center;gap:3px;">${iconFA('gift', 'text-[10px]')} Refer & Earn</span>
+                                <span style="font-size:7px;">${iconFA('arrow-up-right', 'text-[9px]')}</span>
                             </div>
-                            <div style="font-size:6px;color:#888;font-weight:500;">ID: #FOOD-56821</div>
+                            <div style="font-size:6px;color:var(--text-secondary);font-weight:500;">ID: #FOOD-56821</div>
                         </div>
                     </div>
                 </div>`;
@@ -5270,7 +5271,7 @@
                                 </div>
                             </div>
                             <div style="display:flex;align-items:center;gap:6px;">
-                                <span style="font-size:8px;font-weight:700;color:var(--highlight);">🔥 5wk</span>
+                                <span style="font-size:8px;font-weight:700;color:var(--highlight);display:flex;align-items:center;gap:2px;">${iconMaterial('fire-line', 'font-size:10px;color:#FF6B35;')} 5wk</span>
                                 <span style="background:var(--accent-light);border:1px solid rgba(76,175,80,0.2);padding:3px 10px;border-radius:999px;font-size:10px;font-weight:700;color:var(--accent);">820 pts</span>
                             </div>
                         </div>
@@ -5293,15 +5294,15 @@
                             <div style="font-size:7px;font-weight:700;margin-top:3px;color:var(--highlight);">Only 2 more visits to reach Platinum!</div>
                         </div>
                         <div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap;position:relative;z-index:1;">
-                            <span style="font-size:7px;color:var(--text-secondary);font-weight:600;">⭐ 2pts/$1</span>
+                            <span style="font-size:7px;color:var(--text-secondary);font-weight:600;display:flex;align-items:center;gap:2px;">${iconMaterial('star-fill', 'font-size:9px;color:#FFC200;')} 2pts/$1</span>
                             <span style="font-size:7px;font-weight:600;background:var(--card-bg);border:1px solid var(--border-color);padding:3px 8px;border-radius:999px;color:rgba(255,255,255,0.6);">5% Cashback</span>
                             <span style="font-size:7px;font-weight:600;background:var(--card-bg);border:1px solid var(--border-color);padding:3px 8px;border-radius:999px;color:rgba(255,255,255,0.6);">Free Delivery</span>
                             <span style="font-size:7px;font-weight:600;background:rgba(255,107,157,0.12);border:1px solid rgba(255,107,157,0.2);padding:3px 8px;border-radius:999px;color:#00BFA5;">Priority</span>
                         </div>
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;padding-top:5px;border-top:1px solid var(--border-color);position:relative;z-index:1;">
                             <div style="display:flex;align-items:center;gap:4px;font-size:8px;color:var(--text-secondary);cursor:pointer;">
-                                <span>💰 Refer & Earn</span>
-                                <span style="font-size:7px;">↗</span>
+                                <span style="display:flex;align-items:center;gap:3px;">${iconMaterial('gift-line', 'font-size:10px;')} Refer & Earn</span>
+                                <span style="font-size:7px;">${iconMaterial('arrow-right-up-line', 'font-size:9px;')}</span>
                             </div>
                             <div style="font-size:6px;color:var(--text-secondary);font-weight:500;">ID: #FOOD-56821</div>
                         </div>
@@ -5316,11 +5317,11 @@
                                 <div style="width:32px;height:32px;border-radius:8px;background:var(--pill-bg);display:flex;align-items:center;justify-content:center;">${iconBS('crown', 'text-[#00615F]')}</div>
                                 <div>
                                     <div style="font-size:7px;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;font-weight:600;">Membership</div>
-                                    <div style="font-size:12px;font-weight:900;color:#3D3229;margin-top:1px;">Gold Member</div>
+                                    <div style="font-size:12px;font-weight:900;color:var(--text-primary);margin-top:1px;">Gold Member</div>
                                 </div>
                             </div>
                             <div style="display:flex;align-items:center;gap:6px;">
-                                <span style="font-size:8px;font-weight:700;color:var(--accent);">🔥 5wk</span>
+                                <span style="font-size:8px;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:2px;">${iconBS('flame', 'text-[10px] text-[#FF6B35]')} 5wk</span>
                                 <span style="background:var(--accent);color:#fff;padding:3px 10px;border-radius:999px;font-size:10px;font-weight:700;">820 pts</span>
                             </div>
                         </div>
@@ -5338,20 +5339,20 @@
                                 <span>Progress</span><span style="color:var(--accent);font-weight:700;">180 pts away</span>
                             </div>
                             <div style="height:4px;background:var(--pill-bg);border-radius:2px;overflow:hidden;">
-                                <div style="height:100%;width:82%;background:linear-gradient(90deg,#00615F,var(--highlight));border-radius:2px;"></div>
+                                <div style="height:100%;width:82%;background:linear-gradient(90deg,var(--accent),var(--highlight));border-radius:2px;"></div>
                             </div>
                             <div style="font-size:7px;color:var(--accent);font-weight:700;margin-top:3px;">Only 2 more visits to reach Platinum!</div>
                         </div>
                         <div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap;">
-                            <span style="font-size:7px;color:var(--text-secondary);font-weight:600;">⭐ 2pts/$1</span>
+                            <span style="font-size:7px;color:var(--text-secondary);font-weight:600;display:flex;align-items:center;gap:2px;">${iconBS('star', 'text-[9px] text-[#FFC200]')} 2pts/$1</span>
                             <span style="font-size:7px;font-weight:600;background:var(--pill-bg);border:1px solid var(--border-color);padding:3px 8px;border-radius:999px;color:var(--accent);">5% Cashback</span>
                             <span style="font-size:7px;font-weight:600;background:var(--pill-bg);border:1px solid var(--border-color);padding:3px 8px;border-radius:999px;color:var(--accent);">Free Delivery</span>
                             <span style="font-size:7px;font-weight:600;background:var(--pill-bg);border:1px solid var(--border-color);padding:3px 8px;border-radius:999px;color:var(--highlight);">Priority</span>
                         </div>
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;padding-top:5px;border-top:1px solid var(--border-color);">
                             <div style="display:flex;align-items:center;gap:4px;font-size:8px;color:var(--text-secondary);cursor:pointer;">
-                                <span>💰 Refer & Earn</span>
-                                <span style="font-size:7px;">↗</span>
+                                <span style="display:flex;align-items:center;gap:3px;">${iconBS('gift', 'text-[10px]')} Refer & Earn</span>
+                                <span style="font-size:7px;">${iconBS('arrow-up-right', 'text-[9px]')}</span>
                             </div>
                             <div style="font-size:6px;color:var(--text-secondary);font-weight:500;">ID: #FOOD-56821</div>
                         </div>
@@ -5502,7 +5503,7 @@
                                 <div style="width:62%;height:100%;background:linear-gradient(90deg,#FF3B30,#FF9500);border-radius:3px;"></div>
                             </div>
                             <div style="display:flex;justify-content:space-between;font-size:9px;">
-                                <span style="color:#FF3B30;font-weight:700;">🔥 Only 8 left</span>
+                                <span style="color:#FF3B30;font-weight:700;display:flex;align-items:center;gap:3px;">${isGlass ? iconMaterial('fire-line', 'font-size:10px;') : isBrut ? iconBS('flame', 'text-[10px]') : iconFA('flame', 'font-size:10px;')} Only 8 left</span>
                                 <span style="color:var(--text-secondary);">62% claimed</span>
                             </div>
                         </div>
