@@ -1640,6 +1640,12 @@
             { id: 'offers-feed', name: 'Offers Comprehensive Feed', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
             { id: 'image-mosaic', name: 'Image Mosaic Lookbook', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
             { id: 'stories', name: 'Stories Loop Tickers', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'order-tracking', name: 'Order Tracking Page', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'menu-page', name: 'Menu Page', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'product-detail-page', name: 'Product Detail Page', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'cart-page', name: 'Cart Page', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'checkout-page', name: 'Checkout Page', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
+            { id: 'order-success-page', name: 'Order Success Page', core: false, enabled: true, style: 'default', styles: ['default', 'option 1', 'option 2'] },
         ];
 
         // Each of the 3 viewports keeps its OWN independent module list (enable/order/style)
@@ -1719,33 +1725,51 @@
 
         // ─── GLOBAL CARD CONFIG (shared across all viewports) ─────────────────
         // ─── PER-THEME CARD CONFIG ─────────────────────────────────────────────
+        const MODULE_IDS = defaultModulesConfig.map(m => m.id);
+        function buildDefaultModuleConfigs() {
+            const base = { borderRadius: 16, borderWidth: 0, borderColor: '#E0E0E0', shadowColor: 'rgba(0,0,0,0.06)', shadowX: 0, shadowY: 2, shadowBlur: 12, padding: 12, fontSize: 12, lineHeight: 1.3, imageBorderRadius: 12, gap: 12, heroHeight: 200, bgColor: '#ffffff', textColor: '#1a1a1a' };
+            const mods = {};
+            MODULE_IDS.forEach(id => { mods[id] = {}; });
+            return { _global: base, ...mods };
+        }
         const defaultCardConfig = {
-            neumorphism: {
-                borderRadius: 16, borderWidth: 0, borderColor: '#E0E0E0',
-                shadowColor: 'rgba(0,0,0,0.06)', shadowX: 0, shadowY: 2, shadowBlur: 12,
-                padding: 12, fontSize: 12, lineHeight: 1.3, imageBorderRadius: 12, gap: 12,
-                heroHeight: 200
-            },
-            glassmorphism: {
-                borderRadius: 16, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)',
-                shadowColor: 'rgba(76,175,80,0.15)', shadowX: 0, shadowY: 4, shadowBlur: 20,
-                padding: 12, fontSize: 12, lineHeight: 1.3, imageBorderRadius: 14, gap: 12,
-                heroHeight: 220
-            },
-            neubrutalism: {
-                borderRadius: 10, borderWidth: 1.5, borderColor: '#1a1a1a',
-                shadowColor: '#1a1a1a', shadowX: 3, shadowY: 3, shadowBlur: 0,
-                padding: 14, fontSize: 12, lineHeight: 1.4, imageBorderRadius: 10, gap: 14,
-                heroHeight: 180
-            }
+            neumorphism: { _global: { borderRadius: 16, borderWidth: 0, borderColor: '#E0E0E0', shadowColor: 'rgba(0,0,0,0.06)', shadowX: 0, shadowY: 2, shadowBlur: 12, padding: 12, fontSize: 12, lineHeight: 1.3, imageBorderRadius: 12, gap: 12, heroHeight: 200, bgColor: '#ffffff', textColor: '#1a1a1a' } },
+            glassmorphism: { _global: { borderRadius: 16, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)', shadowColor: 'rgba(76,175,80,0.15)', shadowX: 0, shadowY: 4, shadowBlur: 20, padding: 12, fontSize: 12, lineHeight: 1.3, imageBorderRadius: 14, gap: 12, heroHeight: 220, bgColor: 'rgba(30,30,30,0.9)', textColor: '#ffffff' } },
+            neubrutalism: { _global: { borderRadius: 10, borderWidth: 1.5, borderColor: '#1a1a1a', shadowColor: '#1a1a1a', shadowX: 3, shadowY: 3, shadowBlur: 0, padding: 14, fontSize: 12, lineHeight: 1.4, imageBorderRadius: 10, gap: 14, heroHeight: 180, bgColor: '#ffffff', textColor: '#3D3229' } }
         };
+        // Fill per-module empty overrides for each theme
+        ['neumorphism','glassmorphism','neubrutalism'].forEach(t => {
+            if (!defaultCardConfig[t]) defaultCardConfig[t] = { _global: {} };
+            MODULE_IDS.forEach(id => { if (!defaultCardConfig[t][id]) defaultCardConfig[t][id] = {}; });
+        });
+
+        function getModuleConfig(theme, moduleId) {
+            const themeConfig = window.cardConfig[theme] || window.cardConfig.neumorphism;
+            const globalCfg = themeConfig._global || {};
+            const moduleCfg = themeConfig[moduleId] || {};
+            return { ...globalCfg, ...moduleCfg };
+        }
 
         window.cardConfig = JSON.parse(JSON.stringify(defaultCardConfig));
         // 
         function loadSavedConfig() {
             const saved = localStorage.getItem('foodDelivery_cardConfig');
             if (saved) {
-                try { Object.assign(window.cardConfig, JSON.parse(saved)); } catch (e) { }
+                try {
+                    const parsed = JSON.parse(saved);
+                    // Migrate old flat config to new per-module structure
+                    const isOld = parsed.neumorphism && typeof parsed.neumorphism.borderRadius === 'number';
+                    if (isOld) {
+                        ['neumorphism','glassmorphism','neubrutalism'].forEach(t => {
+                            const old = parsed[t] || {};
+                            const migrated = { _global: { ...old } };
+                            MODULE_IDS.forEach(id => { migrated[id] = {}; });
+                            window.cardConfig[t] = migrated;
+                        });
+                    } else {
+                        Object.assign(window.cardConfig, parsed);
+                    }
+                } catch (e) { }
             }
             const savedPalettes = localStorage.getItem('foodDelivery_colorPalettes');
             if (savedPalettes) {
@@ -1833,7 +1857,7 @@
         }
 
         function updateCardConfig(key, value) {
-            window.cardConfig[activeViewTheme][key] = value;
+            window.cardConfig[activeViewTheme]._global[key] = value;
             renderCardSettings();
             renderAllViewports();
         }
@@ -1841,7 +1865,7 @@
         function applyCardConfigToViewport(theme) {
             const container = document.getElementById(`viewport-${theme}`);
             if (!container) return;
-            const c = window.cardConfig[theme];
+            const c = window.cardConfig[theme]._global || window.cardConfig[theme];
             container.style.setProperty('--card-radius', c.borderRadius + 'px');
             container.style.setProperty('--card-border', c.borderWidth + 'px solid ' + c.borderColor);
             container.style.setProperty('--card-shadow', c.shadowX + 'px ' + c.shadowY + 'px ' + c.shadowBlur + 'px ' + c.shadowColor);
@@ -2144,63 +2168,128 @@
 
 
         // ─── CARD SETTINGS RENDERER (scoped to activeViewTheme via outer switcher) ──
-        function renderCardSettings() {
-            const container = document.getElementById('cardSettingsContainer');
-            if (!container) return;
-            const c = window.cardConfig[activeViewTheme];
-
-            let html = ``;
-
-            const settings = [
+        const CARD_PROPERTY_GROUPS = [
+            { label: 'Border', props: [
                 { key: 'borderRadius', label: 'Corner Radius', min: 0, max: 32, step: 1, unit: 'px' },
                 { key: 'borderWidth', label: 'Border Width', min: 0, max: 4, step: 0.5, unit: 'px' },
+                { key: 'borderColor', label: 'Border Color', type: 'text' }
+            ]},
+            { label: 'Shadow', props: [
                 { key: 'shadowX', label: 'Shadow X', min: -10, max: 10, step: 1, unit: 'px' },
                 { key: 'shadowY', label: 'Shadow Y', min: -10, max: 10, step: 1, unit: 'px' },
                 { key: 'shadowBlur', label: 'Shadow Blur', min: 0, max: 30, step: 1, unit: 'px' },
+                { key: 'shadowColor', label: 'Shadow Color', type: 'text' }
+            ]},
+            { label: 'Padding & Gap', props: [
                 { key: 'padding', label: 'Card Padding', min: 4, max: 24, step: 1, unit: 'px' },
-                { key: 'imageBorderRadius', label: 'Image Radius', min: 0, max: 24, step: 1, unit: 'px' },
-                { key: 'gap', label: 'Card Gap', min: 4, max: 24, step: 1, unit: 'px' },
+                { key: 'gap', label: 'Card Gap', min: 4, max: 24, step: 1, unit: 'px' }
+            ]},
+            { label: 'Font', props: [
                 { key: 'fontSize', label: 'Font Size', min: 8, max: 18, step: 1, unit: 'px' },
                 { key: 'lineHeight', label: 'Line Height', min: 1, max: 2, step: 0.1, unit: '' },
-                { key: 'heroHeight', label: 'Hero Height', min: 120, max: 300, step: 10, unit: 'px' },
-            ];
-            html += settings.map(s => `
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-                    <span style="font-size:10px;color:#888;">${s.label}</span>
-                    <div style="display:flex;align-items:center;gap:4px;">
-                        <input type="number" min="${s.min}" max="${s.max}" step="${s.step}" value="${c[s.key]}"
-                            id="cardInput-${s.key}"
-                            style="width:56px;background:#222;border:1px solid #333;color:#ddd;padding:4px 6px;border-radius:6px;font-size:11px;text-align:center;">
-                        <span style="font-size:9px;color:#666;">${s.unit}</span>
-                    </div>
+                { key: 'textColor', label: 'Text Color', type: 'text' }
+            ]},
+            { label: 'Background', props: [
+                { key: 'bgColor', label: 'Background Color', type: 'text' }
+            ]},
+            { label: 'Image', props: [
+                { key: 'imageBorderRadius', label: 'Image Border Radius', min: 0, max: 24, step: 1, unit: 'px' }
+            ]}
+        ];
+        function renderModuleSettingsHTML(moduleId, config) {
+            return CARD_PROPERTY_GROUPS.map(group => `
+                <div style="margin-bottom:8px;">
+                    <div style="font-size:10px;font-weight:700;color:#aaa;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;">${group.label}</div>
+                    ${group.props.map(p => p.type === 'text' ? `
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                            <span style="font-size:10px;color:#888;">${p.label}</span>
+                            <input type="text" value="${config[p.key]}" id="cardInput-${moduleId}-${p.key}"
+                                style="width:100px;background:#222;border:1px solid #333;color:#ddd;padding:3px 6px;border-radius:6px;font-size:10px;">
+                        </div>
+                    ` : `
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                            <span style="font-size:10px;color:#888;">${p.label}</span>
+                            <div style="display:flex;align-items:center;gap:4px;">
+                                <input type="number" min="${p.min}" max="${p.max}" step="${p.step}" value="${config[p.key]}"
+                                    id="cardInput-${moduleId}-${p.key}"
+                                    style="width:56px;background:#222;border:1px solid #333;color:#ddd;padding:4px 6px;border-radius:6px;font-size:11px;text-align:center;">
+                                <span style="font-size:9px;color:#666;">${p.unit}</span>
+                            </div>
+                        </div>
+                    `).join('')}
                 </div>
             `).join('');
-            html += `
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-                    <span style="font-size:10px;color:#888;">Shadow Color</span>
-                    <input type="text" value="${c.shadowColor}" id="cardInput-shadowColor"
-                        style="width:100px;background:#222;border:1px solid #333;color:#ddd;padding:3px 6px;border-radius:6px;font-size:10px;">
-                </div>
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-                    <span style="font-size:10px;color:#888;">Border Color</span>
-                    <input type="text" value="${c.borderColor}" id="cardInput-borderColor"
-                        style="width:100px;background:#222;border:1px solid #333;color:#ddd;padding:3px 6px;border-radius:6px;font-size:10px;">
-                </div>
-                <button onclick="applyCardSettings()" style="width:100%;padding:8px;background:${VIEW_COLORS[activeViewTheme]};color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;margin-top:4px;">Apply</button>
-            `;
+        }
+        function renderCardSettings() {
+            const container = document.getElementById('cardSettingsContainer');
+            if (!container) return;
+            const allModules = [{ id: '_global', name: 'Global (Default)' }].concat(defaultModulesConfig.map((m, i) => ({ id: m.id, name: `#${String(i + 1).padStart(2, '0')} ${m.name}` })));
+            let html = `<div style="font-size:10px;color:#888;margin-bottom:8px;">Per-module card settings — customize each module individually, or set Global defaults.</div>`;
+            allModules.forEach(mod => {
+                const c = getModuleConfig(activeViewTheme, mod.id);
+                html += `
+                    <div style="border:1px solid #333;border-radius:8px;margin-bottom:6px;overflow:hidden;">
+                        <div onclick="toggleCardAccordion('${mod.id}')" style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:#1a1a1a;cursor:pointer;">
+                            <span style="font-size:11px;font-weight:600;color:#ddd;">${mod.name}</span>
+                            <span id="cardArrow-${mod.id}" style="font-size:10px;color:#888;transition:transform 0.2s;">▶</span>
+                        </div>
+                        <div id="cardAccordion-${mod.id}" style="display:none;padding:10px;background:#222;border-top:1px solid #333;">
+                            ${renderModuleSettingsHTML(mod.id, c)}
+                            <button onclick="applyCardSettingsModule('${mod.id}')" style="width:100%;padding:8px;background:${VIEW_COLORS[activeViewTheme]};color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;margin-top:4px;">Apply</button>
+                        </div>
+                    </div>`;
+            });
             container.innerHTML = html;
         }
-
-        function applyCardSettings() {
-            const settings = ['borderRadius', 'borderWidth', 'shadowX', 'shadowY', 'shadowBlur', 'padding', 'imageBorderRadius', 'gap', 'fontSize', 'lineHeight', 'heroHeight'];
-            settings.forEach(key => {
-                const el = document.getElementById('cardInput-' + key);
-                if (el) window.cardConfig[activeViewTheme][key] = parseFloat(el.value);
+        function toggleCardAccordion(moduleId) {
+            const content = document.getElementById('cardAccordion-' + moduleId);
+            const arrow = document.getElementById('cardArrow-' + moduleId);
+            if (!content) return;
+            const isOpen = content.style.display === 'block';
+            content.style.display = isOpen ? 'none' : 'block';
+            if (arrow) arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(90deg)';
+        }
+        function applyCardSettingsModule(moduleId) {
+            const globalCfg = window.cardConfig[activeViewTheme]._global || {};
+            const props = [
+                { key: 'borderRadius', type: 'number' },
+                { key: 'borderWidth', type: 'number' },
+                { key: 'borderColor', type: 'text' },
+                { key: 'shadowX', type: 'number' },
+                { key: 'shadowY', type: 'number' },
+                { key: 'shadowBlur', type: 'number' },
+                { key: 'shadowColor', type: 'text' },
+                { key: 'padding', type: 'number' },
+                { key: 'gap', type: 'number' },
+                { key: 'fontSize', type: 'number' },
+                { key: 'lineHeight', type: 'number' },
+                { key: 'textColor', type: 'text' },
+                { key: 'bgColor', type: 'text' },
+                { key: 'imageBorderRadius', type: 'number' }
+            ];
+            const overrides = {};
+            let hasDiff = false;
+            props.forEach(({ key, type }) => {
+                const el = document.getElementById('cardInput-' + moduleId + '-' + key);
+                if (!el) return;
+                const value = type === 'number' ? parseFloat(el.value) : el.value;
+                if (moduleId === '_global') {
+                    overrides[key] = value;
+                    hasDiff = true;
+                } else {
+                    if (value !== globalCfg[key]) {
+                        overrides[key] = value;
+                        hasDiff = true;
+                    }
+                }
             });
-            const shadowColorEl = document.getElementById('cardInput-shadowColor');
-            const borderColorEl = document.getElementById('cardInput-borderColor');
-            if (shadowColorEl) window.cardConfig[activeViewTheme].shadowColor = shadowColorEl.value;
-            if (borderColorEl) window.cardConfig[activeViewTheme].borderColor = borderColorEl.value;
+            if (moduleId === '_global') {
+                Object.assign(window.cardConfig[activeViewTheme]._global, overrides);
+            } else if (hasDiff) {
+                window.cardConfig[activeViewTheme][moduleId] = overrides;
+            } else {
+                window.cardConfig[activeViewTheme][moduleId] = {};
+            }
             saveConfig();
             renderAllViewports();
         }
@@ -2536,6 +2625,9 @@
                             html = drawColorPalette(theme);
                             break;
                     }
+                    const moduleCfg = getModuleConfig(theme, mod.id);
+                    const moduleVars = `--module-radius:${moduleCfg.borderRadius}px;--module-border:${moduleCfg.borderWidth}px solid ${moduleCfg.borderColor};--module-shadow:${moduleCfg.shadowX}px ${moduleCfg.shadowY}px ${moduleCfg.shadowBlur}px ${moduleCfg.shadowColor};--module-padding:${moduleCfg.padding}px;--module-font-size:${moduleCfg.fontSize}px;--module-line-height:${moduleCfg.lineHeight};--module-img-radius:${moduleCfg.imageBorderRadius}px;--module-gap:${moduleCfg.gap}px;--module-bg:${moduleCfg.bgColor};--module-text:${moduleCfg.textColor};`;
+                    html = `<div data-module="${mod.id}" style="${moduleVars}">${html}</div>`;
                     scrollWrapper.innerHTML += html;
                 });
 
@@ -2609,7 +2701,7 @@
                             <span style="font-weight:700;color:${cartSubtotalColor};">Total</span>
                             <span style="font-weight:800;color:${cartTotalColor};">$20.97</span>
                         </div>
-                        <button class="btn-morph" style="width:100%;padding:16px;background:${cartAccent};color:#fff;border:none;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;box-shadow:${cartBtnShadow};">Checkout</button>
+                        <button class="btn-morph" onclick="navigateToPage('${theme}','checkout-page')" style="width:100%;padding:16px;background:${cartAccent};color:#fff;border:none;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;box-shadow:${cartBtnShadow};">Checkout</button>
                     </div>
                 `;
 
@@ -2734,6 +2826,37 @@
                         </div>
                     </div>
                 `;
+
+                // ─── FULL-PAGE OVERLAY (Page Router) ──────────────
+                const currentPage = currentPageByTheme[theme];
+                if (currentPage !== 'feed') {
+                    const pageStyle = (modulesConfig.find(m => m.id === currentPage)?.style) || 'default';
+                    let pageHtml = '';
+                    switch (currentPage) {
+                        case 'order-tracking':
+                            pageHtml = drawOrderTrackingPage(theme, pageStyle);
+                            break;
+                        case 'menu-page':
+                            pageHtml = drawMenuPage(theme, pageStyle);
+                            break;
+                        case 'product-detail-page':
+                            pageHtml = drawProductDetailPage(theme, pageStyle);
+                            break;
+                        case 'cart-page':
+                            pageHtml = drawCartPage(theme, pageStyle);
+                            break;
+                        case 'checkout-page':
+                            pageHtml = drawCheckoutPage(theme, pageStyle);
+                            break;
+                        case 'order-success-page':
+                            pageHtml = drawOrderSuccessPage(theme, pageStyle);
+                            break;
+                        case 'tracking-map':
+                            pageHtml = drawOrderTrackingPage(theme, 'option 1');
+                            break;
+                    }
+                    container.innerHTML += pageHtml;
+                }
             });
 
             if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -2974,7 +3097,11 @@
 
                 const badgeHtml = item.badge ? `<span style="position:absolute;top:-4px;right:-8px;min-width:16px;height:16px;background:${theme === 'neumorphism' ? '#1A1A1A' : (pal.Primary || '#00615F')};color:#fff;font-size:8px;font-weight:700;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid ${theme === 'glassmorphism' ? 'rgba(26,26,26,0.9)' : '#fff'};">${item.badge}</span>` : '';
 
-                return `<button onclick="setActiveNav(${index})" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;cursor:pointer;padding:6px 8px;position:relative;transition:transform 0.15s;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform='scale(1)'" onmouseleave="this.style.transform='scale(1)'">${iconHtml}<span style="font-size:10px;${labelStyle}">${item.label}</span>${dotHtml}${badgeHtml}</button>`;
+                let clickHandler = `setActiveNav(${index})`;
+                if (item.icon === 'home') clickHandler = `goBack('${theme}')`;
+                else if (item.icon === 'menu') clickHandler = `navigateToPage('${theme}','menu-page')`;
+                else if (item.icon === 'cart') clickHandler = `navigateToPage('${theme}','cart-page')`;
+                return `<button onclick="${clickHandler}" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;cursor:pointer;padding:6px 8px;position:relative;transition:transform 0.15s;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform='scale(1)'" onmouseleave="this.style.transform='scale(1)'">${iconHtml}<span style="font-size:10px;${labelStyle}">${item.label}</span>${dotHtml}${badgeHtml}</button>`;
             }).join('');
 
             let containerStyle;
@@ -3691,27 +3818,614 @@
             </div>`;
         }
 
-// 
+        // ─── MENU PAGE ────────────────────────────────────────────
+        function drawMenuPage(theme, style = 'default') {
+            const textColor = theme === 'glassmorphism' ? '#fff' : 'var(--text-primary)';
+            const subColor = theme === 'glassmorphism' ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
+            const accent = theme === 'neubrutalism' ? '#FF6B35' : 'var(--accent)';
+            const pageBg = theme === 'glassmorphism' ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
+            const backBtn = `<div onclick="goBack('${theme}')" style="width:36px;height:36px;border-radius:50%;background:${theme==='glassmorphism'?'rgba(255,255,255,0.1)':'var(--pill-bg)'};display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('arrow-left', 'font-size:16px;color:'+textColor+';')}</div>`;
+
+            const categories = [
+                { id: 'mains', name: 'Main Course', items: [
+                    { name: 'Classic Beef Burger', desc: 'Double patty, cheddar, lettuce', price: '$12.99', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80' },
+                    { name: 'Pepperoni Pizza', desc: 'Extra cheese, thin crust', price: '$9.99', img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80' },
+                    { name: 'Grilled Salmon', desc: 'Lemon butter sauce', price: '$15.99', img: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=200&q=80' }
+                ]},
+                { id: 'sides', name: 'Sides', items: [
+                    { name: 'Caesar Salad', desc: 'Fresh romaine, parmesan', price: '$8.99', img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=200&q=80' },
+                    { name: 'Truffle Fries', desc: 'Parmesan & herb', price: '$6.99', img: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=200&q=80' },
+                    { name: 'Onion Rings', desc: 'Crispy battered', price: '$5.99', img: 'https://images.unsplash.com/photo-1639024471283-03518883512d?auto=format&fit=crop&w=200&q=80' }
+                ]},
+                { id: 'desserts', name: 'Desserts', items: [
+                    { name: 'Chocolate Lava Cake', desc: 'Warm molten center', price: '$7.99', img: 'https://images.unsplash.com/photo-1624353365286-3f8d62daad51?auto=format&fit=crop&w=200&q=80' },
+                    { name: 'Tiramisu', desc: 'Classic Italian', price: '$8.49', img: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=200&q=80' }
+                ]},
+                { id: 'drinks', name: 'Drinks', items: [
+                    { name: 'Fresh Lemonade', desc: 'Hand-squeezed', price: '$4.99', img: 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=200&q=80' },
+                    { name: 'Iced Coffee', desc: 'Cold brew', price: '$5.49', img: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=200&q=80' }
+                ]}
+            ];
+
+            const addBtn = `<div onclick="navigateToPage('${theme}','product-detail-page')" style="background:${accent};color:#fff;border:none;border-radius:var(--btn-radius);padding:6px 14px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">+ Add</div>`;
+
+            if (style === 'default') {
+                const catsNav = categories.map(c => `<span onclick="document.getElementById('cat-${theme}-${c.id}').scrollIntoView({behavior:'smooth'})" style="padding:8px 16px;background:var(--pill-bg);border-radius:9999px;font-size:12px;font-weight:600;color:${textColor};cursor:pointer;white-space:nowrap;transition:all 0.2s;" onmouseover="this.style.background='${accent}';this.style.color='#fff'" onmouseout="this.style.background='var(--pill-bg)';this.style.color='${textColor}'">${c.name}</span>`).join('');
+                const sectionsHtml = categories.map(c => `
+                    <div id="cat-${theme}-${c.id}" style="margin-bottom:20px;">
+                        <div style="font-size:14px;font-weight:800;color:${textColor};margin-bottom:12px;">${c.name}</div>
+                        ${c.items.map(item => `
+                        <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border-color);">
+                            <img src="${item.img}" style="width:52px;height:52px;border-radius:var(--card-img-radius);object-fit:cover;flex-shrink:0;">
+                            <div style="flex:1;">
+                                <div style="font-size:13px;font-weight:700;color:${textColor};">${item.name}</div>
+                                <div style="font-size:10px;color:${subColor};margin-top:2px;">${item.desc}</div>
+                                <div style="font-size:13px;font-weight:700;color:${accent};margin-top:4px;">${item.price}</div>
+                            </div>
+                            ${addBtn}
+                        </div>`).join('')}
+                    </div>`).join('');
+
+                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
+                    <div style="padding:16px;display:flex;align-items:center;gap:12px;">
+                        ${backBtn}
+                        <div style="font-size:16px;font-weight:700;color:${textColor};">Full Menu</div>
+                    </div>
+                    <div style="padding:0 16px 12px;display:flex;gap:8px;overflow-x:auto;flex-shrink:0;">${catsNav}</div>
+                    <div style="flex:1;overflow-y:auto;padding:0 16px 80px;">${sectionsHtml}</div>
+                </div>`;
+            }
+
+            if (style === 'option 1') {
+                const gridHtml = categories.map(c => `
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        ${c.items.map(item => `
+                        <div style="background:var(--card-bg);border-radius:var(--card-radius);overflow:hidden;box-shadow:var(--card-shadow);border:1px solid var(--border-color);position:relative;">
+                            <img src="${item.img}" style="width:100%;height:100px;object-fit:cover;">
+                            <div style="position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:${accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);" onclick="navigateToPage('${theme}','product-detail-page')">+</div>
+                            <div style="padding:10px;">
+                                <div style="font-size:12px;font-weight:700;color:${textColor};">${item.name}</div>
+                                <div style="font-size:10px;color:${subColor};margin-top:2px;">${item.desc}</div>
+                                <div style="font-size:13px;font-weight:800;color:${accent};margin-top:6px;">${item.price}</div>
+                            </div>
+                        </div>`).join('')}
+                    </div>`).join('');
+
+                const tabHtml = categories.map((c, i) => `<span onclick="document.getElementById('tab-grid-${theme}').innerHTML=document.getElementById('tab-content-${theme}-${i}').innerHTML;this.parentElement.querySelectorAll('span').forEach(s=>s.style.background='var(--pill-bg)');this.style.background='${accent}';this.style.color='#fff'" style="padding:8px 18px;background:${i===0?accent:'var(--pill-bg)'};color:${i===0?'#fff':textColor};border-radius:9999px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all 0.2s;">${c.name}</span>`).join('');
+
+                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
+                    <div style="padding:16px;display:flex;align-items:center;gap:12px;">
+                        ${backBtn}
+                        <div style="font-size:16px;font-weight:700;color:${textColor};">Menu</div>
+                    </div>
+                    <div style="padding:0 16px 12px;display:flex;gap:8px;overflow-x:auto;flex-shrink:0;">${tabHtml}</div>
+                    <div style="flex:1;overflow-y:auto;padding:0 16px 80px;">
+                        <div id="tab-grid-${theme}">${gridHtml}</div>
+                    </div>
+                    ${categories.map((c,i) => `<div id="tab-content-${theme}-${i}" style="display:none;">${gridHtml}</div>`).join('')}
+                </div>`;
+            }
+
+            // Option 2: Vertical list with sticky category headers
+            const stickySections = categories.map(c => `
+                <div style="position:sticky;top:0;background:${pageBg};padding:12px 0 8px;font-size:14px;font-weight:800;color:${textColor};z-index:1;">${c.name}</div>
+                ${c.items.map(item => `
+                <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--border-color);">
+                    <img src="${item.img}" style="width:48px;height:48px;border-radius:var(--card-img-radius);object-fit:cover;flex-shrink:0;">
+                    <div style="flex:1;">
+                        <div style="font-size:13px;font-weight:700;color:${textColor};">${item.name}</div>
+                        <div style="font-size:13px;font-weight:700;color:${accent};margin-top:2px;">${item.price}</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;background:var(--pill-bg);border-radius:9999px;padding:4px 6px;">
+                        <span style="width:24px;height:24px;border-radius:50%;background:${accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;">-</span>
+                        <span style="font-size:12px;font-weight:700;color:${textColor};min-width:16px;text-align:center;">1</span>
+                        <span style="width:24px;height:24px;border-radius:50%;background:${accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;">+</span>
+                    </div>
+                </div>`).join('')}
+            `).join('');
+
+            return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
+                <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-color);">
+                    ${backBtn}
+                    <div style="font-size:16px;font-weight:700;color:${textColor};">Menu</div>
+                    <div style="margin-left:auto;background:${accent};color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:9999px;display:flex;align-items:center;gap:4px;">${iconFA('shopping-bag', 'font-size:10px;')} 3 items</div>
+                </div>
+                <div style="flex:1;overflow-y:auto;">${stickySections}</div>
+            </div>`;
+        }
+
+        // ─── PRODUCT DETAIL PAGE ──────────────────────────────────
+        function drawProductDetailPage(theme, style = 'default') {
+            const textColor = theme === 'glassmorphism' ? '#fff' : 'var(--text-primary)';
+            const subColor = theme === 'glassmorphism' ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
+            const accent = theme === 'neubrutalism' ? '#FF6B35' : 'var(--accent)';
+            const pageBg = theme === 'glassmorphism' ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
+            const hero = 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80';
+            const backBtn = `<div onclick="goBack('${theme}')" style="width:36px;height:36px;border-radius:50%;background:${theme==='glassmorphism'?'rgba(255,255,255,0.1)':'var(--pill-bg)'};display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('arrow-left', 'font-size:16px;color:'+textColor+';')}</div>`;
+
+            if (style === 'default') {
+                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
+                    <div style="position:relative;height:250px;flex-shrink:0;">
+                        <img src="${hero}" style="width:100%;height:100%;object-fit:cover;">
+                        <div style="position:absolute;top:16px;left:16px;">${backBtn}</div>
+                    </div>
+                    <div style="flex:1;overflow-y:auto;padding:20px 16px 100px;">
+                        <div style="font-size:22px;font-weight:800;color:${textColor};margin-bottom:6px;">Classic Beef Burger</div>
+                        <div style="font-size:13px;color:${subColor};line-height:1.6;margin-bottom:16px;">Juicy double beef patty with melted cheddar, fresh lettuce, tomato, and our signature sauce on a toasted brioche bun.</div>
+                        <div style="font-size:24px;font-weight:900;color:${accent};margin-bottom:20px;">$12.99</div>
+                        <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:10px;">Size</div>
+                        <div style="display:flex;gap:8px;margin-bottom:20px;">
+                            <span style="padding:8px 20px;border-radius:9999px;background:${accent};color:#fff;font-size:12px;font-weight:700;cursor:pointer;">Small</span>
+                            <span style="padding:8px 20px;border-radius:9999px;background:var(--pill-bg);color:${textColor};font-size:12px;font-weight:600;cursor:pointer;">Medium</span>
+                            <span style="padding:8px 20px;border-radius:9999px;background:var(--pill-bg);color:${textColor};font-size:12px;font-weight:600;cursor:pointer;">Large</span>
+                        </div>
+                        <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:10px;">Make it a Meal</div>
+                        <div style="background:var(--pill-bg);border-radius:14px;padding:14px;margin-bottom:20px;">
+                            <div style="display:flex;align-items:center;gap:12px;">
+                                <span style="width:20px;height:20px;border-radius:4px;border:2px solid ${accent};display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('check', 'font-size:12px;color:'+accent+';')}</span>
+                                <span style="flex:1;font-size:12px;font-weight:600;color:${textColor};">Add fries + drink for $3.99</span>
+                                <span style="font-size:13px;font-weight:700;color:${accent};">+$3.99</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
+                        <div onclick="navigateToPage('${theme}','cart-page')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Add to Cart - $12.99</div>
+                    </div>
+                </div>`;
+            }
+
+            if (style === 'option 1') {
+                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
+                    <div style="display:flex;flex:1;overflow:hidden;">
+                        <div style="width:40%;height:100%;overflow:hidden;flex-shrink:0;">
+                            <img src="${hero}" style="width:100%;height:100%;object-fit:cover;">
+                        </div>
+                        <div style="flex:1;display:flex;flex-direction:column;padding:16px;overflow-y:auto;">
+                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">${backBtn}<div style="width:36px;"></div></div>
+                            <div style="font-size:20px;font-weight:800;color:${textColor};margin-bottom:4px;">Classic Beef Burger</div>
+                            <div style="font-size:20px;font-weight:900;color:${accent};margin-bottom:12px;">$12.99</div>
+                            <div style="font-size:12px;color:${subColor};line-height:1.6;margin-bottom:16px;">Juicy double beef patty with melted cheddar, fresh lettuce, tomato, and our signature sauce.</div>
+                            <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:8px;">Modifiers</div>
+                            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">
+                                <span style="padding:6px 14px;border-radius:9999px;background:${accent};color:#fff;font-size:11px;font-weight:700;cursor:pointer;">Extra Cheese +$1</span>
+                                <span style="padding:6px 14px;border-radius:9999px;background:var(--pill-bg);color:${textColor};font-size:11px;font-weight:600;cursor:pointer;">Bacon +$2</span>
+                                <span style="padding:6px 14px;border-radius:9999px;background:var(--pill-bg);color:${textColor};font-size:11px;font-weight:600;cursor:pointer;">Avocado +$1.5</span>
+                            </div>
+                            <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:6px;">Quantity</div>
+                            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+                                <span style="width:32px;height:32px;border-radius:50%;background:var(--pill-bg);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;cursor:pointer;">-</span>
+                                <span style="font-size:16px;font-weight:700;color:${textColor};">1</span>
+                                <span style="width:32px;height:32px;border-radius:50%;background:${accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;cursor:pointer;">+</span>
+                            </div>
+                            <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:6px;">Special Instructions</div>
+                            <textarea placeholder="Any allergies or preferences..." style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border-color);background:var(--pill-bg);color:${textColor};font-size:11px;resize:none;height:60px;margin-bottom:16px;"></textarea>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
+                        <div style="font-size:18px;font-weight:900;color:${accent};">$12.99</div>
+                        <div onclick="navigateToPage('${theme}','cart-page')" style="flex:1;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;">Add to Cart</div>
+                    </div>
+                </div>`;
+            }
+
+            // Option 2: Dark/gradient hero with overlay text
+            return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
+                <div style="position:relative;height:280px;flex-shrink:0;">
+                    <img src="${hero}" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.5);">
+                    <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,${pageBg} 100%);"></div>
+                    <div style="position:absolute;top:16px;left:16px;">${backBtn}</div>
+                    <div style="position:absolute;bottom:30px;left:16px;right:16px;">
+                        <div style="font-size:24px;font-weight:800;color:#fff;margin-bottom:4px;">Classic Beef Burger</div>
+                        <div style="font-size:14px;color:rgba(255,255,255,0.7);">with cheddar & lettuce</div>
+                    </div>
+                </div>
+                <div style="flex:1;overflow-y:auto;padding:16px 16px 100px;">
+                    <div style="display:flex;gap:16px;margin-bottom:20px;">
+                        <div><div style="font-size:22px;font-weight:900;color:${accent};">$12.99</div></div>
+                        <div><div style="font-size:11px;color:${subColor};">430 cal</div><div style="font-size:11px;color:${subColor};">per serving</div></div>
+                    </div>
+                    <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:8px;">Ingredients</div>
+                    <div style="font-size:11px;color:${subColor};line-height:1.8;margin-bottom:16px;">Beef patty, cheddar cheese, lettuce, tomato, brioche bun, signature sauce, pickles, onion.</div>
+                    <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:8px;">Customize</div>
+                    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;"><span style="width:18px;height:18px;border-radius:4px;border:2px solid ${accent};display:flex;align-items:center;justify-content:center;">${iconFA('check', 'font-size:10px;color:'+accent+';')}</span><span style="font-size:12px;color:${textColor};">Extra Cheese <span style="color:${subColor};">+$1.00</span></span></label>
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;"><span style="width:18px;height:18px;border-radius:4px;border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;"></span><span style="font-size:12px;color:${textColor};">No Onions</span></label>
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;"><span style="width:18px;height:18px;border-radius:4px;border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;"></span><span style="font-size:12px;color:${textColor};">Add Bacon <span style="color:${subColor};">+$2.00</span></span></label>
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;"><span style="width:18px;height:18px;border-radius:4px;border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;"></span><span style="font-size:12px;color:${textColor};">Gluten-Free Bun <span style="color:${subColor};">+$1.50</span></span></label>
+                    </div>
+                </div>
+                <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
+                    <div onclick="navigateToPage('${theme}','cart-page')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px ${accent}40;">Add to Cart - $12.99</div>
+                </div>
+            </div>`;
+        }
+
+        // ─── CART PAGE ─────────────────────────────────────────────
+        function drawCartPage(theme, style = 'default') {
+            const textColor = theme === 'glassmorphism' ? '#fff' : 'var(--text-primary)';
+            const subColor = theme === 'glassmorphism' ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
+            const accent = theme === 'neubrutalism' ? '#FF6B35' : 'var(--accent)';
+            const pageBg = theme === 'glassmorphism' ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
+            const backBtn = `<div onclick="goBack('${theme}')" style="width:36px;height:36px;border-radius:50%;background:${theme==='glassmorphism'?'rgba(255,255,255,0.1)':'var(--pill-bg)'};display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('arrow-left', 'font-size:16px;color:'+textColor+';')}</div>`;
+
+            const cartItems = [
+                { name: 'Pepperoni Pizza', options: 'Extra cheese, thin crust', price: 9.99, qty: 1, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=120&q=80' },
+                { name: 'Classic Beef Burger', options: 'No onions', price: 7.99, qty: 2, img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=120&q=80' }
+            ];
+            const subtotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
+            const delivery = 2.99;
+            const tax = (subtotal + delivery) * 0.08;
+            const total = subtotal + delivery + tax;
+
+            const itemRow = (item) => `
+                <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--pill-bg);border-radius:14px;margin-bottom:10px;">
+                    <img src="${item.img}" style="width:52px;height:52px;border-radius:var(--card-img-radius);object-fit:cover;flex-shrink:0;">
+                    <div style="flex:1;min-width:0;">
+                        <div style="display:flex;justify-content:space-between;align-items:start;">
+                            <div style="font-size:13px;font-weight:700;color:${textColor};">${item.name}</div>
+                            <div style="font-size:13px;font-weight:700;color:${textColor};">$${(item.price * item.qty).toFixed(2)}</div>
+                        </div>
+                        <div style="font-size:10px;color:${subColor};margin-top:2px;">${item.options}</div>
+                        <div style="display:flex;align-items:center;gap:6px;margin-top:6px;">
+                            <span style="width:24px;height:24px;border-radius:50%;background:var(--pill-bg);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;">-</span>
+                            <span style="font-size:12px;font-weight:700;color:${textColor};min-width:16px;text-align:center;">${item.qty}</span>
+                            <span style="width:24px;height:24px;border-radius:50%;background:${accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;">+</span>
+                        </div>
+                    </div>
+                </div>`;
+
+            if (style === 'default') {
+                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
+                    <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-color);">
+                        ${backBtn}
+                        <div style="font-size:16px;font-weight:700;color:${textColor};">My Cart</div>
+                        <span style="margin-left:auto;font-size:11px;color:${subColor};">${cartItems.length} items</span>
+                    </div>
+                    <div style="flex:1;overflow-y:auto;padding:16px;">
+                        ${cartItems.map(itemRow).join('')}
+                        <textarea placeholder="Add special notes for the restaurant..." style="width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--border-color);background:var(--pill-bg);color:${textColor};font-size:11px;resize:none;height:56px;margin-bottom:16px;"></textarea>
+                        <div style="display:flex;gap:8px;margin-bottom:20px;">
+                            <input placeholder="Promo code" style="flex:1;padding:12px 14px;border-radius:var(--btn-radius);border:1px solid var(--border-color);background:var(--pill-bg);color:${textColor};font-size:12px;">
+                            <span style="padding:12px 20px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:12px;font-weight:700;cursor:pointer;">Apply</span>
+                        </div>
+                        <div style="border-top:1px solid var(--border-color);padding-top:12px;">
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:6px;"><span>Subtotal</span><span style="color:${textColor};">$${subtotal.toFixed(2)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:6px;"><span>Delivery Fee</span><span style="color:${textColor};">$${delivery.toFixed(2)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:6px;"><span>Tax</span><span style="color:${textColor};">$${tax.toFixed(2)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:${textColor};padding-top:10px;border-top:1px solid var(--border-color);margin-top:6px;"><span>Total</span><span style="color:${accent};">$${total.toFixed(2)}</span></div>
+                        </div>
+                    </div>
+                    <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
+                        <div onclick="navigateToPage('${theme}','checkout-page')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Checkout - $${total.toFixed(2)}</div>
+                    </div>
+                </div>`;
+            }
+
+            if (style === 'option 1') {
+                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
+                    <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-color);">
+                        ${backBtn}
+                        <div style="font-size:16px;font-weight:700;color:${textColor};">Your Items</div>
+                        <span style="margin-left:auto;font-size:10px;color:${subColor};">Swipe to delete</span>
+                    </div>
+                    <div style="flex:1;overflow-y:auto;padding:16px;">
+                        ${cartItems.map(itemRow).join('')}
+                        <div style="background:var(--pill-bg);border-radius:14px;padding:16px;margin-top:16px;">
+                            <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:12px;">Order Summary</div>
+                            <div style="display:flex;gap:8px;margin-bottom:12px;">
+                                <input placeholder="Coupon code" style="flex:1;padding:10px 14px;border-radius:var(--btn-radius);border:1px solid var(--border-color);background:${pageBg};color:${textColor};font-size:11px;">
+                                <span style="padding:10px 16px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:11px;font-weight:700;cursor:pointer;">Apply</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Subtotal</span><span style="color:${textColor};">$${subtotal.toFixed(2)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Delivery</span><span style="color:${textColor};">$${delivery.toFixed(2)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Tax</span><span style="color:${textColor};">$${tax.toFixed(2)}</span></div>
+                            <div style="font-size:11px;color:${accent};margin-top:6px;">${iconFA('clock', 'font-size:10px;')} Estimated delivery: 25-35 min</div>
+                        </div>
+                    </div>
+                    <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
+                        <div onclick="navigateToPage('${theme}','checkout-page')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Checkout - $${total.toFixed(2)}</div>
+                    </div>
+                </div>`;
+            }
+
+            // Option 2: Minimal list with inline promo + sticky bottom bar
+            return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
+                <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-color);">
+                    ${backBtn}
+                    <div style="font-size:16px;font-weight:700;color:${textColor};">Cart</div>
+                    <span style="margin-left:auto;background:${accent};color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:9999px;">${cartItems.length}</span>
+                </div>
+                <div style="flex:1;overflow-y:auto;padding:12px 16px;">
+                    ${cartItems.map(item => `
+                    <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-color);">
+                        <img src="${item.img}" style="width:40px;height:40px;border-radius:var(--card-img-radius);object-fit:cover;flex-shrink:0;">
+                        <div style="flex:1;">
+                            <div style="font-size:12px;font-weight:700;color:${textColor};">${item.name}</div>
+                            <div style="font-size:10px;color:${subColor};">${item.options}</div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:4px;">
+                            <span style="width:20px;height:20px;border-radius:50%;background:var(--pill-bg);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;cursor:pointer;">-</span>
+                            <span style="font-size:11px;font-weight:700;color:${textColor};min-width:14px;text-align:center;">${item.qty}</span>
+                            <span style="width:20px;height:20px;border-radius:50%;background:${accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;cursor:pointer;">+</span>
+                        </div>
+                        <div style="font-size:12px;font-weight:700;color:${textColor};min-width:50px;text-align:right;">$${(item.price * item.qty).toFixed(2)}</div>
+                    </div>`).join('')}
+                    <div style="display:flex;gap:6px;margin-top:12px;">
+                        <input placeholder="Promo code" style="flex:1;padding:8px 12px;border-radius:var(--btn-radius);border:1px solid var(--border-color);background:var(--pill-bg);color:${textColor};font-size:11px;">
+                        <span style="padding:8px 12px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:11px;font-weight:700;cursor:pointer;">Apply</span>
+                    </div>
+                </div>
+                <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};display:flex;align-items:center;gap:12px;">
+                    <div><div style="font-size:10px;color:${subColor};">Total</div><div style="font-size:18px;font-weight:900;color:${accent};">$${total.toFixed(2)}</div></div>
+                    <div onclick="navigateToPage('${theme}','checkout-page')" style="flex:1;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;">Checkout</div>
+                </div>
+            </div>`;
+        }
+
+        // ─── CHECKOUT PAGE ────────────────────────────────────────────
+        function drawCheckoutPage(theme, style = 'default') {
+            const textColor = theme === 'glassmorphism' ? '#fff' : 'var(--text-primary)';
+            const subColor = theme === 'glassmorphism' ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
+            const accent = theme === 'neubrutalism' ? '#FF6B35' : 'var(--accent)';
+            const pageBg = theme === 'glassmorphism' ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
+            const backBtn = `<div onclick="goBack('${theme}')" style="width:36px;height:36px;border-radius:50%;background:${theme==='glassmorphism'?'rgba(255,255,255,0.1)':'var(--pill-bg)'};display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('arrow-left', 'font-size:16px;color:'+textColor+';')}</div>`;
+            const subtotal = 25.97;
+            const delivery = 2.99;
+            const total = subtotal + delivery;
+
+            const timeSlots = ['10:00-10:30', '10:30-11:00', '11:00-11:30', '11:30-12:00', '12:00-12:30', '12:30-13:00'];
+
+            if (style === 'default') {
+                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
+                    <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-color);">
+                        ${backBtn}
+                        <div style="font-size:16px;font-weight:700;color:${textColor};">Checkout</div>
+                    </div>
+                    <div style="flex:1;overflow-y:auto;padding:16px 16px 100px;">
+                        <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:10px;">Delivery Address</div>
+                        <div style="background:var(--pill-bg);border-radius:14px;padding:14px;margin-bottom:20px;">
+                            <div style="font-size:12px;font-weight:700;color:${textColor};">921 Church St</div>
+                            <div style="font-size:11px;color:${subColor};">San Francisco, CA 94114</div>
+                        </div>
+                        <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:10px;">Delivery Time</div>
+                        <div style="display:flex;gap:8px;margin-bottom:20px;overflow-x:auto;">
+                            <span style="padding:10px 16px;background:${accent};color:#fff;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">Today</span>
+                            <span style="padding:10px 16px;background:var(--pill-bg);color:${textColor};border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">Tomorrow</span>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px;">${timeSlots.map(t => `<span style="padding:8px;text-align:center;background:var(--pill-bg);border-radius:10px;font-size:10px;font-weight:600;color:${textColor};cursor:pointer;">${t}</span>`).join('')}</div>
+                        <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:10px;">Tip</div>
+                        <div style="display:flex;gap:8px;margin-bottom:20px;">
+                            <span style="padding:10px 16px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:11px;font-weight:700;cursor:pointer;">15%</span>
+                            <span style="padding:10px 16px;background:var(--pill-bg);color:${textColor};border-radius:var(--btn-radius);font-size:11px;font-weight:600;cursor:pointer;">18%</span>
+                            <span style="padding:10px 16px;background:var(--pill-bg);color:${textColor};border-radius:var(--btn-radius);font-size:11px;font-weight:600;cursor:pointer;">20%</span>
+                            <span style="padding:10px 16px;background:var(--pill-bg);color:${textColor};border-radius:var(--btn-radius);font-size:11px;font-weight:600;cursor:pointer;">Custom</span>
+                        </div>
+                        <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:10px;">Payment Method</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px;">
+                            <div style="background:${accent};color:#fff;padding:14px;border-radius:14px;text-align:center;font-size:11px;font-weight:700;cursor:pointer;">${iconFA('credit-card', 'font-size:16px;')}<br>Card</div>
+                            <div style="background:var(--pill-bg);color:${textColor};padding:14px;border-radius:14px;text-align:center;font-size:11px;font-weight:600;cursor:pointer;">${iconFA('dollar-sign', 'font-size:16px;')}<br>Cash</div>
+                            <div style="background:var(--pill-bg);color:${textColor};padding:14px;border-radius:14px;text-align:center;font-size:11px;font-weight:600;cursor:pointer;">${iconFA('smartphone', 'font-size:16px;')}<br>PayPal</div>
+                        </div>
+                        <div style="border-top:1px solid var(--border-color);padding-top:12px;">
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Subtotal</span><span style="color:${textColor};">$${subtotal.toFixed(2)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Delivery</span><span style="color:${textColor};">$${delivery.toFixed(2)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:${textColor};padding-top:10px;border-top:1px solid var(--border-color);margin-top:6px;"><span>Total</span><span style="color:${accent};">$${total.toFixed(2)}</span></div>
+                        </div>
+                    </div>
+                    <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
+                        <div onclick="navigateToPage('${theme}','order-success-page')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Place Order - $${total.toFixed(2)}</div>
+                    </div>
+                </div>`;
+            }
+
+            if (style === 'option 1') {
+                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
+                    <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-color);">
+                        ${backBtn}
+                        <div style="font-size:16px;font-weight:700;color:${textColor};">Checkout</div>
+                    </div>
+                    <div style="flex:1;overflow-y:auto;padding:16px 16px 100px;">
+                        <div style="background:var(--pill-bg);border-radius:14px;margin-bottom:12px;overflow:hidden;">
+                            <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;">
+                                <span style="font-size:13px;font-weight:700;color:${textColor};">${iconFA('map-pin', 'font-size:13px;margin-right:8px;')}Delivery Address</span>
+                                <span style="font-size:14px;color:${subColor};">${iconFA('chevron-down', 'font-size:12px;')}</span>
+                            </div>
+                            <div style="display:block;padding:0 14px 14px;">
+                                <div style="font-size:12px;color:${textColor};">921 Church St, San Francisco, CA 94114</div>
+                            </div>
+                        </div>
+                        <div style="background:var(--pill-bg);border-radius:14px;margin-bottom:12px;overflow:hidden;">
+                            <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;">
+                                <span style="font-size:13px;font-weight:700;color:${textColor};">${iconFA('clock', 'font-size:13px;margin-right:8px;')}Delivery Time</span>
+                                <span style="font-size:14px;color:${subColor};">${iconFA('chevron-down', 'font-size:12px;')}</span>
+                            </div>
+                            <div style="display:none;padding:0 14px 14px;">
+                                <div style="display:flex;gap:8px;margin-bottom:8px;"><span style="padding:6px 14px;background:${accent};color:#fff;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;">Today</span><span style="padding:6px 14px;background:var(--card-bg);color:${textColor};border-radius:8px;font-size:11px;cursor:pointer;">Tomorrow</span></div>
+                                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">${timeSlots.slice(0,3).map(t => `<span style="padding:6px;text-align:center;background:var(--card-bg);border-radius:8px;font-size:10px;color:${textColor};cursor:pointer;">${t}</span>`).join('')}</div>
+                            </div>
+                        </div>
+                        <div style="background:var(--pill-bg);border-radius:14px;margin-bottom:12px;overflow:hidden;">
+                            <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;">
+                                <span style="font-size:13px;font-weight:700;color:${textColor};">${iconFA('credit-card', 'font-size:13px;margin-right:8px;')}Payment</span>
+                                <span style="font-size:14px;color:${subColor};">${iconFA('chevron-down', 'font-size:12px;')}</span>
+                            </div>
+                            <div style="display:none;padding:0 14px 14px;">
+                                <div style="display:flex;gap:8px;margin-bottom:8px;">
+                                    <span style="padding:8px 16px;background:${accent};color:#fff;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;">Card</span>
+                                    <span style="padding:8px 16px;background:var(--card-bg);color:${textColor};border-radius:8px;font-size:11px;cursor:pointer;">Cash</span>
+                                    <span style="padding:8px 16px;background:var(--card-bg);color:${textColor};border-radius:8px;font-size:11px;cursor:pointer;">PayPal</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:8px;">Tip</div>
+                        <div style="margin-bottom:20px;"><input type="range" min="0" max="30" value="15" style="width:100%;accent-color:${accent};"></div>
+                        <div style="border-top:1px solid var(--border-color);padding-top:12px;">
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Subtotal</span><span style="color:${textColor};">$${subtotal.toFixed(2)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Delivery</span><span style="color:${textColor};">$${delivery.toFixed(2)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:${textColor};padding-top:10px;border-top:1px solid var(--border-color);"><span>Total</span><span style="color:${accent};">$${total.toFixed(2)}</span></div>
+                        </div>
+                    </div>
+                    <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
+                        <div onclick="navigateToPage('${theme}','order-success-page')" style="width:100%;padding:18px;background:#4CAF50;color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:16px;font-weight:800;cursor:pointer;">Place Order - $${total.toFixed(2)}</div>
+                    </div>
+                </div>`;
+            }
+
+            // Option 2: Dark compact layout
+            const darkText = '#fff';
+            const darkSub = 'rgba(255,255,255,0.5)';
+            const darkBg = theme === 'glassmorphism' ? 'rgba(20,20,20,0.98)' : '#1a1a1a';
+            const cardBg = 'rgba(255,255,255,0.06)';
+            return `<div style="position:absolute;inset:0;background:${darkBg};z-index:100;display:flex;flex-direction:column;">
+                <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,0.08);">
+                    ${`<div onclick="goBack('${theme}')" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('arrow-left', 'font-size:16px;color:#fff;')}</div>`}
+                    <div style="font-size:16px;font-weight:700;color:#fff;">Checkout</div>
+                </div>
+                <div style="flex:1;overflow-y:auto;padding:16px 16px 100px;">
+                    <div style="background:${cardBg};border-radius:14px;padding:14px;margin-bottom:12px;">
+                        <div style="font-size:11px;color:${darkSub};margin-bottom:4px;">Deliver to</div>
+                        <div style="font-size:12px;font-weight:700;color:#fff;">921 Church St, San Francisco</div>
+                    </div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;background:${cardBg};border-radius:14px;padding:14px;margin-bottom:20px;">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <span style="font-size:16px;">${iconFA('zap', 'font-size:16px;color:#FFD54F;')}</span>
+                            <div><div style="font-size:12px;font-weight:700;color:#fff;">Express Delivery</div><div style="font-size:10px;color:${darkSub};">30 min or less</div></div>
+                        </div>
+                        <span style="width:40px;height:22px;background:#4CAF50;border-radius:11px;display:flex;align-items:center;justify-content:flex-end;padding:2px;cursor:pointer;"><span style="width:18px;height:18px;border-radius:50%;background:#fff;"></span></span>
+                    </div>
+                    <div style="background:${cardBg};border-radius:14px;padding:14px;margin-bottom:20px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                            <span style="font-size:11px;color:${darkSub};">Card ending in 4242</span>
+                            <span style="font-size:10px;color:${accent};">Change</span>
+                        </div>
+                        <div style="background:linear-gradient(135deg,#2a2a2a,#1a1a1a);border-radius:10px;padding:14px;border:1px solid rgba(255,255,255,0.1);">
+                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                <span style="font-size:14px;font-weight:800;color:#fff;">•••• 4242</span>
+                                <span style="font-size:10px;color:${darkSub};">VISA</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;margin-top:8px;">
+                                <span style="font-size:9px;color:${darkSub};">EXP 12/28</span>
+                                <span style="font-size:9px;color:${darkSub};">CVV ***</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:12px;">
+                        <div style="display:flex;justify-content:space-between;font-size:11px;color:${darkSub};margin-bottom:4px;"><span>Subtotal</span><span style="color:#fff;">$${subtotal.toFixed(2)}</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:11px;color:${darkSub};margin-bottom:4px;"><span>Delivery</span><span style="color:#fff;">$${delivery.toFixed(2)}</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:800;color:#fff;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);margin-top:6px;"><span>Total</span><span style="color:#4CAF50;">$${total.toFixed(2)}</span></div>
+                    </div>
+                </div>
+                <div style="padding:12px 16px;border-top:1px solid rgba(255,255,255,0.08);background:${darkBg};">
+                    <div onclick="navigateToPage('${theme}','order-success-page')" style="width:100%;padding:16px;background:#4CAF50;color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:800;cursor:pointer;">Order & Pay - $${total.toFixed(2)}</div>
+                </div>
+            </div>`;
+        }
+
+        // ─── ORDER SUCCESS PAGE ────────────────────────────────────────
+        function drawOrderSuccessPage(theme, style = 'default') {
+            const textColor = theme === 'glassmorphism' ? '#fff' : 'var(--text-primary)';
+            const subColor = theme === 'glassmorphism' ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
+            const accent = theme === 'neubrutalism' ? '#FF6B35' : 'var(--accent)';
+            const pageBg = theme === 'glassmorphism' ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
+            const driverImg = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80';
+
+            if (style === 'default') {
+                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
+                    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;">
+                        <div style="width:80px;height:80px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;margin-bottom:20px;">${iconFA('check', 'font-size:36px;color:#fff;')}</div>
+                        <div style="font-size:22px;font-weight:800;color:${textColor};margin-bottom:6px;">Order Placed!</div>
+                        <div style="font-size:13px;color:${subColor};margin-bottom:4px;">Order #ORD-5682</div>
+                        <div style="font-size:11px;color:${subColor};margin-bottom:24px;">Estimated arrival</div>
+                        <div style="font-size:36px;font-weight:900;color:${accent};margin-bottom:24px;">25:00</div>
+                        <div style="width:100%;height:120px;background:var(--pill-bg);border-radius:16px;margin-bottom:20px;overflow:hidden;position:relative;">
+                            <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=600&q=80" style="width:100%;height:100%;object-fit:cover;">
+                            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 8px ${accent}30;">${iconFA('moto', 'font-size:18px;color:#fff;')}</div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--pill-bg);border-radius:14px;width:100%;margin-bottom:24px;">
+                            <img src="${driverImg}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+                            <div style="flex:1;"><div style="font-size:12px;font-weight:700;color:${textColor};">Mike</div><div style="font-size:10px;color:${subColor};">Your driver is nearby</div></div>
+                            <div style="width:36px;height:36px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('phone', 'font-size:14px;color:#fff;')}</div>
+                        </div>
+                        <div onclick="navigateToPage('${theme}','order-tracking')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:12px;">Track Order</div>
+                        <div onclick="goBack('${theme}')" style="font-size:12px;color:${subColor};cursor:pointer;text-decoration:underline;">Continue Shopping</div>
+                    </div>
+                </div>`;
+            }
+
+            if (style === 'option 1') {
+                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
+                    <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:24px;">
+                        <div style="font-size:48px;margin-bottom:12px;">🎉</div>
+                        <div style="font-size:22px;font-weight:800;color:${textColor};margin-bottom:4px;">Order Confirmed!</div>
+                        <div style="font-size:13px;color:${subColor};margin-bottom:20px;">Your delicious food is on its way</div>
+                        <div style="background:var(--pill-bg);border-radius:16px;padding:20px;width:100%;margin-bottom:20px;">
+                            <div style="font-size:14px;font-weight:800;color:${textColor};margin-bottom:12px;">Order Summary</div>
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Pepperoni Pizza x1</span><span style="color:${textColor};">$9.99</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Beef Burger x2</span><span style="color:${textColor};">$15.98</span></div>
+                            <div style="border-top:1px solid var(--border-color);margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;font-size:14px;font-weight:800;color:${textColor};"><span>Total</span><span style="color:${accent};">$28.96</span></div>
+                        </div>
+                        <div style="background:var(--pill-bg);border-radius:14px;padding:14px;width:100%;text-align:center;margin-bottom:20px;">
+                            <div style="font-size:11px;color:${subColor};">Estimated Delivery</div>
+                            <div style="font-size:20px;font-weight:900;color:${accent};">25-35 min</div>
+                        </div>
+                        <div style="display:flex;gap:12px;width:100%;margin-bottom:12px;">
+                            <div onclick="navigator.clipboard.writeText('Order #ORD-5682');this.textContent='Copied!';setTimeout(()=>this.innerHTML='${iconFA('share-2', 'font-size:14px;margin-right:6px;')}Share',2000)" style="flex:1;padding:14px;border:2px solid var(--border-color);color:${textColor};text-align:center;border-radius:var(--btn-radius);font-size:13px;font-weight:700;cursor:pointer;">${iconFA('share-2', 'font-size:14px;margin-right:6px;')}Share</div>
+                            <div onclick="goBack('${theme}')" style="flex:1;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:13px;font-weight:700;cursor:pointer;">Rate Experience</div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+            // Option 2: Minimal success screen
+            return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;">
+                    <div style="width:72px;height:72px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;margin-bottom:20px;animation:pulse 2s infinite;">${iconFA('check', 'font-size:32px;color:#fff;')}</div>
+                    <style>@keyframes pulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.08);opacity:0.9}100%{transform:scale(1);opacity:1}}</style>
+                    <div style="font-size:20px;font-weight:800;color:${textColor};margin-bottom:4px;">Success!</div>
+                    <div style="font-size:12px;color:${subColor};margin-bottom:20px;">Order #ORD-5682</div>
+                    <div style="background:var(--pill-bg);border-radius:14px;padding:16px;width:100%;margin-bottom:20px;">
+                        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;"><span style="color:${subColor};">Pepperoni Pizza x1</span><span style="color:${textColor};">$9.99</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;"><span style="color:${subColor};">Beef Burger x2</span><span style="color:${textColor};">$15.98</span></div>
+                        <div style="border-top:1px solid var(--border-color);margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;font-size:14px;font-weight:800;"><span style="color:${textColor};">Total</span><span style="color:${accent};">$28.96</span></div>
+                    </div>
+                    <div onclick="alert('Receipt downloaded')" style="display:flex;align-items:center;gap:6px;font-size:11px;color:${accent};cursor:pointer;margin-bottom:24px;">${iconFA('download', 'font-size:12px;')} Download Receipt</div>
+                    <div onclick="goBack('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;">Back to Home</div>
+                </div>
+            </div>`;
+        }
+
         function drawLoyaltyCard(theme, style = 'default') {
             if (style === 'option 1') {
                 // Compact circular progress
                 return `
                 <div style="padding:0 16px 16px;">
-                    <div style="background:var(--card-bg);border-radius:16px;padding:16px;box-shadow:var(--card-shadow);display:flex;align-items:center;gap:16px;">
-                        <div style="position:relative;width:64px;height:64px;flex-shrink:0;">
-                            <svg width="64" height="64" viewBox="0 0 64 64">
-                                <circle cx="32" cy="32" r="28" fill="none" stroke="var(--pill-bg)" stroke-width="5"/>
-                                <circle cx="32" cy="32" r="28" fill="none" stroke="var(--accent)" stroke-width="5" stroke-dasharray="175.9" stroke-dashoffset="31.7" stroke-linecap="round" transform="rotate(-90 32 32)"/>
-                            </svg>
-                            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:var(--text-primary);">820</div>
-                        </div>
-                        <div style="flex:1;">
-                            <div style="font-size:9px;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;font-weight:600;">Gold Member</div>
-                            <div style="font-size:12px;font-weight:700;color:var(--text-primary);margin-top:2px;">180 pts to Platinum</div>
-                            <div style="display:flex;gap:6px;margin-top:8px;">
-                                <span style="font-size:8px;font-weight:600;background:var(--accent-light);padding:3px 8px;border-radius:9999px;color:var(--text-primary);">5% Cashback</span>
-                                <span style="font-size:8px;font-weight:600;background:var(--pill-bg);padding:3px 8px;border-radius:9999px;color:var(--text-secondary);">Free Delivery</span>
+                    <div style="background:var(--card-bg);border-radius:16px;padding:16px;box-shadow:var(--card-shadow);">
+                        <div style="display:flex;align-items:center;gap:16px;position:relative;">
+                            <div style="position:relative;width:64px;height:64px;flex-shrink:0;">
+                                <svg width="64" height="64" viewBox="0 0 64 64">
+                                    <circle cx="32" cy="32" r="28" fill="none" stroke="var(--pill-bg)" stroke-width="5"/>
+                                    <circle cx="32" cy="32" r="28" fill="none" stroke="var(--accent)" stroke-width="5" stroke-dasharray="175.9" stroke-dashoffset="31.7" stroke-linecap="round" transform="rotate(-90 32 32)"/>
+                                </svg>
+                                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:var(--text-primary);">820</div>
                             </div>
+                            <div style="flex:1;">
+                                <div style="font-size:9px;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;font-weight:600;">Gold Member</div>
+                                <div style="font-size:12px;font-weight:700;color:var(--text-primary);margin-top:2px;">180 pts to Platinum</div>
+                                <div style="display:flex;gap:6px;margin-top:8px;">
+                                    <span style="font-size:8px;font-weight:600;background:var(--accent-light);padding:3px 8px;border-radius:9999px;color:var(--text-primary);">5% Cashback</span>
+                                    <span style="font-size:8px;font-weight:600;background:var(--pill-bg);padding:3px 8px;border-radius:9999px;color:var(--text-secondary);">Free Delivery</span>
+                                </div>
+                            </div>
+                            <div style="position:absolute;top:0;right:0;font-size:14px;cursor:pointer;" onclick="alert('Share your referral link')">🔗</div>
+                        </div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--border-color);">
+                            <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:var(--text-secondary);">
+                                <span>Silver ○ Gold ● Platinum ○</span>
+                            </div>
+                            <div style="font-size:9px;color:var(--text-secondary);">= $8.20 value</div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:4px;margin-top:6px;font-size:9px;color:var(--text-secondary);">
+                            <span>🚚</span><span>Save $2.50 more for free delivery</span>
                         </div>
                     </div>
                 </div>`;
@@ -3728,7 +4442,7 @@
                             </div>
                             <div style="text-align:right;">
                                 <div style="font-size:24px;font-weight:900;">820</div>
-                                <div style="font-size:9px;opacity:0.8;">points</div>
+                                <div style="font-size:9px;opacity:0.8;">pts = $8.20</div>
                             </div>
                         </div>
                         <div style="margin-top:12px;">
@@ -3739,19 +4453,32 @@
                                 <div style="height:100%;width:82%;background:#fff;border-radius:9999px;"></div>
                             </div>
                         </div>
-                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px;">
-                            <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:8px;text-align:center;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;">
+                            <div style="background:rgba(255,255,255,0.25);border-radius:10px;padding:8px;text-align:center;">
                                 <div style="font-size:16px;">💰</div>
                                 <div style="font-size:8px;margin-top:2px;">5% Back</div>
                             </div>
-                            <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:8px;text-align:center;">
-                                <div style="font-size:16px;">🚚</div>
-                                <div style="font-size:8px;margin-top:2px;">Free Delivery</div>
-                            </div>
-                            <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:8px;text-align:center;">
+                            <div style="background:rgba(255,255,255,0.25);border-radius:10px;padding:8px;text-align:center;">
                                 <div style="font-size:16px;">⭐</div>
                                 <div style="font-size:8px;margin-top:2px;">Priority</div>
                             </div>
+                            <div style="background:rgba(255,255,255,0.08);border-radius:10px;padding:8px;text-align:center;opacity:0.4;">
+                                <div style="font-size:16px;">🚚</div>
+                                <div style="font-size:8px;margin-top:2px;">Free Delivery</div>
+                            </div>
+                            <div style="background:rgba(255,255,255,0.08);border-radius:10px;padding:8px;text-align:center;opacity:0.4;">
+                                <div style="font-size:16px;">🎁</div>
+                                <div style="font-size:8px;margin-top:2px;">Birthday Perk</div>
+                            </div>
+                        </div>
+                        <div style="margin-top:8px;display:flex;align-items:center;justify-content:space-between;">
+                            <div style="font-size:9px;opacity:0.6;">Points expire Dec 31, 2026</div>
+                            <div style="display:flex;align-items:center;gap:4px;font-size:9px;opacity:0.8;">
+                                <span>Silver</span><span style="opacity:0.4;">→</span><span style="font-weight:700;">Gold ★</span><span style="opacity:0.4;">→</span><span style="opacity:0.6;">Platinum</span>
+                            </div>
+                        </div>
+                        <div onclick="alert('Refer a friend!')" style="margin-top:10px;background:rgba(255,255,255,0.2);border-radius:10px;padding:10px;text-align:center;font-size:10px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
+                            🎁 Invite friends, earn 50 pts
                         </div>
                     </div>
                 </div>`;
@@ -3759,91 +4486,152 @@
             if (theme === 'neumorphism') {
                 return `
                 <div style="padding:0 16px 16px;">
-                    <div style="background:var(--card-bg);border-radius:16px;padding:16px;box-shadow:var(--card-shadow);position:relative;overflow:hidden;">
-                        <div style="position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(232,93,74,0.06);filter:blur(30px);"></div>
-                        <div style="display:flex;justify-content:space-between;align-items:start;position:relative;z-index:1;">
-                            <div style="display:flex;align-items:center;gap:10px;">
-                                <div style="width:40px;height:40px;border-radius:12px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;">${iconFA('crown', 'text-[#1A1A1A]')}</div>
+                    <div style="background:#f0ebe6;border-radius:16px;padding:12px;box-shadow:6px 6px 12px rgba(0,0,0,0.06),-6px -6px 12px rgba(255,255,255,0.8);">
+                        <div style="display:flex;justify-content:space-between;align-items:center;">
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <div style="width:32px;height:32px;border-radius:8px;background:#e8e3de;box-shadow:2px 2px 5px rgba(0,0,0,0.06),-2px -2px 5px rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:center;">${iconFA('crown', 'text-[#1A1A1A]')}</div>
                                 <div>
-                                    <div style="font-size:9px;color:var(--text-secondary);letter-spacing:1.5px;text-transform:uppercase;font-weight:600;">Membership Tier</div>
-                                    <div style="font-size:14px;font-weight:900;color:var(--text-primary);margin-top:2px;">Gold Member</div>
+                                    <div style="font-size:7px;color:#888;letter-spacing:1px;text-transform:uppercase;font-weight:600;">Membership</div>
+                                    <div style="font-size:12px;font-weight:900;color:#1A1A1A;margin-top:1px;">Gold Member</div>
                                 </div>
                             </div>
-                            <div style="background:var(--accent-light);padding:4px 12px;border-radius:9999px;font-size:11px;font-weight:700;color:var(--text-primary);">820 pts</div>
-                        </div>
-                        <div style="margin-top:16px;position:relative;z-index:1;">
-                            <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-secondary);margin-bottom:6px;font-weight:600;">
-                                <span>Progress to Platinum</span><span style="color:var(--text-primary);">180 pts away</span>
-                            </div>
-                            <div style="height:4px;background:#F9F3F0;border-radius:9999px;overflow:hidden;">
-                                <div style="height:100%;width:82%;background:linear-gradient(90deg,#1A1A1A,#FFC200);border-radius:9999px;"></div>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <span style="font-size:8px;font-weight:700;color:#1A1A1A;">🔥 5wk</span>
+                                <span style="background:#e8e3de;box-shadow:2px 2px 5px rgba(0,0,0,0.06),-2px -2px 5px rgba(255,255,255,0.7);padding:3px 10px;border-radius:999px;font-size:10px;font-weight:700;color:#1A1A1A;">820 pts</span>
                             </div>
                         </div>
-                        <div style="margin-top:14px;display:flex;gap:8px;position:relative;z-index:1;">
-                            <span style="font-size:9px;font-weight:600;background:#F9F3F0;padding:5px 12px;border-radius:9999px;color:#666;">5% Cashback</span>
-                            <span style="font-size:9px;font-weight:600;background:#F9F3F0;padding:5px 12px;border-radius:9999px;color:#666;">Free Delivery</span>
-                            <span style="font-size:9px;font-weight:600;background:var(--accent-light);padding:5px 12px;border-radius:9999px;color:var(--text-primary);">Priority</span>
+                        <div style="display:flex;align-items:center;gap:4px;margin-top:6px;font-size:7px;color:#888;font-weight:600;">
+                            <span>Silver</span>
+                            <span style="font-size:3px;">●</span>
+                            <span style="color:#1A1A1A;font-weight:800;">Gold ★</span>
+                            <span style="font-size:3px;">●</span>
+                            <span>Platinum</span>
+                            <span style="font-size:3px;">●</span>
+                            <span>Diamond</span>
+                        </div>
+                        <div style="margin-top:6px;">
+                            <div style="display:flex;justify-content:space-between;font-size:8px;color:#888;margin-bottom:3px;font-weight:600;">
+                                <span>Progress</span><span style="color:#1A1A1A;font-weight:700;">180 pts away</span>
+                            </div>
+                            <div style="height:4px;background:#e0dbd6;box-shadow:inset 2px 2px 4px rgba(0,0,0,0.08),inset -2px -2px 4px rgba(255,255,255,0.6);border-radius:999px;overflow:hidden;">
+                                <div style="height:100%;width:82%;background:#1A1A1A;border-radius:999px;"></div>
+                            </div>
+                            <div style="font-size:7px;color:#1A1A1A;font-weight:700;margin-top:3px;">Only 2 more visits to reach Platinum!</div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap;">
+                            <span style="font-size:7px;color:#888;font-weight:600;">⭐ 2pts/$1</span>
+                            <span style="font-size:7px;font-weight:600;background:#e8e3de;box-shadow:2px 2px 4px rgba(0,0,0,0.04),-2px -2px 4px rgba(255,255,255,0.7);padding:3px 8px;border-radius:999px;color:#1A1A1A;">5% Cashback</span>
+                            <span style="font-size:7px;font-weight:600;background:#e8e3de;box-shadow:2px 2px 4px rgba(0,0,0,0.04),-2px -2px 4px rgba(255,255,255,0.7);padding:3px 8px;border-radius:999px;color:#1A1A1A;">Free Delivery</span>
+                            <span style="font-size:7px;font-weight:600;background:#e8e3de;box-shadow:2px 2px 4px rgba(0,0,0,0.04),-2px -2px 4px rgba(255,255,255,0.7);padding:3px 8px;border-radius:999px;color:#1A1A1A;">Priority</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;padding-top:5px;border-top:1px solid rgba(0,0,0,0.06);">
+                            <div style="display:flex;align-items:center;gap:4px;font-size:8px;color:#888;cursor:pointer;">
+                                <span>💰 Refer & Earn</span>
+                                <span style="font-size:7px;">↗</span>
+                            </div>
+                            <div style="font-size:6px;color:#888;font-weight:500;">ID: #FOOD-56821</div>
                         </div>
                     </div>
                 </div>`;
             } else if (theme === 'glassmorphism') {
                 return `
-                <div style="padding:0 16px;margin-bottom:16px;">
-                    <div style="background:rgba(30,30,30,0.9);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:16px;position:relative;overflow:hidden;">
+                <div style="padding:0 16px 16px;">
+                    <div style="background:rgba(30,30,30,0.9);backdrop-filter:blur(16px);border:1px solid var(--border-color);border-radius:16px;padding:12px;position:relative;overflow:hidden;">
                         <div style="position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(76,175,80,0.1);filter:blur(30px);"></div>
                         <div style="position:absolute;bottom:-40px;left:-20px;width:100px;height:100px;border-radius:50%;background:rgba(255,107,157,0.08);filter:blur(25px);"></div>
-                        <div style="display:flex;justify-content:space-between;align-items:start;position:relative;z-index:1;">
-                            <div style="display:flex;align-items:center;gap:10px;">
-                                <div style="width:40px;height:40px;border-radius:12px;background:var(--accent-light);border:1px solid rgba(76,175,80,0.2);display:flex;align-items:center;justify-content:center;">${iconMaterial('vip-crown-2-line', 'color:var(--highlight);')}</div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1;">
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <div style="width:32px;height:32px;border-radius:8px;background:var(--accent-light);border:1px solid rgba(76,175,80,0.2);display:flex;align-items:center;justify-content:center;">${iconMaterial('vip-crown-2-line', 'color:var(--highlight);')}</div>
                                 <div>
-                                    <div style="font-size:9px;color:var(--text-secondary);letter-spacing:1.5px;text-transform:uppercase;font-weight:600;">Membership Tier</div>
-                                    <div style="font-size:14px;font-weight:900;color:#fff;margin-top:2px;">Gold Member</div>
+                                    <div style="font-size:7px;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;font-weight:600;">Membership</div>
+                                    <div style="font-size:12px;font-weight:900;color:#fff;margin-top:1px;">Gold Member</div>
                                 </div>
                             </div>
-                            <div style="background:var(--accent-light);border:1px solid rgba(76,175,80,0.2);padding:4px 12px;border-radius:9999px;font-size:11px;font-weight:700;color:var(--accent);">820 pts</div>
-                        </div>
-                        <div style="margin-top:16px;position:relative;z-index:1;">
-                            <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-secondary);margin-bottom:6px;font-weight:600;">
-                                <span>Progress to Platinum</span><span style="color:var(--highlight);">180 pts away</span>
-                            </div>
-                            <div style="height:4px;background:var(--card-bg);border-radius:9999px;overflow:hidden;">
-                                <div style="height:100%;width:82%;background:linear-gradient(90deg,#4CAF50,#FFD54F);border-radius:9999px;"></div>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <span style="font-size:8px;font-weight:700;color:var(--highlight);">🔥 5wk</span>
+                                <span style="background:var(--accent-light);border:1px solid rgba(76,175,80,0.2);padding:3px 10px;border-radius:999px;font-size:10px;font-weight:700;color:var(--accent);">820 pts</span>
                             </div>
                         </div>
-                        <div style="margin-top:14px;display:flex;gap:8px;position:relative;z-index:1;">
-                            <span style="font-size:9px;font-weight:600;background:var(--card-bg);border:1px solid var(--border-color);padding:5px 12px;border-radius:9999px;color:rgba(255,255,255,0.6);">5% Cashback</span>
-                            <span style="font-size:9px;font-weight:600;background:var(--card-bg);border:1px solid var(--border-color);padding:5px 12px;border-radius:9999px;color:rgba(255,255,255,0.6);">Free Delivery</span>
-                            <span style="font-size:9px;font-weight:600;background:rgba(255,107,157,0.12);border:1px solid rgba(255,107,157,0.2);padding:5px 12px;border-radius:9999px;color:#00BFA5;">Priority</span>
+                        <div style="display:flex;align-items:center;gap:4px;margin-top:6px;font-size:7px;color:var(--text-secondary);font-weight:600;position:relative;z-index:1;">
+                            <span>Silver</span>
+                            <span style="font-size:3px;">●</span>
+                            <span style="color:var(--highlight);font-weight:800;">Gold ★</span>
+                            <span style="font-size:3px;">●</span>
+                            <span>Platinum</span>
+                            <span style="font-size:3px;">●</span>
+                            <span>Diamond</span>
+                        </div>
+                        <div style="margin-top:6px;position:relative;z-index:1;">
+                            <div style="display:flex;justify-content:space-between;font-size:8px;color:var(--text-secondary);margin-bottom:3px;font-weight:600;">
+                                <span>Progress</span><span style="color:var(--highlight);font-weight:700;">180 pts away</span>
+                            </div>
+                            <div style="height:4px;background:var(--card-bg);border-radius:999px;overflow:hidden;">
+                                <div style="height:100%;width:82%;background:linear-gradient(90deg,var(--accent),var(--highlight));border-radius:999px;"></div>
+                            </div>
+                            <div style="font-size:7px;font-weight:700;margin-top:3px;color:var(--highlight);">Only 2 more visits to reach Platinum!</div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap;position:relative;z-index:1;">
+                            <span style="font-size:7px;color:var(--text-secondary);font-weight:600;">⭐ 2pts/$1</span>
+                            <span style="font-size:7px;font-weight:600;background:var(--card-bg);border:1px solid var(--border-color);padding:3px 8px;border-radius:999px;color:rgba(255,255,255,0.6);">5% Cashback</span>
+                            <span style="font-size:7px;font-weight:600;background:var(--card-bg);border:1px solid var(--border-color);padding:3px 8px;border-radius:999px;color:rgba(255,255,255,0.6);">Free Delivery</span>
+                            <span style="font-size:7px;font-weight:600;background:rgba(255,107,157,0.12);border:1px solid rgba(255,107,157,0.2);padding:3px 8px;border-radius:999px;color:#00BFA5;">Priority</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;padding-top:5px;border-top:1px solid var(--border-color);position:relative;z-index:1;">
+                            <div style="display:flex;align-items:center;gap:4px;font-size:8px;color:var(--text-secondary);cursor:pointer;">
+                                <span>💰 Refer & Earn</span>
+                                <span style="font-size:7px;">↗</span>
+                            </div>
+                            <div style="font-size:6px;color:var(--text-secondary);font-weight:500;">ID: #FOOD-56821</div>
                         </div>
                     </div>
                 </div>`;
             } else {
                 return `
                 <div style="padding:0 16px 16px;">
-                    <div style="background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;padding:16px;position:relative;overflow:hidden;box-shadow:0 2px 8px rgba(61,50,41,0.06);">
-                        <div style="position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(139,111,71,0.06);filter:blur(30px);"></div>
-                        <div style="display:flex;justify-content:space-between;align-items:start;position:relative;z-index:1;">
-                            <div style="display:flex;align-items:center;gap:10px;">
-                                <div style="width:40px;height:40px;border-radius:10px;background:var(--pill-bg);display:flex;align-items:center;justify-content:center;">${iconBS('crown', 'text-[#00615F]')}</div>
+                    <div style="background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;padding:12px;box-shadow:0 2px 8px rgba(61,50,41,0.06);">
+                        <div style="display:flex;justify-content:space-between;align-items:center;">
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <div style="width:32px;height:32px;border-radius:8px;background:var(--pill-bg);display:flex;align-items:center;justify-content:center;">${iconBS('crown', 'text-[#00615F]')}</div>
                                 <div>
-                                    <div style="font-size:9px;color:var(--text-secondary);letter-spacing:1.5px;text-transform:uppercase;font-weight:600;">Membership Tier</div>
-                                    <div style="font-size:14px;font-weight:900;color:#3D3229;margin-top:2px;">Gold Member</div>
+                                    <div style="font-size:7px;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;font-weight:600;">Membership</div>
+                                    <div style="font-size:12px;font-weight:900;color:#3D3229;margin-top:1px;">Gold Member</div>
                                 </div>
                             </div>
-                            <div style="background:var(--accent);color:#fff;padding:4px 12px;border-radius:10px;font-size:11px;font-weight:700;">820 pts</div>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <span style="font-size:8px;font-weight:700;color:var(--accent);">🔥 5wk</span>
+                                <span style="background:var(--accent);color:#fff;padding:3px 10px;border-radius:999px;font-size:10px;font-weight:700;">820 pts</span>
+                            </div>
                         </div>
-                        <div style="margin-top:16px;position:relative;z-index:1;">
-                            <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-secondary);margin-bottom:6px;font-weight:600;">
-                                <span>Progress to Platinum</span><span style="color:var(--accent);">180 pts away</span>
+                        <div style="display:flex;align-items:center;gap:4px;margin-top:6px;font-size:7px;color:var(--text-secondary);font-weight:600;">
+                            <span>Silver</span>
+                            <span style="font-size:3px;">●</span>
+                            <span style="color:var(--accent);font-weight:800;">Gold ★</span>
+                            <span style="font-size:3px;">●</span>
+                            <span>Platinum</span>
+                            <span style="font-size:3px;">●</span>
+                            <span>Diamond</span>
+                        </div>
+                        <div style="margin-top:6px;">
+                            <div style="display:flex;justify-content:space-between;font-size:8px;color:var(--text-secondary);margin-bottom:3px;font-weight:600;">
+                                <span>Progress</span><span style="color:var(--accent);font-weight:700;">180 pts away</span>
                             </div>
                             <div style="height:4px;background:var(--pill-bg);border-radius:2px;overflow:hidden;">
-                                <div style="height:100%;width:82%;background:linear-gradient(90deg,#00615F,#FFC200);border-radius:2px;"></div>
+                                <div style="height:100%;width:82%;background:linear-gradient(90deg,#00615F,var(--highlight));border-radius:2px;"></div>
                             </div>
+                            <div style="font-size:7px;color:var(--accent);font-weight:700;margin-top:3px;">Only 2 more visits to reach Platinum!</div>
                         </div>
-                        <div style="margin-top:14px;display:flex;gap:8px;position:relative;z-index:1;">
-                            <span style="font-size:9px;font-weight:600;background:var(--pill-bg);border:1px solid var(--border-color);padding:5px 12px;border-radius:10px;color:var(--accent);">5% Cashback</span>
-                            <span style="font-size:9px;font-weight:600;background:var(--pill-bg);border:1px solid var(--border-color);padding:5px 12px;border-radius:10px;color:var(--accent);">Free Delivery</span>
-                            <span style="font-size:9px;font-weight:600;background:var(--pill-bg);border:1px solid var(--border-color);padding:5px 12px;border-radius:10px;color:#FFC200;">Priority</span>
+                        <div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap;">
+                            <span style="font-size:7px;color:var(--text-secondary);font-weight:600;">⭐ 2pts/$1</span>
+                            <span style="font-size:7px;font-weight:600;background:var(--pill-bg);border:1px solid var(--border-color);padding:3px 8px;border-radius:999px;color:var(--accent);">5% Cashback</span>
+                            <span style="font-size:7px;font-weight:600;background:var(--pill-bg);border:1px solid var(--border-color);padding:3px 8px;border-radius:999px;color:var(--accent);">Free Delivery</span>
+                            <span style="font-size:7px;font-weight:600;background:var(--pill-bg);border:1px solid var(--border-color);padding:3px 8px;border-radius:999px;color:var(--highlight);">Priority</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;padding-top:5px;border-top:1px solid var(--border-color);">
+                            <div style="display:flex;align-items:center;gap:4px;font-size:8px;color:var(--text-secondary);cursor:pointer;">
+                                <span>💰 Refer & Earn</span>
+                                <span style="font-size:7px;">↗</span>
+                            </div>
+                            <div style="font-size:6px;color:var(--text-secondary);font-weight:500;">ID: #FOOD-56821</div>
                         </div>
                     </div>
                 </div>`;
