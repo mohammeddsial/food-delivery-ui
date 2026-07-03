@@ -1714,9 +1714,9 @@
 
         // ─── LOCALE & CURRENCY CONFIG ──────────────────────────────────────────
         const LOCALE = {
-            currency: '£',
-            locale: 'en-GB',
-            distanceUnit: 'mi',
+            currency: 'CA$',
+            locale: 'en-CA',
+            distanceUnit: 'km',
             deliveryFreeThreshold: 25
         };
 
@@ -3047,7 +3047,10 @@
                     }
                     const moduleCfg = getModuleConfig(theme, mod.id);
                     const moduleVars = `--module-radius:${moduleCfg.borderRadius}px;--module-border:${moduleCfg.borderWidth}px solid ${moduleCfg.borderColor};--module-shadow:${moduleCfg.shadowX}px ${moduleCfg.shadowY}px ${moduleCfg.shadowBlur}px ${moduleCfg.shadowColor};--module-padding:${moduleCfg.padding}px;--module-font-size:${moduleCfg.fontSize}px;--module-line-height:${moduleCfg.lineHeight};--module-img-radius:${moduleCfg.imageBorderRadius}px;--module-gap:${moduleCfg.gap}px;--module-bg:${moduleCfg.bgColor};--module-text:${moduleCfg.textColor};`;
-                    html = `<div data-module="${mod.id}" style="${moduleVars}">${html}</div>`;
+                    const isPageModule = mod.id.endsWith('-page') || mod.id === 'splash' || mod.id === 'add-location' || mod.id === 'order-tracking';
+                    const headingColor = theme === 'glassmorphism' ? '#fff' : (theme === 'neubrutalism' ? '#3D3229' : '#1a1a1a');
+                    const headingHtml = !isPageModule && html ? `<div style="font-size:18px;font-weight:700;color:${headingColor};margin:16px 16px 10px;">${mod.name}</div>` : '';
+                    html = `<div data-module="${mod.id}" style="${moduleVars}">${headingHtml}${html}</div>`;
                     scrollWrapper.innerHTML += html;
                 });
 
