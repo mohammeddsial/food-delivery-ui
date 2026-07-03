@@ -1519,137 +1519,18 @@
     </style>
 </head>
 
-<body class="p-6 h-screen w-screen flex overflow-hidden">
+<body style="margin:0;padding:0;background:#0a0a0a;display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden;">
 
-    <!-- LEFT PANEL: Controller + Palette Editor -->
-    <div class="flex flex-col h-full"
-        style="width:28%; min-width:300px; max-width:400px; background:#141414; border-right:1px solid #2a2a2a; overflow-y:auto;">
-
-        <!-- CONTROLLER -->
-        <div class="controller" id="controllerPanel" style="width:100%; border-right:none; height:auto; flex-shrink:0;">
-            <div class="panel-title">
-                <i class="fas fa-sliders-h" style="color:#00615F;font-size:14px;"></i> Design Engine
-                <span id="versionBadge" style="font-size:9px;color:#888;margin-left:auto;"></span>
-            </div>
-            <div
-                style="font-size:10px;color:#555;margin-bottom:10px;text-align:center;letter-spacing:0.5px;border-bottom:1px solid #222;padding-bottom:8px;">
-                HIGH-FIDELITY DESIGN STRATIFICATION WORKBENCH</div>
-            <div style="font-size:11px;color:#666;margin-bottom:12px;">19 components · 3 design systems · 3 icon libs
-            </div>
-
-            <!-- CARDS + REFRESH BUTTONS -->
-            <div style="display:flex;gap:6px;margin-bottom:12px;">
-                <a href="cards/index.html"
-                    onclick="localStorage.removeItem('foodDelivery_modulesByTheme');localStorage.removeItem('foodDelivery_cardConfig');localStorage.removeItem('foodDelivery_colorPalettes');localStorage.removeItem('foodDelivery_topNavStyle');"
-                    style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px;background:#00615F;color:#fff;border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;transition:all 0.15s ease;"
-                    onmouseover="this.style.background='#004d4a'" onmouseout="this.style.background='#00615F'">
-                    <i class="ri-layout-grid-fill" style="font-size:13px;"></i> Cards
-                </a>
-                <button
-                    onclick="localStorage.removeItem('foodDelivery_modulesByTheme');localStorage.removeItem('foodDelivery_cardConfig');localStorage.removeItem('foodDelivery_colorPalettes');localStorage.removeItem('foodDelivery_topNavStyle');location.reload();"
-                    style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px;background:#222;color:#aaa;border:1px solid #333;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.15s ease;"
-                    onmouseover="this.style.background='#333';this.style.color='#fff'"
-                    onmouseout="this.style.background='#222';this.style.color='#aaa'">
-                    <i class="fas fa-sync-alt" style="font-size:11px;"></i> Refresh
-                </button>
-            </div>
-
-            <!-- PER-VIEW WRAPPER: controls which viewport's settings the panel below edits -->
-            <div class="ctrl-section" style="margin-top:0;">
-                <h3>Editing View</h3>
-                <div class="ctrl-group" id="viewSwitcherContainer" style="display:flex;gap:4px;padding:6px;"></div>
-            </div>
-
-            <div class="ctrl-section">
-                <h3>Top Bar Style</h3>
-                <div class="ctrl-group" id="topBarStyleContainer" style="display:flex;gap:4px;padding:6px;"></div>
-            </div>
-
-            <div class="ctrl-section">
-                <h3>Page View</h3>
-                <div class="ctrl-group" id="pageViewContainer" style="display:flex;flex-wrap:wrap;gap:4px;padding:6px;"></div>
-            </div>
-
-            <div class="ctrl-section" id="moduleOrchestratorSection">
-                <h3>Module Orchestrator</h3>
-                <div class="ctrl-group" id="moduleListContainer"></div>
-            </div>
-
-            <div class="ctrl-section">
-                <h3>Card Settings</h3>
-                <div class="ctrl-group" id="cardSettingsContainer"></div>
-            </div>
-
-            <div
-                style="font-size:9px;color:#444;margin-top:10px;border-top:1px solid #1a1a1a;padding-top:8px;text-align:center;">
-                <i class="fas fa-sync-alt" style="margin-right:4px;"></i> Modules/State/Cards/Palette are per-view
-            </div>
-            <div
-                style="font-size:8px;color:#333;margin-top:4px;text-align:center;border-top:1px solid #1a1a1a;padding-top:6px;">
-                <span style="background:#1a1a1a;padding:2px 8px;border-radius:4px;">Lucide</span>
-                <span style="background:#1a1a1a;padding:2px 8px;border-radius:4px;margin-left:4px;">Remix</span>
-                <span style="background:#1a1a1a;padding:2px 8px;border-radius:4px;margin-left:4px;">Tabler</span>
-            </div>
-        </div>
-
-        <!-- COLOR PALETTE EDITOR -->
-        <div class="color-palette-editor" style="padding:16px; border-top:1px solid #2a2a2a; flex-shrink:0;">
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-                <h3 style="color:#fff; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Color Palettes
-                </h3>
-                
-            </div>
-            <div id="paletteEditorContainer">
-                <!-- Rendered by JavaScript -->
-            </div>
+    
+    <!-- STANDALONE VIEWPORT: LIGHT -->
+    <div style="display:flex;justify-content:center;align-items:center;width:100vw;height:100vh;">
+        <div id="viewport-neumorphism"
+            class="phone-viewport theme-neumorphism rounded-[40px] border-[10px] border-slate-950 shadow-2xl"
+            role="region" aria-label="Light theme viewport">
         </div>
     </div>
 
-    <!-- MAIN VIEWPORT GRID -->
-    <div class="flex-1 h-full flex flex-col overflow-hidden">
-
-        <div class="flex-1 flex gap-4 overflow-x-auto justify-start items-center pb-4">
-
-            <!-- VIEWPORT 1: LIGHT · Lucide -->
-            <div class="flex flex-col items-center">
-                <span class="text-xs font-bold text-emerald-400 mb-1 tracking-wider uppercase flex items-center gap-2">
-                    <i data-lucide="cube"></i> Light <span
-                        class="text-[8px] bg-slate-800 px-2 py-0.5 rounded-full text-emerald-400">Lucide</span>
-                </span>
-                <div id="viewport-neumorphism"
-                    class="phone-viewport theme-neumorphism rounded-[40px] border-[10px] border-slate-950 shadow-2xl animate-fade-in-up"
-                    role="region" aria-label="Light theme viewport - Editorial Fine Dining style">
-                </div>
-            </div>
-
-            <!-- VIEWPORT 2: DARK · Remix Icon -->
-            <div class="flex flex-col items-center">
-                <span class="text-xs font-bold text-indigo-400 mb-1 tracking-wider uppercase flex items-center gap-2">
-                    <i class="ri-circle-line"></i> Dark <span
-                        class="text-[8px] bg-slate-800 px-2 py-0.5 rounded-full text-indigo-400">Remix</span>
-                </span>
-                <div id="viewport-glassmorphism"
-                    class="phone-viewport theme-glassmorphism rounded-[40px] border-[10px] border-slate-950 shadow-2xl glass-perf animate-fade-in-up stagger-2"
-                    role="region" aria-label="Dark theme viewport - Immersive Glassmorphism style">
-                </div>
-            </div>
-
-            <!-- VIEWPORT 3: MODERN · Tabler -->
-            <div class="flex flex-col items-center">
-                <span class="text-xs font-bold text-orange-400 mb-1 tracking-wider uppercase flex items-center gap-2">
-                    <i class="ti ti-cube"></i> Modern <span
-                        class="text-[8px] bg-slate-800 px-2 py-0.5 rounded-full text-orange-400">Tabler</span>
-                </span>
-                <div id="viewport-neubrutalism"
-                    class="phone-viewport theme-neubrutalism rounded-[40px] border-[10px] border-slate-950 shadow-2xl animate-fade-in-up stagger-3"
-                    role="region" aria-label="Modern theme viewport - Hyper-Brutalist style">
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- DESIGN PICKER MODAL (global, shared by all module rows) -->
+<!-- DESIGN PICKER MODAL (global, shared by all module rows) -->
     <div class="design-modal-overlay" id="designModalOverlay" onclick="closeDesignPicker()"></div>
 
     <script>
@@ -3085,7 +2966,7 @@
 
         // ─── RENDER ALL VIEWPORTS ────────────────────────────────────────
         function renderAllViewports() {
-            const views = ['neumorphism', 'glassmorphism', 'neubrutalism'];
+            const views = ['neumorphism'];
             views.forEach(theme => {
                 const container = document.getElementById(`viewport-${theme}`);
                 container.innerHTML = '';
@@ -8791,14 +8672,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
         }, 30000);
 
         window.onload = function () {
-            setVersionBadge();
-            renderViewSwitcher();
-            renderTopBarStylePicker();
-            renderPageViewPicker();
-            buildControllerList();
             renderAllViewports();
-            renderPaletteEditor();
-            renderCardSettings();
             applyAllPalettes();
         };
     </script>
