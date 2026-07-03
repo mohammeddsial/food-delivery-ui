@@ -1495,6 +1495,27 @@
                 transform: translateX(-100%);
             }
         }
+
+        .toast-notification {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            white-space: nowrap;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        .toast-notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
     </style>
 </head>
 
@@ -1689,6 +1710,159 @@
         // Kept as constants so dependent draw functions keep working unmodified.
         const stateSimulation = {
             countdown: 45
+        };
+
+        // ─── LOCALE & CURRENCY CONFIG ──────────────────────────────────────────
+        const LOCALE = {
+            currency: '£',
+            locale: 'en-GB',
+            distanceUnit: 'mi',
+            deliveryFreeThreshold: 25
+        };
+
+        function formatPrice(amount) {
+            return `${LOCALE.currency}${amount.toFixed(2)}`;
+        }
+
+        function formatETA(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${m}:${s.toString().padStart(2, '0')}`;
+        }
+
+        // ─── SHARED APP STATE ──────────────────────────────────────────────────
+        window.appState = {
+            cart: { neumorphism: [], glassmorphism: [], neubrutalism: [] },
+            orderPhase: { neumorphism: 'browsing', glassmorphism: 'browsing', neubrutalism: 'browsing' },
+            trackingETA: { neumorphism: 0, glassmorphism: 0, neubrutalism: 0 },
+            trackingInterval: { neumorphism: null, glassmorphism: null, neubrutalism: null }
+        };
+
+        // ─── CART FUNCTIONS ────────────────────────────────────────────────────
+        function addToCart(theme, item) {
+            const cart = window.appState.cart[theme];
+            const existing = cart.find(i => i.id === item.id);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                cart.push({ ...item, qty: 1 });
+            }
+            showToast(`${item.name} added to cart`);
+            renderAllViewports();
+        }
+
+        function removeFromCart(theme, itemId) {
+            window.appState.cart[theme] = window.appState.cart[theme].filter(i => i.id !== itemId);
+            renderAllViewports();
+        }
+
+        function updateCartQty(theme, itemId, delta) {
+            const cart = window.appState.cart[theme];
+            const item = cart.find(i => i.id === itemId);
+            if (item) {
+                item.qty = Math.max(0, item.qty + delta);
+                if (item.qty === 0) {
+                    removeFromCart(theme, itemId);
+                } else {
+                    renderAllViewports();
+                }
+            }
+        }
+
+        function getCartTotal(theme) {
+            return window.appState.cart[theme].reduce((sum, i) => sum + i.price * i.qty, 0);
+        }
+
+        function getCartCount(theme) {
+            return window.appState.cart[theme].reduce((sum, i) => sum + i.qty, 0);
+        }
+
+        function getCartItems(theme) {
+            return window.appState.cart[theme];
+        }
+
+        // ─── TOAST NOTIFICATIONS ───────────────────────────────────────────────
+        function showToast(message, type = 'success') {
+            document.querySelectorAll('.phone-viewport').forEach(vp => {
+                const toast = document.createElement('div');
+                toast.className = 'toast-notification';
+                toast.textContent = message;
+                toast.style.background = type === 'success' ? '#22C55E' : (type === 'error' ? '#EF4444' : '#3B82F6');
+                toast.style.color = '#fff';
+                vp.appendChild(toast);
+                requestAnimationFrame(() => toast.classList.add('show'));
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }, 2000);
+            });
+        }
+
+        // ─── ORDER TRACKING ────────────────────────────────────────────────────
+        function startTracking(theme) {
+            window.appState.trackingETA[theme] = 1500;
+            if (window.appState.trackingInterval[theme]) clearInterval(window.appState.trackingInterval[theme]);
+            window.appState.trackingInterval[theme] = setInterval(() => {
+                if (window.appState.trackingETA[theme] > 0) {
+                    window.appState.trackingETA[theme]--;
+                    const etaEl = document.getElementById(`eta-${theme}`);
+                    if (etaEl) etaEl.textContent = formatETA(window.appState.trackingETA[theme]);
+                } else {
+                    clearInterval(window.appState.trackingInterval[theme]);
+                    showToast('Order delivered!');
+                }
+            }, 1000);
+            window.appState.orderPhase[theme] = 'tracking';
+        }
+
+        function stopTracking(theme) {
+            if (window.appState.trackingInterval[theme]) {
+                clearInterval(window.appState.trackingInterval[theme]);
+                window.appState.trackingInterval[theme] = null;
+            }
+        }
+
+        // ─── RESTAURANT DATA ───────────────────────────────────────────────────
+        const RESTAURANTS = {
+            neumorphism: {
+                name: 'Eaterny Kitchen',
+                items: [
+                    { id: 'ep1', name: 'Margherita Pizza', price: 12.99, cat: 'pizza', img: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=200&h=200&fit=crop', desc: 'Fresh mozzarella, tomato, basil' },
+                    { id: 'ep2', name: 'Caesar Salad', price: 8.99, cat: 'salad', img: 'https://images.unsplash.com/photo-1550304943-4f24f54ddde9?w=200&h=200&fit=crop', desc: 'Romaine, parmesan, croutons' },
+                    { id: 'ep3', name: 'Pepperoni Pizza', price: 14.99, cat: 'pizza', img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=200&h=200&fit=crop', desc: 'Classic pepperoni, mozzarella' },
+                    { id: 'ep4', name: 'Classic Burger', price: 11.99, cat: 'burger', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&h=200&fit=crop', desc: 'Beef patty, lettuce, tomato' },
+                    { id: 'ep5', name: 'Garlic Bread', price: 5.99, cat: 'sides', img: 'https://images.unsplash.com/photo-1619535860434-ba1d8fa12536?w=200&h=200&fit=crop', desc: 'Toasted with garlic butter' },
+                    { id: 'ep6', name: 'Pasta Carbonara', price: 13.99, cat: 'pasta', img: 'https://images.unsplash.com/photo-1612874742237-6526221588e3?w=200&h=200&fit=crop', desc: 'Creamy egg, pancetta, parmesan' },
+                    { id: 'ep7', name: 'Fish & Chips', price: 15.99, cat: 'mains', img: 'https://images.unsplash.com/photo-1579208030886-b1e3c4408c90?w=200&h=200&fit=crop', desc: 'Beer-battered cod, mushy peas' },
+                    { id: 'ep8', name: 'Tiramisu', price: 7.99, cat: 'dessert', img: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=200&h=200&fit=crop', desc: 'Coffee-soaked ladyfingers' }
+                ]
+            },
+            glassmorphism: {
+                name: 'Night Bites',
+                items: [
+                    { id: 'nb1', name: 'Truffle Pasta', price: 16.99, cat: 'pasta', img: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=200&h=200&fit=crop', desc: 'Black truffle, cream sauce' },
+                    { id: 'nb2', name: 'Wagyu Burger', price: 18.99, cat: 'burger', img: 'https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=200&h=200&fit=crop', desc: 'Premium wagyu, aged cheddar' },
+                    { id: 'nb3', name: 'Sushi Platter', price: 22.99, cat: 'sushi', img: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=200&h=200&fit=crop', desc: '12-piece assorted nigiri' },
+                    { id: 'nb4', name: 'Grilled Salmon', price: 19.99, cat: 'mains', img: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=200&h=200&fit=crop', desc: 'Lemon butter, asparagus' },
+                    { id: 'nb5', name: 'Cocktail Selection', price: 12.99, cat: 'drinks', img: 'https://images.unsplash.com/photo-1514362545857-3bc16c7c4a8d?w=200&h=200&fit=crop', desc: '3 signature cocktails' },
+                    { id: 'nb6', name: 'Chocolate Lava', price: 9.99, cat: 'dessert', img: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=200&h=200&fit=crop', desc: 'Warm molten centre' },
+                    { id: 'nb7', name: 'Bruschetta', price: 7.99, cat: 'starters', img: 'https://images.unsplash.com/photo-1572695157366-5e585ab2b69f?w=200&h=200&fit=crop', desc: 'Tomato, basil, balsamic' },
+                    { id: 'nb8', name: 'Steak Frites', price: 24.99, cat: 'mains', img: 'https://images.unsplash.com/photo-1600891964092-4316c288032e?w=200&h=200&fit=crop', desc: 'Ribeye, truffle fries' }
+                ]
+            },
+            neubrutalism: {
+                name: 'Bold Eats',
+                items: [
+                    { id: 'be1', name: 'Smash Burger', price: 13.99, cat: 'burger', img: 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=200&h=200&fit=crop', desc: 'Double patty, special sauce' },
+                    { id: 'be2', name: 'Loaded Fries', price: 8.99, cat: 'sides', img: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200&h=200&fit=crop', desc: 'Cheese, bacon, jalapeños' },
+                    { id: 'be3', name: 'Chicken Wings', price: 10.99, cat: 'starters', img: 'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=200&h=200&fit=crop', desc: 'BBQ or buffalo, 12 pieces' },
+                    { id: 'be4', name: 'Veggie Bowl', price: 11.99, cat: 'salad', img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=200&h=200&fit=crop', desc: 'Quinoa, avocado, chickpeas' },
+                    { id: 'be5', name: 'Nachos Supreme', price: 9.99, cat: 'starters', img: 'https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?w=200&h=200&fit=crop', desc: 'Cheese, guac, sour cream' },
+                    { id: 'be6', name: 'Pulled Pork Wrap', price: 12.99, cat: 'mains', img: 'https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=200&h=200&fit=crop', desc: 'Slaw, BBQ sauce' },
+                    { id: 'be7', name: 'Milkshake', price: 6.99, cat: 'drinks', img: 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=200&h=200&fit=crop', desc: 'Chocolate, vanilla, or strawberry' },
+                    { id: 'be8', name: 'Brownie Sundae', price: 7.99, cat: 'dessert', img: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=200&h=200&fit=crop', desc: 'Warm brownie, ice cream' }
+                ]
+            }
         };
 
         // ─── BRAND INFO PER THEME ──────────────────────────────────────────────
@@ -2469,7 +2643,7 @@
                         </div>
                         <div style="text-align:center;margin-bottom:16px;">
                             <div style="font-size:11px;color:var(--text-secondary);">estimated arrival</div>
-                            <div style="font-size:36px;font-weight:800;color:var(--accent);line-height:1;">25 min</div>
+                            <div id="eta-${theme}" style="font-size:36px;font-weight:800;color:var(--accent);line-height:1;">25 min</div>
                         </div>
                         <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--pill-bg);border-radius:14px;margin-bottom:12px;">
                             <img src="${driverImg}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;" alt="driver">
@@ -2496,10 +2670,35 @@
             renderPageViewPicker();
         }
         function goBack(theme) {
-            currentPageByTheme[theme] = 'feed';
+            const phase = window.appState.orderPhase[theme];
+            if (phase === 'checkout') {
+                currentPageByTheme[theme] = 'cart-page';
+                window.appState.orderPhase[theme] = 'carted';
+            } else if (phase === 'placed' || phase === 'tracking') {
+                currentPageByTheme[theme] = 'order-success-page';
+            } else {
+                currentPageByTheme[theme] = 'feed';
+                window.appState.orderPhase[theme] = 'browsing';
+            }
             renderAllViewports();
             renderPageViewPicker();
         }
+        function proceedToCheckout(theme) {
+            window.appState.orderPhase[theme] = 'checkout';
+            navigateToPage(theme, 'checkout-page');
+        }
+
+        function placeOrder(theme) {
+            window.appState.orderPhase[theme] = 'placed';
+            navigateToPage(theme, 'order-success-page');
+        }
+
+        function trackOrder(theme) {
+            window.appState.orderPhase[theme] = 'tracking';
+            startTracking(theme);
+            navigateToPage(theme, 'order-tracking');
+        }
+
         function toggleHeart(theme) {
             heartState[theme] = !heartState[theme];
             renderAllViewports();
@@ -2884,45 +3083,42 @@
                             <span style="font-size:18px;font-weight:700;color:${cartTitleColor};">My Cart</span>
                             <button onclick="closeCartPopup('${theme}')" style="background:${cartCloseBg};border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;color:${cartCloseColor};display:flex;align-items:center;justify-content:center;transition:all 0.2s cubic-bezier(0.16,1,0.3,1);" onmouseover="this.style.background='${cartAccent}';this.style.color='#fff';this.style.transform='rotate(90deg)'" onmouseout="this.style.background='${cartCloseBg}';this.style.color='${cartCloseColor}';this.style.transform='rotate(0deg)'">&times;</button>
                         </div>
-                        <div style="display:flex;gap:12px;align-items:center;padding:12px;background:${cartItemBg};border-radius:14px;margin-bottom:10px;transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
-                            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=120&q=80" style="width:56px;height:56px;border-radius:12px;object-fit:cover;" alt="Pepperoni Pizza">
-                            <div style="flex:1;">
-                                <div style="font-size:14px;font-weight:700;color:${cartItemNameColor};">Pepperoni Pizza</div>
-                                <div style="font-size:12px;color:${cartItemDescColor};margin-top:2px;">Extra cheese, thin crust</div>
-                                <div style="font-size:13px;font-weight:700;color:${cartPriceColor};margin-top:4px;">$9.99</div>
-                            </div>
-                            <div class="qty-morph">
-                                <button>-</button>
-                                <span>1</span>
-                                <button>+</button>
-                            </div>
-                        </div>
-                        <div style="display:flex;gap:12px;align-items:center;padding:12px;background:${cartItemBg};border-radius:14px;margin-bottom:16px;transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
-                            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=120&q=80" style="width:56px;height:56px;border-radius:12px;object-fit:cover;" alt="Beef Burger">
-                            <div style="flex:1;">
-                                <div style="font-size:14px;font-weight:700;color:${cartItemNameColor};">Beef Burger</div>
-                                <div style="font-size:12px;color:${cartItemDescColor};margin-top:2px;">Classic double patty</div>
-                                <div style="font-size:13px;font-weight:700;color:${cartPriceColor};margin-top:4px;">$7.99</div>
-                            </div>
-                            <div class="qty-morph">
-                                <button>-</button>
-                                <span>1</span>
-                                <button>+</button>
-                            </div>
-                        </div>
+                        ${getCartItems(theme).length === 0
+                            ? `<div style="text-align:center;padding:32px 16px;">
+                                <div style="font-size:40px;margin-bottom:12px;">🛒</div>
+                                <div style="font-size:15px;font-weight:700;color:${cartTitleColor};margin-bottom:4px;">Cart is empty</div>
+                                <div style="font-size:12px;color:${cartItemDescColor};">Add items from the menu to get started</div>
+                               </div>`
+                            : getCartItems(theme).map((item, idx) => `
+                                <div style="display:flex;gap:12px;align-items:center;padding:12px;background:${cartItemBg};border-radius:14px;margin-bottom:${idx < getCartItems(theme).length - 1 ? '10' : '16'}px;transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                                    <img src="${item.img}" style="width:56px;height:56px;border-radius:12px;object-fit:cover;" alt="${item.name}">
+                                    <div style="flex:1;">
+                                        <div style="font-size:14px;font-weight:700;color:${cartItemNameColor};">${item.name}</div>
+                                        ${item.options ? `<div style="font-size:12px;color:${cartItemDescColor};margin-top:2px;">${item.options}</div>` : ''}
+                                        <div style="font-size:13px;font-weight:700;color:${cartPriceColor};margin-top:4px;">${formatPrice(item.price * item.qty)}</div>
+                                    </div>
+                                    <div class="qty-morph">
+                                        <button onclick="updateCartQty('${theme}','${item.id}',-1)">-</button>
+                                        <span>${item.qty}</span>
+                                        <button onclick="updateCartQty('${theme}','${item.id}',1)">+</button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        ${getCartItems(theme).length > 0 ? `
                         <div style="display:flex;justify-content:space-between;margin-bottom:10px;font-size:13px;">
                             <span style="color:${cartItemDescColor};">Subtotal</span>
-                            <span style="font-weight:700;color:${cartSubtotalColor};">$17.98</span>
+                            <span style="font-weight:700;color:${cartSubtotalColor};">${formatPrice(getCartTotal(theme))}</span>
                         </div>
                         <div style="display:flex;justify-content:space-between;margin-bottom:14px;font-size:13px;">
                             <span style="color:${cartItemDescColor};">Delivery</span>
-                            <span style="font-weight:700;color:${cartSubtotalColor};">$2.99</span>
+                            <span style="font-weight:700;color:${cartSubtotalColor};">${formatPrice(2.99)}</span>
                         </div>
                         <div style="display:flex;justify-content:space-between;margin-bottom:16px;font-size:16px;padding-top:12px;border-top:1px solid ${cartDivider};">
                             <span style="font-weight:700;color:${cartSubtotalColor};">Total</span>
-                            <span style="font-weight:800;color:${cartTotalColor};">$20.97</span>
+                            <span style="font-weight:800;color:${cartTotalColor};">${formatPrice(getCartTotal(theme) + 2.99)}</span>
                         </div>
-                        <button class="btn-morph" onclick="navigateToPage('${theme}','checkout-page')" style="width:100%;padding:16px;background:${cartAccent};color:#fff;border:none;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;box-shadow:${cartBtnShadow};">Checkout</button>
+                        ` : ''}
+                        <button class="btn-morph" onclick="proceedToCheckout('${theme}')" style="width:100%;padding:16px;background:${cartAccent};color:#fff;border:none;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;box-shadow:${cartBtnShadow};">Checkout</button>
                     </div>
                 `;
 
@@ -2960,43 +3156,43 @@
                             <div style="display:flex;align-items:center;gap:10px;padding:10px;background:${menuItemBg};border-radius:12px;">
                                 <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=100&q=80" style="width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt="">
                                 <div style="flex:1;"><div style="font-size:13px;font-weight:700;color:${menuText};">Caesar Salad</div><div style="font-size:10px;color:${menuSub};margin-top:2px;">Fresh romaine, parmesan, croutons</div></div>
-                                <span style="font-size:12px;font-weight:700;color:${menuAccent};">$8.99</span>
+                                <span style="font-size:12px;font-weight:700;color:${menuAccent};">${formatPrice(8.99)}</span>
                             </div>
                             <div style="display:flex;align-items:center;gap:10px;padding:10px;background:${menuItemBg};border-radius:12px;">
                                 <img src="https://images.unsplash.com/photo-1625943553852-781c6dd46faa?auto=format&fit=crop&w=100&q=80" style="width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt="">
                                 <div style="flex:1;"><div style="font-size:13px;font-weight:700;color:${menuText};">Bruschetta</div><div style="font-size:10px;color:${menuSub};margin-top:2px;">Tomato, basil, balsamic glaze</div></div>
-                                <span style="font-size:12px;font-weight:700;color:${menuAccent};">$6.99</span>
+                                <span style="font-size:12px;font-weight:700;color:${menuAccent};">${formatPrice(6.99)}</span>
                             </div>
                             <div style="font-size:11px;font-weight:700;color:${menuAccent};text-transform:uppercase;letter-spacing:1px;margin-top:4px;">Mains</div>
                             <div style="display:flex;align-items:center;gap:10px;padding:10px;background:${menuItemBg};border-radius:12px;">
                                 <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=100&q=80" style="width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt="">
                                 <div style="flex:1;"><div style="font-size:13px;font-weight:700;color:${menuText};">Classic Beef Burger</div><div style="font-size:10px;color:${menuSub};margin-top:2px;">Double patty, cheddar, lettuce</div></div>
-                                <span style="font-size:12px;font-weight:700;color:${menuAccent};">$12.99</span>
+                                <span style="font-size:12px;font-weight:700;color:${menuAccent};">${formatPrice(12.99)}</span>
                             </div>
                             <div style="display:flex;align-items:center;gap:10px;padding:10px;background:${menuItemBg};border-radius:12px;">
                                 <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=100&q=80" style="width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt="">
                                 <div style="flex:1;"><div style="font-size:13px;font-weight:700;color:${menuText};">Margherita Pizza</div><div style="font-size:10px;color:${menuSub};margin-top:2px;">San Marzano, mozzarella, basil</div></div>
-                                <span style="font-size:12px;font-weight:700;color:${menuAccent};">$14.99</span>
+                                <span style="font-size:12px;font-weight:700;color:${menuAccent};">${formatPrice(14.99)}</span>
                             </div>
                             <div style="display:flex;align-items:center;gap:10px;padding:10px;background:${menuItemBg};border-radius:12px;">
                                 <img src="https://images.unsplash.com/photo-1546069901-d5bfd2cbfb1f?auto=format&fit=crop&w=100&q=80" style="width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt="">
                                 <div style="flex:1;"><div style="font-size:13px;font-weight:700;color:${menuText};">Grilled Salmon Bowl</div><div style="font-size:10px;color:${menuSub};margin-top:2px;">Quinoa, avocado, citrus dressing</div></div>
-                                <span style="font-size:12px;font-weight:700;color:${menuAccent};">$16.99</span>
+                                <span style="font-size:12px;font-weight:700;color:${menuAccent};">${formatPrice(16.99)}</span>
                             </div>
                             <div style="font-size:11px;font-weight:700;color:${menuAccent};text-transform:uppercase;letter-spacing:1px;margin-top:4px;">Beverages</div>
                             <div style="display:flex;align-items:center;gap:10px;padding:10px;background:${menuItemBg};border-radius:12px;">
                                 <img src="https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=100&q=80" style="width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt="">
                                 <div style="flex:1;"><div style="font-size:13px;font-weight:700;color:${menuText};">Fresh Lemonade</div><div style="font-size:10px;color:${menuSub};margin-top:2px;">Hand-squeezed, mint sprig</div></div>
-                                <span style="font-size:12px;font-weight:700;color:${menuAccent};">$3.99</span>
+                                <span style="font-size:12px;font-weight:700;color:${menuAccent};">${formatPrice(3.99)}</span>
                             </div>
                             <div style="display:flex;align-items:center;gap:10px;padding:10px;background:${menuItemBg};border-radius:12px;">
                                 <img src="https://images.unsplash.com/photo-1579954115545-a95591f28bfc?auto=format&fit=crop&w=100&q=80" style="width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0;" alt="">
                                 <div style="flex:1;"><div style="font-size:13px;font-weight:700;color:${menuText};">Iced Latte</div><div style="font-size:10px;color:${menuSub};margin-top:2px;">Espresso, oat milk, vanilla</div></div>
-                                <span style="font-size:12px;font-weight:700;color:${menuAccent};">$4.99</span>
+                                <span style="font-size:12px;font-weight:700;color:${menuAccent};">${formatPrice(4.99)}</span>
                             </div>
                         </div>
                         <div style="text-align:center;margin-top:16px;padding-top:12px;border-top:1px solid ${theme === 'glassmorphism' ? 'rgba(255,255,255,0.08)' : '#eee'};">
-                            <span style="font-size:9px;color:${menuSub};">Free delivery on orders over $25</span>
+                            <span style="font-size:9px;color:${menuSub};">Free delivery on orders over ${formatPrice(25)}</span>
                         </div>
                     </div>
                 `;
@@ -3136,7 +3332,7 @@
             const statusBar = `
                 <div style="position:relative;min-height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 16px 8px;${topBarBg}z-index:30;">
                     <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:28px;background:#000;border-radius:0 0 20px 20px;"></div>
-                    <span style="font-size:15px;font-weight:700;${timeColor}">19:02</span>
+                    <span class="status-time" style="font-size:15px;font-weight:700;${timeColor}">${new Date().toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: false})}</span>
                     <span style="display:flex;align-items:center;gap:6px;font-size:11px;${statusColor}">
                         ${iconFor(theme, signal)} ${iconFor(theme, wifi)} ${iconFor(theme, battery)}
                     </span>
@@ -3260,7 +3456,7 @@
                 { icon: 'home', label: 'Home' },
                 { icon: 'menu', label: 'Menu' },
                 { icon: 'gift', label: 'Rewards' },
-                { icon: 'cart', label: 'Cart', badge: 2 },
+                { icon: 'cart', label: 'Cart', badge: getCartCount(theme) || null },
                 { icon: 'user', label: 'Profile' }
             ];
 
@@ -3990,7 +4186,7 @@
                     </div>
                     <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 24px;">
                         <div style="font-size:11px;font-weight:600;color:${subColor};text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Order #568</div>
-                        <div style="font-size:36px;font-weight:800;color:${textColor};margin-bottom:24px;">00:15:05</div>
+                        <div id="eta-${theme}" style="font-size:36px;font-weight:800;color:${textColor};margin-bottom:24px;">00:15:05</div>
                         <div style="display:flex;gap:8px;margin-bottom:32px;width:100%;max-width:300px;">${stepDots}</div>
                         <img src="${illustration}" style="width:140px;height:140px;object-fit:contain;margin-bottom:24px;" alt="status">
                         <div style="font-size:18px;font-weight:700;color:${textColor};margin-bottom:32px;">${statusText}</div>
@@ -4041,7 +4237,7 @@
                         <div style="width:40px;height:4px;background:var(--border-color);border-radius:2px;margin:0 auto 16px;"></div>
                         <div style="font-size:16px;font-weight:700;color:${textColor};margin-bottom:16px;">Tracking Details</div>
                         <div style="font-size:13px;font-weight:600;color:${textColor};margin-bottom:4px;">Chicken fry with cream</div>
-                        <div style="font-size:11px;color:${subColor};margin-bottom:16px;">1 Box · $10</div>
+                        <div style="font-size:11px;color:${subColor};margin-bottom:16px;">1 Box · ${formatPrice(10)}</div>
                         <div style="font-size:11px;font-weight:600;color:${subColor};text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Address</div>
                         <div style="font-size:12px;color:${textColor};margin-bottom:16px;line-height:1.5;">921 Church St, San Francisco, CA 94114, USA</div>
                         <div style="flex:1;display:flex;flex-direction:column;gap:0;margin-bottom:8px;">
@@ -4126,22 +4322,22 @@
 
             const categories = [
                 { id: 'mains', name: 'Main Course', items: [
-                    { name: 'Classic Beef Burger', desc: 'Double patty, cheddar, lettuce', price: '$12.99', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80' },
-                    { name: 'Pepperoni Pizza', desc: 'Extra cheese, thin crust', price: '$9.99', img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80' },
-                    { name: 'Grilled Salmon', desc: 'Lemon butter sauce', price: '$15.99', img: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=200&q=80' }
+                    { name: 'Classic Beef Burger', desc: 'Double patty, cheddar, lettuce', price: 12.99, img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80' },
+                    { name: 'Pepperoni Pizza', desc: 'Extra cheese, thin crust', price: 9.99, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80' },
+                    { name: 'Grilled Salmon', desc: 'Lemon butter sauce', price: 15.99, img: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=200&q=80' }
                 ]},
                 { id: 'sides', name: 'Sides', items: [
-                    { name: 'Caesar Salad', desc: 'Fresh romaine, parmesan', price: '$8.99', img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=200&q=80' },
-                    { name: 'Truffle Fries', desc: 'Parmesan & herb', price: '$6.99', img: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=200&q=80' },
-                    { name: 'Onion Rings', desc: 'Crispy battered', price: '$5.99', img: 'https://images.unsplash.com/photo-1639024471283-03518883512d?auto=format&fit=crop&w=200&q=80' }
+                    { name: 'Caesar Salad', desc: 'Fresh romaine, parmesan', price: 8.99, img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=200&q=80' },
+                    { name: 'Truffle Fries', desc: 'Parmesan & herb', price: 6.99, img: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=200&q=80' },
+                    { name: 'Onion Rings', desc: 'Crispy battered', price: 5.99, img: 'https://images.unsplash.com/photo-1639024471283-03518883512d?auto=format&fit=crop&w=200&q=80' }
                 ]},
                 { id: 'desserts', name: 'Desserts', items: [
-                    { name: 'Chocolate Lava Cake', desc: 'Warm molten center', price: '$7.99', img: 'https://images.unsplash.com/photo-1624353365286-3f8d62daad51?auto=format&fit=crop&w=200&q=80' },
-                    { name: 'Tiramisu', desc: 'Classic Italian', price: '$8.49', img: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=200&q=80' }
+                    { name: 'Chocolate Lava Cake', desc: 'Warm molten center', price: 7.99, img: 'https://images.unsplash.com/photo-1624353365286-3f8d62daad51?auto=format&fit=crop&w=200&q=80' },
+                    { name: 'Tiramisu', desc: 'Classic Italian', price: 8.49, img: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=200&q=80' }
                 ]},
                 { id: 'drinks', name: 'Drinks', items: [
-                    { name: 'Fresh Lemonade', desc: 'Hand-squeezed', price: '$4.99', img: 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=200&q=80' },
-                    { name: 'Iced Coffee', desc: 'Cold brew', price: '$5.49', img: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=200&q=80' }
+                    { name: 'Fresh Lemonade', desc: 'Hand-squeezed', price: 4.99, img: 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=200&q=80' },
+                    { name: 'Iced Coffee', desc: 'Cold brew', price: 5.49, img: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=200&q=80' }
                 ]}
             ];
 
@@ -4158,7 +4354,7 @@
                             <div style="flex:1;">
                                 <div style="font-size:13px;font-weight:700;color:${textColor};">${item.name}</div>
                                 <div style="font-size:10px;color:${subColor};margin-top:2px;">${item.desc}</div>
-                                <div style="font-size:13px;font-weight:700;color:${accent};margin-top:4px;">${item.price}</div>
+                                <div style="font-size:13px;font-weight:700;color:${accent};margin-top:4px;">${formatPrice(item.price)}</div>
                             </div>
                             ${addBtn}
                         </div>`).join('')}
@@ -4184,7 +4380,7 @@
                             <div style="padding:10px;">
                                 <div style="font-size:12px;font-weight:700;color:${textColor};">${item.name}</div>
                                 <div style="font-size:10px;color:${subColor};margin-top:2px;">${item.desc}</div>
-                                <div style="font-size:13px;font-weight:800;color:${accent};margin-top:6px;">${item.price}</div>
+                                <div style="font-size:13px;font-weight:800;color:${accent};margin-top:6px;">${formatPrice(item.price)}</div>
                             </div>
                         </div>`).join('')}
                     </div>`).join('');
@@ -4212,7 +4408,7 @@
                     <img src="${item.img}" style="width:48px;height:48px;border-radius:var(--card-img-radius);object-fit:cover;flex-shrink:0;">
                     <div style="flex:1;">
                         <div style="font-size:13px;font-weight:700;color:${textColor};">${item.name}</div>
-                        <div style="font-size:13px;font-weight:700;color:${accent};margin-top:2px;">${item.price}</div>
+                        <div style="font-size:13px;font-weight:700;color:${accent};margin-top:2px;">${formatPrice(item.price)}</div>
                     </div>
                     <div style="display:flex;align-items:center;gap:8px;background:var(--pill-bg);border-radius:9999px;padding:4px 6px;">
                         <span style="width:24px;height:24px;border-radius:50%;background:${accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;">-</span>
@@ -4250,7 +4446,7 @@
                     <div style="flex:1;overflow-y:auto;padding:20px 16px 100px;">
                         <div style="font-size:22px;font-weight:800;color:${textColor};margin-bottom:6px;">Classic Beef Burger</div>
                         <div style="font-size:13px;color:${subColor};line-height:1.6;margin-bottom:16px;">Juicy double beef patty with melted cheddar, fresh lettuce, tomato, and our signature sauce on a toasted brioche bun.</div>
-                        <div style="font-size:24px;font-weight:900;color:${accent};margin-bottom:20px;">$12.99</div>
+                        <div style="font-size:24px;font-weight:900;color:${accent};margin-bottom:20px;">${formatPrice(12.99)}</div>
                         <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:10px;">Size</div>
                         <div style="display:flex;gap:8px;margin-bottom:20px;">
                             <span style="padding:8px 20px;border-radius:9999px;background:${accent};color:#fff;font-size:12px;font-weight:700;cursor:pointer;">Small</span>
@@ -4261,13 +4457,13 @@
                         <div style="background:var(--pill-bg);border-radius:14px;padding:14px;margin-bottom:20px;">
                             <div style="display:flex;align-items:center;gap:12px;">
                                 <span style="width:20px;height:20px;border-radius:4px;border:2px solid ${accent};display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('check', 'font-size:12px;color:'+accent+';')}</span>
-                                <span style="flex:1;font-size:12px;font-weight:600;color:${textColor};">Add fries + drink for $3.99</span>
-                                <span style="font-size:13px;font-weight:700;color:${accent};">+$3.99</span>
+                                <span style="flex:1;font-size:12px;font-weight:600;color:${textColor};">Add fries + drink for ${formatPrice(3.99)}</span>
+                                <span style="font-size:13px;font-weight:700;color:${accent};">+${formatPrice(3.99)}</span>
                             </div>
                         </div>
                     </div>
                     <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
-                        <div onclick="navigateToPage('${theme}','cart-page')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Add to Cart - $12.99</div>
+                        <div onclick="navigateToPage('${theme}','cart-page')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Add to Cart - ${formatPrice(12.99)}</div>
                     </div>
                 </div>`;
             }
@@ -4281,7 +4477,7 @@
                         <div style="flex:1;display:flex;flex-direction:column;padding:16px;overflow-y:auto;">
                             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">${backBtn}<div style="width:36px;"></div></div>
                             <div style="font-size:20px;font-weight:800;color:${textColor};margin-bottom:4px;">Classic Beef Burger</div>
-                            <div style="font-size:20px;font-weight:900;color:${accent};margin-bottom:12px;">$12.99</div>
+                            <div style="font-size:20px;font-weight:900;color:${accent};margin-bottom:12px;">${formatPrice(12.99)}</div>
                             <div style="font-size:12px;color:${subColor};line-height:1.6;margin-bottom:16px;">Juicy double beef patty with melted cheddar, fresh lettuce, tomato, and our signature sauce.</div>
                             <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:8px;">Modifiers</div>
                             <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">
@@ -4300,7 +4496,7 @@
                         </div>
                     </div>
                     <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
-                        <div style="font-size:18px;font-weight:900;color:${accent};">$12.99</div>
+                        <div style="font-size:18px;font-weight:900;color:${accent};">${formatPrice(12.99)}</div>
                         <div onclick="navigateToPage('${theme}','cart-page')" style="flex:1;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;">Add to Cart</div>
                     </div>
                 </div>`;
@@ -4319,7 +4515,7 @@
                 </div>
                 <div style="flex:1;overflow-y:auto;padding:16px 16px 100px;">
                     <div style="display:flex;gap:16px;margin-bottom:20px;">
-                        <div><div style="font-size:22px;font-weight:900;color:${accent};">$12.99</div></div>
+                        <div><div style="font-size:22px;font-weight:900;color:${accent};">${formatPrice(12.99)}</div></div>
                         <div><div style="font-size:11px;color:${subColor};">430 cal</div><div style="font-size:11px;color:${subColor};">per serving</div></div>
                     </div>
                     <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:8px;">Ingredients</div>
@@ -4333,7 +4529,7 @@
                     </div>
                 </div>
                 <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
-                    <div onclick="navigateToPage('${theme}','cart-page')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px ${accent}40;">Add to Cart - $12.99</div>
+                    <div onclick="navigateToPage('${theme}','cart-page')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px ${accent}40;">Add to Cart - ${formatPrice(12.99)}</div>
                 </div>
             </div>`;
         }
@@ -4346,10 +4542,7 @@
             const pageBg = theme === 'glassmorphism' ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
             const backBtn = `<div onclick="goBack('${theme}')" style="width:36px;height:36px;border-radius:50%;background:${theme==='glassmorphism'?'rgba(255,255,255,0.1)':'var(--pill-bg)'};display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('arrow-left', 'font-size:16px;color:'+textColor+';')}</div>`;
 
-            const cartItems = [
-                { name: 'Pepperoni Pizza', options: 'Extra cheese, thin crust', price: 9.99, qty: 1, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=120&q=80' },
-                { name: 'Classic Beef Burger', options: 'No onions', price: 7.99, qty: 2, img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=120&q=80' }
-            ];
+            const cartItems = window.appState.cart[theme] || [];
             const subtotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
             const delivery = 2.99;
             const tax = (subtotal + delivery) * 0.08;
@@ -4361,13 +4554,16 @@
                     <div style="flex:1;min-width:0;">
                         <div style="display:flex;justify-content:space-between;align-items:start;">
                             <div style="font-size:13px;font-weight:700;color:${textColor};">${item.name}</div>
-                            <div style="font-size:13px;font-weight:700;color:${textColor};">$${(item.price * item.qty).toFixed(2)}</div>
+                            <div onclick="removeFromCart('${theme}','${item.id}')" style="font-size:10px;color:#EF4444;cursor:pointer;padding:2px 6px;">✕</div>
                         </div>
-                        <div style="font-size:10px;color:${subColor};margin-top:2px;">${item.options}</div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;">
+                            <div style="font-size:10px;color:${subColor};margin-top:2px;">${item.options}</div>
+                            <div style="font-size:13px;font-weight:700;color:${textColor};">${formatPrice(item.price * item.qty)}</div>
+                        </div>
                         <div style="display:flex;align-items:center;gap:6px;margin-top:6px;">
-                            <span style="width:24px;height:24px;border-radius:50%;background:var(--pill-bg);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;">-</span>
+                            <span onclick="updateCartQty('${theme}','${item.id}',-1)" style="width:24px;height:24px;border-radius:50%;background:var(--pill-bg);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;">-</span>
                             <span style="font-size:12px;font-weight:700;color:${textColor};min-width:16px;text-align:center;">${item.qty}</span>
-                            <span style="width:24px;height:24px;border-radius:50%;background:${accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;">+</span>
+                            <span onclick="updateCartQty('${theme}','${item.id}',1)" style="width:24px;height:24px;border-radius:50%;background:${accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;">+</span>
                         </div>
                     </div>
                 </div>`;
@@ -4380,6 +4576,14 @@
                         <span style="margin-left:auto;font-size:11px;color:${subColor};">${cartItems.length} items</span>
                     </div>
                     <div style="flex:1;overflow-y:auto;padding:16px;">
+                        ${cartItems.length === 0 ? `
+                        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;">
+                            <div style="font-size:48px;margin-bottom:16px;">🛒</div>
+                            <div style="font-size:16px;font-weight:700;color:${textColor};margin-bottom:8px;">Your cart is empty</div>
+                            <div style="font-size:12px;color:${subColor};margin-bottom:20px;">Add some delicious items from our menu</div>
+                            <div onclick="navigateToPage('${theme}','menu-page')" style="padding:12px 24px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:13px;font-weight:700;cursor:pointer;">Browse Menu</div>
+                        </div>
+                        ` : `
                         ${cartItems.map(itemRow).join('')}
                         <textarea placeholder="Add special notes for the restaurant..." style="width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--border-color);background:var(--pill-bg);color:${textColor};font-size:11px;resize:none;height:56px;margin-bottom:16px;"></textarea>
                         <div style="display:flex;gap:8px;margin-bottom:20px;">
@@ -4387,15 +4591,17 @@
                             <span style="padding:12px 20px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:12px;font-weight:700;cursor:pointer;">Apply</span>
                         </div>
                         <div style="border-top:1px solid var(--border-color);padding-top:12px;">
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:6px;"><span>Subtotal</span><span style="color:${textColor};">$${subtotal.toFixed(2)}</span></div>
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:6px;"><span>Delivery Fee</span><span style="color:${textColor};">$${delivery.toFixed(2)}</span></div>
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:6px;"><span>Tax</span><span style="color:${textColor};">$${tax.toFixed(2)}</span></div>
-                            <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:${textColor};padding-top:10px;border-top:1px solid var(--border-color);margin-top:6px;"><span>Total</span><span style="color:${accent};">$${total.toFixed(2)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:6px;"><span>Subtotal</span><span style="color:${textColor};">${formatPrice(subtotal)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:6px;"><span>Delivery Fee</span><span style="color:${textColor};">${formatPrice(delivery)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:6px;"><span>Tax</span><span style="color:${textColor};">${formatPrice(tax)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:${textColor};padding-top:10px;border-top:1px solid var(--border-color);margin-top:6px;"><span>Total</span><span style="color:${accent};">${formatPrice(total)}</span></div>
                         </div>
+                        `}
                     </div>
+                    ${cartItems.length > 0 ? `
                     <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
-                        <div onclick="navigateToPage('${theme}','checkout-page')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Checkout - $${total.toFixed(2)}</div>
-                    </div>
+                        <div onclick="proceedToCheckout('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Checkout - ${formatPrice(total)}</div>
+                    </div>` : ''}
                 </div>`;
             }
 
@@ -4407,6 +4613,14 @@
                         <span style="margin-left:auto;font-size:10px;color:${subColor};">Swipe to delete</span>
                     </div>
                     <div style="flex:1;overflow-y:auto;padding:16px;">
+                        ${cartItems.length === 0 ? `
+                        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;">
+                            <div style="font-size:48px;margin-bottom:16px;">🛒</div>
+                            <div style="font-size:16px;font-weight:700;color:${textColor};margin-bottom:8px;">Your cart is empty</div>
+                            <div style="font-size:12px;color:${subColor};margin-bottom:20px;">Add some delicious items from our menu</div>
+                            <div onclick="navigateToPage('${theme}','menu-page')" style="padding:12px 24px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:13px;font-weight:700;cursor:pointer;">Browse Menu</div>
+                        </div>
+                        ` : `
                         ${cartItems.map(itemRow).join('')}
                         <div style="background:var(--pill-bg);border-radius:14px;padding:16px;margin-top:16px;">
                             <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:12px;">Order Summary</div>
@@ -4414,15 +4628,17 @@
                                 <input placeholder="Coupon code" style="flex:1;padding:10px 14px;border-radius:var(--btn-radius);border:1px solid var(--border-color);background:${pageBg};color:${textColor};font-size:11px;">
                                 <span style="padding:10px 16px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:11px;font-weight:700;cursor:pointer;">Apply</span>
                             </div>
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Subtotal</span><span style="color:${textColor};">$${subtotal.toFixed(2)}</span></div>
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Delivery</span><span style="color:${textColor};">$${delivery.toFixed(2)}</span></div>
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Tax</span><span style="color:${textColor};">$${tax.toFixed(2)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Subtotal</span><span style="color:${textColor};">${formatPrice(subtotal)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Delivery</span><span style="color:${textColor};">${formatPrice(delivery)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Tax</span><span style="color:${textColor};">${formatPrice(tax)}</span></div>
                             <div style="font-size:11px;color:${accent};margin-top:6px;">${iconFA('clock', 'font-size:10px;')} Estimated delivery: 25-35 min</div>
                         </div>
+                        `}
                     </div>
+                    ${cartItems.length > 0 ? `
                     <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
-                        <div onclick="navigateToPage('${theme}','checkout-page')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Checkout - $${total.toFixed(2)}</div>
-                    </div>
+                        <div onclick="proceedToCheckout('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Checkout - ${formatPrice(total)}</div>
+                    </div>` : ''}
                 </div>`;
             }
 
@@ -4434,6 +4650,14 @@
                     <span style="margin-left:auto;background:${accent};color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:9999px;">${cartItems.length}</span>
                 </div>
                 <div style="flex:1;overflow-y:auto;padding:12px 16px;">
+                    ${cartItems.length === 0 ? `
+                    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;">
+                        <div style="font-size:48px;margin-bottom:16px;">🛒</div>
+                        <div style="font-size:16px;font-weight:700;color:${textColor};margin-bottom:8px;">Your cart is empty</div>
+                        <div style="font-size:12px;color:${subColor};margin-bottom:20px;">Add some delicious items from our menu</div>
+                        <div onclick="navigateToPage('${theme}','menu-page')" style="padding:12px 24px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:13px;font-weight:700;cursor:pointer;">Browse Menu</div>
+                    </div>
+                    ` : `
                     ${cartItems.map(item => `
                     <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-color);">
                         <img src="${item.img}" style="width:40px;height:40px;border-radius:var(--card-img-radius);object-fit:cover;flex-shrink:0;">
@@ -4442,21 +4666,24 @@
                             <div style="font-size:10px;color:${subColor};">${item.options}</div>
                         </div>
                         <div style="display:flex;align-items:center;gap:4px;">
-                            <span style="width:20px;height:20px;border-radius:50%;background:var(--pill-bg);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;cursor:pointer;">-</span>
+                            <span onclick="updateCartQty('${theme}','${item.id}',-1)" style="width:20px;height:20px;border-radius:50%;background:var(--pill-bg);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;cursor:pointer;">-</span>
                             <span style="font-size:11px;font-weight:700;color:${textColor};min-width:14px;text-align:center;">${item.qty}</span>
-                            <span style="width:20px;height:20px;border-radius:50%;background:${accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;cursor:pointer;">+</span>
+                            <span onclick="updateCartQty('${theme}','${item.id}',1)" style="width:20px;height:20px;border-radius:50%;background:${accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;cursor:pointer;">+</span>
                         </div>
-                        <div style="font-size:12px;font-weight:700;color:${textColor};min-width:50px;text-align:right;">$${(item.price * item.qty).toFixed(2)}</div>
+                        <div onclick="removeFromCart('${theme}','${item.id}')" style="font-size:10px;color:#EF4444;cursor:pointer;padding:2px 4px;">✕</div>
+                        <div style="font-size:12px;font-weight:700;color:${textColor};min-width:50px;text-align:right;">${formatPrice(item.price * item.qty)}</div>
                     </div>`).join('')}
                     <div style="display:flex;gap:6px;margin-top:12px;">
                         <input placeholder="Promo code" style="flex:1;padding:8px 12px;border-radius:var(--btn-radius);border:1px solid var(--border-color);background:var(--pill-bg);color:${textColor};font-size:11px;">
                         <span style="padding:8px 12px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:11px;font-weight:700;cursor:pointer;">Apply</span>
                     </div>
+                    `}
                 </div>
+                ${cartItems.length > 0 ? `
                 <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};display:flex;align-items:center;gap:12px;">
-                    <div><div style="font-size:10px;color:${subColor};">Total</div><div style="font-size:18px;font-weight:900;color:${accent};">$${total.toFixed(2)}</div></div>
-                    <div onclick="navigateToPage('${theme}','checkout-page')" style="flex:1;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;">Checkout</div>
-                </div>
+                    <div><div style="font-size:10px;color:${subColor};">Total</div><div style="font-size:18px;font-weight:900;color:${accent};">${formatPrice(total)}</div></div>
+                    <div onclick="proceedToCheckout('${theme}')" style="flex:1;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;">Checkout</div>
+                </div>` : ''}
             </div>`;
         }
 
@@ -4505,13 +4732,13 @@
                             <div style="background:var(--pill-bg);color:${textColor};padding:14px;border-radius:14px;text-align:center;font-size:11px;font-weight:600;cursor:pointer;">${iconFA('smartphone', 'font-size:16px;')}<br>PayPal</div>
                         </div>
                         <div style="border-top:1px solid var(--border-color);padding-top:12px;">
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Subtotal</span><span style="color:${textColor};">$${subtotal.toFixed(2)}</span></div>
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Delivery</span><span style="color:${textColor};">$${delivery.toFixed(2)}</span></div>
-                            <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:${textColor};padding-top:10px;border-top:1px solid var(--border-color);margin-top:6px;"><span>Total</span><span style="color:${accent};">$${total.toFixed(2)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Subtotal</span><span style="color:${textColor};">${formatPrice(subtotal)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Delivery</span><span style="color:${textColor};">${formatPrice(delivery)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:${textColor};padding-top:10px;border-top:1px solid var(--border-color);margin-top:6px;"><span>Total</span><span style="color:${accent};">${formatPrice(total)}</span></div>
                         </div>
                     </div>
                     <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
-                        <div onclick="navigateToPage('${theme}','order-success-page')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Place Order - $${total.toFixed(2)}</div>
+                        <div onclick="placeOrder('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Place Order - ${formatPrice(total)}</div>
                     </div>
                 </div>`;
             }
@@ -4558,13 +4785,13 @@
                         <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:8px;">Tip</div>
                         <div style="margin-bottom:20px;"><input type="range" min="0" max="30" value="15" style="width:100%;accent-color:${accent};"></div>
                         <div style="border-top:1px solid var(--border-color);padding-top:12px;">
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Subtotal</span><span style="color:${textColor};">$${subtotal.toFixed(2)}</span></div>
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Delivery</span><span style="color:${textColor};">$${delivery.toFixed(2)}</span></div>
-                            <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:${textColor};padding-top:10px;border-top:1px solid var(--border-color);"><span>Total</span><span style="color:${accent};">$${total.toFixed(2)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Subtotal</span><span style="color:${textColor};">${formatPrice(subtotal)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Delivery</span><span style="color:${textColor};">${formatPrice(delivery)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:${textColor};padding-top:10px;border-top:1px solid var(--border-color);"><span>Total</span><span style="color:${accent};">${formatPrice(total)}</span></div>
                         </div>
                     </div>
                     <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
-                        <div onclick="navigateToPage('${theme}','order-success-page')" style="width:100%;padding:18px;background:#4CAF50;color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:16px;font-weight:800;cursor:pointer;">Place Order - $${total.toFixed(2)}</div>
+                        <div onclick="placeOrder('${theme}')" style="width:100%;padding:18px;background:#4CAF50;color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:16px;font-weight:800;cursor:pointer;">Place Order - ${formatPrice(total)}</div>
                     </div>
                 </div>`;
             }
@@ -4608,13 +4835,13 @@
                         </div>
                     </div>
                     <div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:12px;">
-                        <div style="display:flex;justify-content:space-between;font-size:11px;color:${darkSub};margin-bottom:4px;"><span>Subtotal</span><span style="color:#fff;">$${subtotal.toFixed(2)}</span></div>
-                        <div style="display:flex;justify-content:space-between;font-size:11px;color:${darkSub};margin-bottom:4px;"><span>Delivery</span><span style="color:#fff;">$${delivery.toFixed(2)}</span></div>
-                        <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:800;color:#fff;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);margin-top:6px;"><span>Total</span><span style="color:#4CAF50;">$${total.toFixed(2)}</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:11px;color:${darkSub};margin-bottom:4px;"><span>Subtotal</span><span style="color:#fff;">${formatPrice(subtotal)}</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:11px;color:${darkSub};margin-bottom:4px;"><span>Delivery</span><span style="color:#fff;">${formatPrice(delivery)}</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:800;color:#fff;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);margin-top:6px;"><span>Total</span><span style="color:#4CAF50;">${formatPrice(total)}</span></div>
                     </div>
                 </div>
                 <div style="padding:12px 16px;border-top:1px solid rgba(255,255,255,0.08);background:${darkBg};">
-                    <div onclick="navigateToPage('${theme}','order-success-page')" style="width:100%;padding:16px;background:#4CAF50;color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:800;cursor:pointer;">Order & Pay - $${total.toFixed(2)}</div>
+                    <div onclick="placeOrder('${theme}')" style="width:100%;padding:16px;background:#4CAF50;color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:800;cursor:pointer;">Order & Pay - ${formatPrice(total)}</div>
                 </div>
             </div>`;
         }
@@ -4634,7 +4861,7 @@
                         <div style="font-size:22px;font-weight:800;color:${textColor};margin-bottom:6px;">Order Placed!</div>
                         <div style="font-size:13px;color:${subColor};margin-bottom:4px;">Order #ORD-5682</div>
                         <div style="font-size:11px;color:${subColor};margin-bottom:24px;">Estimated arrival</div>
-                        <div style="font-size:36px;font-weight:900;color:${accent};margin-bottom:24px;">25:00</div>
+                        <div id="eta-${theme}" style="font-size:36px;font-weight:900;color:${accent};margin-bottom:24px;">25:00</div>
                         <div style="width:100%;height:120px;background:var(--pill-bg);border-radius:16px;margin-bottom:20px;overflow:hidden;position:relative;">
                             <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=600&q=80" style="width:100%;height:100%;object-fit:cover;">
                             <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 8px ${accent}30;">${iconFA('moto', 'font-size:18px;color:#fff;')}</div>
@@ -4644,7 +4871,7 @@
                             <div style="flex:1;"><div style="font-size:12px;font-weight:700;color:${textColor};">Mike</div><div style="font-size:10px;color:${subColor};">Your driver is nearby</div></div>
                             <div style="width:36px;height:36px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('phone', 'font-size:14px;color:#fff;')}</div>
                         </div>
-                        <div onclick="navigateToPage('${theme}','order-tracking')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:12px;">Track Order</div>
+                        <div onclick="trackOrder('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:12px;">Track Order</div>
                         <div onclick="goBack('${theme}')" style="font-size:12px;color:${subColor};cursor:pointer;text-decoration:underline;">Continue Shopping</div>
                     </div>
                 </div>`;
@@ -4658,13 +4885,13 @@
                         <div style="font-size:13px;color:${subColor};margin-bottom:20px;">Your delicious food is on its way</div>
                         <div style="background:var(--pill-bg);border-radius:16px;padding:20px;width:100%;margin-bottom:20px;">
                             <div style="font-size:14px;font-weight:800;color:${textColor};margin-bottom:12px;">Order Summary</div>
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Pepperoni Pizza x1</span><span style="color:${textColor};">$9.99</span></div>
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Beef Burger x2</span><span style="color:${textColor};">$15.98</span></div>
-                            <div style="border-top:1px solid var(--border-color);margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;font-size:14px;font-weight:800;color:${textColor};"><span>Total</span><span style="color:${accent};">$28.96</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Pepperoni Pizza x1</span><span style="color:${textColor};">${formatPrice(9.99)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Beef Burger x2</span><span style="color:${textColor};">${formatPrice(15.98)}</span></div>
+                            <div style="border-top:1px solid var(--border-color);margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;font-size:14px;font-weight:800;color:${textColor};"><span>Total</span><span style="color:${accent};">${formatPrice(28.96)}</span></div>
                         </div>
                         <div style="background:var(--pill-bg);border-radius:14px;padding:14px;width:100%;text-align:center;margin-bottom:20px;">
                             <div style="font-size:11px;color:${subColor};">Estimated Delivery</div>
-                            <div style="font-size:20px;font-weight:900;color:${accent};">25-35 min</div>
+                            <div id="eta-${theme}" style="font-size:20px;font-weight:900;color:${accent};">25-35 min</div>
                         </div>
                         <div style="display:flex;gap:12px;width:100%;margin-bottom:12px;">
                             <div onclick="navigator.clipboard.writeText('Order #ORD-5682');this.textContent='Copied!';setTimeout(()=>this.innerHTML='${iconFA('share-2', 'font-size:14px;margin-right:6px;')}Share',2000)" style="flex:1;padding:14px;border:2px solid var(--border-color);color:${textColor};text-align:center;border-radius:var(--btn-radius);font-size:13px;font-weight:700;cursor:pointer;">${iconFA('share-2', 'font-size:14px;margin-right:6px;')}Share</div>
@@ -4682,9 +4909,9 @@
                     <div style="font-size:20px;font-weight:800;color:${textColor};margin-bottom:4px;">Success!</div>
                     <div style="font-size:12px;color:${subColor};margin-bottom:20px;">Order #ORD-5682</div>
                     <div style="background:var(--pill-bg);border-radius:14px;padding:16px;width:100%;margin-bottom:20px;">
-                        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;"><span style="color:${subColor};">Pepperoni Pizza x1</span><span style="color:${textColor};">$9.99</span></div>
-                        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;"><span style="color:${subColor};">Beef Burger x2</span><span style="color:${textColor};">$15.98</span></div>
-                        <div style="border-top:1px solid var(--border-color);margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;font-size:14px;font-weight:800;"><span style="color:${textColor};">Total</span><span style="color:${accent};">$28.96</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;"><span style="color:${subColor};">Pepperoni Pizza x1</span><span style="color:${textColor};">${formatPrice(9.99)}</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;"><span style="color:${subColor};">Beef Burger x2</span><span style="color:${textColor};">${formatPrice(15.98)}</span></div>
+                        <div style="border-top:1px solid var(--border-color);margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;font-size:14px;font-weight:800;"><span style="color:${textColor};">Total</span><span style="color:${accent};">${formatPrice(28.96)}</span></div>
                     </div>
                     <div onclick="alert('Receipt downloaded')" style="display:flex;align-items:center;gap:6px;font-size:11px;color:${accent};cursor:pointer;margin-bottom:24px;">${iconFA('download', 'font-size:12px;')} Download Receipt</div>
                     <div onclick="goBack('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;">Back to Home</div>
@@ -8257,6 +8484,12 @@
             const day = String(d.getDate()).padStart(2, '0');
             document.getElementById('versionBadge').textContent = 'v' + y + '-' + m + '-' + day;
         }
+        // ─── LIVE CLOCK UPDATE ────────────────────────────────────────────────
+        setInterval(() => {
+            const now = new Date().toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: false});
+            document.querySelectorAll('.status-time').forEach(el => { el.textContent = now; });
+        }, 30000);
+
         window.onload = function () {
             setVersionBadge();
             renderViewSwitcher();
