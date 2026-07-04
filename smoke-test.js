@@ -151,6 +151,9 @@ async function main() {
     const beforeOrder = await page.$$eval('.mod-label', els => els.slice(0, 3).map(e => e.textContent));
     const dragRows = await page.$$('.module-row');
     if (dragRows.length >= 3) {
+        // Scroll the module orchestrator into view first
+        await dragRows[0].evaluate(el => el.scrollIntoView({ block: 'center' }));
+        await page.waitForTimeout(300);
         const sourceBox = await dragRows[0].boundingBox();
         const targetBox = await dragRows[2].boundingBox();
         await page.mouse.move(sourceBox.x + 8, sourceBox.y + sourceBox.height / 2);
@@ -162,10 +165,78 @@ async function main() {
         check('Drag-and-drop reorders module list', JSON.stringify(beforeOrder) !== JSON.stringify(afterOrder), `${beforeOrder} -> ${afterOrder}`);
     }
 
+    // 7-10. WCAG accessibility checks
+    await runWcagChecks(page);
+
     await browser.close();
 
     console.log('\n' + (failed === 0 ? '✅ All checks passed' : `❌ ${failed} check(s) failed`));
     process.exit(failed === 0 ? 0 : 1);
+}
+
+async function runWcagChecks(page) {
+    // 7. WCAG: Buttons must have discernible text (check viewport content only)
+    const buttonsWithoutAriaLabel = await page.$$eval('[id^="viewport-"] button, [id^="viewport-"] [role="button"]', els => {
+        return els.filter(el => {
+            const text = (el.textContent || '').trim();
+            const ariaLabel = el.getAttribute('aria-label');
+            const ariaLabelledby = el.getAttribute('aria-labelledby');
+            const title = el.getAttribute('title');
+            return !text && !ariaLabel && !ariaLabelledby && !title;
+        }).length;
+    }).catch(() => 0);
+    check('Buttons have discernible text (aria-label/text)', buttonsWithoutAriaLabel === 0, `${buttonsWithoutAriaLabel} buttons without text/aria-label`);
+
+    // 8. WCAG: Form elements must have labels (check viewport content only)
+    const formElementsWithoutLabels = await page.$$eval('[id^="viewport-"] input, [id^="viewport-"] select, [id^="viewport-"] textarea', els => {
+        return els.filter(el => {
+            const id = el.id;
+            const ariaLabel = el.getAttribute('aria-label');
+            const ariaLabelledby = el.getAttribute('aria-labelledby');
+            const title = el.getAttribute('title');
+            const hasLabel = id ? !!document.querySelector(`label[for="${id}"]`) : false;
+            return !ariaLabel && !ariaLabelledby && !title && !hasLabel;
+        }).length;
+    }).catch(() => 0);
+    check('Form elements have labels', formElementsWithoutLabels === 0, `${formElementsWithoutLabels} form elements without labels`);
+
+    // 9. WCAG: Scrollable regions must have keyboard access
+    const scrollableWithoutTabindex = await page.$$eval('.scrollable-content', els => {
+        return els.filter(el => {
+            const style = window.getComputedStyle(el);
+            const isScrollable = (style.overflowY === 'auto' || style.overflowY === 'scroll') && el.scrollHeight > el.clientHeight;
+            const tabindex = el.getAttribute('tabindex');
+            return isScrollable && tabindex !== '0' && tabindex !== '-1';
+        }).length;
+    }).catch(() => 0);
+    check('Scrollable regions have keyboard access (tabindex)', scrollableWithoutTabindex === 0, `${scrollableWithoutTabindex} scrollable regions without tabindex`);
+
+    // 10. WCAG: Check minimum color contrast on key text elements
+    const contrastIssues = await page.evaluate(() => {
+        const issues = [];
+        const themes = ['neumorphism', 'glassmorphism', 'neubrutalism'];
+        themes.forEach(theme => {
+            const vp = document.getElementById(`viewport-${theme}`);
+            if (!vp) return;
+            const textEls = vp.querySelectorAll('span, div, p, button, a');
+            for (const el of textEls) {
+                if (el.children.length > 0) continue;
+                const style = window.getComputedStyle(el);
+                const color = style.color;
+                const fontSize = parseFloat(style.fontSize);
+                if (fontSize > 14 || !color) continue;
+                const m = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+                if (!m) continue;
+                const a = m[4] ? parseFloat(m[4]) : 1;
+                if (a < 0.3) {
+                    issues.push(`${theme}: low opacity text ${color}`);
+                    break;
+                }
+            }
+        });
+        return issues;
+    }).catch(() => []);
+    check('No critically low-opacity text (<0.3)', contrastIssues.length === 0, contrastIssues.slice(0, 3).join(', '));
 }
 
 main().catch(e => {
