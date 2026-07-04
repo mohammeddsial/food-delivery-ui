@@ -769,11 +769,54 @@
             flex-shrink: 0;
         }
 
+        .module-row .left .mod-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            cursor: pointer;
+            min-width: 0;
+        }
         .module-row .left .mod-label {
+            color: #ccc;
+            font-size: 11px;
+            font-weight: 600;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            color: #ccc;
+        }
+        .module-row .left .mod-info:hover .mod-label {
+            color: #fff;
+            text-decoration: underline;
+        }
+        .module-row .left .mod-content-text {
+            font-size: 8px;
+            color: #666;
+            line-height: 1.3;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        .mod-badges {
+            display: flex;
+            gap: 3px;
+            margin-top: 1px;
+        }
+        .card-badge {
+            font-size: 7px;
+            font-weight: 700;
+            padding: 1px 4px;
+            border-radius: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .card-badge-img {
+            background: rgba(139, 92, 246, 0.15);
+            color: #8b5cf6;
+        }
+        .card-badge-link {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
         }
 
         .module-row .actions {
@@ -782,161 +825,100 @@
             flex-shrink: 0;
         }
 
-        .design-picker-btn {
-            background: #2a2a2a;
-            border: 1px solid #333;
-            color: #ddd;
-            padding: 3px 8px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 9px;
-            font-weight: 600;
-            transition: 0.15s;
+        /* ---- Card Properties Panel ---- */
+        .card-properties-panel {
+            width: 300px;
+            min-width: 280px;
+            max-height: 100%;
+            background: #161616;
+            border: 1px solid #2a2a2a;
+            border-radius: 16px;
             display: flex;
-            align-items: center;
-            gap: 4px;
-            text-transform: capitalize;
-            white-space: nowrap;
-        }
-
-        .design-picker-btn:hover {
-            background: #3a3a3a;
-            border-color: #00615F;
-            color: #fff;
-        }
-
-        .design-picker-btn .no-variants-dot {
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-            background: #444;
+            flex-direction: column;
+            overflow: hidden;
             flex-shrink: 0;
         }
-
-        /* ---- Design Picker Modal ---- */
-        .design-modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s ease;
-        }
-
-        .design-modal-overlay.open {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .design-modal {
-            background: #1c1c1c;
-            border: 1px solid #333;
-            border-radius: 14px;
-            padding: 16px;
-            width: 320px;
-            max-width: 90vw;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            transform: translateY(10px) scale(0.97);
-            transition: transform 0.2s ease;
-        }
-
-        .design-modal-overlay.open .design-modal {
-            transform: translateY(0) scale(1);
-        }
-
-        .design-modal-header {
+        .card-props-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 12px;
+            padding: 12px 16px;
+            border-bottom: 1px solid #2a2a2a;
+            background: #1a1a1a;
         }
-
-        .design-modal-header .title {
+        .card-props-title {
             font-size: 12px;
             font-weight: 700;
             color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .card-props-close {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 20px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0 4px;
+        }
+        .card-props-close:hover { color: #fff; }
+        .card-props-body {
+            padding: 14px 16px;
+            overflow-y: auto;
+            flex: 1;
         }
 
-        .design-modal-header .close-x {
-            background: #2a2a2a;
-            border: none;
-            color: #999;
-            width: 22px;
-            height: 22px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
+        /* ---- Inline Radio Buttons for Design Variant ---- */
+        .module-row .variant-radios {
+            display: flex;
+            gap: 2px;
+            flex-shrink: 0;
+        }
+        .module-row .variant-radios label {
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 2px 6px;
+            font-size: 8px;
+            font-weight: 600;
+            color: #888;
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.15s;
+            text-transform: uppercase;
+            white-space: nowrap;
         }
-
-        .design-modal-header .close-x:hover {
-            background: #3a3a3a;
+        .module-row .variant-radios label:hover {
+            border-color: #555;
+            color: #ccc;
+        }
+        .module-row .variant-radios input[type="radio"] {
+            display: none;
+        }
+        .module-row .variant-radios input[type="radio"]:checked + span {
+            color: #fff;
+        }
+        .module-row .variant-radios label:has(input:checked) {
+            background: #00615F;
+            border-color: #00615F;
             color: #fff;
         }
 
-        .design-modal-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
-
-        .design-thumb {
-            background: #141414;
-            border: 2px solid #2a2a2a;
-            border-radius: 10px;
-            padding: 8px 6px 6px;
-            cursor: pointer;
-            transition: 0.15s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .design-thumb:hover {
-            border-color: #444;
-            background: #191919;
-        }
-
-        .design-thumb.selected {
-            border-color: #00615F;
+        /* Active card row */
+        .module-row.active-card {
             background: rgba(0, 97, 95, 0.12);
+            border-left: 2px solid #00615F;
+            padding-left: 4px;
         }
-
-        .design-thumb .thumb-preview {
-            width: 100%;
-            height: 44px;
-            border-radius: 6px;
-            background: #0d0d0d;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid #2a2a2a;
+        .module-row .mod-label {
+            cursor: pointer;
         }
-
-        .design-thumb .thumb-label {
-            font-size: 9px;
-            font-weight: 600;
-            color: #aaa;
-            text-transform: capitalize;
-        }
-
-        .design-thumb.selected .thumb-label {
-            color: #00615F;
-        }
-
-        .design-modal-footer-note {
-            margin-top: 12px;
-            font-size: 9px;
-            color: #555;
-            line-height: 1.4;
-            border-top: 1px solid #262626;
-            padding-top: 10px;
+        .module-row .mod-label:hover {
+            color: #fff;
+            text-decoration: underline;
         }
 
         /* ---- Drawer ---- */
@@ -1575,14 +1557,9 @@
                 <div class="ctrl-group" id="pageViewContainer" style="display:flex;flex-wrap:wrap;gap:4px;padding:6px;"></div>
             </div>
 
-            <div class="ctrl-section" id="moduleOrchestratorSection">
-                <h3>Module Orchestrator</h3>
-                <div class="ctrl-group" id="moduleListContainer"></div>
-            </div>
-
-            <div class="ctrl-section">
+            <div class="ctrl-section" id="cardSettingsSection">
                 <h3>Card Settings</h3>
-                <div class="ctrl-group" id="cardSettingsContainer"></div>
+                <div class="ctrl-group" id="moduleListContainer"></div>
             </div>
 
             <div
@@ -1651,11 +1628,18 @@
                 </div>
             </div>
 
+            <!-- CARD PROPERTIES PANEL (opens when card clicked in sidebar) -->
+            <div id="cardPropertiesPanel" class="card-properties-panel" style="display:none;">
+                <div class="card-props-header">
+                    <span class="card-props-title" id="cardPropsTitle">Card Properties</span>
+                    <button class="card-props-close" onclick="closeCardProperties()">&times;</button>
+                </div>
+                <div class="card-props-body" id="cardPropsBody"></div>
+            </div>
+
         </div>
     </div>
 
-    <!-- DESIGN PICKER MODAL (global, shared by all module rows) -->
-    <div class="design-modal-overlay" id="designModalOverlay" onclick="closeDesignPicker()"></div>
 
     <script>
         // ─── MASTER CONFIG (default module set, cloned per view) ──────────
@@ -1734,6 +1718,88 @@
             const m = Math.floor(seconds / 60);
             const s = seconds % 60;
             return `${m}:${s.toString().padStart(2, '0')}`;
+        }
+
+        // ─── RESTAURANT DATA (single source of truth for all views) ────────────
+        const RESTAURANT_DATA = {
+            menu: [
+                { id: 'pepperoni-pizza', name: 'Pepperoni Pizza', price: 9.99, category: 'pizza', rating: 4.8, time: '20-25 min', img: 'photo-1565299624946-b28f40a0ae38' },
+                { id: 'beef-burger', name: 'Classic Beef Burger', price: 7.99, category: 'burgers', rating: 4.6, time: '15-20 min', img: 'photo-1568901346375-23c9450c58cd' },
+                { id: 'margherita', name: 'Margherita Pizza', price: 8.99, category: 'pizza', rating: 4.7, time: '20-25 min', img: 'photo-1574071318508-1cdbab80d002' },
+                { id: 'caesar-salad', name: 'Caesar Salad', price: 6.99, category: 'healthy', rating: 4.5, time: '10-15 min', img: 'photo-1546793665-c74683f339c1' },
+                { id: 'sushi-roll', name: 'Sushi Roll Platter', price: 15.99, category: 'sushi', rating: 4.9, time: '25-30 min', img: 'photo-1555507036-ab1f4038808a' },
+                { id: 'craft-latte', name: 'Craft Latte', price: 5.99, category: 'drinks', rating: 4.4, time: '5-10 min', img: 'photo-1461023058943-07fcbe16d735' },
+                { id: 'croissant', name: 'Butter Croissant', price: 6.49, category: 'bakery', rating: 4.3, time: '5-10 min', img: 'photo-1555507036-ab1f4038808a' },
+                { id: 'chocolate-cake', name: 'Chocolate Cake', price: 4.99, category: 'desserts', rating: 4.7, time: '10-15 min', img: 'photo-1578985545062-69928b1d9587' },
+                { id: 'truffle-fries', name: 'Truffle Fries', price: 2.99, category: 'sides', rating: 4.2, time: '10-15 min', img: 'photo-1573080496219-bb080dd4f877' },
+                { id: 'milkshake', name: 'Classic Milkshake', price: 4.50, category: 'drinks', rating: 4.5, time: '5-10 min', img: 'photo-1572490122747-3968b75cc699' },
+                { id: 'chicken-tikka', name: 'Chicken Tikka', price: 12.99, category: 'indian', rating: 4.8, time: '25-30 min', img: 'photo-1565557623262-b51c2513a641' },
+                { id: 'fish-tacos', name: 'Fish Tacos', price: 9.00, category: 'mexican', rating: 4.6, time: '15-20 min', img: 'photo-1551504734-5ee1c4a1479b' }
+            ],
+            categories: [
+                { id: 'pizza', name: 'Pizza', icon: 'pizza' },
+                { id: 'burgers', name: 'Burgers', icon: 'beef' },
+                { id: 'sushi', name: 'Sushi', icon: 'fish' },
+                { id: 'desserts', name: 'Desserts', icon: 'cake-slice' },
+                { id: 'indian', name: 'Indian', icon: 'flame' },
+                { id: 'mexican', name: 'Mexican', icon: 'pepper' },
+                { id: 'healthy', name: 'Healthy', icon: 'salad' },
+                { id: 'drinks', name: 'Drinks', icon: 'coffee' }
+            ],
+            deals: [
+                { id: 'burger25', code: 'BURGER25', label: '25% OFF', desc: 'On all burgers this week', minOrder: 15 },
+                { id: 'freedel', code: 'FREEDEL', label: 'Free Delivery', desc: 'No minimum order', minOrder: 0 },
+                { id: 'morning5', code: 'MORNING5', label: `${LOCALE.currency}5 OFF`, desc: 'Breakfast orders before 11am', minOrder: 10 },
+                { id: 'bogo', code: 'BOGO50', label: 'BOGO 50%', desc: 'Buy one get one half off', minOrder: 20 }
+            ],
+            config: {
+                deliveryFee: 2.99,
+                taxRate: 0.08,
+                freeDeliveryMin: LOCALE.deliveryFreeThreshold,
+                defaultTip: 15
+            },
+            rewards: {
+                points: 820,
+                pointsValue: 8.20,
+                pointsToNextTier: 180,
+                tierName: 'Gold',
+                history: [
+                    { item: 'Classic Beef Burger', points: 65 },
+                    { item: 'Pepperoni Pizza', points: 50 },
+                    { item: 'Welcome Bonus', points: 200 }
+                ]
+            },
+            addOns: [
+                { name: 'Extra Cheese', price: 1.00 },
+                { name: 'Add Bacon', price: 2.00 },
+                { name: 'Gluten-Free Bun', price: 1.50 }
+            ],
+            sampleOrder: {
+                id: 'ORD-5682',
+                items: [
+                    { menuId: 'pepperoni-pizza', qty: 1 },
+                    { menuId: 'beef-burger', qty: 2 }
+                ],
+                etaMinutes: 25
+            }
+        };
+
+        function getMenuItem(id) {
+            return RESTAURANT_DATA.menu.find(m => m.id === id);
+        }
+
+        function getMenuImg(item) {
+            return `https://images.unsplash.com/${item.img}?auto=format&fit=crop&w=400&q=80`;
+        }
+
+        function calcOrderTotals(items) {
+            const subtotal = items.reduce((sum, oi) => {
+                const mi = getMenuItem(oi.menuId);
+                return sum + (mi ? mi.price * oi.qty : 0);
+            }, 0);
+            const delivery = subtotal >= RESTAURANT_DATA.config.freeDeliveryMin ? 0 : RESTAURANT_DATA.config.deliveryFee;
+            const tax = subtotal * RESTAURANT_DATA.config.taxRate;
+            return { subtotal, delivery, tax, total: subtotal + delivery + tax };
         }
 
         // ─── SHARED APP STATE ──────────────────────────────────────────────────
@@ -2043,7 +2109,7 @@
             renderBottomNavStylePicker();
             renderPageViewPicker();
             buildControllerList();
-            renderCardSettings();
+            if (activeCardPropsId) openCardProperties(activeCardPropsId);
             renderPaletteEditor();
         }
 
@@ -2140,7 +2206,7 @@
 
         function updateCardConfig(key, value) {
             window.cardConfig[activeViewTheme]._global[key] = value;
-            renderCardSettings();
+            if (activeCardPropsId) openCardProperties(activeCardPropsId);
             renderAllViewports();
         }
 
@@ -2305,8 +2371,43 @@
         // style picked - the picker still works, it's flagged with a dim dot.
         const MODULES_WITH_REAL_VARIANTS = ['announcement-strip', 'location-header', 'video-reel-hero', 'active-order-tracker', 'loyalty-card', 'limited-time-deal', 'order-again', 'recommended-for-you', 'finish-your-order', 'birthday-reward-banner', 'deals-promos', 'category-tiles', 'meal-deal-combo', 'featured-items', 'popular-rail', 'offers-carousel', 'offers-feed', 'image-mosaic', 'stories'];
 
+        const CARD_CONTENT_INFO = {
+            'announcement-strip': { texts: ['Free delivery on orders $25+', 'New: Summer Smoothie Collection', 'Earn 2x points this weekend'], hasImage: false, hasLink: true },
+            'location-header': { texts: ['Deliver to', 'Manhattan West, NY', 'Delivery / Pickup'], hasImage: false, hasLink: true },
+            'video-reel-hero': { texts: ['Featured Video', 'Premium Heavy Interface Concept', 'Watch the full reel'], hasImage: true, hasLink: true },
+            'active-order-tracker': { texts: ['Your order is on the way', 'ETA countdown', 'Live map tracking'], hasImage: false, hasLink: true },
+            'loyalty-card': { texts: ['Attendance Rewards', 'Get bonus $200', 'Days attendance progress'], hasImage: false, hasLink: false },
+            'category-tiles': { texts: ['Categories', 'Pizza, Burgers, Sushi, Desserts...'], hasImage: true, hasLink: true },
+            'finish-your-order': { texts: ['Finish Your Order', 'Items left in cart reminder'], hasImage: true, hasLink: true },
+            'limited-time-deal': { texts: ['Limited Time Only', 'Countdown timer', 'Special offer pricing'], hasImage: true, hasLink: true },
+            'order-again': { texts: ['Order Again', 'Previous order items rail'], hasImage: true, hasLink: true },
+            'recommended-for-you': { texts: ['Recommended For You', 'Personalized picks grid'], hasImage: true, hasLink: true },
+            'deals-promos': { texts: ['Deals & Promotions', 'Discount codes & offers'], hasImage: false, hasLink: true },
+            'birthday-reward-banner': { texts: ['Happy Birthday!', 'Special reward unlocked'], hasImage: false, hasLink: true },
+            'meal-deal-combo': { texts: ['Meal Deal Combo', 'Build your combo & save'], hasImage: true, hasLink: true },
+            'featured-items': { texts: ['Featured Items', 'Curated highlights slider'], hasImage: true, hasLink: true },
+            'popular-rail': { texts: ['Popular Near You', 'Quick-add items rail'], hasImage: true, hasLink: true },
+            'offers-carousel': { texts: ['Special Offers', 'Swipeable promo cards'], hasImage: true, hasLink: true },
+            'offers-feed': { texts: ['All Offers', 'Comprehensive offer list'], hasImage: true, hasLink: true },
+            'image-mosaic': { texts: ['Food Gallery', 'Visual lookbook mosaic'], hasImage: true, hasLink: false },
+            'stories': { texts: ['Stories', 'Tappable story circles'], hasImage: true, hasLink: true },
+            'order-tracking': { texts: ['Order Tracking', 'Live status & map'], hasImage: false, hasLink: false },
+            'menu-page': { texts: ['Full Menu', 'Browse all categories'], hasImage: true, hasLink: true },
+            'product-detail-page': { texts: ['Product Detail', 'Item info, add-ons, add to cart'], hasImage: true, hasLink: true },
+            'cart-page': { texts: ['Your Cart', 'Items, totals, checkout'], hasImage: true, hasLink: true },
+            'checkout-page': { texts: ['Checkout', 'Payment, address, tip'], hasImage: false, hasLink: true },
+            'order-success-page': { texts: ['Order Confirmed!', 'Confirmation & ETA'], hasImage: false, hasLink: false },
+            'reviews-page': { texts: ['Reviews', 'Ratings & user feedback'], hasImage: true, hasLink: false },
+            'rewards-page': { texts: ['Rewards', 'Points balance & history'], hasImage: false, hasLink: true },
+            'upsell-page': { texts: ['Before You Go', 'Add more items upsell'], hasImage: true, hasLink: true },
+            'profile-settings': { texts: ['Profile', 'Account settings & preferences'], hasImage: false, hasLink: true },
+            'splash': { texts: ['Brand splash screen', 'Logo & tagline'], hasImage: true, hasLink: false },
+            'add-location': { texts: ['Add Location', 'Search & save address'], hasImage: false, hasLink: true },
+            'deals-page': { texts: ['Deals Page', 'All available promotions'], hasImage: true, hasLink: true },
+        };
+
         let dragSourceIndex = null;
-//  
+//
         function buildControllerList() {
             const container = document.getElementById('moduleListContainer');
             if (!container) return;
@@ -2319,18 +2420,24 @@
                 row.dataset.index = index;
                 const hasVariants = MODULES_WITH_REAL_VARIANTS.includes(mod.id);
                 const cardNum = CARD_NUMBERS[mod.id] || '';
+                const radioName = `variant-${mod.id}-${activeViewTheme}`;
+                const info = CARD_CONTENT_INFO[mod.id];
+                const contentSnippet = info ? info.texts.join(' · ') : '';
+                const badges = info ? `${info.hasImage ? '<span class="card-badge card-badge-img" title="Has image">IMG</span>' : ''}${info.hasLink ? '<span class="card-badge card-badge-link" title="Has button/link">LINK</span>' : ''}` : '';
                 row.innerHTML = `
                     <div class="drag-handle" title="Drag to reorder">${iconFA('grip-vertical')}</div>
                     <div class="left">
                         <input type="checkbox" ${mod.enabled ? 'checked' : ''} onchange="toggleModule('${mod.id}')">
                         <span style="font-size:8px;font-weight:700;color:#00615F;background:rgba(0,97,95,0.15);padding:1px 5px;border-radius:4px;white-space:nowrap;">${cardNum}</span>
                         ${mod.core ? '<span class="core-badge">core</span>' : ''}
-                        <span class="mod-label">${mod.name}</span>
+                        <div class="mod-info" onclick="openCardProperties('${mod.id}')" title="Click to edit card properties">
+                            <span class="mod-label">${mod.name}</span>
+                            <span class="mod-content-text">${contentSnippet}</span>
+                            <div class="mod-badges">${badges}</div>
+                        </div>
                     </div>
-                    <div class="actions">
-                        <button class="design-picker-btn" onclick="openDesignPicker('${mod.id}')" title="${hasVariants ? 'Choose card design' : 'This module has no alternate designs yet'}">
-                            ${!hasVariants ? '<span class="no-variants-dot"></span>' : ''}${mod.style}${iconFA('chevron-down')}
-                        </button>
+                    <div class="variant-radios">
+                        ${mod.styles.map(s => `<label title="${s}"><input type="radio" name="${radioName}" value="${s}" ${s === mod.style ? 'checked' : ''} onchange="setModuleStyle('${mod.id}','${s}')"><span>${s === 'default' ? 'D' : s === 'option 1' ? '1' : '2'}</span></label>`).join('')}
                     </div>
                 `;
                 container.appendChild(row);
@@ -2398,62 +2505,6 @@
             saveConfig();
             renderAllViewports();
         }
-
-        // ─── DESIGN PICKER (visual thumbnail popup) ─────────────────────
-        // Abstract layout diagrams per style keyword - gives a genuine visual
-        // difference to pick from without needing a full live-rendered preview.
-        // Simple abstract layout diagrams distinguishing the 3 generic choices
-        // every module now offers (default / option 1 / option 2).
-        function getStyleThumbHTML(styleName) {
-            const img = 'position:absolute;background:#3a3a3a;border-radius:3px;';
-            const line = 'position:absolute;background:#333;border-radius:2px;';
-            if (styleName === 'default') {
-                return `<div style="${img}top:4px;left:4px;width:16px;height:16px;"></div><div style="${line}top:6px;left:24px;width:14px;height:3px;"></div><div style="${line}top:12px;left:24px;width:10px;height:3px;"></div><div style="${line}bottom:4px;left:4px;width:30px;height:5px;background:#00615F;border-radius:6px;"></div>`;
-            }
-            if (styleName === 'option 1') {
-                return `<div style="${img}top:5px;left:5px;width:10px;height:10px;"></div><div style="${line}top:6px;left:18px;width:20px;height:3px;"></div><div style="${img}top:19px;left:5px;width:10px;height:10px;"></div><div style="${line}top:20px;left:18px;width:20px;height:3px;"></div>`;
-            }
-            // option 2
-            return `<div style="position:absolute;inset:6px;background:#00615F;border-radius:5px;opacity:0.35;"></div><div style="${line}top:18px;left:10px;width:24px;height:4px;background:#00615F;"></div>`;
-        }
-
-        function openDesignPicker(moduleId) {
-            const mod = modulesConfigByTheme[activeViewTheme].find(m => m.id === moduleId);
-            if (!mod) return;
-            const overlay = document.getElementById('designModalOverlay');
-            const hasVariants = MODULES_WITH_REAL_VARIANTS.includes(mod.id);
-            overlay.innerHTML = `
-                <div class="design-modal" onclick="event.stopPropagation()">
-                    <div class="design-modal-header">
-                        <span class="title">${mod.name} · Card Design</span>
-                        <button class="close-x" onclick="closeDesignPicker()">${iconFA('x')}</button>
-                    </div>
-                    <div class="design-modal-grid">
-                        ${mod.styles.map(s => `
-                            <div class="design-thumb ${s === mod.style ? 'selected' : ''}" onclick="pickModuleStyle('${moduleId}','${s}')">
-                                <div class="thumb-preview">${getStyleThumbHTML(s)}</div>
-                                <span class="thumb-label">${s}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-                    ${!hasVariants ? `<div class="design-modal-footer-note">${iconFA('info')} These design variants are placeholders for this module - it currently always renders its default layout.</div>` : ''}
-                </div>
-            `;
-            overlay.classList.add('open');
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
-
-        function closeDesignPicker() {
-            const overlay = document.getElementById('designModalOverlay');
-            if (overlay) overlay.classList.remove('open');
-        }
-
-        function pickModuleStyle(moduleId, style) {
-            setModuleStyle(moduleId, style);
-            closeDesignPicker();
-        }
-
-
 
         // ─── CARD SETTINGS RENDERER (scoped to activeViewTheme via outer switcher) ──
         const CARD_PROPERTY_GROUPS = [
@@ -2540,34 +2591,35 @@
                 </div>
             `).join('');
         }
-        function renderCardSettings() {
-            const container = document.getElementById('cardSettingsContainer');
-            if (!container) return;
-            const allModules = [{ id: '_global', name: 'Global (Default)' }].concat(defaultModulesConfig.map((m, i) => ({ id: m.id, name: `#${String(i + 1).padStart(2, '0')} ${m.name}` })));
-            let html = `<div style="font-size:10px;color:#888;margin-bottom:8px;">Per-module card settings — customize each module individually, or set Global defaults.</div>`;
-            allModules.forEach(mod => {
-                const c = getModuleConfig(activeViewTheme, mod.id);
-                html += `
-                    <div style="border:1px solid #333;border-radius:8px;margin-bottom:6px;overflow:hidden;">
-                        <div onclick="toggleCardAccordion('${mod.id}')" style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:#1a1a1a;cursor:pointer;">
-                            <span style="font-size:11px;font-weight:600;color:#ddd;">${mod.name}</span>
-                            <span id="cardArrow-${mod.id}" style="font-size:10px;color:#888;transition:transform 0.2s;">▶</span>
-                        </div>
-                        <div id="cardAccordion-${mod.id}" style="display:none;padding:10px;background:#222;border-top:1px solid #333;">
-                            ${renderModuleSettingsHTML(mod.id, c)}
-                            <button onclick="applyCardSettingsModule('${mod.id}')" style="width:100%;padding:8px;background:${VIEW_COLORS[activeViewTheme]};color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;margin-top:4px;">Apply</button>
-                        </div>
-                    </div>`;
+        let activeCardPropsId = null;
+        function openCardProperties(moduleId) {
+            const panel = document.getElementById('cardPropertiesPanel');
+            const titleEl = document.getElementById('cardPropsTitle');
+            const bodyEl = document.getElementById('cardPropsBody');
+            if (!panel || !bodyEl) return;
+            activeCardPropsId = moduleId;
+            const mod = modulesConfigByTheme[activeViewTheme].find(m => m.id === moduleId);
+            const modName = mod ? mod.name : moduleId;
+            const cardNum = CARD_NUMBERS[moduleId] || '';
+            titleEl.textContent = cardNum + ' ' + modName;
+            const c = getModuleConfig(activeViewTheme, moduleId);
+            bodyEl.innerHTML = `
+                <div style="font-size:10px;color:#888;margin-bottom:10px;">Edit properties for this card in the active view.</div>
+                ${renderModuleSettingsHTML(moduleId, c)}
+                <button onclick="applyCardSettingsModule('${moduleId}')" style="width:100%;padding:10px;background:${VIEW_COLORS[activeViewTheme]};color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px;">Apply</button>
+            `;
+            panel.style.display = 'flex';
+            document.querySelectorAll('.module-row').forEach(r => r.classList.remove('active-card'));
+            const rows = document.querySelectorAll('.module-row');
+            rows.forEach(r => {
+                if (r.querySelector(`.mod-info[onclick*="'${moduleId}'"]`)) r.classList.add('active-card');
             });
-            container.innerHTML = html;
         }
-        function toggleCardAccordion(moduleId) {
-            const content = document.getElementById('cardAccordion-' + moduleId);
-            const arrow = document.getElementById('cardArrow-' + moduleId);
-            if (!content) return;
-            const isOpen = content.style.display === 'block';
-            content.style.display = isOpen ? 'none' : 'block';
-            if (arrow) arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(90deg)';
+        function closeCardProperties() {
+            const panel = document.getElementById('cardPropertiesPanel');
+            if (panel) panel.style.display = 'none';
+            activeCardPropsId = null;
+            document.querySelectorAll('.module-row').forEach(r => r.classList.remove('active-card'));
         }
         function applyCardSettingsModule(moduleId) {
             // Heading override fields
@@ -5000,8 +5052,8 @@ function drawAnnouncementStrip(theme, style = 'default') {
 
             const cartItems = window.appState.cart[theme] || [];
             const subtotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
-            const delivery = 2.99;
-            const tax = (subtotal + delivery) * 0.08;
+            const delivery = subtotal >= RESTAURANT_DATA.config.freeDeliveryMin ? 0 : RESTAURANT_DATA.config.deliveryFee;
+            const tax = (subtotal + delivery) * RESTAURANT_DATA.config.taxRate;
             const total = subtotal + delivery + tax;
 
             const itemRow = (item) => `
@@ -8844,7 +8896,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
             buildControllerList();
             renderAllViewports();
             renderPaletteEditor();
-            renderCardSettings();
+            if (activeCardPropsId) openCardProperties(activeCardPropsId);
             applyAllPalettes();
         };
     </script>
