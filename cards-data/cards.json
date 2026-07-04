@@ -1,0 +1,1713 @@
+[
+  {
+    "moduleId": "announcement-strip",
+    "moduleName": "Announcement Strip",
+    "cardNumber": "#01",
+    "theme": "neumorphism",
+    "themeLabel": "Light",
+    "variant": "default",
+    "text": {
+      "full": "Free delivery on orders $25+\nNew: Summer Smoothie Collection\nEarn 2x points this weekend\nExclusive deals just for you\nFree delivery on orders $25+\nNew: Summer Smoothie Collection\nEarn 2x points this weekend\nExclusive deals just for you",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [],
+    "screenshot": "screenshots/neumorphism/announcement-strip.png"
+  },
+  {
+    "moduleId": "location-header",
+    "moduleName": "Location Header Base",
+    "cardNumber": "#02",
+    "theme": "neumorphism",
+    "themeLabel": "Light",
+    "variant": "default",
+    "text": {
+      "full": "DELIVER TO\nManhattan West, NY\nDelivery\nPickup",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [],
+    "screenshot": "screenshots/neumorphism/location-header.png"
+  },
+  {
+    "moduleId": "video-reel-hero",
+    "moduleName": "Video Reel Hero Layer",
+    "cardNumber": "#03",
+    "theme": "neumorphism",
+    "themeLabel": "Light",
+    "variant": "default",
+    "text": {
+      "full": "FEATURED\nFresh Pizza Perfection\n12.4K views\n2:30\nFEATURED\nPremium Sushi Platter\n8.1K views\n3:15\nFEATURED\nGourmet Feast Board\n5.6K views\n1:45\nFEATURED\nArtisan Bakery Tour\n18.2K views\n4:10",
+      "headings": [
+        "Fresh Pizza Perfection",
+        "Premium Sushi Platter",
+        "Gourmet Feast Board",
+        "Artisan Bakery Tour"
+      ],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80",
+        "alt": "Fresh Pizza Perfection",
+        "width": 600,
+        "height": 725,
+        "localPath": "images/neumorphism/video-reel-hero/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=600&q=80",
+        "alt": "Premium Sushi Platter",
+        "width": 600,
+        "height": 480,
+        "localPath": "images/neumorphism/video-reel-hero/img_02.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80",
+        "alt": "Gourmet Feast Board",
+        "width": 600,
+        "height": 400,
+        "localPath": "images/neumorphism/video-reel-hero/img_03.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80",
+        "alt": "Artisan Bakery Tour",
+        "width": 600,
+        "height": 399,
+        "localPath": "images/neumorphism/video-reel-hero/img_04.jpg"
+      }
+    ],
+    "screenshot": "screenshots/neumorphism/video-reel-hero.png"
+  },
+  {
+    "moduleId": "active-order-tracker",
+    "moduleName": "Active Order Tracker",
+    "cardNumber": "#04",
+    "theme": "neumorphism",
+    "themeLabel": "Light",
+    "variant": "default",
+    "text": {
+      "full": "ORDER #1568\n00:15:05\nReceived\n10:52 AM\nPreparing\n10:55 AM\nReady\nYour order is being prepared\nTrack Order",
+      "headings": [],
+      "buttons": [
+        "Track Order"
+      ],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=200&q=80",
+        "alt": "status",
+        "width": 200,
+        "height": 133,
+        "localPath": "images/neumorphism/active-order-tracker/img_01.jpg"
+      }
+    ],
+    "screenshot": "screenshots/neumorphism/active-order-tracker.png"
+  },
+  {
+    "moduleId": "loyalty-card",
+    "moduleName": "Loyalty Metrics Card",
+    "cardNumber": "#05",
+    "theme": "neumorphism",
+    "themeLabel": "Light",
+    "variant": "default",
+    "text": {
+      "full": "Minerva Points\n61,749\nAvailable balance\nGold Tier\n= $61.75 value",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [],
+    "screenshot": "screenshots/neumorphism/loyalty-card.png"
+  },
+  {
+    "moduleId": "category-tiles",
+    "moduleName": "Category Navigation Grid",
+    "cardNumber": "#12",
+    "theme": "neumorphism",
+    "themeLabel": "Light",
+    "variant": "default",
+    "text": {
+      "full": "CATEGORIES\nWhat's your craving?\nSee All\nBakery\n24 items\n🔥\n320\n⏱\n25 min\nBrew\n18 items\n🔥\n150\n⏱\n5 min\nSweets\n31 items\n🔥\n450\n⏱\n30 min\nBundles\n12 items\n🔥\n600\n⏱\n15 min\nPizza\n15 items\n🔥\n850\n⏱\n20 min\nSalads\n9 items\n🔥\n180\n⏱\n10 min\nBurgers\n22 items\n🔥\n720\n⏱\n15 min\nSushi\n14 items\n🔥\n350\n⏱\n12 min",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=200&q=80",
+        "alt": "Bakery",
+        "width": 200,
+        "height": 133,
+        "localPath": "images/neumorphism/category-tiles/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=200&q=80",
+        "alt": "Brew",
+        "width": 200,
+        "height": 300,
+        "localPath": "images/neumorphism/category-tiles/img_02.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=200&q=80",
+        "alt": "Sweets",
+        "width": 200,
+        "height": 250,
+        "localPath": "images/neumorphism/category-tiles/img_03.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=200&q=80",
+        "alt": "Bundles",
+        "width": 200,
+        "height": 133,
+        "localPath": "images/neumorphism/category-tiles/img_04.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80",
+        "alt": "Pizza",
+        "width": 200,
+        "height": 242,
+        "localPath": "images/neumorphism/category-tiles/img_05.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=200&q=80",
+        "alt": "Salads",
+        "width": 200,
+        "height": 133,
+        "localPath": "images/neumorphism/category-tiles/img_06.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80",
+        "alt": "Burgers",
+        "width": 200,
+        "height": 166,
+        "localPath": "images/neumorphism/category-tiles/img_07.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=200&q=80",
+        "alt": "Sushi",
+        "width": 200,
+        "height": 133,
+        "localPath": "images/neumorphism/category-tiles/img_08.jpg"
+      }
+    ],
+    "screenshot": "screenshots/neumorphism/category-tiles.png"
+  },
+  {
+    "moduleId": "finish-your-order",
+    "moduleName": "Finish Your Order Alert",
+    "cardNumber": "#06",
+    "theme": "neumorphism",
+    "themeLabel": "Light",
+    "variant": "default",
+    "text": {
+      "full": "Cart Waiting\n2 items in your cart\nCheckout",
+      "headings": [],
+      "buttons": [
+        "Checkout"
+      ],
+      "prices": [],
+      "badges": []
+    },
+    "images": [],
+    "screenshot": "screenshots/neumorphism/finish-your-order.png"
+  },
+  {
+    "moduleId": "limited-time-deal",
+    "moduleName": "Limited-Time Deal Timer",
+    "cardNumber": "#07",
+    "theme": "neumorphism",
+    "themeLabel": "Light",
+    "variant": "default",
+    "text": {
+      "full": "OFFER\nLimited Time\nSee All\nLIMITED OFFER\nEnds in 45 min\nChocolate Dream\nRich Belgian chocolate\n$8.50\n$5.50",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=400&q=80",
+        "alt": "chocolate cake",
+        "width": 400,
+        "height": 500,
+        "localPath": "images/neumorphism/limited-time-deal/img_01.jpg"
+      }
+    ],
+    "screenshot": "screenshots/neumorphism/limited-time-deal.png"
+  },
+  {
+    "moduleId": "order-again",
+    "moduleName": "Order Again Rail",
+    "cardNumber": "#08",
+    "theme": "neumorphism",
+    "themeLabel": "Light",
+    "variant": "default",
+    "text": {
+      "full": "REORDER\nOrder Again\nSee All\nOrange Juice\n$5.99\nAdd\nCheesecake\n$7.99\nAdd\nChocolate Cake\n$9.00\nAdd\nIced Latte\n$4.99\nAdd",
+      "headings": [],
+      "buttons": [
+        "Add",
+        "Add",
+        "Add",
+        "Add"
+      ],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80",
+        "alt": "food",
+        "width": 200,
+        "height": 242,
+        "localPath": "images/neumorphism/order-again/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=200&q=80",
+        "alt": "food",
+        "width": 200,
+        "height": 242,
+        "localPath": "images/neumorphism/order-again/img_02.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=200&q=80",
+        "alt": "food",
+        "width": 200,
+        "height": 147,
+        "localPath": "images/neumorphism/order-again/img_03.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=200&q=80",
+        "alt": "food",
+        "width": 200,
+        "height": 250,
+        "localPath": "images/neumorphism/order-again/img_04.jpg"
+      }
+    ],
+    "screenshot": "screenshots/neumorphism/order-again.png"
+  },
+  {
+    "moduleId": "recommended-for-you",
+    "moduleName": "Recommended For You Grid",
+    "cardNumber": "#09",
+    "theme": "neumorphism",
+    "themeLabel": "Light",
+    "variant": "default",
+    "text": {
+      "full": "RECOMMENDED\nFor You\nSee All\n25% OFF\nArtisanal Mango Gelato Bowl\n4.9\n20 min\n$12.99\n$17.99\nBestseller\nCold Brew Nitro Craft Soda\n4.8\n25 min\n$10.49\n$14.99",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1506084868230-bb9d95c24759?auto=format&fit=crop&w=300&q=80",
+        "alt": "food",
+        "width": 300,
+        "height": 450,
+        "localPath": "images/neumorphism/recommended-for-you/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=300&q=80",
+        "alt": "food",
+        "width": 300,
+        "height": 450,
+        "localPath": "images/neumorphism/recommended-for-you/img_02.jpg"
+      }
+    ],
+    "screenshot": "screenshots/neumorphism/recommended-for-you.png"
+  },
+  {
+    "moduleId": "deals-promos",
+    "moduleName": "Deals/Promotions Gateway",
+    "cardNumber": "#10",
+    "theme": "neumorphism",
+    "themeLabel": "Light",
+    "variant": "default",
+    "text": {
+      "full": "OFFERS\nDeals\nSee All\nFood Package Offer\n25%\nDISCOUNT",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80",
+        "alt": "food",
+        "width": 300,
+        "height": 249,
+        "localPath": "images/neumorphism/deals-promos/img_01.jpg"
+      }
+    ],
+    "screenshot": "screenshots/neumorphism/deals-promos.png"
+  },
+  {
+    "moduleId": "birthday-reward-banner",
+    "moduleName": "Birthday Reward Banner",
+    "cardNumber": "#11",
+    "theme": "neumorphism",
+    "themeLabel": "Light",
+    "variant": "default",
+    "text": {
+      "full": "Happy Birthday! Your free treat is ready",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [],
+    "screenshot": "screenshots/neumorphism/birthday-reward-banner.png"
+  },
+  {
+    "moduleId": "meal-deal-combo",
+    "moduleName": "Meal-Deal Combo Builder",
+    "cardNumber": "#13",
+    "theme": "neumorphism",
+    "themeLabel": "Light",
+    "variant": "default",
+    "text": {
+      "full": "Complete the Meal\nAdd Craft Latte\n+$3.50\nAdd Croissant\n+$2.50\nAdd both & save $2.00",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=200&q=80",
+        "alt": "Craft Latte",
+        "width": 200,
+        "height": 300,
+        "localPath": "images/neumorphism/meal-deal-combo/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=200&q=80",
+        "alt": "Croissant",
+        "width": 200,
+        "height": 250,
+        "localPath": "images/neumorphism/meal-deal-combo/img_02.jpg"
+      }
+    ],
+    "screenshot": "screenshots/neumorphism/meal-deal-combo.png"
+  },
+  {
+    "moduleId": "featured-items",
+    "moduleName": "Featured Items Slider",
+    "cardNumber": "#14",
+    "theme": "neumorphism",
+    "themeLabel": "Light",
+    "variant": "default",
+    "text": {
+      "full": "SPOTLIGHT\nFeatured\nSee All\nFree Delivery\nBurger King\n4.9\n20-25 min\nBurger\nPizza\nFast Food",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
+        "alt": "Burger King",
+        "width": 600,
+        "height": 498,
+        "localPath": "images/neumorphism/featured-items/img_01.jpg"
+      }
+    ],
+    "screenshot": "screenshots/neumorphism/featured-items.png"
+  },
+  {
+    "moduleId": "popular-rail",
+    "moduleName": "Popular Items Rail (+Add)",
+    "cardNumber": "#15",
+    "theme": "neumorphism",
+    "themeLabel": "Light",
+    "variant": "default",
+    "text": {
+      "full": "TRENDING\nPopular Foods\nSee All\n$9.99\nStir-Fried Spicy and Herb\n25-35 min\n4.8\n$12.99\nNoodles With Chicken\n20-30 min\n4.6\n$8.99\nVeggie Pizza\n15-20 min\n4.7",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80",
+        "alt": "Stir-Fried Spicy and Herb",
+        "width": 600,
+        "height": 441,
+        "localPath": "images/neumorphism/popular-rail/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1603532648955-039310d9ed75?auto=format&fit=crop&w=600&q=80",
+        "alt": "Noodles With Chicken",
+        "width": 600,
+        "height": 900,
+        "localPath": "images/neumorphism/popular-rail/img_02.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80",
+        "alt": "Veggie Pizza",
+        "width": 600,
+        "height": 725,
+        "localPath": "images/neumorphism/popular-rail/img_03.jpg"
+      }
+    ],
+    "screenshot": "screenshots/neumorphism/popular-rail.png"
+  },
+  {
+    "moduleId": "offers-carousel",
+    "moduleName": "Offers Carousel Deck",
+    "cardNumber": "#16",
+    "theme": "neumorphism",
+    "themeLabel": "Light",
+    "variant": "default",
+    "text": {
+      "full": "BEST DEALS\nOffers\nSee All\nEXCLUSIVE OFFER\n$5 OFF\nFirst 3 orders\nCode: WELCOME5\nWEEKEND DEAL\n20% OFF\nSat & Sun orders\nCode: WEEKEND20\nFREEBIE\nFree Drink\nAny large pizza\nCode: FREEDRINK",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [],
+    "screenshot": "screenshots/neumorphism/offers-carousel.png"
+  },
+  {
+    "moduleId": "offers-feed",
+    "moduleName": "Offers Comprehensive Feed",
+    "cardNumber": "#17",
+    "theme": "neumorphism",
+    "themeLabel": "Light",
+    "variant": "default",
+    "text": {
+      "full": "LATEST\nPromotions\nSee All\nFree beverage upgrade\nValid with any pastry item\nDouble loyalty points\nOn orders after 10 PM",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [],
+    "screenshot": "screenshots/neumorphism/offers-feed.png"
+  },
+  {
+    "moduleId": "image-mosaic",
+    "moduleName": "Image Mosaic Lookbook",
+    "cardNumber": "#18",
+    "theme": "neumorphism",
+    "themeLabel": "Light",
+    "variant": "default",
+    "text": {
+      "full": "Chef's Selection\nHandpicked for you\nFEATURED\n+12\nView full gallery\nBrowse all",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=400&q=80",
+        "alt": "",
+        "width": 400,
+        "height": 483,
+        "localPath": "images/neumorphism/image-mosaic/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80",
+        "alt": "",
+        "width": 400,
+        "height": 332,
+        "localPath": "images/neumorphism/image-mosaic/img_02.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80",
+        "alt": "",
+        "width": 400,
+        "height": 267,
+        "localPath": "images/neumorphism/image-mosaic/img_03.jpg"
+      }
+    ],
+    "screenshot": "screenshots/neumorphism/image-mosaic.png"
+  },
+  {
+    "moduleId": "stories",
+    "moduleName": "Stories Loop Tickers",
+    "cardNumber": "#19",
+    "theme": "neumorphism",
+    "themeLabel": "Light",
+    "variant": "default",
+    "text": {
+      "full": "COMMUNITY\nStories\nSarah\nMike\nEmma\nLily\n+\nAdd",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80",
+        "alt": "",
+        "width": 120,
+        "height": 150,
+        "localPath": "images/neumorphism/stories/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=120&q=80",
+        "alt": "",
+        "width": 120,
+        "height": 180,
+        "localPath": "images/neumorphism/stories/img_02.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=120&q=80",
+        "alt": "",
+        "width": 120,
+        "height": 180,
+        "localPath": "images/neumorphism/stories/img_03.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=120&q=80",
+        "alt": "",
+        "width": 120,
+        "height": 180,
+        "localPath": "images/neumorphism/stories/img_04.jpg"
+      }
+    ],
+    "screenshot": "screenshots/neumorphism/stories.png"
+  },
+  {
+    "moduleId": "announcement-strip",
+    "moduleName": "Announcement Strip",
+    "cardNumber": "#01",
+    "theme": "glassmorphism",
+    "themeLabel": "Dark",
+    "variant": "option 1",
+    "text": {
+      "full": "Free delivery on orders $25+\nNew: Summer Smoothie Collection\nEarn 2x points this weekend\nExclusive deals just for you\nFree delivery on orders $25+",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [],
+    "screenshot": "screenshots/glassmorphism/announcement-strip.png"
+  },
+  {
+    "moduleId": "location-header",
+    "moduleName": "Location Header Base",
+    "cardNumber": "#02",
+    "theme": "glassmorphism",
+    "themeLabel": "Dark",
+    "variant": "option 1",
+    "text": {
+      "full": "DELIVER TO\nManhattan West, NY\nDelivery\nPickup",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [],
+    "screenshot": "screenshots/glassmorphism/location-header.png"
+  },
+  {
+    "moduleId": "video-reel-hero",
+    "moduleName": "Video Reel Hero Layer",
+    "cardNumber": "#03",
+    "theme": "glassmorphism",
+    "themeLabel": "Dark",
+    "variant": "option 1",
+    "text": {
+      "full": "03:45\nFeatured Video\nPremium Bakery Collection\n\nWatch our master bakers craft artisan breads and pastries from scratch using traditional techniques.\n\n24.8K views\n1.2K",
+      "headings": [
+        "Premium Bakery Collection"
+      ],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80",
+        "alt": "video",
+        "width": 600,
+        "height": 399,
+        "localPath": "images/glassmorphism/video-reel-hero/img_01.jpg"
+      }
+    ],
+    "screenshot": "screenshots/glassmorphism/video-reel-hero.png"
+  },
+  {
+    "moduleId": "active-order-tracker",
+    "moduleName": "Active Order Tracker",
+    "cardNumber": "#04",
+    "theme": "glassmorphism",
+    "themeLabel": "Dark",
+    "variant": "option 1",
+    "text": {
+      "full": "Invoice : #256891\nOrder Received\n10:52 AM, 23 May 2022\nOn the way\n10:52 AM\nDelivered\nFinish time in 3 min\nOrder Tracking",
+      "headings": [],
+      "buttons": [
+        "Order Tracking"
+      ],
+      "prices": [],
+      "badges": []
+    },
+    "images": [],
+    "screenshot": "screenshots/glassmorphism/active-order-tracker.png"
+  },
+  {
+    "moduleId": "loyalty-card",
+    "moduleName": "Loyalty Metrics Card",
+    "cardNumber": "#05",
+    "theme": "glassmorphism",
+    "themeLabel": "Dark",
+    "variant": "option 1",
+    "text": {
+      "full": "Your Balance\nGold Member\n$100.00\nYou have 1000 points\nRedeem\nEarn More",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [],
+    "screenshot": "screenshots/glassmorphism/loyalty-card.png"
+  },
+  {
+    "moduleId": "category-tiles",
+    "moduleName": "Category Navigation Grid",
+    "cardNumber": "#12",
+    "theme": "glassmorphism",
+    "themeLabel": "Dark",
+    "variant": "option 1",
+    "text": {
+      "full": "CATEGORIES\nWhat's your craving?\nShow more\nBakery\n24 items\n🔥\n320\n⏱\n25 min\nBrew\n18 items\n🔥\n150\n⏱\n5 min\nSweets\n31 items\n🔥\n450\n⏱\n30 min\nBundles\n12 items\n🔥\n600\n⏱\n15 min\nPizza\n15 items\n🔥\n850\n⏱\n20 min\nSalads\n9 items\n🔥\n180\n⏱\n10 min\nBurgers\n22 items\n🔥\n720\n⏱\n15 min\nSushi\n14 items\n🔥\n350\n⏱\n12 min",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=200&q=80",
+        "alt": "Bakery",
+        "width": 200,
+        "height": 133,
+        "localPath": "images/glassmorphism/category-tiles/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=200&q=80",
+        "alt": "Brew",
+        "width": 200,
+        "height": 300,
+        "localPath": "images/glassmorphism/category-tiles/img_02.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=200&q=80",
+        "alt": "Sweets",
+        "width": 200,
+        "height": 250,
+        "localPath": "images/glassmorphism/category-tiles/img_03.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=200&q=80",
+        "alt": "Bundles",
+        "width": 200,
+        "height": 133,
+        "localPath": "images/glassmorphism/category-tiles/img_04.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80",
+        "alt": "Pizza",
+        "width": 200,
+        "height": 242,
+        "localPath": "images/glassmorphism/category-tiles/img_05.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=200&q=80",
+        "alt": "Salads",
+        "width": 200,
+        "height": 133,
+        "localPath": "images/glassmorphism/category-tiles/img_06.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80",
+        "alt": "Burgers",
+        "width": 200,
+        "height": 166,
+        "localPath": "images/glassmorphism/category-tiles/img_07.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=200&q=80",
+        "alt": "Sushi",
+        "width": 200,
+        "height": 133,
+        "localPath": "images/glassmorphism/category-tiles/img_08.jpg"
+      }
+    ],
+    "screenshot": "screenshots/glassmorphism/category-tiles.png"
+  },
+  {
+    "moduleId": "finish-your-order",
+    "moduleName": "Finish Your Order Alert",
+    "cardNumber": "#06",
+    "theme": "glassmorphism",
+    "themeLabel": "Dark",
+    "variant": "option 1",
+    "text": {
+      "full": "Cart Waiting\n2 items · Craft Latte, Croissant\n$12.48\n+2\nCheckout",
+      "headings": [],
+      "buttons": [
+        "Checkout"
+      ],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=100&q=80",
+        "alt": "item1",
+        "width": 100,
+        "height": 150,
+        "localPath": "images/glassmorphism/finish-your-order/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=100&q=80",
+        "alt": "item2",
+        "width": 100,
+        "height": 125,
+        "localPath": "images/glassmorphism/finish-your-order/img_02.jpg"
+      }
+    ],
+    "screenshot": "screenshots/glassmorphism/finish-your-order.png"
+  },
+  {
+    "moduleId": "limited-time-deal",
+    "moduleName": "Limited-Time Deal Timer",
+    "cardNumber": "#07",
+    "theme": "glassmorphism",
+    "themeLabel": "Dark",
+    "variant": "option 1",
+    "text": {
+      "full": "OFFER\nLimited Time\nShow more\nFLASH\n-40%\n05\nHRS\n23\nMIN\n47\nSEC\nChocolate Dream\nRich Belgian chocolate\n$8.50\n$5.50\nOnly 8 left\n62% claimed",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=400&q=80",
+        "alt": "deal",
+        "width": 400,
+        "height": 483,
+        "localPath": "images/glassmorphism/limited-time-deal/img_01.jpg"
+      }
+    ],
+    "screenshot": "screenshots/glassmorphism/limited-time-deal.png"
+  },
+  {
+    "moduleId": "order-again",
+    "moduleName": "Order Again Rail",
+    "cardNumber": "#08",
+    "theme": "glassmorphism",
+    "themeLabel": "Dark",
+    "variant": "option 1",
+    "text": {
+      "full": "YOUR HISTORY\nReorder\nShow more\nThe Daily Cafe\nOrange Juice\nQty: 2 · $5.99\n+\nThe Daily Cafe\nCheesecake\nQty: 1 · $7.99\n+\nReorder All",
+      "headings": [],
+      "buttons": [
+        "+",
+        "+",
+        "Reorder All"
+      ],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=120&q=80",
+        "alt": "food",
+        "width": 120,
+        "height": 145,
+        "localPath": "images/glassmorphism/order-again/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=120&q=80",
+        "alt": "food",
+        "width": 120,
+        "height": 145,
+        "localPath": "images/glassmorphism/order-again/img_02.jpg"
+      }
+    ],
+    "screenshot": "screenshots/glassmorphism/order-again.png"
+  },
+  {
+    "moduleId": "recommended-for-you",
+    "moduleName": "Recommended For You Grid",
+    "cardNumber": "#09",
+    "theme": "glassmorphism",
+    "themeLabel": "Dark",
+    "variant": "option 1",
+    "text": {
+      "full": "RECOMMENDED\nFor You\nShow more\n20 min\nArtisanal Mango Gelato Bowl\n4.9\n$12.99\nPopular\nBest deal\n25 min\nCold Brew Nitro Craft Soda\n4.8\n$10.49\nNew\nSeasonal",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1506084868230-bb9d95c24759?auto=format&fit=crop&w=300&q=80",
+        "alt": "food",
+        "width": 300,
+        "height": 450,
+        "localPath": "images/glassmorphism/recommended-for-you/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=300&q=80",
+        "alt": "food",
+        "width": 300,
+        "height": 450,
+        "localPath": "images/glassmorphism/recommended-for-you/img_02.jpg"
+      }
+    ],
+    "screenshot": "screenshots/glassmorphism/recommended-for-you.png"
+  },
+  {
+    "moduleId": "deals-promos",
+    "moduleName": "Deals/Promotions Gateway",
+    "cardNumber": "#10",
+    "theme": "glassmorphism",
+    "themeLabel": "Dark",
+    "variant": "option 1",
+    "text": {
+      "full": "OFFERS\nDeals\nShow more\nSPECIAL OFFER\n25%\nDISCOUNT\nOn all food packages",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80",
+        "alt": "food",
+        "width": 200,
+        "height": 166,
+        "localPath": "images/glassmorphism/deals-promos/img_01.jpg"
+      }
+    ],
+    "screenshot": "screenshots/glassmorphism/deals-promos.png"
+  },
+  {
+    "moduleId": "birthday-reward-banner",
+    "moduleName": "Birthday Reward Banner",
+    "cardNumber": "#11",
+    "theme": "glassmorphism",
+    "themeLabel": "Dark",
+    "variant": "option 1",
+    "text": {
+      "full": "Happy Birthday!\nYour free treat is waiting — redeem now\nClaim Reward\nDetails",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [],
+    "screenshot": "screenshots/glassmorphism/birthday-reward-banner.png"
+  },
+  {
+    "moduleId": "meal-deal-combo",
+    "moduleName": "Meal-Deal Combo Builder",
+    "cardNumber": "#13",
+    "theme": "glassmorphism",
+    "themeLabel": "Dark",
+    "variant": "option 1",
+    "text": {
+      "full": "Complete the Meal\nSave $2.00\nDrink\nCraft Latte\n+$3.50\nSnack\nCroissant\n+$2.50\nDessert\nCookie Duo\n+$1.99\nCombo total with savings\n$5.99",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=200&q=80",
+        "alt": "Craft Latte",
+        "width": 200,
+        "height": 300,
+        "localPath": "images/glassmorphism/meal-deal-combo/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=200&q=80",
+        "alt": "Croissant",
+        "width": 200,
+        "height": 250,
+        "localPath": "images/glassmorphism/meal-deal-combo/img_02.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=200&q=80",
+        "alt": "Cookie Duo",
+        "width": 200,
+        "height": 250,
+        "localPath": "images/glassmorphism/meal-deal-combo/img_03.jpg"
+      }
+    ],
+    "screenshot": "screenshots/glassmorphism/meal-deal-combo.png"
+  },
+  {
+    "moduleId": "featured-items",
+    "moduleName": "Featured Items Slider",
+    "cardNumber": "#14",
+    "theme": "glassmorphism",
+    "themeLabel": "Dark",
+    "variant": "option 1",
+    "text": {
+      "full": "SPOTLIGHT\nFeatured\nShow more\nBurger King\n4.9\n20-25 min\nFree Delivery\nPizza Hut\n4.7\n30-40 min\n20% OFF",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
+        "alt": "Burger King",
+        "width": 600,
+        "height": 498,
+        "localPath": "images/glassmorphism/featured-items/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80",
+        "alt": "Pizza",
+        "width": 600,
+        "height": 450,
+        "localPath": "images/glassmorphism/featured-items/img_02.jpg"
+      }
+    ],
+    "screenshot": "screenshots/glassmorphism/featured-items.png"
+  },
+  {
+    "moduleId": "popular-rail",
+    "moduleName": "Popular Items Rail (+Add)",
+    "cardNumber": "#15",
+    "theme": "glassmorphism",
+    "themeLabel": "Dark",
+    "variant": "option 1",
+    "text": {
+      "full": "TRENDING\nTrending Now\nShow more\nStir-Fried Spicy\n$9.99\n$14.99\nNoodles Chicken\n$12.99\n$18.99\nVeggie Pizza\n$8.99\n$11.99\nBurger Deluxe\n$15.99\n$21.99",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80",
+        "alt": "food",
+        "width": 600,
+        "height": 441,
+        "localPath": "images/glassmorphism/popular-rail/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1603532648955-039310d9ed75?auto=format&fit=crop&w=600&q=80",
+        "alt": "food",
+        "width": 600,
+        "height": 900,
+        "localPath": "images/glassmorphism/popular-rail/img_02.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80",
+        "alt": "food",
+        "width": 600,
+        "height": 725,
+        "localPath": "images/glassmorphism/popular-rail/img_03.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
+        "alt": "food",
+        "width": 600,
+        "height": 498,
+        "localPath": "images/glassmorphism/popular-rail/img_04.jpg"
+      }
+    ],
+    "screenshot": "screenshots/glassmorphism/popular-rail.png"
+  },
+  {
+    "moduleId": "offers-carousel",
+    "moduleName": "Offers Carousel Deck",
+    "cardNumber": "#16",
+    "theme": "glassmorphism",
+    "themeLabel": "Dark",
+    "variant": "option 1",
+    "text": {
+      "full": "BEST DEALS\nOffers\nShow more\nWELCOME OFFER\n$5 OFF\nOn your first 3 orders\nCode: WELCOME5\nWEEKEND DEAL\n20% OFF\nSaturday & Sunday orders\nCode: WEEKEND20",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [],
+    "screenshot": "screenshots/glassmorphism/offers-carousel.png"
+  },
+  {
+    "moduleId": "offers-feed",
+    "moduleName": "Offers Comprehensive Feed",
+    "cardNumber": "#17",
+    "theme": "glassmorphism",
+    "themeLabel": "Dark",
+    "variant": "option 1",
+    "text": {
+      "full": "LATEST\nPromotions\nShow more\nFree Drink\nWith any pastry purchase\nClaim\n2x Points\nOn orders after 10 PM\nDetails",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [],
+    "screenshot": "screenshots/glassmorphism/offers-feed.png"
+  },
+  {
+    "moduleId": "image-mosaic",
+    "moduleName": "Image Mosaic Lookbook",
+    "cardNumber": "#18",
+    "theme": "glassmorphism",
+    "themeLabel": "Dark",
+    "variant": "option 1",
+    "text": {
+      "full": "Food Lookbook\nDiscover · 24 items\nMargherita\n4.7\n$14.99\nBeef Burger\n4.9\n$12.99\nSteak Plate\n4.8\n$24.99\nSushi Roll\n4.6\n$18.99\n 32 photos\nView All",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=400&q=80",
+        "alt": "",
+        "width": 400,
+        "height": 483,
+        "localPath": "images/glassmorphism/image-mosaic/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80",
+        "alt": "",
+        "width": 400,
+        "height": 332,
+        "localPath": "images/glassmorphism/image-mosaic/img_02.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80",
+        "alt": "",
+        "width": 400,
+        "height": 267,
+        "localPath": "images/glassmorphism/image-mosaic/img_03.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=400&q=80",
+        "alt": "",
+        "width": 400,
+        "height": 320,
+        "localPath": "images/glassmorphism/image-mosaic/img_04.jpg"
+      }
+    ],
+    "screenshot": "screenshots/glassmorphism/image-mosaic.png"
+  },
+  {
+    "moduleId": "stories",
+    "moduleName": "Stories Loop Tickers",
+    "cardNumber": "#19",
+    "theme": "glassmorphism",
+    "themeLabel": "Dark",
+    "variant": "option 1",
+    "text": {
+      "full": "COMMUNITY\nStories\nSarah\n2 min ago\nMike\n15 min ago\nEmma\n1h ago\nAdd\nYour story",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80",
+        "alt": "",
+        "width": 120,
+        "height": 150,
+        "localPath": "images/glassmorphism/stories/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=120&q=80",
+        "alt": "",
+        "width": 120,
+        "height": 180,
+        "localPath": "images/glassmorphism/stories/img_02.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=120&q=80",
+        "alt": "",
+        "width": 120,
+        "height": 180,
+        "localPath": "images/glassmorphism/stories/img_03.jpg"
+      }
+    ],
+    "screenshot": "screenshots/glassmorphism/stories.png"
+  },
+  {
+    "moduleId": "announcement-strip",
+    "moduleName": "Announcement Strip",
+    "cardNumber": "#01",
+    "theme": "neubrutalism",
+    "themeLabel": "Modern",
+    "variant": "option 2",
+    "text": {
+      "full": "Free delivery on orders $25+\nNew: Summer Smoothie Collection\nEarn 2x points this weekend\nExclusive deals just for you\nFree delivery on orders $25+",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [],
+    "screenshot": "screenshots/neubrutalism/announcement-strip.png"
+  },
+  {
+    "moduleId": "location-header",
+    "moduleName": "Location Header Base",
+    "cardNumber": "#02",
+    "theme": "neubrutalism",
+    "themeLabel": "Modern",
+    "variant": "option 2",
+    "text": {
+      "full": "DELIVER TO\nManhattan West, NY\nDelivery\nPickup",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [],
+    "screenshot": "screenshots/neubrutalism/location-header.png"
+  },
+  {
+    "moduleId": "video-reel-hero",
+    "moduleName": "Video Reel Hero Layer",
+    "cardNumber": "#03",
+    "theme": "neubrutalism",
+    "themeLabel": "Modern",
+    "variant": "option 2",
+    "text": {
+      "full": "Featured Video\nPremium Heavy Interface Concept\n12.4K views\n2:30\nWatch the full reel",
+      "headings": [
+        "Premium Heavy Interface Concept"
+      ],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80",
+        "alt": "food",
+        "width": 800,
+        "height": 533,
+        "localPath": "images/neubrutalism/video-reel-hero/img_01.jpg"
+      }
+    ],
+    "screenshot": "screenshots/neubrutalism/video-reel-hero.png"
+  },
+  {
+    "moduleId": "active-order-tracker",
+    "moduleName": "Active Order Tracker",
+    "cardNumber": "#04",
+    "theme": "neubrutalism",
+    "themeLabel": "Modern",
+    "variant": "option 2",
+    "text": {
+      "full": "Anna\nArriving in 12min\n2 items\n$98.16\nPrepared\n2:45pm\nEn route\n6 mi away\nComplete\nDelivered\nJonathon Smith\nDelivery Driver\nMy Order",
+      "headings": [],
+      "buttons": [
+        "My Order"
+      ],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80",
+        "alt": "driver",
+        "width": 120,
+        "height": 180,
+        "localPath": "images/neubrutalism/active-order-tracker/img_01.jpg"
+      }
+    ],
+    "screenshot": "screenshots/neubrutalism/active-order-tracker.png"
+  },
+  {
+    "moduleId": "loyalty-card",
+    "moduleName": "Loyalty Metrics Card",
+    "cardNumber": "#05",
+    "theme": "neubrutalism",
+    "themeLabel": "Modern",
+    "variant": "option 2",
+    "text": {
+      "full": "ATTENDANCE REWARDS\nGet bonus $200\nin this month!\n61 days attendance\n85%\n72 days needed\n11 days left",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [],
+    "screenshot": "screenshots/neubrutalism/loyalty-card.png"
+  },
+  {
+    "moduleId": "category-tiles",
+    "moduleName": "Category Navigation Grid",
+    "cardNumber": "#12",
+    "theme": "neubrutalism",
+    "themeLabel": "Modern",
+    "variant": "option 2",
+    "text": {
+      "full": "CATEGORIES\nWhat's your craving?\nBakery\n24\n24 items available\n🔥\n320\n⏱\n25 min\nBrew\n18\n18 items available\n🔥\n150\n⏱\n5 min\nSweets\n31\n31 items available\n🔥\n450\n⏱\n30 min\nBundles\n12\n12 items available\n🔥\n600\n⏱\n15 min\nPizza\n15\n15 items available\n🔥\n850\n⏱\n20 min\nSalads\n9\n9 items available\n🔥\n180\n⏱\n10 min\nBurgers\n22\n22 items available\n🔥\n720\n⏱\n15 min\nSushi\n14\n14 items available\n🔥\n350\n⏱\n12 min",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=200&q=80",
+        "alt": "Bakery",
+        "width": 200,
+        "height": 133,
+        "localPath": "images/neubrutalism/category-tiles/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=200&q=80",
+        "alt": "Brew",
+        "width": 200,
+        "height": 300,
+        "localPath": "images/neubrutalism/category-tiles/img_02.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=200&q=80",
+        "alt": "Sweets",
+        "width": 200,
+        "height": 250,
+        "localPath": "images/neubrutalism/category-tiles/img_03.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=200&q=80",
+        "alt": "Bundles",
+        "width": 200,
+        "height": 133,
+        "localPath": "images/neubrutalism/category-tiles/img_04.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80",
+        "alt": "Pizza",
+        "width": 200,
+        "height": 242,
+        "localPath": "images/neubrutalism/category-tiles/img_05.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=200&q=80",
+        "alt": "Salads",
+        "width": 200,
+        "height": 133,
+        "localPath": "images/neubrutalism/category-tiles/img_06.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80",
+        "alt": "Burgers",
+        "width": 200,
+        "height": 166,
+        "localPath": "images/neubrutalism/category-tiles/img_07.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=200&q=80",
+        "alt": "Sushi",
+        "width": 200,
+        "height": 133,
+        "localPath": "images/neubrutalism/category-tiles/img_08.jpg"
+      }
+    ],
+    "screenshot": "screenshots/neubrutalism/category-tiles.png"
+  },
+  {
+    "moduleId": "finish-your-order",
+    "moduleName": "Finish Your Order Alert",
+    "cardNumber": "#06",
+    "theme": "neubrutalism",
+    "themeLabel": "Modern",
+    "variant": "option 2",
+    "text": {
+      "full": "Cart expires in 14:32\n$12.48\nCraft Latte\n$5.99\nCroissant\n$6.49\nView Cart\nCheckout",
+      "headings": [],
+      "buttons": [
+        "View Cart",
+        "Checkout"
+      ],
+      "prices": [],
+      "badges": []
+    },
+    "images": [],
+    "screenshot": "screenshots/neubrutalism/finish-your-order.png"
+  },
+  {
+    "moduleId": "limited-time-deal",
+    "moduleName": "Limited-Time Deal Timer",
+    "cardNumber": "#07",
+    "theme": "neubrutalism",
+    "themeLabel": "Modern",
+    "variant": "option 2",
+    "text": {
+      "full": "OFFER\nLimited Time\nLimited Time Offer\n40% off Chocolate Dream\n45:00",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [],
+    "screenshot": "screenshots/neubrutalism/limited-time-deal.png"
+  },
+  {
+    "moduleId": "order-again",
+    "moduleName": "Order Again Rail",
+    "cardNumber": "#08",
+    "theme": "neubrutalism",
+    "themeLabel": "Modern",
+    "variant": "option 2",
+    "text": {
+      "full": "REORDER\nOrder Again\nOrange Juice\n$5.99\n+\nCheesecake\n$7.99\n+\nChocolate Cake\n$9.00\n+\nIced Latte\n$4.99\n+",
+      "headings": [],
+      "buttons": [
+        "+",
+        "+",
+        "+",
+        "+"
+      ],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80",
+        "alt": "food",
+        "width": 200,
+        "height": 242,
+        "localPath": "images/neubrutalism/order-again/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=200&q=80",
+        "alt": "food",
+        "width": 200,
+        "height": 242,
+        "localPath": "images/neubrutalism/order-again/img_02.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=200&q=80",
+        "alt": "food",
+        "width": 200,
+        "height": 147,
+        "localPath": "images/neubrutalism/order-again/img_03.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=200&q=80",
+        "alt": "food",
+        "width": 200,
+        "height": 250,
+        "localPath": "images/neubrutalism/order-again/img_04.jpg"
+      }
+    ],
+    "screenshot": "screenshots/neubrutalism/order-again.png"
+  },
+  {
+    "moduleId": "recommended-for-you",
+    "moduleName": "Recommended For You Grid",
+    "cardNumber": "#09",
+    "theme": "neubrutalism",
+    "themeLabel": "Modern",
+    "variant": "option 2",
+    "text": {
+      "full": "RECOMMENDED\nFor You\nArtisanal Mango Gelato Bowl\n$12.99\n+\nCold Brew Nitro Craft Soda\n$10.49\n+",
+      "headings": [],
+      "buttons": [
+        "+",
+        "+"
+      ],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1506084868230-bb9d95c24759?auto=format&fit=crop&w=300&q=80",
+        "alt": "food",
+        "width": 300,
+        "height": 450,
+        "localPath": "images/neubrutalism/recommended-for-you/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=300&q=80",
+        "alt": "food",
+        "width": 300,
+        "height": 450,
+        "localPath": "images/neubrutalism/recommended-for-you/img_02.jpg"
+      }
+    ],
+    "screenshot": "screenshots/neubrutalism/recommended-for-you.png"
+  },
+  {
+    "moduleId": "deals-promos",
+    "moduleName": "Deals/Promotions Gateway",
+    "cardNumber": "#10",
+    "theme": "neubrutalism",
+    "themeLabel": "Modern",
+    "variant": "option 2",
+    "text": {
+      "full": "OFFERS\nDeals\nFood Package Offer\nLimited time deal\n25%\nOFF",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [],
+    "screenshot": "screenshots/neubrutalism/deals-promos.png"
+  },
+  {
+    "moduleId": "birthday-reward-banner",
+    "moduleName": "Birthday Reward Banner",
+    "cardNumber": "#11",
+    "theme": "neubrutalism",
+    "themeLabel": "Modern",
+    "variant": "option 2",
+    "text": {
+      "full": "Birthday treat unlocked\nClaim",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [],
+    "screenshot": "screenshots/neubrutalism/birthday-reward-banner.png"
+  },
+  {
+    "moduleId": "meal-deal-combo",
+    "moduleName": "Meal-Deal Combo Builder",
+    "cardNumber": "#13",
+    "theme": "neubrutalism",
+    "themeLabel": "Modern",
+    "variant": "option 2",
+    "text": {
+      "full": "Build Your Combo\nPick any 2 for $5.49\nSave $2.00\nCraft Latte\nDrink\n+$3.50\nCroissant\nSnack\n+$2.50\nCookie Duo\nDessert\n+$1.99\nCombo price\n$5.49\nAdd to Order",
+      "headings": [],
+      "buttons": [
+        "Add to Order"
+      ],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=200&q=80",
+        "alt": "Craft Latte",
+        "width": 200,
+        "height": 300,
+        "localPath": "images/neubrutalism/meal-deal-combo/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=200&q=80",
+        "alt": "Croissant",
+        "width": 200,
+        "height": 250,
+        "localPath": "images/neubrutalism/meal-deal-combo/img_02.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=200&q=80",
+        "alt": "Cookie Duo",
+        "width": 200,
+        "height": 250,
+        "localPath": "images/neubrutalism/meal-deal-combo/img_03.jpg"
+      }
+    ],
+    "screenshot": "screenshots/neubrutalism/meal-deal-combo.png"
+  },
+  {
+    "moduleId": "featured-items",
+    "moduleName": "Featured Items Slider",
+    "cardNumber": "#14",
+    "theme": "neubrutalism",
+    "themeLabel": "Modern",
+    "variant": "option 2",
+    "text": {
+      "full": "Burger King\n4.9\n20-25 min\nFree Delivery\nBurger\nFast Food\nOrder Now",
+      "headings": [],
+      "buttons": [
+        "Order Now"
+      ],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
+        "alt": "Burger King",
+        "width": 600,
+        "height": 498,
+        "localPath": "images/neubrutalism/featured-items/img_01.jpg"
+      }
+    ],
+    "screenshot": "screenshots/neubrutalism/featured-items.png"
+  },
+  {
+    "moduleId": "popular-rail",
+    "moduleName": "Popular Items Rail (+Add)",
+    "cardNumber": "#15",
+    "theme": "neubrutalism",
+    "themeLabel": "Modern",
+    "variant": "option 2",
+    "text": {
+      "full": "TRENDING\nPopular Picks\nStir-Fried Spicy\n4.8 (2.3k reviews)\n$9.99\n+ Add\nNoodles Chicken\n4.6 (1.8k reviews)\n$12.99\n+ Add\nVeggie Pizza\n4.7 (3.1k reviews)\n$8.99\n+ Add",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80",
+        "alt": "food",
+        "width": 600,
+        "height": 441,
+        "localPath": "images/neubrutalism/popular-rail/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1603532648955-039310d9ed75?auto=format&fit=crop&w=600&q=80",
+        "alt": "food",
+        "width": 600,
+        "height": 900,
+        "localPath": "images/neubrutalism/popular-rail/img_02.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80",
+        "alt": "food",
+        "width": 600,
+        "height": 725,
+        "localPath": "images/neubrutalism/popular-rail/img_03.jpg"
+      }
+    ],
+    "screenshot": "screenshots/neubrutalism/popular-rail.png"
+  },
+  {
+    "moduleId": "offers-carousel",
+    "moduleName": "Offers Carousel Deck",
+    "cardNumber": "#16",
+    "theme": "neubrutalism",
+    "themeLabel": "Modern",
+    "variant": "option 2",
+    "text": {
+      "full": "BEST DEALS\nOffers\n$5 OFF\nFirst 3 orders\nWELCOME5\n20% OFF\nWeekend orders\nWEEKEND20\nFree Drink\nAny large pizza\nFREEDRINK\nFree Del.\nOrders over $25\nFREESHIP",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [],
+    "screenshot": "screenshots/neubrutalism/offers-carousel.png"
+  },
+  {
+    "moduleId": "offers-feed",
+    "moduleName": "Offers Comprehensive Feed",
+    "cardNumber": "#17",
+    "theme": "neubrutalism",
+    "themeLabel": "Modern",
+    "variant": "option 2",
+    "text": {
+      "full": "LATEST\nPromotions\nFree beverage upgrade\nWith pastry\nDouble loyalty points\nAfter 10 PM",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [],
+    "screenshot": "screenshots/neubrutalism/offers-feed.png"
+  },
+  {
+    "moduleId": "image-mosaic",
+    "moduleName": "Image Mosaic Lookbook",
+    "cardNumber": "#18",
+    "theme": "neubrutalism",
+    "themeLabel": "Modern",
+    "variant": "option 2",
+    "text": {
+      "full": "Popular Dishes\nMost liked\nChocolate Cake\nby Sweet Tooth\n4.9\n$8.99\nFruit Bowl\nby Green Bowl\n4.7\n$6.99\nPancakes\nby Morning Joy\n4.8\n$10.99",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=400&q=80",
+        "alt": "",
+        "width": 400,
+        "height": 294,
+        "localPath": "images/neubrutalism/image-mosaic/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=400&q=80",
+        "alt": "",
+        "width": 400,
+        "height": 500,
+        "localPath": "images/neubrutalism/image-mosaic/img_02.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=400&q=80",
+        "alt": "",
+        "width": 400,
+        "height": 483,
+        "localPath": "images/neubrutalism/image-mosaic/img_03.jpg"
+      }
+    ],
+    "screenshot": "screenshots/neubrutalism/image-mosaic.png"
+  },
+  {
+    "moduleId": "stories",
+    "moduleName": "Stories Loop Tickers",
+    "cardNumber": "#19",
+    "theme": "neubrutalism",
+    "themeLabel": "Modern",
+    "variant": "option 2",
+    "text": {
+      "full": "COMMUNITY\nStories\nSarah's Breakfast\n2 min ago\n234\nMike's Burger Run\n15 min ago\n89\nAdd Your Story\nShare what you're eating",
+      "headings": [],
+      "buttons": [],
+      "prices": [],
+      "badges": []
+    },
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80",
+        "alt": "",
+        "width": 120,
+        "height": 150,
+        "localPath": "images/neubrutalism/stories/img_01.jpg"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=120&q=80",
+        "alt": "",
+        "width": 120,
+        "height": 180,
+        "localPath": "images/neubrutalism/stories/img_02.jpg"
+      }
+    ],
+    "screenshot": "screenshots/neubrutalism/stories.png"
+  }
+]

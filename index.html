@@ -2371,40 +2371,33 @@
         // style picked - the picker still works, it's flagged with a dim dot.
         const MODULES_WITH_REAL_VARIANTS = ['announcement-strip', 'location-header', 'video-reel-hero', 'active-order-tracker', 'loyalty-card', 'limited-time-deal', 'order-again', 'recommended-for-you', 'finish-your-order', 'birthday-reward-banner', 'deals-promos', 'category-tiles', 'meal-deal-combo', 'featured-items', 'popular-rail', 'offers-carousel', 'offers-feed', 'image-mosaic', 'stories'];
 
-        const CARD_CONTENT_INFO = {
-            'announcement-strip': { texts: ['Free delivery on orders $25+', 'New: Summer Smoothie Collection', 'Earn 2x points this weekend'], hasImage: false, hasLink: true },
-            'location-header': { texts: ['Deliver to', 'Manhattan West, NY', 'Delivery / Pickup'], hasImage: false, hasLink: true },
-            'video-reel-hero': { texts: ['Featured Video', 'Premium Heavy Interface Concept', 'Watch the full reel'], hasImage: true, hasLink: true },
-            'active-order-tracker': { texts: ['Your order is on the way', 'ETA countdown', 'Live map tracking'], hasImage: false, hasLink: true },
-            'loyalty-card': { texts: ['Attendance Rewards', 'Get bonus $200', 'Days attendance progress'], hasImage: false, hasLink: false },
-            'category-tiles': { texts: ['Categories', 'Pizza, Burgers, Sushi, Desserts...'], hasImage: true, hasLink: true },
-            'finish-your-order': { texts: ['Finish Your Order', 'Items left in cart reminder'], hasImage: true, hasLink: true },
-            'limited-time-deal': { texts: ['Limited Time Only', 'Countdown timer', 'Special offer pricing'], hasImage: true, hasLink: true },
-            'order-again': { texts: ['Order Again', 'Previous order items rail'], hasImage: true, hasLink: true },
-            'recommended-for-you': { texts: ['Recommended For You', 'Personalized picks grid'], hasImage: true, hasLink: true },
-            'deals-promos': { texts: ['Deals & Promotions', 'Discount codes & offers'], hasImage: false, hasLink: true },
-            'birthday-reward-banner': { texts: ['Happy Birthday!', 'Special reward unlocked'], hasImage: false, hasLink: true },
-            'meal-deal-combo': { texts: ['Meal Deal Combo', 'Build your combo & save'], hasImage: true, hasLink: true },
-            'featured-items': { texts: ['Featured Items', 'Curated highlights slider'], hasImage: true, hasLink: true },
-            'popular-rail': { texts: ['Popular Near You', 'Quick-add items rail'], hasImage: true, hasLink: true },
-            'offers-carousel': { texts: ['Special Offers', 'Swipeable promo cards'], hasImage: true, hasLink: true },
-            'offers-feed': { texts: ['All Offers', 'Comprehensive offer list'], hasImage: true, hasLink: true },
-            'image-mosaic': { texts: ['Food Gallery', 'Visual lookbook mosaic'], hasImage: true, hasLink: false },
-            'stories': { texts: ['Stories', 'Tappable story circles'], hasImage: true, hasLink: true },
-            'order-tracking': { texts: ['Order Tracking', 'Live status & map'], hasImage: false, hasLink: false },
-            'menu-page': { texts: ['Full Menu', 'Browse all categories'], hasImage: true, hasLink: true },
-            'product-detail-page': { texts: ['Product Detail', 'Item info, add-ons, add to cart'], hasImage: true, hasLink: true },
-            'cart-page': { texts: ['Your Cart', 'Items, totals, checkout'], hasImage: true, hasLink: true },
-            'checkout-page': { texts: ['Checkout', 'Payment, address, tip'], hasImage: false, hasLink: true },
-            'order-success-page': { texts: ['Order Confirmed!', 'Confirmation & ETA'], hasImage: false, hasLink: false },
-            'reviews-page': { texts: ['Reviews', 'Ratings & user feedback'], hasImage: true, hasLink: false },
-            'rewards-page': { texts: ['Rewards', 'Points balance & history'], hasImage: false, hasLink: true },
-            'upsell-page': { texts: ['Before You Go', 'Add more items upsell'], hasImage: true, hasLink: true },
-            'profile-settings': { texts: ['Profile', 'Account settings & preferences'], hasImage: false, hasLink: true },
-            'splash': { texts: ['Brand splash screen', 'Logo & tagline'], hasImage: true, hasLink: false },
-            'add-location': { texts: ['Add Location', 'Search & save address'], hasImage: false, hasLink: true },
-            'deals-page': { texts: ['Deals Page', 'All available promotions'], hasImage: true, hasLink: true },
-        };
+        let CARD_CONTENT_INFO = {};
+        let CARDS_JSON_DATA = [];
+        function buildCardContentInfo(data) {
+            const info = {};
+            data.forEach(card => {
+                if (!info[card.moduleId]) {
+                    const lines = (card.text.full || '').split('\n').filter(l => l.trim()).slice(0, 3);
+                    info[card.moduleId] = {
+                        texts: lines,
+                        hasImage: card.images && card.images.length > 0,
+                        hasLink: card.text.buttons && card.text.buttons.length > 0,
+                    };
+                }
+            });
+            return info;
+        }
+        function getCardJsonEntry(moduleId, theme) {
+            return CARDS_JSON_DATA.find(c => c.moduleId === moduleId && c.theme === theme);
+        }
+        fetch('cards-data/cards.json')
+            .then(r => r.json())
+            .then(data => {
+                CARDS_JSON_DATA = data;
+                CARD_CONTENT_INFO = buildCardContentInfo(data);
+                buildControllerList();
+            })
+            .catch(() => {});
 
         let dragSourceIndex = null;
 //
@@ -2603,7 +2596,18 @@
             const cardNum = CARD_NUMBERS[moduleId] || '';
             titleEl.textContent = cardNum + ' ' + modName;
             const c = getModuleConfig(activeViewTheme, moduleId);
+            const jsonEntry = getCardJsonEntry(moduleId, activeViewTheme);
+            const screenshotHtml = jsonEntry && jsonEntry.screenshot
+                ? `<div style="margin-bottom:10px;border-radius:8px;overflow:hidden;border:1px solid #333;"><img src="cards-data/${jsonEntry.screenshot}" style="width:100%;display:block;" onerror="this.parentElement.style.display='none'"></div>` : '';
+            const contentHtml = jsonEntry ? `<div style="margin-bottom:10px;padding:8px;background:#1a1a1a;border-radius:6px;border:1px solid #2a2a2a;">
+                <div style="font-size:8px;font-weight:700;color:#666;text-transform:uppercase;margin-bottom:4px;">Content</div>
+                <div style="font-size:9px;color:#aaa;line-height:1.5;white-space:pre-line;">${(jsonEntry.text.full || '').split('\n').slice(0, 6).join('\n')}</div>
+                ${jsonEntry.text.buttons.length ? `<div style="margin-top:4px;display:flex;gap:3px;flex-wrap:wrap;">${jsonEntry.text.buttons.map(b => `<span style="font-size:7px;padding:2px 5px;background:rgba(59,130,246,0.15);color:#3b82f6;border-radius:3px;font-weight:600;">${b}</span>`).join('')}</div>` : ''}
+                ${jsonEntry.images.length ? `<div style="margin-top:4px;font-size:8px;color:#8b5cf6;">${jsonEntry.images.length} image${jsonEntry.images.length > 1 ? 's' : ''}</div>` : ''}
+            </div>` : '';
             bodyEl.innerHTML = `
+                ${screenshotHtml}
+                ${contentHtml}
                 <div style="font-size:10px;color:#888;margin-bottom:10px;">Edit properties for this card in the active view.</div>
                 ${renderModuleSettingsHTML(moduleId, c)}
                 <button onclick="applyCardSettingsModule('${moduleId}')" style="width:100%;padding:10px;background:${VIEW_COLORS[activeViewTheme]};color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px;">Apply</button>
