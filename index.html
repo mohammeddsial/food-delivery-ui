@@ -5168,7 +5168,12 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         <div style="font-size:11px;font-weight:600;color:${subColor};text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Order #568</div>
                         <div id="eta-${theme}" style="font-size:36px;font-weight:800;color:${textColor};margin-bottom:24px;">00:15:05</div>
                         <div style="display:flex;gap:8px;margin-bottom:32px;width:100%;max-width:300px;">${stepDots}</div>
-                        <img src="${illustration}" style="width:140px;height:140px;object-fit:contain;margin-bottom:24px;" alt="status">
+                        <div class="map-carousel" style="position:relative;width:100%;max-width:300px;height:120px;margin-bottom:24px;border-radius:16px;overflow:hidden;" id="mapCarousel-${theme}">
+                            ${MAP_FRAMES.map((f,i) => '<img src="' + f.img + '" class="' + (i===0?'active':'') + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:' + (i===0?'1':'0') + ';transition:opacity 1.5s ease-in-out;">').join('')}
+                            <div class="map-route-dot" style="left:30%;top:70%;background:${accent};"></div>
+                            <div class="map-driver-label" style="left:30%;top:calc(70% - 22px);">Restaurant</div>
+                            <div class="map-progress-bar"><div class="map-progress-fill" style="width:20%;background:${accent};"></div></div>
+                        </div>
                         <div style="font-size:18px;font-weight:700;color:${textColor};margin-bottom:32px;">${statusText}</div>
                         <div onclick="navigateToPage('${theme}','tracking-map')" style="width:100%;max-width:300px;padding:16px;border:2px solid ${accent};color:${accent};text-align:center;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;" class="btn-morph">
                             GO TO TRACK ${iconFA('arrow-right', 'font-size:14px;')}
