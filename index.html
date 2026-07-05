@@ -85,7 +85,7 @@
             overflow-y: auto;
             overflow-x: hidden;
             padding-top: 16px;
-            padding-bottom: 160px;
+            padding-bottom: 140px;
         }
 
         /* --- THEME 1: LIGHT - Crumbl Premium Style --- */
@@ -5724,7 +5724,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                             <span style="font-size:14px;font-weight:800;color:${accent};">+${formatPrice(3.99)}</span>
                         </div>
                     </div>
-                    <div style="padding:12px 16px 72px;border-top:1px solid var(--border-color);background:${pageBg};">
+                    <div style="padding:12px 16px 80px;border-top:1px solid var(--border-color);background:${pageBg};">
                         <div onclick="addToCart('${theme}',{id:'${selectedItem.id}',name:'${itemName}',price:${itemPrice},img:'${hero}',desc:'${itemDesc}'});setActiveNav(3);navigateToPage('${theme}','cart-page')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:16px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px ${accent}30;">Add to Cart - ${formatPrice(itemPrice)}</div>
                     </div>
                 </div>`;
@@ -5890,7 +5890,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         </label>
                     </div>
                 </div>
-                <div style="padding:12px 16px 72px;border-top:1.5px solid var(--border-color);background:${pageBg};">
+                <div style="padding:12px 16px 80px;border-top:1.5px solid var(--border-color);background:${pageBg};">
                     <div onclick="addToCart('${theme}',{id:'${selectedItem.id}',name:'${itemName}',price:${itemPrice},img:'${hero}',desc:'${itemDesc}'});setActiveNav(3);navigateToPage('${theme}','cart-page')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,0.2);transition:all 0.1s;" onmousedown="this.style.boxShadow='none';this.style.transform='translateY(4px)'" onmouseup="this.style.boxShadow='0 4px 0 rgba(0,0,0,0.2)';this.style.transform='translateY(0)'" onmouseleave="this.style.boxShadow='0 4px 0 rgba(0,0,0,0.2)';this.style.transform='translateY(0)'">Add to Cart - ${formatPrice(itemPrice)}</div>
                 </div>
             </div>`;
@@ -5961,7 +5961,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         `}
                     </div>
                     ${cartItems.length > 0 ? `
-                    <div style="padding:12px 16px 72px;border-top:1px solid var(--border-color);background:${pageBg};">
+                    <div style="padding:12px 16px 80px;border-top:1px solid var(--border-color);background:${pageBg};">
                         <div onclick="proceedToCheckout('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Checkout - ${formatPrice(total)}</div>
                     </div>` : ''}
                 </div>`;
@@ -5998,7 +5998,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         `}
                     </div>
                     ${cartItems.length > 0 ? `
-                    <div style="padding:12px 16px 72px;border-top:1px solid var(--border-color);background:${pageBg};">
+                    <div style="padding:12px 16px 80px;border-top:1px solid var(--border-color);background:${pageBg};">
                         <div onclick="proceedToCheckout('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Checkout - ${formatPrice(total)}</div>
                     </div>` : ''}
                 </div>`;
@@ -6042,7 +6042,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                     `}
                 </div>
                 ${cartItems.length > 0 ? `
-                <div style="padding:12px 16px 72px;border-top:1px solid var(--border-color);background:${pageBg};display:flex;align-items:center;gap:12px;">
+                <div style="padding:12px 16px 80px;border-top:1px solid var(--border-color);background:${pageBg};display:flex;align-items:center;gap:12px;">
                     <div><div style="font-size:10px;color:${subColor};">Total</div><div style="font-size:18px;font-weight:900;color:${accent};">${formatPrice(total)}</div></div>
                     <div onclick="proceedToCheckout('${theme}')" style="flex:1;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;">Checkout</div>
                 </div>` : ''}
