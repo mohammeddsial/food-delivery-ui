@@ -863,11 +863,61 @@
             padding: 0 4px;
         }
         .card-props-close:hover { color: #fff; }
+        .card-props-tabs {
+            display: flex;
+            border-bottom: 1px solid #2a2a2a;
+            background: #1a1a1a;
+        }
+        .card-props-tab {
+            flex: 1;
+            padding: 8px 4px;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: #666;
+            background: none;
+            border: none;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: 0.15s;
+            text-align: center;
+        }
+        .card-props-tab:hover { color: #aaa; }
+        .card-props-tab.active {
+            color: #00615F;
+            border-bottom-color: #00615F;
+        }
         .card-props-body {
             padding: 14px 16px;
             overflow-y: auto;
             flex: 1;
         }
+        .content-edit-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+        .content-edit-row label {
+            font-size: 9px;
+            color: #666;
+            min-width: 40px;
+            padding-top: 5px;
+        }
+        .content-edit-row textarea,
+        .content-edit-row input {
+            flex: 1;
+            background: #222;
+            border: 1px solid #333;
+            color: #ddd;
+            padding: 4px 6px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        .content-edit-row textarea { min-height: 50px; }
 
         /* ---- Inline Radio Buttons for Design Variant ---- */
         .module-row .variant-radios {
@@ -1559,6 +1609,7 @@
 
             <div class="ctrl-section" id="cardSettingsSection">
                 <h3>Card Settings</h3>
+                <div style="margin-bottom:6px;"><button onclick="openCardProperties('_global')" style="width:100%;padding:6px;background:#1a1a1a;border:1px solid #333;border-radius:6px;color:#aaa;font-size:10px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:0.5px;">Global Defaults</button></div>
                 <div class="ctrl-group" id="moduleListContainer"></div>
             </div>
 
@@ -1633,6 +1684,11 @@
                 <div class="card-props-header">
                     <span class="card-props-title" id="cardPropsTitle">Card Properties</span>
                     <button class="card-props-close" onclick="closeCardProperties()">&times;</button>
+                </div>
+                <div class="card-props-tabs">
+                    <button class="card-props-tab active" data-tab="header" onclick="switchPropsTab('header')">Header</button>
+                    <button class="card-props-tab" data-tab="styles" onclick="switchPropsTab('styles')">Styles</button>
+                    <button class="card-props-tab" data-tab="content" onclick="switchPropsTab('content')">Content</button>
                 </div>
                 <div class="card-props-body" id="cardPropsBody"></div>
             </div>
@@ -2394,6 +2450,14 @@
             .then(r => r.json())
             .then(data => {
                 CARDS_JSON_DATA = data;
+                const edits = getContentEdits();
+                Object.keys(edits).forEach(key => {
+                    const [modId, theme] = key.split('__');
+                    const entry = data.find(c => c.moduleId === modId && c.theme === theme);
+                    if (!entry) return;
+                    if (edits[key].full) entry.text.full = edits[key].full;
+                    if (edits[key].buttons) entry.text.buttons = edits[key].buttons.split(',').map(s => s.trim()).filter(Boolean);
+                });
                 CARD_CONTENT_INFO = buildCardContentInfo(data);
                 buildControllerList();
             })
@@ -2500,7 +2564,7 @@
         }
 
         // ─── CARD SETTINGS RENDERER (scoped to activeViewTheme via outer switcher) ──
-        const CARD_PROPERTY_GROUPS = [
+        const STYLE_PROPERTY_GROUPS = [
             { label: 'Border', props: [
                 { key: 'borderRadius', label: 'Corner Radius', min: 0, max: 32, step: 1, unit: 'px' },
                 { key: 'borderWidth', label: 'Border Width', min: 0, max: 4, step: 0.5, unit: 'px' },
@@ -2523,16 +2587,17 @@
             ]},
             { label: 'Background', props: [
                 { key: 'bgColor', label: 'Background Color', type: 'text' }
-            ]},
-            { label: 'Image', props: [
-                { key: 'imageBorderRadius', label: 'Image Border Radius', min: 0, max: 24, step: 1, unit: 'px' }
-            ]},
+            ]}
+        ];
+        const HEADER_PROPERTY_GROUPS = [
             { label: 'Heading', props: [
                 { key: 'headingEyebrow', label: 'Eyebrow Text', type: 'text' },
                 { key: 'headingTitle', label: 'Title Text', type: 'text' },
                 { key: 'headingLinkPage', label: 'Link Page', type: 'text' }
             ]}
         ];
+        const CARD_PROPERTY_GROUPS = [...STYLE_PROPERTY_GROUPS, { label: 'Image', props: [{ key: 'imageBorderRadius', label: 'Image Border Radius', min: 0, max: 24, step: 1, unit: 'px' }] }, ...HEADER_PROPERTY_GROUPS];
+        let activePropsTab = 'header';
         const MODULE_HEADING_DEFAULTS = {
             'limited-time-deal': { eyebrow: 'OFFER', title: 'Limited Time', linkPage: 'deals-page' },
             'order-again': { eyebrow: 'REORDER', title: 'Order Again', linkPage: 'menu-page' },
@@ -2546,11 +2611,11 @@
             'stories': { eyebrow: 'COMMUNITY', title: 'Stories', linkPage: '' }
         };
 
-        function renderModuleSettingsHTML(moduleId, config) {
+        function renderPropertyGroupsHTML(moduleId, config, groups) {
             const h = window.headingOverrides[activeViewTheme] && window.headingOverrides[activeViewTheme][moduleId] ? window.headingOverrides[activeViewTheme][moduleId] : null;
             const d = MODULE_HEADING_DEFAULTS[moduleId] || { eyebrow: '', title: '', linkPage: '' };
             const headingKeys = { headingEyebrow: d.eyebrow, headingTitle: d.title, headingLinkPage: d.linkPage };
-            return CARD_PROPERTY_GROUPS.map(group => `
+            return (groups || CARD_PROPERTY_GROUPS).map(group => `
                 <div style="margin-bottom:8px;">
                     <div style="font-size:10px;font-weight:700;color:#aaa;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;">${group.label}</div>
                     ${group.props.map(p => {
@@ -2585,39 +2650,103 @@
             `).join('');
         }
         let activeCardPropsId = null;
+        function getContentEdits() {
+            try { return JSON.parse(localStorage.getItem('cardContentEdits') || '{}'); } catch { return {}; }
+        }
+        function saveContentEdit(moduleId, theme, field, value) {
+            const edits = getContentEdits();
+            const key = `${moduleId}__${theme}`;
+            if (!edits[key]) edits[key] = {};
+            edits[key][field] = value;
+            localStorage.setItem('cardContentEdits', JSON.stringify(edits));
+            const entry = getCardJsonEntry(moduleId, theme);
+            if (entry) {
+                if (field === 'full') entry.text.full = value;
+                else if (field === 'buttons') entry.text.buttons = value.split(',').map(s => s.trim()).filter(Boolean);
+            }
+            CARD_CONTENT_INFO = buildCardContentInfo(CARDS_JSON_DATA);
+            buildControllerList();
+            renderAllViewports();
+        }
+        function exportCardsJson() {
+            const blob = new Blob([JSON.stringify(CARDS_JSON_DATA, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'cards.json';
+            a.click();
+        }
         function openCardProperties(moduleId) {
             const panel = document.getElementById('cardPropertiesPanel');
             const titleEl = document.getElementById('cardPropsTitle');
-            const bodyEl = document.getElementById('cardPropsBody');
-            if (!panel || !bodyEl) return;
+            if (!panel) return;
             activeCardPropsId = moduleId;
-            const mod = modulesConfigByTheme[activeViewTheme].find(m => m.id === moduleId);
-            const modName = mod ? mod.name : moduleId;
-            const cardNum = CARD_NUMBERS[moduleId] || '';
-            titleEl.textContent = cardNum + ' ' + modName;
+            if (moduleId === '_global') {
+                titleEl.textContent = 'Global Defaults';
+                activePropsTab = 'styles';
+            } else {
+                const mod = modulesConfigByTheme[activeViewTheme].find(m => m.id === moduleId);
+                const modName = mod ? mod.name : moduleId;
+                const cardNum = CARD_NUMBERS[moduleId] || '';
+                titleEl.textContent = cardNum + ' ' + modName;
+            }
+            renderPropsTabContent(moduleId);
+            panel.style.display = 'flex';
+            document.querySelectorAll('.card-props-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === activePropsTab));
+            document.querySelectorAll('.module-row').forEach(r => r.classList.remove('active-card'));
+            document.querySelectorAll('.module-row').forEach(r => {
+                if (r.querySelector(`.mod-info[onclick*="'${moduleId}'"]`)) r.classList.add('active-card');
+            });
+        }
+        function switchPropsTab(tab) {
+            activePropsTab = tab;
+            document.querySelectorAll('.card-props-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+            if (activeCardPropsId) renderPropsTabContent(activeCardPropsId);
+        }
+        function renderPropsTabContent(moduleId) {
+            const bodyEl = document.getElementById('cardPropsBody');
+            if (!bodyEl) return;
             const c = getModuleConfig(activeViewTheme, moduleId);
             const jsonEntry = getCardJsonEntry(moduleId, activeViewTheme);
             const screenshotHtml = jsonEntry && jsonEntry.screenshot
                 ? `<div style="margin-bottom:10px;border-radius:8px;overflow:hidden;border:1px solid #333;"><img src="cards-data/${jsonEntry.screenshot}" style="width:100%;display:block;" onerror="this.parentElement.style.display='none'"></div>` : '';
-            const contentHtml = jsonEntry ? `<div style="margin-bottom:10px;padding:8px;background:#1a1a1a;border-radius:6px;border:1px solid #2a2a2a;">
-                <div style="font-size:8px;font-weight:700;color:#666;text-transform:uppercase;margin-bottom:4px;">Content</div>
-                <div style="font-size:9px;color:#aaa;line-height:1.5;white-space:pre-line;">${(jsonEntry.text.full || '').split('\n').slice(0, 6).join('\n')}</div>
-                ${jsonEntry.text.buttons.length ? `<div style="margin-top:4px;display:flex;gap:3px;flex-wrap:wrap;">${jsonEntry.text.buttons.map(b => `<span style="font-size:7px;padding:2px 5px;background:rgba(59,130,246,0.15);color:#3b82f6;border-radius:3px;font-weight:600;">${b}</span>`).join('')}</div>` : ''}
-                ${jsonEntry.images.length ? `<div style="margin-top:4px;font-size:8px;color:#8b5cf6;">${jsonEntry.images.length} image${jsonEntry.images.length > 1 ? 's' : ''}</div>` : ''}
-            </div>` : '';
-            bodyEl.innerHTML = `
-                ${screenshotHtml}
-                ${contentHtml}
-                <div style="font-size:10px;color:#888;margin-bottom:10px;">Edit properties for this card in the active view.</div>
-                ${renderModuleSettingsHTML(moduleId, c)}
-                <button onclick="applyCardSettingsModule('${moduleId}')" style="width:100%;padding:10px;background:${VIEW_COLORS[activeViewTheme]};color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px;">Apply</button>
-            `;
-            panel.style.display = 'flex';
-            document.querySelectorAll('.module-row').forEach(r => r.classList.remove('active-card'));
-            const rows = document.querySelectorAll('.module-row');
-            rows.forEach(r => {
-                if (r.querySelector(`.mod-info[onclick*="'${moduleId}'"]`)) r.classList.add('active-card');
-            });
+
+            if (activePropsTab === 'header') {
+                bodyEl.innerHTML = `
+                    ${screenshotHtml}
+                    ${renderPropertyGroupsHTML(moduleId, c, HEADER_PROPERTY_GROUPS)}
+                    <button onclick="applyCardSettingsModule('${moduleId}')" style="width:100%;padding:10px;background:${VIEW_COLORS[activeViewTheme]};color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px;">Apply</button>
+                `;
+            } else if (activePropsTab === 'styles') {
+                bodyEl.innerHTML = `
+                    ${renderPropertyGroupsHTML(moduleId, c, [...STYLE_PROPERTY_GROUPS, { label: 'Image', props: [{ key: 'imageBorderRadius', label: 'Image Border Radius', min: 0, max: 24, step: 1, unit: 'px' }] }])}
+                    <button onclick="applyCardSettingsModule('${moduleId}')" style="width:100%;padding:10px;background:${VIEW_COLORS[activeViewTheme]};color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px;">Apply</button>
+                `;
+            } else if (activePropsTab === 'content') {
+                const fullText = jsonEntry ? jsonEntry.text.full || '' : '';
+                const buttons = jsonEntry ? (jsonEntry.text.buttons || []).join(', ') : '';
+                const images = jsonEntry ? jsonEntry.images || [] : [];
+                const badges = jsonEntry ? jsonEntry.text.badges || [] : [];
+                const headings = jsonEntry ? jsonEntry.text.headings || [] : [];
+                bodyEl.innerHTML = `
+                    ${screenshotHtml}
+                    <div style="font-size:8px;font-weight:700;color:#666;text-transform:uppercase;margin-bottom:6px;">Card Text</div>
+                    <div class="content-edit-row">
+                        <label>Text</label>
+                        <textarea id="contentEdit-full" onchange="saveContentEdit('${moduleId}','${activeViewTheme}','full',this.value)">${fullText.replace(/</g, '&lt;')}</textarea>
+                    </div>
+                    <div class="content-edit-row">
+                        <label>Buttons</label>
+                        <input type="text" id="contentEdit-buttons" value="${buttons}" onchange="saveContentEdit('${moduleId}','${activeViewTheme}','buttons',this.value)" placeholder="Comma-separated button labels">
+                    </div>
+                    ${headings.length ? `<div style="margin-bottom:6px;"><div style="font-size:8px;font-weight:700;color:#666;text-transform:uppercase;margin-bottom:3px;">Headings</div>${headings.map(h => `<span style="font-size:9px;color:#aaa;display:block;">${h}</span>`).join('')}</div>` : ''}
+                    ${badges.length ? `<div style="margin-bottom:6px;"><div style="font-size:8px;font-weight:700;color:#666;text-transform:uppercase;margin-bottom:3px;">Badges</div><div style="display:flex;gap:3px;flex-wrap:wrap;">${badges.map(b => `<span style="font-size:7px;padding:2px 5px;background:rgba(245,158,11,0.15);color:#f59e0b;border-radius:3px;font-weight:600;">${b}</span>`).join('')}</div></div>` : ''}
+                    <div style="font-size:8px;font-weight:700;color:#666;text-transform:uppercase;margin:8px 0 4px;">Images (${images.length})</div>
+                    ${images.length ? `<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px;">${images.map((img, i) => `<div style="border-radius:6px;overflow:hidden;border:1px solid #333;position:relative;"><img src="${img.src}" style="width:100%;display:block;height:50px;object-fit:cover;" onerror="this.style.display='none'"><div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);font-size:7px;color:#aaa;padding:2px 4px;text-align:center;">${img.alt || 'img_' + (i + 1)}</div></div>`).join('')}</div>` : '<div style="font-size:9px;color:#555;margin-bottom:8px;">No images</div>'}
+                    <div style="display:flex;gap:4px;margin-top:6px;">
+                        <button onclick="exportCardsJson()" style="flex:1;padding:8px;background:#2a2a2a;color:#aaa;border:1px solid #333;border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;">Export JSON</button>
+                    </div>
+                `;
+            }
         }
         function closeCardProperties() {
             const panel = document.getElementById('cardPropertiesPanel');
@@ -4040,13 +4169,21 @@ let iconHtml = iconFor(theme, iconName, isActive ? 'font-size:20px;' : 'font-siz
             return `<div style="${containerStyle3}">${itemsHtml3}</div>`;
         }
 
-        // ─── Announcement Strip──────────────────────────────
+        function getCardText(moduleId, theme) {
+            const entry = getCardJsonEntry(moduleId, theme);
+            if (entry && entry.text && entry.text.full) {
+                return entry.text.full.split('\n').filter(l => l.trim());
+            }
+            return null;
+        }
+
         // ─── Announcement Strip (Marquee) ──────────────────────────────
 function drawAnnouncementStrip(theme, style = 'default') {
             const isGlass = theme === 'glassmorphism';
             const isBrut = theme === 'neubrutalism';
 
-            const items = [
+            const jsonLines = getCardText('announcement-strip', theme);
+            const items = jsonLines ? jsonLines.map(t => ({ text: t, page: 'menu-page' })) : [
                 { text: 'Free delivery on orders $25+', page: 'menu-page' },
                 { text: 'New: Summer Smoothie Collection', page: 'menu-page' },
                 { text: 'Earn 2x points this weekend', page: 'rewards-page' },
@@ -6245,6 +6382,12 @@ function drawAnnouncementStrip(theme, style = 'default') {
         }
         // REAWADS AND MEMEBRSHIP
         function drawLoyaltyCard(theme, style = 'default') {
+            const jsonLines = getCardText('loyalty-card', theme);
+            const lProgramName = jsonLines ? jsonLines[0] : 'Minerva Points';
+            const lPoints = jsonLines ? jsonLines[1] : '61,749';
+            const lBalanceLabel = jsonLines ? jsonLines[2] : 'Available balance';
+            const lTier = jsonLines ? jsonLines[3] : 'Gold Tier';
+            const lValue = jsonLines ? jsonLines[4] : '= $61.75 value';
             const isG = theme === 'glassmorphism';
             const isB = theme === 'neubrutalism';
 
@@ -6259,13 +6402,13 @@ function drawAnnouncementStrip(theme, style = 'default') {
                     <div onclick="navigateToPage('${theme}','rewards-page')" style="background:${cardBg};border-radius:16px;padding:20px;${cardShadow}text-align:center;cursor:pointer;">
                         <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:6px;">
                             <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#FFD700,#FFA000);display:flex;align-items:center;justify-content:center;">${iconFor(theme, 'crown', 'color:#fff;font-size:14px;')}</div>
-                            <span style="font-size:11px;font-weight:600;color:${subColor};letter-spacing:1px;">Minerva Points</span>
+                            <span style="font-size:11px;font-weight:600;color:${subColor};letter-spacing:1px;">${lProgramName}</span>
                         </div>
-                        <div style="font-size:42px;font-weight:900;color:${textColor};letter-spacing:-1px;line-height:1;font-variant-numeric:tabular-nums;">61,749</div>
-                        <div style="font-size:10px;color:${subColor};margin-top:4px;">Available balance</div>
+                        <div style="font-size:42px;font-weight:900;color:${textColor};letter-spacing:-1px;line-height:1;font-variant-numeric:tabular-nums;">${lPoints}</div>
+                        <div style="font-size:10px;color:${subColor};margin-top:4px;">${lBalanceLabel}</div>
                         <div style="margin-top:12px;display:flex;align-items:center;justify-content:center;gap:12px;padding-top:12px;border-top:1px solid ${isG ? 'rgba(255,255,255,0.08)' : (isB ? '#E0D5C8' : '#f0f0f0')};">
-                            <span style="font-size:9px;color:${subColor};display:flex;align-items:center;gap:4px;">${iconFor(theme, 'star', 'font-size:10px;color:#FFC200;')} Gold Tier</span>
-                            <span style="font-size:9px;color:${subColor};">= $61.75 value</span>
+                            <span style="font-size:9px;color:${subColor};display:flex;align-items:center;gap:4px;">${iconFor(theme, 'star', 'font-size:10px;color:#FFC200;')} ${lTier}</span>
+                            <span style="font-size:9px;color:${subColor};">${lValue}</span>
                         </div>
                     </div>
                 </div>`;
@@ -6327,6 +6470,10 @@ function drawAnnouncementStrip(theme, style = 'default') {
         }
         // FINISH YOUR ORDER
         function drawFinishYourOrder(theme, style = 'default') {
+            const jsonLines = getCardText('finish-your-order', theme);
+            const fTitle = jsonLines ? jsonLines[0] : 'Cart Waiting';
+            const fSubtitle = jsonLines ? jsonLines[1] : '2 items in your cart';
+            const fButton = jsonLines ? jsonLines[2] : 'Checkout';
             if (style === 'option 1') {
                 // Urgent bottom banner with gradient, item preview, timer
                 const isGlass = theme === 'glassmorphism';
@@ -6382,11 +6529,11 @@ function drawAnnouncementStrip(theme, style = 'default') {
                     <div style="display:flex;align-items:center;gap:12px;">
                         <div style="width:42px;height:42px;border-radius:12px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;">${iconFA('shopping-cart', 'text-[#1A1A1A]')}</div>
                         <div>
-                            <div style="font-size:12px;font-weight:700;color:var(--text-primary);">Cart Waiting</div>
-                            <div style="font-size:10px;color:var(--text-secondary);">2 items in your cart</div>
+                            <div style="font-size:12px;font-weight:700;color:var(--text-primary);">${fTitle}</div>
+                            <div style="font-size:10px;color:var(--text-secondary);">${fSubtitle}</div>
                         </div>
                     </div>
-                    <button onclick="navigateToPage('${theme}','cart-page')" style="background:#1A1A1A;color:#fff;font-size:10px;font-weight:700;padding:8px 16px;border-radius:9999px;border:none;cursor:pointer;display:flex;align-items:center;gap:4px;">Checkout ${iconFA('arrow-right', 'text-[#fff]')}</button>
+                    <button onclick="navigateToPage('${theme}','cart-page')" style="background:#1A1A1A;color:#fff;font-size:10px;font-weight:700;padding:8px 16px;border-radius:9999px;border:none;cursor:pointer;display:flex;align-items:center;gap:4px;">${fButton} ${iconFA('arrow-right', 'text-[#fff]')}</button>
                 </div>`;
             } else if (theme === 'glassmorphism') {
                 return `
@@ -6394,11 +6541,11 @@ function drawAnnouncementStrip(theme, style = 'default') {
                     <div style="display:flex;align-items:center;gap:12px;">
                         <div style="width:42px;height:42px;border-radius:12px;background:rgba(255,107,157,0.12);border:1px solid rgba(255,107,157,0.2);display:flex;align-items:center;justify-content:center;">${iconMaterial('shopping-bag-line', 'color:#00BFA5;')}</div>
                         <div>
-                            <div style="font-size:12px;font-weight:700;color:#fff;">Cart Waiting</div>
-                            <div style="font-size:10px;color:var(--text-secondary);">2 items in your cart</div>
+                            <div style="font-size:12px;font-weight:700;color:#fff;">${fTitle}</div>
+                            <div style="font-size:10px;color:var(--text-secondary);">${fSubtitle}</div>
                         </div>
                     </div>
-                    <button onclick="navigateToPage('${theme}','cart-page')" style="background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:8px 16px;border-radius:9999px;border:none;cursor:pointer;display:flex;align-items:center;gap:4px;">Checkout ${iconMaterial('arrow-right-s-line', 'color:#fff;')}</button>
+                    <button onclick="navigateToPage('${theme}','cart-page')" style="background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:8px 16px;border-radius:9999px;border:none;cursor:pointer;display:flex;align-items:center;gap:4px;">${fButton} ${iconMaterial('arrow-right-s-line', 'color:#fff;')}</button>
                 </div>`;
             } else {
                 return `
@@ -6407,11 +6554,11 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         <div style="display:flex;align-items:center;gap:10px;">
                             <div style="width:38px;height:38px;border-radius:10px;background:var(--pill-bg);display:flex;align-items:center;justify-content:center;">${iconBS('shopping-cart', 'text-[#00615F]')}</div>
                             <div>
-                                <div style="font-size:12px;font-weight:700;color:#3D3229;">Cart Waiting</div>
-                                <div style="font-size:10px;color:var(--text-secondary);">2 items in your cart</div>
+                                <div style="font-size:12px;font-weight:700;color:#3D3229;">${fTitle}</div>
+                                <div style="font-size:10px;color:var(--text-secondary);">${fSubtitle}</div>
                             </div>
                         </div>
-                        <button onclick="navigateToPage('${theme}','cart-page')" style="background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:8px 16px;border-radius:10px;border:none;cursor:pointer;display:flex;align-items:center;gap:4px;">Checkout ${iconBS('arrow-right', 'text-[#fff]')}</button>
+                        <button onclick="navigateToPage('${theme}','cart-page')" style="background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:8px 16px;border-radius:10px;border:none;cursor:pointer;display:flex;align-items:center;gap:4px;">${fButton} ${iconBS('arrow-right', 'text-[#fff]')}</button>
                     </div>
                 </div>`;
             }
@@ -6473,6 +6620,11 @@ function drawAnnouncementStrip(theme, style = 'default') {
 
         //  LIMITED TIME OFFER
         function drawLimitedTimeDeal(theme, style = 'default') {
+            const ltdLines = getCardText('limited-time-deal', theme);
+            const ltdItemName = ltdLines ? ltdLines[5] : 'Chocolate Dream';
+            const ltdItemDesc = ltdLines ? ltdLines[6] : 'Rich Belgian chocolate';
+            const ltdOldPrice = ltdLines ? ltdLines[7] : '$8.50';
+            const ltdNewPrice = ltdLines ? ltdLines[8] : '$5.50';
             const val = stateSimulation.countdown;
             const isGlass = theme === 'glassmorphism';
             const isBrut = theme === 'neubrutalism';
@@ -6512,12 +6664,12 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         <div style="padding:12px 14px;">
                             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
                                 <div>
-                                    <div style="font-size:13px;font-weight:700;color:var(--text-primary);">Chocolate Dream</div>
-                                    <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">Rich Belgian chocolate</div>
+                                    <div style="font-size:13px;font-weight:700;color:var(--text-primary);">${ltdItemName}</div>
+                                    <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">${ltdItemDesc}</div>
                                 </div>
                                 <div style="text-align:right;">
-                                    <div style="font-size:10px;color:var(--text-secondary);text-decoration:line-through;">$8.50</div>
-                                    <div style="font-size:18px;font-weight:800;color:var(--accent);">$5.50</div>
+                                    <div style="font-size:10px;color:var(--text-secondary);text-decoration:line-through;">${ltdOldPrice}</div>
+                                    <div style="font-size:18px;font-weight:800;color:var(--accent);">${ltdNewPrice}</div>
                                 </div>
                             </div>
                             <div style="height:6px;background:var(--pill-bg);border-radius:3px;overflow:hidden;margin-bottom:4px;">
@@ -6546,7 +6698,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         <div style="width:32px;height:32px;border-radius:8px;background:${isGlass ? 'rgba(255,213,79,0.12)' : isBrut ? 'var(--pill-bg)' : 'var(--accent-light)'};display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent);">${clockIcon}</div>
                         <div style="flex:1;min-width:0;">
                             <div style="font-size:11px;font-weight:700;color:var(--text-primary);">Limited Time Offer</div>
-                            <div style="font-size:9px;color:var(--text-secondary);">40% off Chocolate Dream</div>
+                            <div style="font-size:9px;color:var(--text-secondary);">40% off ${ltdItemName}</div>
                         </div>
                         <div style="background:${timerBg};border-radius:8px;padding:5px 10px;font-size:14px;font-weight:800;color:var(--accent);font-family:monospace;white-space:nowrap;">${val}:00</div>
                         <span onclick="navigateToPage('${theme}','product-detail-page')" style="color:var(--text-secondary);font-size:16px;cursor:pointer;">${arrowIcon}</span>
@@ -6570,12 +6722,12 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         </div>
                         <div style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
                             <div>
-                                <div style="font-size:14px;font-weight:700;color:var(--text-primary);">Chocolate Dream</div>
-                                <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">Rich Belgian chocolate</div>
+                                <div style="font-size:14px;font-weight:700;color:var(--text-primary);">${ltdItemName}</div>
+                                <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">${ltdItemDesc}</div>
                             </div>
                             <div style="display:flex;align-items:center;gap:8px;">
-                                <span style="font-size:12px;color:var(--text-secondary);text-decoration:line-through;">$8.50</span>
-                                <span style="font-size:16px;font-weight:800;color:var(--text-primary);">$5.50</span>
+                                <span style="font-size:12px;color:var(--text-secondary);text-decoration:line-through;">${ltdOldPrice}</span>
+                                <span style="font-size:16px;font-weight:800;color:var(--text-primary);">${ltdNewPrice}</span>
                             </div>
                         </div>
                     </div>
@@ -6610,12 +6762,12 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         </div>
                         <div style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
                             <div>
-                                <div style="font-size:14px;font-weight:700;color:#3D3229;">Chocolate Dream</div>
-                                <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">Rich Belgian chocolate</div>
+                                <div style="font-size:14px;font-weight:700;color:#3D3229;">${ltdItemName}</div>
+                                <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">${ltdItemDesc}</div>
                             </div>
                             <div style="display:flex;align-items:center;gap:8px;">
-                                <span style="font-size:12px;color:var(--text-secondary);text-decoration:line-through;">$8.50</span>
-                                <span style="font-size:16px;font-weight:800;color:var(--accent);">$5.50</span>
+                                <span style="font-size:12px;color:var(--text-secondary);text-decoration:line-through;">${ltdOldPrice}</span>
+                                <span style="font-size:16px;font-weight:800;color:var(--accent);">${ltdNewPrice}</span>
                             </div>
                         </div>
                     </div>
@@ -6624,6 +6776,18 @@ function drawAnnouncementStrip(theme, style = 'default') {
         }
         // ORDER AGIN
         function drawOrderAgain(theme, style = 'default') {
+            const oaLines = getCardText('order-again', theme);
+            const oaItems = oaLines ? [
+                { name: oaLines[3] || 'Orange Juice', price: oaLines[4] || '$5.99' },
+                { name: oaLines[6] || 'Cheesecake', price: oaLines[7] || '$7.99' },
+                { name: oaLines[9] || 'Chocolate Cake', price: oaLines[10] || '$9.00' },
+                { name: oaLines[12] || 'Iced Latte', price: oaLines[13] || '$4.99' }
+            ] : [
+                { name: 'Orange Juice', price: '$5.99' },
+                { name: 'Cheesecake', price: '$7.99' },
+                { name: 'Chocolate Cake', price: '$9.00' },
+                { name: 'Iced Latte', price: '$4.99' }
+            ];
             const isGlass = theme === 'glassmorphism';
             const isBrut = theme === 'neubrutalism';
             const addIcon = isGlass ? iconMaterial('add-line', 'color:#fff;') : isBrut ? iconBS('plus', 'text-[#fff]') : iconFA('plus', 'text-[#fff]');
@@ -7180,6 +7344,10 @@ function drawAnnouncementStrip(theme, style = 'default') {
         }
 
         function drawDealsPromos(theme, style = 'default') {
+            const dpLines = getCardText('deals-promos', theme);
+            const dpTitle = dpLines ? dpLines[3] : 'Food Package Offer';
+            const dpPercent = dpLines ? dpLines[4] : '25%';
+            const dpLabel = dpLines ? dpLines[5] : 'DISCOUNT';
             if (style === 'option 1') {
                 return `
                 <div style="padding:0 16px 16px;">
@@ -7221,9 +7389,9 @@ function drawAnnouncementStrip(theme, style = 'default') {
                     ${sectionHeader(theme, 'default', 'OFFERS', 'Deals', 'deals-page')}
                     <div onclick="navigateToPage('${theme}','menu-page')" style="background:linear-gradient(135deg,var(--text-primary),var(--accent));border-radius:24px;padding:24px;color:#fff;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden;min-height:140px;cursor:pointer;">
                         <div style="z-index:1;max-width:55%;">
-                            <div style="font-size:16px;font-weight:700;margin-bottom:8px;">Food Package Offer</div>
-                            <div style="font-size:48px;font-weight:900;line-height:1;">25%</div>
-                            <div style="font-size:18px;font-weight:700;letter-spacing:2px;">DISCOUNT</div>
+                            <div style="font-size:16px;font-weight:700;margin-bottom:8px;">${dpTitle}</div>
+                            <div style="font-size:48px;font-weight:900;line-height:1;">${dpPercent}</div>
+                            <div style="font-size:18px;font-weight:700;letter-spacing:2px;">${dpLabel}</div>
                         </div>
                         <div style="position:absolute;right:16px;top:50%;transform:translateY(-50%);width:140px;height:120px;">
                             <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80" style="width:100%;height:100%;object-fit:cover;border-radius:16px;" alt="food">
@@ -7236,9 +7404,9 @@ function drawAnnouncementStrip(theme, style = 'default') {
                     ${sectionHeader('glassmorphism', 'default', 'OFFERS', 'Deals', 'deals-page')}
                     <div onclick="navigateToPage('${theme}','menu-page')" style="background:linear-gradient(135deg,var(--accent),#8A6438);border-radius:24px;padding:24px;color:#fff;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden;min-height:140px;border:1px solid var(--border-color);cursor:pointer;">
                         <div style="z-index:1;max-width:55%;">
-                            <div style="font-size:16px;font-weight:700;margin-bottom:8px;">Food Package Offer</div>
-                            <div style="font-size:48px;font-weight:900;line-height:1;">25%</div>
-                            <div style="font-size:18px;font-weight:700;letter-spacing:2px;">DISCOUNT</div>
+                            <div style="font-size:16px;font-weight:700;margin-bottom:8px;">${dpTitle}</div>
+                            <div style="font-size:48px;font-weight:900;line-height:1;">${dpPercent}</div>
+                            <div style="font-size:18px;font-weight:700;letter-spacing:2px;">${dpLabel}</div>
                         </div>
                         <div style="position:absolute;right:16px;top:50%;transform:translateY(-50%);width:140px;height:120px;">
                             <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80" style="width:100%;height:100%;object-fit:cover;border-radius:16px;filter:saturate(1.2);" alt="food">
@@ -7251,9 +7419,9 @@ function drawAnnouncementStrip(theme, style = 'default') {
                     ${sectionHeader('neubrutalism', 'default', 'OFFERS', 'Deals', 'deals-page')}
                     <div onclick="navigateToPage('${theme}','menu-page')" style="background:linear-gradient(135deg,var(--accent),#A0845C);border:1px solid var(--border-color);border-radius:20px;padding:24px;color:#fff;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden;min-height:140px;box-shadow:0 4px 16px rgba(61,50,41,0.1);cursor:pointer;">
                         <div style="z-index:1;max-width:55%;">
-                            <div style="font-size:16px;font-weight:700;margin-bottom:8px;">Food Package Offer</div>
-                            <div style="font-size:48px;font-weight:900;line-height:1;">25%</div>
-                            <div style="font-size:18px;font-weight:700;letter-spacing:2px;">DISCOUNT</div>
+                            <div style="font-size:16px;font-weight:700;margin-bottom:8px;">${dpTitle}</div>
+                            <div style="font-size:48px;font-weight:900;line-height:1;">${dpPercent}</div>
+                            <div style="font-size:18px;font-weight:700;letter-spacing:2px;">${dpLabel}</div>
                         </div>
                         <div style="position:absolute;right:16px;top:50%;transform:translateY(-50%);width:140px;height:120px;">
                             <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80" style="width:100%;height:100%;object-fit:cover;border-radius:14px;" alt="food">
@@ -7264,6 +7432,8 @@ function drawAnnouncementStrip(theme, style = 'default') {
         }
 
         function drawBirthdayBanner(theme, style = 'default') {
+            const bbLines = getCardText('birthday-reward-banner', theme);
+            const bbText = bbLines ? bbLines[0] : '${bbText}';
             if (style === 'option 1') {
                 const icon = theme === 'neumorphism' ? iconFA('cake', 'text-white') : theme === 'glassmorphism' ? iconMaterial('cake-2-line', 'color:#fff;') : iconBS('cake', 'text-white');
                 const bg = theme === 'glassmorphism'
@@ -7307,7 +7477,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                 return `
                 <div onclick="navigateToPage('${theme}','rewards-page')" style="margin:0 16px 16px;padding:14px;background:var(--card-bg);border-radius:16px;box-shadow:var(--card-shadow);text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;">
                     ${iconFA('cake', 'text-[#1A1A1A]')}
-                    <div style="font-size:11px;font-weight:700;color:var(--text-primary);">Happy Birthday! Your free treat is ready</div>
+                    <div style="font-size:11px;font-weight:700;color:var(--text-primary);">${bbText}</div>
                     ${iconFA('gift', 'text-[#FFC200]')}
                 </div>`;
             } else if (theme === 'glassmorphism') {
@@ -7316,7 +7486,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                     <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:var(--accent-light);filter:blur(20px);"></div>
                     <div style="display:flex;align-items:center;justify-content:center;gap:8px;position:relative;z-index:1;">
                         ${iconMaterial('cake-2-line', 'color:var(--accent);')}
-                        <div style="font-size:11px;font-weight:700;color:#fff;">Happy Birthday! Your free treat is ready</div>
+                        <div style="font-size:11px;font-weight:700;color:#fff;">${bbText}</div>
                         ${iconMaterial('gift-line', 'color:var(--highlight);')}
                     </div>
                 </div>`;
@@ -7324,21 +7494,23 @@ function drawAnnouncementStrip(theme, style = 'default') {
                 return `
                 <div onclick="navigateToPage('${theme}','rewards-page')" style="margin:0 16px 16px;padding:14px;background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 2px 8px rgba(61,50,41,0.06);">
                     <div style="width:32px;height:32px;border-radius:10px;background:var(--pill-bg);display:flex;align-items:center;justify-content:center;">${iconBS('gift', 'color:var(--highlight);')}</div>
-                    <div style="font-size:11px;font-weight:700;color:var(--text-primary);">Happy Birthday! Your free treat is ready</div>
+                    <div style="font-size:11px;font-weight:700;color:var(--text-primary);">${bbText}</div>
                 </div>`;
             }
         }
 
         function drawCategoryTiles(theme, style = 'default') {
+            const ctLines = getCardText('category-tiles', theme);
+            const catNames = ctLines ? [ctLines[3], ctLines[8], ctLines[13], ctLines[18], ctLines[23], ctLines[28], ctLines[33], ctLines[38]] : null;
             const cats = [
-                { name: 'Bakery', img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=200&q=80', count: 24, cal: '320', time: '25 min' },
-                { name: 'Brew', img: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=200&q=80', count: 18, cal: '150', time: '5 min' },
-                { name: 'Sweets', img: 'https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=200&q=80', count: 31, cal: '450', time: '30 min' },
-                { name: 'Bundles', img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=200&q=80', count: 12, cal: '600', time: '15 min' },
-                { name: 'Pizza', img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80', count: 15, cal: '850', time: '20 min' },
-                { name: 'Salads', img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=200&q=80', count: 9, cal: '180', time: '10 min' },
-                { name: 'Burgers', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80', count: 22, cal: '720', time: '15 min' },
-                { name: 'Sushi', img: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=200&q=80', count: 14, cal: '350', time: '12 min' }
+                { name: catNames ? catNames[0] : 'Bakery', img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=200&q=80', count: 24, cal: '320', time: '25 min' },
+                { name: catNames ? catNames[1] : 'Brew', img: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=200&q=80', count: 18, cal: '150', time: '5 min' },
+                { name: catNames ? catNames[2] : 'Sweets', img: 'https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=200&q=80', count: 31, cal: '450', time: '30 min' },
+                { name: catNames ? catNames[3] : 'Bundles', img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=200&q=80', count: 12, cal: '600', time: '15 min' },
+                { name: catNames ? catNames[4] : 'Pizza', img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80', count: 15, cal: '850', time: '20 min' },
+                { name: catNames ? catNames[5] : 'Salads', img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=200&q=80', count: 9, cal: '180', time: '10 min' },
+                { name: catNames ? catNames[6] : 'Burgers', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80', count: 22, cal: '720', time: '15 min' },
+                { name: catNames ? catNames[7] : 'Sushi', img: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=200&q=80', count: 14, cal: '350', time: '12 min' }
             ];
             const badge = (cal, time) => `<div style="display:flex;gap:6px;">
                 <span style="display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:600;"><span style="font-size:10px;">🔥</span>${cal}</span>
@@ -7613,6 +7785,11 @@ function drawAnnouncementStrip(theme, style = 'default') {
         }
 
         function drawFeaturedItems(theme, style = 'default') {
+            const fiLines = getCardText('featured-items', theme);
+            const fiPromo = fiLines ? fiLines[3] : 'Free Delivery';
+            const fiName = fiLines ? fiLines[4] : 'Burger King';
+            const fiRating = fiLines ? fiLines[5] : '4.9';
+            const fiTime = fiLines ? fiLines[6] : '20-25 min';
             const img = 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80';
             const img2 = 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80';
             if (style === 'option 1') {
@@ -7624,14 +7801,14 @@ function drawAnnouncementStrip(theme, style = 'default') {
                             <img src="${img}" style="width:100%;height:100%;object-fit:cover;display:block;" alt="Burger King">
                             <div style="position:absolute;inset:0;background:linear-gradient(transparent 35%,rgba(0,0,0,0.75) 100%);"></div>
                             <div style="position:absolute;bottom:0;left:0;right:0;padding:12px;">
-                                <div style="color:#fff;font-size:15px;font-weight:800;text-shadow:0 1px 4px rgba(0,0,0,0.3);">Burger King</div>
+                                <div style="color:#fff;font-size:15px;font-weight:800;text-shadow:0 1px 4px rgba(0,0,0,0.3);">${fiName}</div>
                                 <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
-                                    <span style="display:flex;align-items:center;gap:2px;color:#FFD700;font-size:10px;font-weight:700;">${iconFA('star', '')} 4.9</span>
-                                    <span style="color:rgba(255,255,255,0.7);font-size:9px;">20-25 min</span>
+                                    <span style="display:flex;align-items:center;gap:2px;color:#FFD700;font-size:10px;font-weight:700;">${iconFA('star', '')} ${fiRating}</span>
+                                    <span style="color:rgba(255,255,255,0.7);font-size:9px;">${fiTime}</span>
                                 </div>
                             </div>
                             <div style="position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.9);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);">${iconFA('bookmark', 'text-[#1A1A1A]')}</div>
-                            <div style="position:absolute;top:8px;left:8px;background:var(--accent);color:#fff;font-size:8px;font-weight:700;padding:3px 8px;border-radius:6px;">Free Delivery</div>
+                            <div style="position:absolute;top:8px;left:8px;background:var(--accent);color:#fff;font-size:8px;font-weight:700;padding:3px 8px;border-radius:6px;">${fiPromo}</div>
                         </div>
                         <div onclick="navigateToPage('${theme}','product-detail-page')" style="flex:1;border-radius:var(--card-radius);overflow:hidden;position:relative;height:170px;box-shadow:var(--card-shadow);cursor:pointer;">
                             <img src="${img2}" style="width:100%;height:100%;object-fit:cover;display:block;" alt="Pizza">
@@ -7656,11 +7833,11 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         <div style="position:absolute;inset:0;background:linear-gradient(transparent 30%,rgba(0,0,0,0.8) 100%);"></div>
                         <div style="position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.2);">${iconFA('heart', 'text-[#1A1A1A]')}</div>
                         <div style="position:absolute;bottom:0;left:0;right:0;padding:16px;">
-                            <div style="color:#fff;font-size:20px;font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,0.4);">Burger King</div>
+                            <div style="color:#fff;font-size:20px;font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,0.4);">${fiName}</div>
                             <div style="display:flex;align-items:center;gap:10px;margin-top:6px;">
-                                <span style="display:flex;align-items:center;gap:4px;color:#FFD700;font-size:12px;font-weight:700;">${iconFA('star', '')} 4.9</span>
-                                <span style="color:rgba(255,255,255,0.7);font-size:11px;">20-25 min</span>
-                                <span style="margin-left:auto;background:var(--accent);color:#fff;font-size:9px;font-weight:700;padding:4px 12px;border-radius:20px;">Free Delivery</span>
+                                <span style="display:flex;align-items:center;gap:4px;color:#FFD700;font-size:12px;font-weight:700;">${iconFA('star', '')} ${fiRating}</span>
+                                <span style="color:rgba(255,255,255,0.7);font-size:11px;">${fiTime}</span>
+                                <span style="margin-left:auto;background:var(--accent);color:#fff;font-size:9px;font-weight:700;padding:4px 12px;border-radius:20px;">${fiPromo}</span>
                             </div>
                             <div style="display:flex;gap:6px;margin-top:10px;">
                                 <span style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);padding:4px 12px;border-radius:20px;">Burger</span>
@@ -7678,14 +7855,14 @@ function drawAnnouncementStrip(theme, style = 'default') {
                     <div onclick="navigateToPage('${theme}','product-detail-page')" style="background:var(--card-bg);border-radius:var(--card-radius);overflow:hidden;box-shadow:var(--card-shadow);border:1px solid var(--border-color);">
                         <div style="position:relative;">
                             <img src="${img}" style="width:100%;height:180px;object-fit:cover;display:block;" alt="Burger King">
-                            <div style="position:absolute;top:12px;left:12px;background:var(--accent);color:#fff;padding:5px 12px;border-radius:8px;font-size:10px;font-weight:700;">Free Delivery</div>
+                            <div style="position:absolute;top:12px;left:12px;background:var(--accent);color:#fff;padding:5px 12px;border-radius:8px;font-size:10px;font-weight:700;">${fiPromo}</div>
                             <div style="position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.08);">${iconFA('bookmark', 'text-[#1A1A1A]')}</div>
                         </div>
                         <div style="padding:16px;">
-                            <div style="font-size:20px;font-weight:700;color:var(--text-primary);letter-spacing:-0.5px;">Burger King</div>
+                            <div style="font-size:20px;font-weight:700;color:var(--text-primary);letter-spacing:-0.5px;">${fiName}</div>
                             <div style="display:flex;align-items:center;gap:12px;margin-top:6px;">
-                                <span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:#FFC200;">${iconFA('star', 'text-[#FFC200]')} 4.9</span>
-                                <span style="font-size:11px;color:var(--text-secondary);display:flex;align-items:center;gap:4px;">${iconFA('clock', 'text-[#999]')} 20-25 min</span>
+                                <span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:#FFC200;">${iconFA('star', 'text-[#FFC200]')} ${fiRating}</span>
+                                <span style="font-size:11px;color:var(--text-secondary);display:flex;align-items:center;gap:4px;">${iconFA('clock', 'text-[#999]')} ${fiTime}</span>
                             </div>
                             <div style="display:flex;gap:6px;margin-top:10px;">
                                 <span style="font-size:10px;font-weight:600;color:var(--text-secondary);background:var(--pill-bg);padding:5px 12px;border-radius:8px;">Burger</span>
@@ -7703,14 +7880,14 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         <div style="position:relative;">
                             <img src="${img}" style="width:100%;height:180px;object-fit:cover;display:block;filter:saturate(1.3) brightness(1.05);" alt="Burger King">
                             <div style="position:absolute;inset:0;background:linear-gradient(transparent 50%,rgba(0,0,0,0.3) 100%);"></div>
-                            <div style="position:absolute;top:12px;left:12px;background:var(--accent);color:#fff;padding:5px 12px;border-radius:8px;font-size:10px;font-weight:700;box-shadow:0 2px 12px rgba(76,175,80,0.3);">Free Delivery</div>
+                            <div style="position:absolute;top:12px;left:12px;background:var(--accent);color:#fff;padding:5px 12px;border-radius:8px;font-size:10px;font-weight:700;box-shadow:0 2px 12px rgba(76,175,80,0.3);">${fiPromo}</div>
                             <div style="position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(26,26,26,0.6);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;border:1px solid var(--border-color);">${iconMaterial('bookmark-line', 'color:var(--accent);')}</div>
                         </div>
                         <div style="padding:16px;">
-                            <div style="font-size:20px;font-weight:700;color:var(--text-primary);">Burger King</div>
+                            <div style="font-size:20px;font-weight:700;color:var(--text-primary);">${fiName}</div>
                             <div style="display:flex;align-items:center;gap:12px;margin-top:6px;">
-                                <span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:var(--highlight);">${iconMaterial('star-fill', 'color:var(--highlight);')} 4.9</span>
-                                <span style="font-size:11px;color:var(--text-secondary);display:flex;align-items:center;gap:4px;">${iconMaterial('time-line', 'color:var(--text-secondary);')} 20-25 min</span>
+                                <span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:var(--highlight);">${iconMaterial('star-fill', 'color:var(--highlight);')} ${fiRating}</span>
+                                <span style="font-size:11px;color:var(--text-secondary);display:flex;align-items:center;gap:4px;">${iconMaterial('time-line', 'color:var(--text-secondary);')} ${fiTime}</span>
                             </div>
                             <div style="display:flex;gap:6px;margin-top:10px;">
                                 <span style="font-size:10px;font-weight:600;color:var(--text-secondary);background:var(--card-bg);border:1px solid var(--border-color);padding:5px 12px;border-radius:8px;">Burger</span>
@@ -7727,14 +7904,14 @@ function drawAnnouncementStrip(theme, style = 'default') {
                     <div onclick="navigateToPage('${theme}','product-detail-page')" style="background:var(--card-bg);border:1.5px solid var(--border-color);border-radius:var(--card-radius);overflow:hidden;box-shadow:3px 3px 0 var(--border-color);">
                         <div style="position:relative;">
                             <img src="${img}" style="width:100%;height:180px;object-fit:cover;display:block;" alt="Burger King">
-                            <div style="position:absolute;top:10px;left:10px;background:var(--accent);color:#fff;padding:4px 12px;border-radius:8px;font-size:10px;font-weight:700;box-shadow:2px 2px 0 rgba(0,97,95,0.3);">Free Delivery</div>
+                            <div style="position:absolute;top:10px;left:10px;background:var(--accent);color:#fff;padding:4px 12px;border-radius:8px;font-size:10px;font-weight:700;box-shadow:2px 2px 0 rgba(0,97,95,0.3);">${fiPromo}</div>
                             <div style="position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:8px;background:var(--pill-bg);display:flex;align-items:center;justify-content:center;border:1px solid var(--border-color);">${iconBS('bookmark', 'color:var(--accent);')}</div>
                         </div>
                         <div style="padding:16px;">
-                            <div style="font-size:20px;font-weight:800;color:var(--text-primary);letter-spacing:-0.3px;">Burger King</div>
+                            <div style="font-size:20px;font-weight:800;color:var(--text-primary);letter-spacing:-0.3px;">${fiName}</div>
                             <div style="display:flex;align-items:center;gap:12px;margin-top:6px;">
-                                <span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:#FFC200;">${iconBS('star', 'text-[#FFC200]')} 4.9</span>
-                                <span style="font-size:11px;color:var(--accent);display:flex;align-items:center;gap:4px;font-weight:600;">${iconBS('clock', 'color:var(--accent);')} 20-25 min</span>
+                                <span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:#FFC200;">${iconBS('star', 'text-[#FFC200]')} ${fiRating}</span>
+                                <span style="font-size:11px;color:var(--accent);display:flex;align-items:center;gap:4px;font-weight:600;">${iconBS('clock', 'color:var(--accent);')} ${fiTime}</span>
                             </div>
                             <div style="display:flex;gap:6px;margin-top:10px;">
                                 <span style="font-size:10px;font-weight:700;color:var(--accent);background:var(--pill-bg);border:1px solid var(--border-color);padding:5px 12px;border-radius:6px;">Burger</span>
@@ -7748,6 +7925,12 @@ function drawAnnouncementStrip(theme, style = 'default') {
         }
 
         function drawPopularRail(theme, style = 'default') {
+            const prLines = getCardText('popular-rail', theme);
+            const prItems = prLines ? [
+                { price: prLines[3] || '$9.99', name: prLines[4] || 'Stir-Fried Spicy and Herb', time: prLines[5] || '25-35 min', rating: prLines[6] || '4.8' },
+                { price: prLines[7] || '$12.99', name: prLines[8] || 'Noodles With Chicken', time: prLines[9] || '20-30 min', rating: prLines[10] || '4.6' },
+                { price: prLines[11] || '$8.99', name: prLines[12] || 'Veggie Pizza', time: prLines[13] || '15-20 min', rating: prLines[14] || '4.7' }
+            ] : null;
             const a = 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80';
             const b = 'https://images.unsplash.com/photo-1603532648955-039310d9ed75?auto=format&fit=crop&w=600&q=80';
             const c = 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80';
@@ -8010,6 +8193,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
         }
 
         function drawOffersCarousel(theme, style = 'default') {
+            const ocLines = getCardText('offers-carousel', theme);
             if (style === 'option 1') {
                 return `
                 <div style="padding:0 16px 16px;">
@@ -8161,6 +8345,11 @@ function drawAnnouncementStrip(theme, style = 'default') {
         }
 
         function drawOffersFeed(theme, style = 'default') {
+            const ofLines = getCardText('offers-feed', theme);
+            const ofItems = ofLines ? [
+                { title: ofLines[3] || 'Free beverage upgrade', desc: ofLines[4] || 'Valid with any pastry item' },
+                { title: ofLines[5] || 'Double loyalty points', desc: ofLines[6] || 'On orders after 10 PM' }
+            ] : null;
             if (style === 'option 1') {
                 const checkIcon = theme === 'neumorphism' ? iconFA('check-circle', 'text-white') : theme === 'glassmorphism' ? iconMaterial('check-line', 'color:#fff;') : iconBS('check-circle', 'text-white');
                 const starIcon = theme === 'neumorphism' ? iconFA('star', 'text-white') : theme === 'glassmorphism' ? iconMaterial('star-fill', 'color:#fff;') : iconBS('star', 'text-white');
