@@ -1,0 +1,25 @@
+{
+  "name": "mobile-components",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build-viewports.js",
+  "dependencies": {
+    "pdf-parse": "^2.4.5",
+    "pdfjs-dist": "^5.4.296"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohammeddsial/food-delivery-ui.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/mohammeddsial/food-delivery-ui/issues"
+  },
+  "homepage": "https://github.com/mohammeddsial/food-delivery-ui#readme"
+}

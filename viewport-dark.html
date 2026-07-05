@@ -2692,7 +2692,36 @@
             navigateToPage(theme, 'checkout-page');
         }
 
+        function selectPayment(theme, method) {
+            window.appState.paymentMethod = window.appState.paymentMethod || {};
+            window.appState.paymentMethod[theme] = method;
+            renderAllViewports();
+        }
+
+        function selectTimeSlot(theme, slot) {
+            window.appState.selectedTimeSlot = window.appState.selectedTimeSlot || {};
+            window.appState.selectedTimeSlot[theme] = slot;
+            renderAllViewports();
+        }
+
+        function selectTip(theme, tip) {
+            window.appState.selectedTip = window.appState.selectedTip || {};
+            window.appState.selectedTip[theme] = tip;
+            renderAllViewports();
+        }
+
+        function selectDay(theme, day) {
+            window.appState.selectedDay = window.appState.selectedDay || {};
+            window.appState.selectedDay[theme] = day;
+            renderAllViewports();
+        }
+
         function placeOrder(theme) {
+            const payment = (window.appState.paymentMethod || {})[theme];
+            if (!payment) {
+                showToast('Please select a payment method', 'error');
+                return;
+            }
             window.appState.orderPhase[theme] = 'placed';
             navigateToPage(theme, 'order-success-page');
         }
@@ -4711,7 +4740,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         <div style="font-size:14px;color:rgba(255,255,255,0.7);">with cheddar & lettuce</div>
                     </div>
                 </div>
-                <div style="flex:1;overflow-y:auto;padding:16px 16px 100px;">
+                <div style="flex:1;overflow-y:auto;padding:16px 16px 120px;">
                     <div style="display:flex;gap:16px;margin-bottom:20px;">
                         <div><div style="font-size:22px;font-weight:900;color:${accent};">${formatPrice(12.99)}</div></div>
                         <div><div style="font-size:11px;color:${subColor};">430 cal</div><div style="font-size:11px;color:${subColor};">per serving</div></div>
@@ -4892,19 +4921,27 @@ function drawAnnouncementStrip(theme, style = 'default') {
             const accent = theme === 'neubrutalism' ? '#FF6B35' : 'var(--accent)';
             const pageBg = theme === 'glassmorphism' ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
             const backBtn = `<div onclick="goBack('${theme}')" style="width:36px;height:36px;border-radius:50%;background:${theme==='glassmorphism'?'rgba(255,255,255,0.1)':'var(--pill-bg)'};display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('arrow-left', 'font-size:16px;color:'+textColor+';')}</div>`;
-            const subtotal = 25.97;
+            const subtotal = getCartTotal(theme);
             const delivery = 2.99;
             const total = subtotal + delivery;
+            const selPay = (window.appState.paymentMethod || {})[theme] || '';
+            const selSlot = (window.appState.selectedTimeSlot || {})[theme] || '';
+            const selTip = (window.appState.selectedTip || {})[theme] || '';
+            const selDay = (window.appState.selectedDay || {})[theme] || 'today';
+            const payBg = (m) => selPay === m ? `background:${accent};color:#fff;` : `background:var(--pill-bg);color:${textColor};`;
+            const slotBg = (s) => selSlot === s ? `background:${accent};color:#fff;` : `background:var(--pill-bg);color:${textColor};`;
+            const tipBg = (t) => selTip === t ? `background:${accent};color:#fff;` : `background:var(--pill-bg);color:${textColor};`;
+            const dayBg = (d) => selDay === d ? `background:${accent};color:#fff;` : `background:var(--pill-bg);color:${textColor};`;
 
             const timeSlots = ['10:00-10:30', '10:30-11:00', '11:00-11:30', '11:30-12:00', '12:00-12:30', '12:30-13:00'];
 
             if (style === 'default') {
-                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
+                return `<div style="position:absolute;top:0;left:0;right:0;bottom:0;box-sizing:border-box;padding-bottom:64px;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
                     <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-color);">
                         ${backBtn}
                         <div style="font-size:16px;font-weight:700;color:${textColor};">Checkout</div>
                     </div>
-                    <div style="flex:1;overflow-y:auto;padding:16px 16px 100px;">
+                    <div style="flex:1;overflow-y:auto;padding:16px 16px 120px;">
                         <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:10px;">Delivery Address</div>
                         <div style="background:var(--pill-bg);border-radius:14px;padding:14px;margin-bottom:20px;">
                             <div style="font-size:12px;font-weight:700;color:${textColor};">921 Church St</div>
@@ -4912,22 +4949,56 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         </div>
                         <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:10px;">Delivery Time</div>
                         <div style="display:flex;gap:8px;margin-bottom:20px;overflow-x:auto;">
-                            <span style="padding:10px 16px;background:${accent};color:#fff;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">Today</span>
-                            <span style="padding:10px 16px;background:var(--pill-bg);color:${textColor};border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">Tomorrow</span>
+                            <span onclick="selectDay('${theme}','today')" style="padding:10px 16px;${dayBg('today')}border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">Today</span>
+                            <span onclick="selectDay('${theme}','tomorrow')" style="padding:10px 16px;${dayBg('tomorrow')}border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">Tomorrow</span>
                         </div>
-                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px;">${timeSlots.map(t => `<span style="padding:8px;text-align:center;background:var(--pill-bg);border-radius:10px;font-size:10px;font-weight:600;color:${textColor};cursor:pointer;">${t}</span>`).join('')}</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px;">${timeSlots.map(t => `<span onclick="selectTimeSlot('${theme}','${t}')" style="padding:8px;text-align:center;${slotBg(t)}border-radius:10px;font-size:10px;font-weight:600;cursor:pointer;">${t}</span>`).join('')}</div>
                         <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:10px;">Tip</div>
                         <div style="display:flex;gap:8px;margin-bottom:20px;">
-                            <span style="padding:10px 16px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:11px;font-weight:700;cursor:pointer;">15%</span>
-                            <span style="padding:10px 16px;background:var(--pill-bg);color:${textColor};border-radius:var(--btn-radius);font-size:11px;font-weight:600;cursor:pointer;">18%</span>
-                            <span style="padding:10px 16px;background:var(--pill-bg);color:${textColor};border-radius:var(--btn-radius);font-size:11px;font-weight:600;cursor:pointer;">20%</span>
-                            <span style="padding:10px 16px;background:var(--pill-bg);color:${textColor};border-radius:var(--btn-radius);font-size:11px;font-weight:600;cursor:pointer;">Custom</span>
+                            <span onclick="selectTip('${theme}','15')" style="padding:10px 16px;${tipBg('15')}border-radius:var(--btn-radius);font-size:11px;font-weight:700;cursor:pointer;">15%</span>
+                            <span onclick="selectTip('${theme}','18')" style="padding:10px 16px;${tipBg('18')}border-radius:var(--btn-radius);font-size:11px;font-weight:600;cursor:pointer;">18%</span>
+                            <span onclick="selectTip('${theme}','20')" style="padding:10px 16px;${tipBg('20')}border-radius:var(--btn-radius);font-size:11px;font-weight:600;cursor:pointer;">20%</span>
+                            <span onclick="selectTip('${theme}','custom')" style="padding:10px 16px;${tipBg('custom')}border-radius:var(--btn-radius);font-size:11px;font-weight:600;cursor:pointer;">Custom</span>
                         </div>
                         <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:10px;">Payment Method</div>
-                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px;">
-                            <div style="background:${accent};color:#fff;padding:14px;border-radius:14px;text-align:center;font-size:11px;font-weight:700;cursor:pointer;">${iconFA('credit-card', 'font-size:16px;')}<br>Card</div>
-                            <div style="background:var(--pill-bg);color:${textColor};padding:14px;border-radius:14px;text-align:center;font-size:11px;font-weight:600;cursor:pointer;">${iconFA('dollar-sign', 'font-size:16px;')}<br>Cash</div>
-                            <div style="background:var(--pill-bg);color:${textColor};padding:14px;border-radius:14px;text-align:center;font-size:11px;font-weight:600;cursor:pointer;">${iconFA('smartphone', 'font-size:16px;')}<br>PayPal</div>
+                        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">
+                            <div onclick="selectPayment('${theme}','apple-pay')" style="display:flex;align-items:center;gap:12px;padding:14px;${payBg('apple-pay')}border-radius:14px;cursor:pointer;border:none;">
+                                <span style="font-size:18px;font-weight:800;">&#63743;</span>
+                                <span style="flex:1;font-size:13px;font-weight:600;">Apple Pay</span>
+                                <span style="font-size:10px;opacity:0.7;">Tap to pay</span>
+                            </div>
+                            <div onclick="selectPayment('${theme}','google-pay')" style="display:flex;align-items:center;gap:12px;padding:14px;${payBg('google-pay')}border-radius:14px;cursor:pointer;">
+                                <span style="font-size:16px;">${iconMaterial('google-fill', 'font-size:16px;')}</span>
+                                <span style="flex:1;font-size:13px;font-weight:600;">Google Pay</span>
+                                <span style="font-size:10px;color:${subColor};">Fast checkout</span>
+                            </div>
+                            <div onclick="selectPayment('${theme}','saved-card')" style="display:flex;align-items:center;gap:12px;padding:14px;${payBg('saved-card')}border-radius:14px;cursor:pointer;">
+                                <span style="font-size:16px;">${iconFA('credit-card', 'font-size:16px;')}</span>
+                                <span style="flex:1;font-size:13px;font-weight:600;">Visa &bull;&bull;&bull;&bull; 4242</span>
+                                <span style="font-size:10px;color:${subColor};">Saved</span>
+                            </div>
+                            <div onclick="selectPayment('${theme}','new-card')" style="display:flex;align-items:center;gap:12px;padding:14px;${payBg('new-card')}border-radius:14px;cursor:pointer;">
+                                <span style="font-size:16px;">${iconFA('plus', 'font-size:16px;')}</span>
+                                <span style="font-size:13px;font-weight:600;">Pay with Card</span>
+                            </div>
+                            <div onclick="selectPayment('${theme}','paypal')" style="display:flex;align-items:center;gap:12px;padding:14px;${payBg('paypal')}border-radius:14px;cursor:pointer;">
+                                <span style="font-size:16px;">${iconMaterial('paypal-fill', 'font-size:16px;')}</span>
+                                <span style="font-size:13px;font-weight:600;">PayPal</span>
+                            </div>
+                            <div onclick="selectPayment('${theme}','cash')" style="display:flex;align-items:center;gap:12px;padding:14px;${payBg('cash')}border-radius:14px;cursor:pointer;">
+                                <span style="font-size:16px;">${iconFA('dollar-sign', 'font-size:16px;')}</span>
+                                <span style="font-size:13px;font-weight:600;">Cash on Delivery</span>
+                            </div>
+                        </div>
+                        <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:8px;">Your Order</div>
+                        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;">
+                            ${getCartItems(theme).map(item => `
+                                <div style="display:flex;align-items:center;gap:8px;padding:8px 0;">
+                                    <span style="font-size:12px;color:${textColor};flex:1;">${item.qty}x ${item.name}</span>
+                                    <span style="font-size:12px;font-weight:600;color:${textColor};">${formatPrice(item.price * item.qty)}</span>
+                                </div>
+                            `).join('')}
+                            ${getCartItems(theme).length === 0 ? `<div style="font-size:12px;color:${subColor};padding:12px 0;text-align:center;">Your cart is empty</div>` : ''}
                         </div>
                         <div style="border-top:1px solid var(--border-color);padding-top:12px;">
                             <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Subtotal</span><span style="color:${textColor};">${formatPrice(subtotal)}</span></div>
@@ -4941,13 +5012,13 @@ function drawAnnouncementStrip(theme, style = 'default') {
                 </div>`;
             }
 
-            if (style === 'option 1') {
-                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
+if (style === 'option 1') {
+                return `<div style="position:absolute;top:0;left:0;right:0;bottom:0;box-sizing:border-box;padding-bottom:64px;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
                     <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-color);">
                         ${backBtn}
                         <div style="font-size:16px;font-weight:700;color:${textColor};">Checkout</div>
                     </div>
-                    <div style="flex:1;overflow-y:auto;padding:16px 16px 100px;">
+                    <div style="flex:1;overflow-y:auto;padding:16px 16px 120px;">
                         <div style="background:var(--pill-bg);border-radius:14px;margin-bottom:12px;overflow:hidden;">
                             <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;">
                                 <span style="font-size:13px;font-weight:700;color:${textColor};">${iconFA('map-pin', 'font-size:13px;margin-right:8px;')}Delivery Address</span>
@@ -4963,8 +5034,8 @@ function drawAnnouncementStrip(theme, style = 'default') {
                                 <span style="font-size:14px;color:${subColor};">${iconFA('chevron-down', 'font-size:12px;')}</span>
                             </div>
                             <div style="display:none;padding:0 14px 14px;">
-                                <div style="display:flex;gap:8px;margin-bottom:8px;"><span style="padding:6px 14px;background:${accent};color:#fff;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;">Today</span><span style="padding:6px 14px;background:var(--card-bg);color:${textColor};border-radius:8px;font-size:11px;cursor:pointer;">Tomorrow</span></div>
-                                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">${timeSlots.slice(0,3).map(t => `<span style="padding:6px;text-align:center;background:var(--card-bg);border-radius:8px;font-size:10px;color:${textColor};cursor:pointer;">${t}</span>`).join('')}</div>
+                                <div style="display:flex;gap:8px;margin-bottom:8px;"><span onclick="selectDay('${theme}','today')" style="padding:6px 14px;${dayBg('today')}border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;">Today</span><span onclick="selectDay('${theme}','tomorrow')" style="padding:6px 14px;${dayBg('tomorrow')}border-radius:8px;font-size:11px;cursor:pointer;">Tomorrow</span></div>
+                                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">${timeSlots.slice(0,3).map(t => `<span onclick="selectTimeSlot('${theme}','${t}')" style="padding:6px;text-align:center;${slotBg(t)}border-radius:8px;font-size:10px;cursor:pointer;">${t}</span>`).join('')}</div>
                             </div>
                         </div>
                         <div style="background:var(--pill-bg);border-radius:14px;margin-bottom:12px;overflow:hidden;">
@@ -4973,10 +5044,12 @@ function drawAnnouncementStrip(theme, style = 'default') {
                                 <span style="font-size:14px;color:${subColor};">${iconFA('chevron-down', 'font-size:12px;')}</span>
                             </div>
                             <div style="display:none;padding:0 14px 14px;">
-                                <div style="display:flex;gap:8px;margin-bottom:8px;">
-                                    <span style="padding:8px 16px;background:${accent};color:#fff;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;">Card</span>
-                                    <span style="padding:8px 16px;background:var(--card-bg);color:${textColor};border-radius:8px;font-size:11px;cursor:pointer;">Cash</span>
-                                    <span style="padding:8px 16px;background:var(--card-bg);color:${textColor};border-radius:8px;font-size:11px;cursor:pointer;">PayPal</span>
+                                <div style="display:flex;flex-direction:column;gap:6px;">
+                                    <div onclick="selectPayment('${theme}','apple-pay')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;${payBg('apple-pay')}border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;"><span style="font-size:15px;font-weight:800;">&#63743;</span> Apple Pay</div>
+                                    <div onclick="selectPayment('${theme}','google-pay')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;${payBg('google-pay')}border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;"><span style="font-size:15px;">${iconMaterial('google-fill', 'font-size:15px;')}</span> Google Pay</div>
+                                    <div onclick="selectPayment('${theme}','saved-card')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;${payBg('saved-card')}border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;"><span style="font-size:15px;">${iconFA('credit-card', 'font-size:15px;')}</span> Visa &bull;&bull;&bull;&bull; 4242</div>
+                                    <div onclick="selectPayment('${theme}','paypal')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;${payBg('paypal')}border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;"><span style="font-size:15px;">${iconMaterial('paypal-fill', 'font-size:15px;')}</span> PayPal</div>
+                                    <div onclick="selectPayment('${theme}','cash')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;${payBg('cash')}border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;"><span style="font-size:15px;">${iconFA('dollar-sign', 'font-size:15px;')}</span> Cash</div>
                                 </div>
                             </div>
                         </div>
@@ -4999,12 +5072,12 @@ function drawAnnouncementStrip(theme, style = 'default') {
             const darkSub = 'rgba(255,255,255,0.5)';
             const darkBg = theme === 'glassmorphism' ? 'rgba(20,20,20,0.98)' : '#1a1a1a';
             const cardBg = 'rgba(255,255,255,0.06)';
-            return `<div style="position:absolute;inset:0;background:${darkBg};z-index:100;display:flex;flex-direction:column;">
+            return `<div style="position:absolute;top:0;left:0;right:0;bottom:0;box-sizing:border-box;padding-bottom:64px;background:${darkBg};z-index:100;display:flex;flex-direction:column;">
                 <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,0.08);">
                     ${`<div onclick="goBack('${theme}')" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('arrow-left', 'font-size:16px;color:#fff;')}</div>`}
                     <div style="font-size:16px;font-weight:700;color:#fff;">Checkout</div>
                 </div>
-                <div style="flex:1;overflow-y:auto;padding:16px 16px 100px;">
+                <div style="flex:1;overflow-y:auto;padding:16px 16px 120px;">
                     <div style="background:${cardBg};border-radius:14px;padding:14px;margin-bottom:12px;">
                         <div style="font-size:11px;color:${darkSub};margin-bottom:4px;">Deliver to</div>
                         <div style="font-size:12px;font-weight:700;color:#fff;">921 Church St, San Francisco</div>
@@ -5015,6 +5088,16 @@ function drawAnnouncementStrip(theme, style = 'default') {
                             <div><div style="font-size:12px;font-weight:700;color:#fff;">Express Delivery</div><div style="font-size:10px;color:${darkSub};">30 min or less</div></div>
                         </div>
                         <span style="width:40px;height:22px;background:#4CAF50;border-radius:11px;display:flex;align-items:center;justify-content:flex-end;padding:2px;cursor:pointer;"><span style="width:18px;height:18px;border-radius:50%;background:#fff;"></span></span>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-bottom:12px;">
+                        <div onclick="selectPayment('${theme}','apple-pay')" style="flex:1;padding:12px;background:#000;border-radius:12px;text-align:center;cursor:pointer;border:2px solid ${selPay==='apple-pay' ? accent : 'rgba(255,255,255,0.15)'};">
+                            <span style="font-size:18px;font-weight:800;color:#fff;">&#63743;</span>
+                            <div style="font-size:9px;color:rgba(255,255,255,0.6);margin-top:2px;">Apple Pay</div>
+                        </div>
+                        <div onclick="selectPayment('${theme}','google-pay')" style="flex:1;padding:12px;background:#000;border-radius:12px;text-align:center;cursor:pointer;border:2px solid ${selPay==='google-pay' ? accent : 'rgba(255,255,255,0.15)'};">
+                            <span style="font-size:16px;color:#fff;">${iconMaterial('google-fill', 'font-size:16px;color:#fff;')}</span>
+                            <div style="font-size:9px;color:rgba(255,255,255,0.6);margin-top:2px;">Google Pay</div>
+                        </div>
                     </div>
                     <div style="background:${cardBg};border-radius:14px;padding:14px;margin-bottom:20px;">
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
@@ -5030,6 +5113,17 @@ function drawAnnouncementStrip(theme, style = 'default') {
                                 <span style="font-size:9px;color:${darkSub};">EXP 12/28</span>
                                 <span style="font-size:9px;color:${darkSub};">CVV ***</span>
                             </div>
+                        </div>
+                    </div>
+                    <div style="margin-bottom:16px;">
+                        <div style="font-size:11px;color:${darkSub};margin-bottom:8px;">Your Order</div>
+                        <div style="display:flex;flex-direction:column;gap:4px;">
+                            ${getCartItems(theme).map(item => `
+                                <div style="display:flex;justify-content:space-between;font-size:11px;">
+                                    <span style="color:#fff;">${item.qty}x ${item.name}</span>
+                                    <span style="color:${darkSub};">${formatPrice(item.price * item.qty)}</span>
+                                </div>
+                            `).join('')}
                         </div>
                     </div>
                     <div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:12px;">
@@ -5154,7 +5248,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         ${backBtn}
                         <div style="font-size:16px;font-weight:700;color:${textColor};">Reviews</div>
                     </div>
-                    <div style="flex:1;overflow-y:auto;padding:16px 16px 100px;">
+                    <div style="flex:1;overflow-y:auto;padding:16px 16px 120px;">
                         <div style="display:flex;align-items:center;gap:16px;padding:16px;background:var(--card-bg);border-radius:var(--card-radius);box-shadow:var(--card-shadow);margin-bottom:16px;">
                             <div style="text-align:center;"><div style="font-size:36px;font-weight:900;color:${textColor};">4.5</div><div style="font-size:11px;color:#FFC200;">★★★★☆</div><div style="font-size:10px;color:${subColor};margin-top:2px;">128 reviews</div></div>
                             <div style="flex:1;">${starBar('5', 68)}${starBar('4', 22)}${starBar('3', 7)}${starBar('2', 2)}${starBar('1', 1)}</div>
@@ -5420,7 +5514,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         ${backBtn}
                         <div style="font-size:16px;font-weight:700;color:${textColor};">Add Extras</div>
                     </div>
-                    <div style="flex:1;overflow-y:auto;padding:16px 16px 100px;">
+                    <div style="flex:1;overflow-y:auto;padding:16px 16px 120px;">
                         <div style="background:linear-gradient(135deg,${accent}20,${accent}05);border-radius:var(--card-radius);padding:12px;text-align:center;margin-bottom:16px;border:1px solid ${accent}30;">
                             <div style="font-size:11px;color:${subColor};">Bundle Discount</div>
                             <div style="font-size:13px;font-weight:800;color:${accent};">Save $2 when you add 2+ items</div>
@@ -5707,7 +5801,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         ${backBtn}
                         <div style="font-size:16px;font-weight:700;color:${textColor};">Add Location</div>
                     </div>
-                    <div style="flex:1;overflow-y:auto;padding:16px 16px 100px;">
+                    <div style="flex:1;overflow-y:auto;padding:16px 16px 120px;">
                         <div style="width:100%;height:220px;border-radius:var(--card-radius);overflow:hidden;position:relative;margin-bottom:20px;background:${isGlass ? 'rgba(255,255,255,0.04)' : '#E8F5E9'};">
                             <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
                                 <div style="width:48px;height:48px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,0.2);">${isGlass ? iconMaterial('map-pin-2-line', 'font-size:22px;color:#fff;') : isBrut ? iconBS('map-pin', 'font-size:22px;color:#fff;') : iconFA('map-pin', 'font-size:22px;color:#fff;')}</div>
@@ -5745,7 +5839,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         <div style="flex:1;font-size:16px;font-weight:700;color:${textColor};">Add Location</div>
                         <div style="font-size:13px;font-weight:600;color:${accent};cursor:pointer;">Save</div>
                     </div>
-                    <div style="flex:1;overflow-y:auto;padding:16px 16px 100px;">
+                    <div style="flex:1;overflow-y:auto;padding:16px 16px 120px;">
                         <div style="width:100%;height:180px;border-radius:var(--card-radius);overflow:hidden;position:relative;margin-bottom:20px;background:${isGlass ? 'rgba(255,255,255,0.04)' : '#E8F5E9'};">
                             <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">${isGlass ? iconMaterial('map-pin-2-line', 'font-size:28px;color:#fff;') : isBrut ? iconBS('map-pin', 'font-size:28px;color:var(--text-primary);') : iconFA('map-pin', 'font-size:28px;color:var(--text-primary);')}</div>
                             <div style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);padding:6px 14px;background:${isGlass ? 'rgba(0,0,0,0.6)' : 'rgba(255,255,255,0.9)'};border-radius:20px;font-size:10px;font-weight:700;color:${textColor};backdrop-filter:blur(8px);">Tap to adjust pin</div>
@@ -5780,7 +5874,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                     ${backBtn}
                     <div style="flex:1;font-size:16px;font-weight:700;color:${textColor};">Add Location</div>
                 </div>
-                <div style="flex:1;overflow-y:auto;padding:16px 16px 100px;">
+                <div style="flex:1;overflow-y:auto;padding:16px 16px 120px;">
                     <div style="width:100%;height:200px;border-radius:var(--card-radius);overflow:hidden;position:relative;margin-bottom:24px;${brutBorder}background:${isGlass ? 'linear-gradient(135deg,rgba(255,255,255,0.03),rgba(255,255,255,0.08))' : isBrut ? '#DFFFD6' : '#E8F5E9'};">
                         <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
                             <div style="width:52px;height:52px;border-radius:${isBrut ? '12px' : '50%'};background:${accent};display:flex;align-items:center;justify-content:center;${isBrut ? 'border:2px solid var(--border-color);box-shadow:2px 2px 0 var(--border-color);' : 'box-shadow:0 4px 20px rgba(0,0,0,0.25);'}">${isGlass ? iconMaterial('map-pin-2-line', 'font-size:24px;color:#fff;') : isBrut ? iconBS('map-pin', 'font-size:24px;color:#fff;') : iconFA('map-pin', 'font-size:24px;color:#fff;')}</div>
