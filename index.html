@@ -5127,6 +5127,14 @@ function drawAnnouncementStrip(theme, style = 'default') {
             ]}
         ];
 
+        function getThemedMenuItems(theme, count) {
+            const categoryMap = { neumorphism: [0, 1, 2], glassmorphism: [3, 4, 5], neubrutalism: [5, 1, 0] };
+            const cats = categoryMap[theme] || [0, 1, 2];
+            let items = [];
+            cats.forEach(idx => { if (MENU_DATA[idx]) items = items.concat(MENU_DATA[idx].items); });
+            return count ? items.slice(0, count) : items;
+        }
+
         // ─── MENU PAGE ────────────────────────────────────────────
         function drawMenuPage(theme, style = 'default', cat) {
             const selectedCat = cat || (window.selectedCatByTheme && window.selectedCatByTheme[theme]) || null;
@@ -7263,24 +7271,10 @@ function drawAnnouncementStrip(theme, style = 'default') {
         }
         // ORDER AGIN
         function drawOrderAgain(theme, style = 'default') {
-            const oaLines = getCardText('order-again', theme);
-            const oaImgs = [
-                'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80',
-                'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=200&q=80',
-                'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=200&q=80',
-                'https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=200&q=80'
-            ];
-            const oaItems = oaLines ? [
-                { name: oaLines[3] || 'Orange Juice', price: oaLines[4] || '$5.99', img: oaImgs[0] },
-                { name: oaLines[6] || 'Cheesecake', price: oaLines[7] || '$7.99', img: oaImgs[1] },
-                { name: oaLines[9] || 'Chocolate Cake', price: oaLines[10] || '$9.00', img: oaImgs[2] },
-                { name: oaLines[12] || 'Iced Latte', price: oaLines[13] || '$4.99', img: oaImgs[3] }
-            ] : [
-                { name: 'Orange Juice', price: '$5.99', img: oaImgs[0] },
-                { name: 'Cheesecake', price: '$7.99', img: oaImgs[1] },
-                { name: 'Chocolate Cake', price: '$9.00', img: oaImgs[2] },
-                { name: 'Iced Latte', price: '$4.99', img: oaImgs[3] }
-            ];
+            const themedItems = getThemedMenuItems(theme, 4);
+            const oaItems = themedItems.map(item => ({
+                name: item.name, price: formatPrice(item.price), img: item.img
+            }));
             const isGlass = theme === 'glassmorphism';
             const isBrut = theme === 'neubrutalism';
             const addIcon = isGlass ? iconMaterial('add-line', 'color:#fff;') : isBrut ? iconBS('plus', 'text-[#fff]') : iconFA('plus', 'text-[#fff]');
@@ -7440,7 +7434,14 @@ function drawAnnouncementStrip(theme, style = 'default') {
 
         function drawRecommended(theme, style = 'default') {
             const recLines = getCardText('recommended-for-you', theme);
-            const d = getSimulatedItems();
+            const themedRecs = getThemedMenuItems(theme, 4);
+            const d = {
+                rec: [themedRecs[0]?.name||'Margherita Pizza', themedRecs[1]?.name||'Beef Burger', recLines?.[2]||'Trending Picks', recLines?.[3]||'20-25 min'],
+                img1: themedRecs[0]?.img||'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=300&q=80',
+                img2: themedRecs[1]?.img||'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80',
+                prices: [formatPrice(themedRecs[0]?.price||12.99), formatPrice(themedRecs[1]?.price||10.99)],
+                ratings: ['4.9', '4.8']
+            };
             if (recLines) {
                 d.rec = [recLines[4] || d.rec[0], recLines[10] || d.rec[1]];
             }
@@ -8180,11 +8181,13 @@ function drawAnnouncementStrip(theme, style = 'default') {
         function drawFeaturedItems(theme, style = 'default') {
             const fiLines = getCardText('featured-items', theme);
             const fiPromo = fiLines ? fiLines[3] : 'Free Delivery';
-            const fiName = fiLines ? fiLines[4] : 'Burger King';
             const fiRating = fiLines ? fiLines[5] : '4.9';
             const fiTime = fiLines ? fiLines[6] : '20-25 min';
-            const img = 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80';
-            const img2 = 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80';
+            const themedFeat = getThemedMenuItems(theme, 2);
+            const fiName = fiLines ? fiLines[4] : (themedFeat[0]?.name || 'Burger King');
+            const fiName2 = themedFeat[1]?.name || 'Pizza Hut';
+            const img = themedFeat[0]?.img || 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80';
+            const img2 = themedFeat[1]?.img || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80';
             if (style === 'option 1') {
                 return `
                 <div style="padding:0 16px 16px;">
@@ -8318,16 +8321,16 @@ function drawAnnouncementStrip(theme, style = 'default') {
         }
 
         function drawPopularRail(theme, style = 'default') {
-            const prLines = getCardText('popular-rail', theme);
-            const prItems = prLines ? [
-                { price: prLines[3] || '$9.99', name: prLines[4] || 'Stir-Fried Spicy and Herb', time: prLines[5] || '25-35 min', rating: prLines[6] || '4.8' },
-                { price: prLines[7] || '$12.99', name: prLines[8] || 'Noodles With Chicken', time: prLines[9] || '20-30 min', rating: prLines[10] || '4.6' },
-                { price: prLines[11] || '$8.99', name: prLines[12] || 'Veggie Pizza', time: prLines[13] || '15-20 min', rating: prLines[14] || '4.7' }
-            ] : null;
-            const a = 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80';
-            const b = 'https://images.unsplash.com/photo-1603532648955-039310d9ed75?auto=format&fit=crop&w=600&q=80';
-            const c = 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80';
-            const d = 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80';
+            const themedPopular = getThemedMenuItems(theme, 4);
+            const prItems = [
+                { price: formatPrice(themedPopular[0]?.price||9.99), name: themedPopular[0]?.name||'Stir-Fried Spicy', time: '25-35 min', rating: '4.8', img: themedPopular[0]?.img },
+                { price: formatPrice(themedPopular[1]?.price||12.99), name: themedPopular[1]?.name||'Noodles Chicken', time: '20-30 min', rating: '4.6', img: themedPopular[1]?.img },
+                { price: formatPrice(themedPopular[2]?.price||8.99), name: themedPopular[2]?.name||'Veggie Pizza', time: '15-20 min', rating: '4.7', img: themedPopular[2]?.img }
+            ];
+            const a = themedPopular[0]?.img || 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80';
+            const b = themedPopular[1]?.img || 'https://images.unsplash.com/photo-1603532648955-039310d9ed75?auto=format&fit=crop&w=600&q=80';
+            const c = themedPopular[2]?.img || 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80';
+            const d = themedPopular[3]?.img || 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80';
             if (style === 'option 1') {
                 return `
                 <div style="padding:0 16px 16px;">
