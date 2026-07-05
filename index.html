@@ -3063,8 +3063,12 @@
         // ─── HEART TOGGLE ────────────────────────────────────────────────
         const heartState = { neumorphism: false, glassmorphism: false, neubrutalism: false };
         const currentPageByTheme = { neumorphism: 'splash', glassmorphism: 'splash', neubrutalism: 'splash' };
-        function navigateToPage(theme, page) {
+        function navigateToPage(theme, page, cat, itemId) {
             currentPageByTheme[theme] = page;
+            window.selectedCatByTheme = window.selectedCatByTheme || {};
+            window.selectedCatByTheme[theme] = cat || null;
+            window.selectedItemByTheme = window.selectedItemByTheme || {};
+            window.selectedItemByTheme[theme] = itemId || null;
             renderAllViewports();
             renderPageViewPicker();
         }
@@ -3079,6 +3083,8 @@
                 currentPageByTheme[theme] = 'feed';
                 window.appState.orderPhase[theme] = 'browsing';
             }
+            window.selectedCatByTheme = window.selectedCatByTheme || {};
+            window.selectedCatByTheme[theme] = null;
             renderAllViewports();
             renderPageViewPicker();
         }
@@ -3695,7 +3701,7 @@
                             pageHtml = drawOrderTrackingPage(theme, pageStyle);
                             break;
                         case 'menu-page':
-                            pageHtml = drawMenuPage(theme, pageStyle);
+                            pageHtml = drawMenuPage(theme, pageStyle, window.selectedCatByTheme && window.selectedCatByTheme[theme]);
                             break;
                         case 'product-detail-page':
                             pageHtml = drawProductDetailPage(theme, pageStyle);
@@ -4153,12 +4159,12 @@ let iconHtml = iconFor(theme, iconName, isActive ? 'font-size:20px;' : 'font-siz
 
                 const badgeHtml = item.badge ? `<span style="position:absolute;top:-2px;right:-4px;min-width:14px;height:14px;background:#FF6B35;color:#fff;font-size:7px;font-weight:800;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0 3px;border:1.5px solid #3D3229;">${item.badge}</span>` : '';
 
-                let clickHandler = `setActiveNav(${index})`;
-                if (item.icon === 'home') clickHandler = `goBack('${theme}')`;
-                else if (item.icon === 'menu') clickHandler = `navigateToPage('${theme}','menu-page')`;
-                else if (item.icon === 'gift') clickHandler = `navigateToPage('${theme}','rewards-page')`;
-                else if (item.icon === 'cart') clickHandler = `navigateToPage('${theme}','cart-page')`;
-                else if (item.icon === 'user') clickHandler = `navigateToPage('${theme}','profile-settings')`;
+                    let clickHandler = `setActiveNav(${index})`;
+                    if (item.icon === 'home') clickHandler = `goBack('${theme}')`;
+                    else if (item.icon === 'menu') clickHandler = `setActiveNav(1);navigateToPage('${theme}','menu-page')`;
+                    else if (item.icon === 'gift') clickHandler = `setActiveNav(2);navigateToPage('${theme}','rewards-page')`;
+                    else if (item.icon === 'cart') clickHandler = `setActiveNav(3);navigateToPage('${theme}','cart-page')`;
+                    else if (item.icon === 'user') clickHandler = `setActiveNav(4);navigateToPage('${theme}','profile-settings')`;
 
                 return `<button onclick="${clickHandler}" aria-label="${item.label}" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;cursor:pointer;padding:4px 6px;position:relative;transition:transform 0.12s;" onmousedown="this.style.transform='scale(0.92)'" onmouseup="this.style.transform='scale(1)'" onmouseleave="this.style.transform='scale(1)'"><div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;${btnBg}position:relative;transition:all 0.2s;">${iconHtml}${badgeHtml}</div></button>`;
             }).join('');
@@ -4968,119 +4974,354 @@ function drawAnnouncementStrip(theme, style = 'default') {
             </div>`;
         }
 
+        // ─── SHARED MENU DATA ─────────────────────────────────
+        const MENU_DATA = [
+            { id: 'breakfast', name: 'Breakfast', icon: 'coffee', count: 7, img: 'https://images.unsplash.com/photo-1528207776546-365bb710ee93?auto=format&fit=crop&w=200&q=80', items: [
+                { id: 'bf1', name: 'Fluffy Pancakes', desc: 'Maple syrup & butter', price: 9.99, img: 'https://images.unsplash.com/photo-1528207776546-365bb710ee93?auto=format&fit=crop&w=300&q=80' },
+                { id: 'bf2', name: 'Classic Omelette', desc: '3 eggs, cheese, herbs', price: 8.49, img: 'https://images.unsplash.com/photo-1510693206972-df098062cb71?auto=format&fit=crop&w=300&q=80' },
+                { id: 'bf3', name: 'French Toast', desc: 'Brioche, cinnamon, berries', price: 10.99, img: 'https://images.unsplash.com/photo-1484723091739-30a097e8f929?auto=format&fit=crop&w=300&q=80' },
+                { id: 'bf4', name: 'Avocado Toast', desc: 'Sourdough, poached egg', price: 11.49, img: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=300&q=80' },
+                { id: 'bf5', name: 'Bagel & Lox', desc: 'Smoked salmon, cream cheese', price: 12.99, img: 'https://images.unsplash.com/photo-1506354666786-959d6d497f1a?auto=format&fit=crop&w=300&q=80' },
+                { id: 'bf6', name: 'Granola Bowl', desc: 'Greek yogurt, honey, fruit', price: 7.99, img: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=300&q=80' },
+                { id: 'bf7', name: 'Belgian Waffles', desc: 'Whipped cream & strawberries', price: 10.49, img: 'https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?auto=format&fit=crop&w=300&q=80' }
+            ]},
+            { id: 'burger', name: 'Burger', icon: 'beef', count: 8, img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80', items: [
+                { id: 'bg1', name: 'Classic Beef Burger', desc: 'Double patty, cheddar, lettuce', price: 12.99, img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80' },
+                { id: 'bg2', name: 'Bacon Cheeseburger', desc: 'Applewood bacon, gouda', price: 14.49, img: 'https://images.unsplash.com/photo-1553979459-d2229ba7433b?auto=format&fit=crop&w=300&q=80' },
+                { id: 'bg3', name: 'Crispy Chicken', desc: 'Spicy mayo, slaw', price: 11.99, img: 'https://images.unsplash.com/photo-1606755962773-d324e0a13086?auto=format&fit=crop&w=300&q=80' },
+                { id: 'bg4', name: 'Veggie Burger', desc: 'Black bean, avocado, sprouts', price: 10.99, img: 'https://images.unsplash.com/photo-1520072959219-c595dc870360?auto=format&fit=crop&w=300&q=80' },
+                { id: 'bg5', name: 'Double Smash', desc: 'Caramelized onions, sauce', price: 15.99, img: 'https://images.unsplash.com/photo-1586816001966-79b736744398?auto=format&fit=crop&w=300&q=80' },
+                { id: 'bg6', name: 'BBQ Ranch Burger', desc: 'Onion rings, smoky sauce', price: 13.99, img: 'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?auto=format&fit=crop&w=300&q=80' },
+                { id: 'bg7', name: 'Mushroom Swiss', desc: 'Sauteed mushrooms, aioli', price: 13.49, img: 'https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?auto=format&fit=crop&w=300&q=80' },
+                { id: 'bg8', name: 'Spicy Jalapeno', desc: 'Pepper jack, chipotle mayo', price: 12.49, img: 'https://images.unsplash.com/photo-1582196016295-f8c8bd4b3a99?auto=format&fit=crop&w=300&q=80' }
+            ]},
+            { id: 'pizza', name: 'Pizza', icon: 'pizza', count: 12, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80', items: [
+                { id: 'pz1', name: 'Pepperoni Pizza', desc: 'Extra cheese, thin crust', price: 9.99, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=300&q=80' },
+                { id: 'pz2', name: 'Margherita', desc: 'Fresh mozzarella, basil', price: 8.99, img: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=300&q=80' },
+                { id: 'pz3', name: 'Hawaiian', desc: 'Ham, pineapple, mozzarella', price: 10.49, img: 'https://images.unsplash.com/photo-1565299507177-b0ac66763828?auto=format&fit=crop&w=300&q=80' },
+                { id: 'pz4', name: 'Meat Lovers', desc: 'Pepperoni, sausage, bacon', price: 13.99, img: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=300&q=80' },
+                { id: 'pz5', name: 'Veggie Supreme', desc: 'Peppers, olives, mushrooms', price: 11.49, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=300&q=80' },
+                { id: 'pz6', name: 'BBQ Chicken', desc: 'Grilled chicken, red onion', price: 12.99, img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=300&q=80' },
+                { id: 'pz7', name: 'Four Cheese', desc: 'Gorgonzola, parmesan, fontina', price: 11.99, img: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=300&q=80' },
+                { id: 'pz8', name: 'Buffalo Chicken', desc: 'Spicy buffalo, ranch drizzle', price: 12.49, img: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=300&q=80' },
+                { id: 'pz9', name: 'Mushroom Truffle', desc: 'Wild mushrooms, truffle oil', price: 14.99, img: 'https://images.unsplash.com/photo-1594007654729-407eedc4be65?auto=format&fit=crop&w=300&q=80' },
+                { id: 'pz10', name: 'Neapolitan', desc: 'San Marzano, buffalo mozz', price: 10.99, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=300&q=80' },
+                { id: 'pz11', name: 'Calzone Folded', desc: 'Ricotta, ham, spinach', price: 11.49, img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=300&q=80' },
+                { id: 'pz12', name: 'White Pizza', desc: 'Ricotta, garlic, arugula', price: 10.99, img: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=300&q=80' }
+            ]},
+            { id: 'salad', name: 'Salad', icon: 'salad', count: 6, img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=200&q=80', items: [
+                { id: 'sd1', name: 'Caesar Salad', desc: 'Romaine, parmesan, croutons', price: 8.99, img: 'https://images.unsplash.com/photo-1546793665-c74683f339c1?auto=format&fit=crop&w=300&q=80' },
+                { id: 'sd2', name: 'Greek Salad', desc: 'Feta, olives, cucumber', price: 9.49, img: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=300&q=80' },
+                { id: 'sd3', name: 'Garden Fresh', desc: 'Mixed greens, vinaigrette', price: 7.99, img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=300&q=80' },
+                { id: 'sd4', name: 'Spinach & Berry', desc: 'Goat cheese, walnuts, balsamic', price: 10.49, img: 'https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?auto=format&fit=crop&w=300&q=80' },
+                { id: 'sd5', name: 'Cobb Salad', desc: 'Chicken, egg, bacon, blue cheese', price: 11.99, img: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=300&q=80' },
+                { id: 'sd6', name: 'Asian Sesame', desc: 'Chicken, mandarin, wontons', price: 10.99, img: 'https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?auto=format&fit=crop&w=300&q=80' }
+            ]},
+            { id: 'dessert', name: 'Dessert', icon: 'cake-slice', count: 8, img: 'https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=200&q=80', items: [
+                { id: 'ds1', name: 'Chocolate Lava Cake', desc: 'Warm molten center', price: 7.99, img: 'https://images.unsplash.com/photo-1624353365286-3f8d62daad51?auto=format&fit=crop&w=300&q=80' },
+                { id: 'ds2', name: 'Classic Tiramisu', desc: 'Mascarpone, espresso, cocoa', price: 8.49, img: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=300&q=80' },
+                { id: 'ds3', name: 'NY Cheesecake', desc: 'Graham crust, berry compote', price: 7.49, img: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=300&q=80' },
+                { id: 'ds4', name: 'Brownie Sundae', desc: 'Vanilla ice cream, fudge', price: 8.99, img: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=300&q=80' },
+                { id: 'ds5', name: 'French Macarons', desc: 'Assorted flavors, 6 pieces', price: 9.99, img: 'https://images.unsplash.com/photo-1558326567-98ae2405596b?auto=format&fit=crop&w=300&q=80' },
+                { id: 'ds6', name: 'Creme Brulee', desc: 'Vanilla bean, caramelized top', price: 7.99, img: 'https://images.unsplash.com/photo-1470124182917-cc6e71b22ecc?auto=format&fit=crop&w=300&q=80' },
+                { id: 'ds7', name: 'Apple Pie', desc: 'Cinnamon, flaky crust', price: 6.99, img: 'https://images.unsplash.com/photo-1568571780765-9276ac8b5a2?auto=format&fit=crop&w=300&q=80' },
+                { id: 'ds8', name: 'Gelato Trio', desc: 'Pistachio, stracciatella, mango', price: 6.49, img: 'https://images.unsplash.com/photo-1501443762994-82bd5dace89a?auto=format&fit=crop&w=300&q=80' }
+            ]},
+            { id: 'drinks', name: 'Drinks', icon: 'coffee', count: 20, img: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=200&q=80', items: [
+                { id: 'dk1', name: 'Classic Cola', desc: 'Ice cold, 16oz', price: 2.99, img: 'https://images.unsplash.com/photo-1554866585-cd94860890b7?auto=format&fit=crop&w=300&q=80' },
+                { id: 'dk2', name: 'Fresh Lemonade', desc: 'Hand-squeezed, mint', price: 4.99, img: 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=300&q=80' },
+                { id: 'dk3', name: 'Iced Tea', desc: 'Peach flavored, 20oz', price: 3.49, img: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=300&q=80' },
+                { id: 'dk4', name: 'Berry Smoothie', desc: 'Strawberry, banana, yogurt', price: 6.49, img: 'https://images.unsplash.com/photo-1505252585461-04db1eb84625?auto=format&fit=crop&w=300&q=80' },
+                { id: 'dk5', name: 'Chocolate Milkshake', desc: 'Thick, whipped cream', price: 5.99, img: 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=300&q=80' },
+                { id: 'dk6', name: 'Espresso', desc: 'Double shot, crema', price: 3.49, img: 'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?auto=format&fit=crop&w=300&q=80' },
+                { id: 'dk7', name: 'Cafe Latte', desc: 'Steamed milk, art foam', price: 4.99, img: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=300&q=80' },
+                { id: 'dk8', name: 'Cappuccino', desc: 'Equal parts espresso & foam', price: 4.49, img: 'https://images.unsplash.com/photo-1534778101976-62847782c213?auto=format&fit=crop&w=300&q=80' },
+                { id: 'dk9', name: 'Iced Mocha', desc: 'Chocolate, espresso, milk', price: 5.49, img: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=300&q=80' },
+                { id: 'dk10', name: 'Hot Chocolate', desc: 'Belgian cocoa, marshmallows', price: 4.49, img: 'https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?auto=format&fit=crop&w=300&q=80' },
+                { id: 'dk11', name: 'Fresh OJ', desc: 'Cold pressed, 12oz', price: 5.49, img: 'https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=300&q=80' },
+                { id: 'dk12', name: 'Sparkling Water', desc: 'Lime, ice, 16oz', price: 2.49, img: 'https://images.unsplash.com/photo-1523362628745-0c100150b504?auto=format&fit=crop&w=300&q=80' },
+                { id: 'dk13', name: 'Matcha Latte', desc: 'Ceremonial grade, oat milk', price: 5.99, img: 'https://images.unsplash.com/photo-1515823064-d6e0c0462a7f?auto=format&fit=crop&w=300&q=80' },
+                { id: 'dk14', name: 'Chai Tea Latte', desc: 'Spiced, steamed milk', price: 4.99, img: 'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=300&q=80' },
+                { id: 'dk15', name: 'Green Tea', desc: 'Japanese sencha, hot', price: 2.99, img: 'https://images.unsplash.com/photo-1556881286-fc6915169721?auto=format&fit=crop&w=300&q=80' },
+                { id: 'dk16', name: 'Ginger Ale', desc: 'Artisan brewed, spicy', price: 3.49, img: 'https://images.unsplash.com/photo-1554866585-cd94860890b7?auto=format&fit=crop&w=300&q=80' },
+                { id: 'dk17', name: 'Root Beer Float', desc: 'Vanilla ice cream, 20oz', price: 5.99, img: 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=300&q=80' },
+                { id: 'dk18', name: 'Cold Brew Coffee', desc: '16hr steeped, smooth', price: 4.99, img: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=300&q=80' },
+                { id: 'dk19', name: 'Tropical Punch', desc: 'Mango, pineapple, guava', price: 4.49, img: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=300&q=80' },
+                { id: 'dk20', name: 'Coconut Water', desc: 'Fresh young coconut, 16oz', price: 4.99, img: 'https://images.unsplash.com/photo-1528505086635-4c69d1f0c277?auto=format&fit=crop&w=300&q=80' }
+            ]}
+        ];
+
         // ─── MENU PAGE ────────────────────────────────────────────
-        function drawMenuPage(theme, style = 'default') {
+        function drawMenuPage(theme, style = 'default', cat) {
+            const selectedCat = cat || (window.selectedCatByTheme && window.selectedCatByTheme[theme]) || null;
             const textColor = theme === 'glassmorphism' ? '#fff' : 'var(--text-primary)';
             const subColor = theme === 'glassmorphism' ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
             const accent = theme === 'neubrutalism' ? '#FF6B35' : 'var(--accent)';
             const pageBg = theme === 'glassmorphism' ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
             const backBtn = `<div onclick="goBack('${theme}')" style="width:36px;height:36px;border-radius:50%;background:${theme==='glassmorphism'?'rgba(255,255,255,0.1)':'var(--pill-bg)'};display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('arrow-left', 'font-size:16px;color:'+textColor+';')}</div>`;
 
-            const categories = [
-                { id: 'mains', name: 'Main Course', items: [
-                    { name: 'Classic Beef Burger', desc: 'Double patty, cheddar, lettuce', price: 12.99, img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80' },
-                    { name: 'Pepperoni Pizza', desc: 'Extra cheese, thin crust', price: 9.99, img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80' },
-                    { name: 'Grilled Salmon', desc: 'Lemon butter sauce', price: 15.99, img: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=200&q=80' }
-                ]},
-                { id: 'sides', name: 'Sides', items: [
-                    { name: 'Caesar Salad', desc: 'Fresh romaine, parmesan', price: 8.99, img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=200&q=80' },
-                    { name: 'Truffle Fries', desc: 'Parmesan & herb', price: 6.99, img: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=200&q=80' },
-                    { name: 'Onion Rings', desc: 'Crispy battered', price: 5.99, img: 'https://images.unsplash.com/photo-1639024471283-03518883512d?auto=format&fit=crop&w=200&q=80' }
-                ]},
-                { id: 'desserts', name: 'Desserts', items: [
-                    { name: 'Chocolate Lava Cake', desc: 'Warm molten center', price: 7.99, img: 'https://images.unsplash.com/photo-1624353365286-3f8d62daad51?auto=format&fit=crop&w=200&q=80' },
-                    { name: 'Tiramisu', desc: 'Classic Italian', price: 8.49, img: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=200&q=80' }
-                ]},
-                { id: 'drinks', name: 'Drinks', items: [
-                    { name: 'Fresh Lemonade', desc: 'Hand-squeezed', price: 4.99, img: 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=200&q=80' },
-                    { name: 'Iced Coffee', desc: 'Cold brew', price: 5.49, img: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=200&q=80' }
-                ]}
-            ];
-
-            const addBtn = `<div onclick="navigateToPage('${theme}','product-detail-page')" style="background:${accent};color:#fff;border:none;border-radius:var(--btn-radius);padding:6px 14px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">+ Add</div>`;
-
             if (style === 'default') {
-                const catsNav = categories.map(c => `<span onclick="document.getElementById('cat-${theme}-${c.id}').scrollIntoView({behavior:'smooth'})" style="padding:8px 16px;background:var(--pill-bg);border-radius:9999px;font-size:12px;font-weight:600;color:${textColor};cursor:pointer;white-space:nowrap;transition:all 0.2s;" onmouseover="this.style.background='${accent}';this.style.color='#fff'" onmouseout="this.style.background='var(--pill-bg)';this.style.color='${textColor}'">${c.name}</span>`).join('');
-                const sectionsHtml = categories.map(c => `
-                    <div id="cat-${theme}-${c.id}" style="margin-bottom:20px;">
-                        <div style="font-size:14px;font-weight:800;color:${textColor};margin-bottom:12px;">${c.name}</div>
-                        ${c.items.map(item => `
-                        <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border-color);">
-                            <img src="${item.img}" style="width:52px;height:52px;border-radius:var(--card-img-radius);object-fit:cover;flex-shrink:0;">
-                            <div style="flex:1;">
-                                <div style="font-size:13px;font-weight:700;color:${textColor};">${item.name}</div>
-                                <div style="font-size:10px;color:${subColor};margin-top:2px;">${item.desc}</div>
-                                <div style="font-size:13px;font-weight:700;color:${accent};margin-top:4px;">${formatPrice(item.price)}</div>
-                            </div>
-                            ${addBtn}
-                        </div>`).join('')}
+                // ─── DESIGN 1: Neumorphism/Light — List-style categories ───
+                const searchIcon = iconFor(theme, 'search', 'font-size:16px;color:' + subColor + ';');
+                const catList = MENU_DATA.map((c, i) => `
+                    <div onclick="document.getElementById('neu-cat-list-${theme}').style.display='none';document.getElementById('neu-item-section-${theme}').style.display='block';document.getElementById('neu-item-grid-${theme}').innerHTML=document.getElementById('neu-hidden-${theme}-${c.id}').innerHTML;document.getElementById('neu-item-title-${theme}').textContent='${c.name}';"
+                        style="display:flex;align-items:center;gap:14px;background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:12px;cursor:pointer;transition:all 0.2s;box-shadow:var(--card-shadow);margin-bottom:10px;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(0,0,0,0.08)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='var(--card-shadow)'">
+                        <div style="width:60px;height:60px;border-radius:14px;overflow:hidden;flex-shrink:0;">
+                            <img src="${c.img}" style="width:100%;height:100%;object-fit:cover;" alt="${c.name}" loading="lazy">
+                        </div>
+                        <div style="flex:1;">
+                            <div style="font-size:14px;font-weight:700;color:${textColor};margin-bottom:2px;">${c.name}</div>
+                            <div style="font-size:11px;color:${subColor};">${c.count} items</div>
+                        </div>
+                        <div style="width:28px;height:28px;border-radius:50%;background:var(--pill-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            ${iconFA('chevron-right', 'font-size:12px;color:'+subColor+';')}
+                        </div>
                     </div>`).join('');
 
+                const allItemsGrid = MENU_DATA.flatMap(c => c.items).map(item => `
+                    <div onclick="navigateToPage('${theme}','product-detail-page',null,'${item.id}')" style="background:var(--card-bg);border-radius:16px;overflow:hidden;box-shadow:var(--card-shadow);cursor:pointer;transition:all 0.15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='var(--card-shadow)'">
+                        <img src="${item.img}" style="width:100%;height:110px;object-fit:cover;">
+                        <div style="padding:10px 12px;">
+                            <div style="font-size:12px;font-weight:700;color:${textColor};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.name}</div>
+                            <div style="font-size:10px;color:${subColor};margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.desc}</div>
+                            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
+                                <span style="font-size:14px;font-weight:800;color:${accent};">${formatPrice(item.price)}</span>
+                                <span style="width:28px;height:28px;border-radius:50%;background:${accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;">+</span>
+                            </div>
+                        </div>
+                    </div>`).join('');
+
+                const hiddenCatGrids = MENU_DATA.map(c =>
+                    `<div id="neu-hidden-${theme}-${c.id}" style="display:none;">${c.items.map(item => `
+                    <div onclick="navigateToPage('${theme}','product-detail-page',null,'${item.id}')" style="background:var(--card-bg);border-radius:16px;overflow:hidden;box-shadow:var(--card-shadow);cursor:pointer;transition:all 0.15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='var(--card-shadow)'">
+                        <img src="${item.img}" style="width:100%;height:110px;object-fit:cover;">
+                        <div style="padding:10px 12px;">
+                            <div style="font-size:12px;font-weight:700;color:${textColor};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.name}</div>
+                            <div style="font-size:10px;color:${subColor};margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.desc}</div>
+                            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
+                                <span style="font-size:14px;font-weight:800;color:${accent};">${formatPrice(item.price)}</span>
+                                <span style="width:28px;height:28px;border-radius:50%;background:${accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;">+</span>
+                            </div>
+                        </div>
+                    </div>`).join('')}</div>`
+                ).join('');
+
+                const showItems = selectedCat ? MENU_DATA.find(c => c.id === selectedCat) : null;
+
                 return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
-                    <div style="padding:16px;display:flex;align-items:center;gap:12px;">
+                    <div style="padding:16px 16px 8px;display:flex;align-items:center;gap:12px;flex-shrink:0;">
                         ${backBtn}
-                        <div style="font-size:16px;font-weight:700;color:${textColor};">Full Menu</div>
+                        <div style="flex:1;">
+                            <div style="font-size:18px;font-weight:800;color:${textColor};letter-spacing:-0.3px;">Menu</div>
+                        </div>
+                        <div onclick="goBack('${theme}')" style="font-size:11px;font-weight:700;color:${accent};cursor:pointer;background:var(--pill-bg);padding:6px 14px;border-radius:9999px;">View All</div>
                     </div>
-                    <div style="padding:0 16px 12px;display:flex;gap:8px;overflow-x:auto;flex-shrink:0;">${catsNav}</div>
-                    <div style="flex:1;overflow-y:auto;padding:0 16px 80px;">${sectionsHtml}</div>
+                    <div style="padding:0 16px 12px;flex-shrink:0;">
+                        <div style="display:flex;align-items:center;gap:8px;background:var(--pill-bg);border-radius:14px;padding:10px 14px;">
+                            ${searchIcon}
+                            <input placeholder="Find your favourite food" style="border:none;background:transparent;outline:none;flex:1;font-size:13px;color:${textColor};font-family:inherit;" oninput="var q=this.value.toLowerCase();document.querySelectorAll('#neu-item-grid-${theme}>div').forEach(function(c){c.style.display=c.textContent.toLowerCase().includes(q)?'block':'none';})">
+                        </div>
+                    </div>
+                    <div style="flex:1;overflow-y:auto;padding:0 16px 80px;">
+                        <div id="neu-cat-list-${theme}" style="display:${showItems?'none':'block'};">
+                            <div style="font-size:14px;font-weight:700;color:${textColor};margin-bottom:12px;">Food Category</div>
+                            ${catList}
+                        </div>
+                        <div id="neu-item-section-${theme}" style="display:${showItems?'block':'none'};">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                                <div onclick="document.getElementById('neu-cat-list-${theme}').style.display='block';document.getElementById('neu-item-section-${theme}').style.display='none';" style="width:28px;height:28px;border-radius:8px;background:var(--pill-bg);display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('arrow-left', 'font-size:12px;color:'+textColor+';')}</div>
+                                <span id="neu-item-title-${theme}" style="font-size:13px;font-weight:700;color:${textColor};">${showItems ? showItems.name : 'All Items'}</span>
+                            </div>
+                            <div id="neu-item-grid-${theme}" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">${showItems ? showItems.items.map(item => `
+                    <div onclick="navigateToPage('${theme}','product-detail-page')" style="background:var(--card-bg);border-radius:16px;overflow:hidden;box-shadow:var(--card-shadow);cursor:pointer;transition:all 0.15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='var(--card-shadow)'">
+                        <img src="${item.img}" style="width:100%;height:110px;object-fit:cover;">
+                        <div style="padding:10px 12px;">
+                            <div style="font-size:12px;font-weight:700;color:${textColor};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.name}</div>
+                            <div style="font-size:10px;color:${subColor};margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.desc}</div>
+                            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
+                                <span style="font-size:14px;font-weight:800;color:${accent};">${formatPrice(item.price)}</span>
+                                <span style="width:28px;height:28px;border-radius:50%;background:${accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;">+</span>
+                            </div>
+                        </div>
+                    </div>`).join('') : ''}</div>
+                        </div>
+                        ${hiddenCatGrids}
+                    </div>
                 </div>`;
             }
 
             if (style === 'option 1') {
-                const gridHtml = categories.map(c => `
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                        ${c.items.map(item => `
-                        <div style="background:var(--card-bg);border-radius:var(--card-radius);overflow:hidden;box-shadow:var(--card-shadow);border:1px solid var(--border-color);position:relative;">
-                            <img src="${item.img}" style="width:100%;height:100px;object-fit:cover;">
-                            <div style="position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:${accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);" onclick="navigateToPage('${theme}','product-detail-page')">+</div>
-                            <div style="padding:10px;">
-                                <div style="font-size:12px;font-weight:700;color:${textColor};">${item.name}</div>
-                                <div style="font-size:10px;color:${subColor};margin-top:2px;">${item.desc}</div>
-                                <div style="font-size:13px;font-weight:800;color:${accent};margin-top:6px;">${formatPrice(item.price)}</div>
-                            </div>
-                        </div>`).join('')}
+                // ─── DESIGN 2: Glassmorphism/Dark — Fixed side nav, scrollable glass cards ───
+                const glassShowCat = selectedCat ? MENU_DATA.find(c => c.id === selectedCat) : null;
+                const catNavPills = MENU_DATA.map((c, i) => {
+                    const isActive = glassShowCat && glassShowCat.id === c.id;
+                    return `
+                    <div onclick="document.querySelectorAll('.glass-nav-pill-${theme}').forEach(p=>{p.style.background='transparent';p.style.boxShadow='none';p.style.border='1px solid transparent'});this.style.background='rgba(255,255,255,0.08)';this.style.boxShadow='0 0 12px rgba(212,165,116,0.3)';this.style.border='1px solid rgba(212,165,116,0.4)';document.getElementById('glass-item-list-${theme}').innerHTML=document.getElementById('glass-hidden-${theme}-${c.id}').innerHTML;"
+                        class="glass-nav-pill-${theme}"
+                        style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;border-radius:14px;margin-bottom:6px;cursor:pointer;transition:all 0.2s;border:1px solid transparent;${isActive?'background:rgba(255,255,255,0.08);box-shadow:0 0 12px rgba(212,165,116,0.3);border:1px solid rgba(212,165,116,0.4);':''}">
+                        <div style="width:36px;height:36px;border-radius:10px;overflow:hidden;${isActive?'box-shadow:0 0 8px rgba(212,165,116,0.4);border:1px solid rgba(212,165,116,0.5);':'border:1px solid rgba(255,255,255,0.1);'}">
+                            <img src="${c.img}" style="width:100%;height:100%;object-fit:cover;" alt="${c.name}" loading="lazy">
+                        </div>
+                        <span style="font-size:9px;font-weight:600;color:${textColor};text-align:center;line-height:1.1;">${c.name}</span>
+                        <span style="font-size:8px;color:${subColor};">${c.count}</span>
+                    </div>`;
+                }).join('');
+
+                const glassAllCards = MENU_DATA.flatMap(c => c.items).map(item => `
+                    <div onclick="navigateToPage('${theme}','product-detail-page',null,'${item.id}')" style="background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.06);border-radius:16px;overflow:hidden;cursor:pointer;transition:all 0.15s;margin-bottom:10px;display:flex;gap:12px;padding:12px;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='rgba(255,255,255,0.04)'">
+                        <img src="${item.img}" style="width:64px;height:64px;border-radius:12px;object-fit:cover;flex-shrink:0;">
+                        <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;">
+                            <div style="font-size:12px;font-weight:700;color:${textColor};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.name}</div>
+                            <div style="font-size:10px;color:${subColor};margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.desc}</div>
+                            <div style="font-size:13px;font-weight:800;color:var(--accent);margin-top:6px;">${formatPrice(item.price)}</div>
+                        </div>
+                        <div style="width:32px;height:32px;border-radius:50%;background:rgba(212,165,116,0.2);border:1px solid rgba(212,165,116,0.3);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;align-self:center;">+</div>
                     </div>`).join('');
 
-                const tabHtml = categories.map((c, i) => `<span onclick="document.getElementById('tab-grid-${theme}').innerHTML=document.getElementById('tab-content-${theme}-${i}').innerHTML;this.parentElement.querySelectorAll('span').forEach(s=>s.style.background='var(--pill-bg)');this.style.background='${accent}';this.style.color='#fff'" style="padding:8px 18px;background:${i===0?accent:'var(--pill-bg)'};color:${i===0?'#fff':textColor};border-radius:9999px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all 0.2s;">${c.name}</span>`).join('');
+                const glassHiddenGrids = MENU_DATA.map(c =>
+                    `<div id="glass-hidden-${theme}-${c.id}" style="display:none;">${c.items.map(item => `
+                    <div onclick="navigateToPage('${theme}','product-detail-page',null,'${item.id}')" style="background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.06);border-radius:16px;overflow:hidden;cursor:pointer;transition:all 0.15s;margin-bottom:10px;display:flex;gap:12px;padding:12px;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='rgba(255,255,255,0.04)'">
+                        <img src="${item.img}" style="width:64px;height:64px;border-radius:12px;object-fit:cover;flex-shrink:0;">
+                        <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;">
+                            <div style="font-size:12px;font-weight:700;color:${textColor};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.name}</div>
+                            <div style="font-size:10px;color:${subColor};margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.desc}</div>
+                            <div style="font-size:13px;font-weight:800;color:var(--accent);margin-top:6px;">${formatPrice(item.price)}</div>
+                        </div>
+                        <div style="width:32px;height:32px;border-radius:50%;background:rgba(212,165,116,0.2);border:1px solid rgba(212,165,116,0.3);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;align-self:center;">+</div>
+                    </div>`).join('')}</div>`
+                ).join('');
 
-                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
-                    <div style="padding:16px;display:flex;align-items:center;gap:12px;">
+                return `<div style="position:absolute;inset:0;background:linear-gradient(135deg,#0D0D0D 0%,#1A1A1A 50%,#0D0D0D 100%);z-index:100;display:flex;flex-direction:column;">
+                    <div style="padding:16px;display:flex;align-items:center;gap:12px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,0.04);">
                         ${backBtn}
-                        <div style="font-size:16px;font-weight:700;color:${textColor};">Menu</div>
+                        <div style="font-size:17px;font-weight:700;color:${textColor};letter-spacing:-0.2px;">Our Menu</div>
+                        <div onclick="goBack('${theme}')" style="margin-left:auto;font-size:11px;font-weight:600;color:var(--accent);cursor:pointer;">View All</div>
                     </div>
-                    <div style="padding:0 16px 12px;display:flex;gap:8px;overflow-x:auto;flex-shrink:0;">${tabHtml}</div>
-                    <div style="flex:1;overflow-y:auto;padding:0 16px 80px;">
-                        <div id="tab-grid-${theme}">${gridHtml}</div>
+                    <div style="flex:1;display:flex;overflow:hidden;">
+                        <div style="width:72px;flex-shrink:0;padding:12px 6px;background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,0.04);display:flex;flex-direction:column;overflow-y:auto;">
+                            ${catNavPills}
+                        </div>
+                        <div style="flex:1;overflow-y:auto;padding:12px 12px 80px;" id="glass-item-list-${theme}">
+                            ${glassShowCat ? glassShowCat.items.map(item => `
+                    <div onclick="navigateToPage('${theme}','product-detail-page',null,'${item.id}')" style="background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.06);border-radius:16px;overflow:hidden;cursor:pointer;transition:all 0.15s;margin-bottom:10px;display:flex;gap:12px;padding:12px;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='rgba(255,255,255,0.04)'">
+                        <img src="${item.img}" style="width:64px;height:64px;border-radius:12px;object-fit:cover;flex-shrink:0;">
+                        <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;">
+                            <div style="font-size:12px;font-weight:700;color:${textColor};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.name}</div>
+                            <div style="font-size:10px;color:${subColor};margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.desc}</div>
+                            <div style="font-size:13px;font-weight:800;color:var(--accent);margin-top:6px;">${formatPrice(item.price)}</div>
+                        </div>
+                        <div style="width:32px;height:32px;border-radius:50%;background:rgba(212,165,116,0.2);border:1px solid rgba(212,165,116,0.3);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;align-self:center;">+</div>
+                    </div>`).join('') : glassAllCards}
+                        </div>
+                        ${glassHiddenGrids}
                     </div>
-                    ${categories.map((c,i) => `<div id="tab-content-${theme}-${i}" style="display:none;">${gridHtml}</div>`).join('')}
                 </div>`;
             }
 
-            // Option 2: Vertical list with sticky category headers
-            const stickySections = categories.map(c => `
-                <div style="position:sticky;top:0;background:${pageBg};padding:12px 0 8px;font-size:14px;font-weight:800;color:${textColor};z-index:1;">${c.name}</div>
-                ${c.items.map(item => `
-                <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--border-color);">
-                    <img src="${item.img}" style="width:48px;height:48px;border-radius:var(--card-img-radius);object-fit:cover;flex-shrink:0;">
-                    <div style="flex:1;">
-                        <div style="font-size:13px;font-weight:700;color:${textColor};">${item.name}</div>
-                        <div style="font-size:13px;font-weight:700;color:${accent};margin-top:2px;">${formatPrice(item.price)}</div>
+            // ─── DESIGN 3: Neubrutalism/Modern — Bold borders, hard shadows, playful design ───
+            const brutShowItems = selectedCat ? MENU_DATA.find(c => c.id === selectedCat) : null;
+            const featuredItem = MENU_DATA[0].items[0]; // First item as featured
+            
+            // Horizontal scrollable category chips with bold borders
+            const brutCatChips = MENU_DATA.map((c, i) => {
+                const isActive = brutShowItems && brutShowItems.id === c.id;
+                return `
+                <div onclick="document.getElementById('brut-cat-section-${theme}').style.display='none';document.getElementById('brut-item-section-${theme}').style.display='block';document.getElementById('brut-item-grid-${theme}').innerHTML=document.getElementById('brut-hidden-${theme}-${c.id}').innerHTML;document.getElementById('brut-item-title-${theme}').textContent='${c.name}';"
+                    style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;cursor:pointer;transition:all 0.15s;border:2px solid var(--border-color);background:${isActive?accent:'var(--card-bg)'};box-shadow:3px 3px 0 var(--border-color);flex-shrink:0;" onmouseover="this.style.boxShadow='5px 5px 0 var(--border-color)';this.style.transform='translate(-2px,-2px)'" onmouseout="this.style.boxShadow='3px 3px 0 var(--border-color)';this.style.transform='translate(0,0)'">
+                    <div style="width:28px;height:28px;border-radius:8px;overflow:hidden;border:2px solid ${isActive?'#fff':'var(--border-color)'};">
+                        <img src="${c.img}" style="width:100%;height:100%;object-fit:cover;" alt="${c.name}" loading="lazy">
                     </div>
-                    <div style="display:flex;align-items:center;gap:8px;background:var(--pill-bg);border-radius:9999px;padding:4px 6px;">
-                        <span style="width:24px;height:24px;border-radius:50%;background:${accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;">-</span>
-                        <span style="font-size:12px;font-weight:700;color:${textColor};min-width:16px;text-align:center;">1</span>
-                        <span style="width:24px;height:24px;border-radius:50%;background:${accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;">+</span>
+                    <span style="font-size:12px;font-weight:800;color:${isActive?'#fff':textColor};white-space:nowrap;">${c.name}</span>
+                </div>`;
+            }).join('');
+
+            // Bold neubrutalism item cards
+            const brutItemCard = (item) => `
+                <div onclick="navigateToPage('${theme}','product-detail-page',null,'${item.id}')" style="background:var(--card-bg);border:2px solid var(--border-color);border-radius:14px;overflow:hidden;box-shadow:4px 4px 0 var(--border-color);cursor:pointer;transition:all 0.15s;position:relative;" onmouseover="this.style.boxShadow='6px 6px 0 var(--border-color)';this.style.transform='translate(-2px,-2px)'" onmouseout="this.style.boxShadow='4px 4px 0 var(--border-color)';this.style.transform='translate(0,0)'">
+                    <div style="position:relative;height:100px;overflow:hidden;">
+                        <img src="${item.img}" style="width:100%;height:100%;object-fit:cover;" alt="${item.name}" loading="lazy">
+                        <div style="position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:8px;background:${accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;cursor:pointer;box-shadow:2px 2px 0 rgba(0,0,0,0.2);border:2px solid #fff;">+</div>
                     </div>
-                </div>`).join('')}
-            `).join('');
+                    <div style="padding:10px 12px;">
+                        <div style="font-size:12px;font-weight:800;color:${textColor};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.name}</div>
+                        <div style="font-size:10px;color:${subColor};margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.desc}</div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
+                            <span style="font-size:14px;font-weight:900;color:${accent};">${formatPrice(item.price)}</span>
+                            <div style="width:24px;height:24px;border-radius:6px;background:var(--pill-bg);border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+                                ${iconFor(theme, 'heart', 'font-size:12px;color:'+subColor+';')}
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+
+            const brutAllCards = MENU_DATA.flatMap(c => c.items).slice(0, 8).map(brutItemCard).join('');
+            const brutHiddenGrids = MENU_DATA.map(c =>
+                `<div id="brut-hidden-${theme}-${c.id}" style="display:none;display:grid;grid-template-columns:1fr 1fr;gap:12px;">${c.items.map(brutItemCard).join('')}</div>`
+            ).join('');
 
             return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
-                <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-color);">
+                <!-- Header -->
+                <div style="padding:16px;display:flex;align-items:center;gap:12px;flex-shrink:0;border-bottom:2px solid var(--border-color);">
                     ${backBtn}
-                    <div style="font-size:16px;font-weight:700;color:${textColor};">Menu</div>
-                    <div style="margin-left:auto;background:${accent};color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:9999px;display:flex;align-items:center;gap:4px;">${iconFA('shopping-bag', 'font-size:10px;')} 3 items</div>
+                    <div style="flex:1;">
+                        <div style="font-size:18px;font-weight:900;color:${textColor};letter-spacing:-0.3px;">Menu</div>
+                    </div>
+                    <div onclick="goBack('${theme}')" style="font-size:11px;font-weight:800;color:${textColor};cursor:pointer;background:var(--pill-bg);border:2px solid var(--border-color);padding:6px 14px;border-radius:10px;box-shadow:2px 2px 0 var(--border-color);">View All</div>
                 </div>
-                <div style="flex:1;overflow-y:auto;">${stickySections}</div>
+                
+                <!-- Search Bar -->
+                <div style="padding:12px 16px;flex-shrink:0;">
+                    <div style="display:flex;align-items:center;gap:8px;background:var(--card-bg);border:2px solid var(--border-color);border-radius:12px;padding:10px 14px;box-shadow:3px 3px 0 var(--border-color);">
+                        ${iconFor(theme, 'search', 'font-size:16px;color:'+subColor+';')}
+                        <input placeholder="Search menu..." style="border:none;background:transparent;outline:none;flex:1;font-size:13px;color:${textColor};font-family:inherit;font-weight:600;" oninput="var q=this.value.toLowerCase();document.querySelectorAll('#brut-item-list-${theme}>div').forEach(function(c){c.style.display=c.textContent.toLowerCase().includes(q)?'block':'none';})">
+                    </div>
+                </div>
+                
+                <!-- Category Section -->
+                <div id="brut-cat-section-${theme}" style="flex:1;overflow-y:auto;padding:0 16px 80px;">
+                    <!-- Featured Card -->
+                    <div style="background:var(--card-bg);border:2px solid var(--border-color);border-radius:16px;overflow:hidden;box-shadow:5px 5px 0 var(--border-color);margin-bottom:16px;position:relative;">
+                        <div style="height:160px;overflow:hidden;">
+                            <img src="${featuredItem.img}" style="width:100%;height:100%;object-fit:cover;" alt="${featuredItem.name}" loading="lazy">
+                            <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.6) 100%);"></div>
+                        </div>
+                        <div style="position:absolute;top:12px;left:12px;">
+                            <div style="font-size:10px;font-weight:800;color:#fff;background:var(--accent);padding:4px 10px;border-radius:8px;border:2px solid #fff;box-shadow:2px 2px 0 rgba(0,0,0,0.2);">FEATURED</div>
+                        </div>
+                        <div style="position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:2px 2px 0 rgba(0,0,0,0.1);border:2px solid #fff;">
+                            ${iconFor(theme, 'heart', 'font-size:14px;color:#FF4D4D;')}
+                        </div>
+                        <div style="position:absolute;bottom:0;left:0;right:0;padding:16px;">
+                            <div style="font-size:18px;font-weight:900;color:#fff;margin-bottom:4px;text-shadow:1px 1px 0 rgba(0,0,0,0.3);">${featuredItem.name}</div>
+                            <div style="display:flex;align-items:center;justify-content:space-between;">
+                                <span style="font-size:16px;font-weight:900;color:var(--accent);background:#fff;padding:4px 12px;border-radius:8px;border:2px solid var(--border-color);box-shadow:2px 2px 0 var(--border-color);">${formatPrice(featuredItem.price)}</span>
+                                <div style="width:36px;height:36px;border-radius:10px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;cursor:pointer;box-shadow:3px 3px 0 rgba(0,0,0,0.2);border:2px solid #fff;">+</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Category Chips -->
+                    <div style="font-size:14px;font-weight:900;color:${textColor};margin-bottom:12px;">CATEGORIES</div>
+                    <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:16px;">${brutCatChips}</div>
+                    
+                    <!-- Items Grid -->
+                    <div style="font-size:14px;font-weight:900;color:${textColor};margin-bottom:12px;">POPULAR ITEMS</div>
+                    <div id="brut-item-list-${theme}" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        ${brutAllCards}
+                    </div>
+                    ${brutHiddenGrids}
+                </div>
+                
+                <!-- Category Items View -->
+                <div id="brut-item-section-${theme}" style="display:none;flex:1;overflow-y:auto;padding:0 16px 80px;">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+                        <div onclick="document.getElementById('brut-cat-section-${theme}').style.display='flex';document.getElementById('brut-item-section-${theme}').style.display='none';" style="width:32px;height:32px;border-radius:8px;background:var(--pill-bg);border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:2px 2px 0 var(--border-color);">${iconFA('arrow-left', 'font-size:14px;color:'+textColor+';')}</div>
+                        <span id="brut-item-title-${theme}" style="font-size:16px;font-weight:900;color:${textColor};">${brutShowItems ? brutShowItems.name : 'All Items'}</span>
+                    </div>
+                    <div id="brut-item-grid-${theme}" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        ${brutShowItems ? brutShowItems.items.map(brutItemCard).join('') : ''}
+                    </div>
+                </div>
             </div>`;
         }
 
@@ -5090,102 +5331,222 @@ function drawAnnouncementStrip(theme, style = 'default') {
             const subColor = theme === 'glassmorphism' ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
             const accent = theme === 'neubrutalism' ? '#FF6B35' : 'var(--accent)';
             const pageBg = theme === 'glassmorphism' ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
-            const hero = 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80';
+            
+            // Get selected item or default to first burger
+            const selectedItemId = window.selectedItemByTheme && window.selectedItemByTheme[theme];
+            let selectedItem = null;
+            if (selectedItemId) {
+                for (const cat of MENU_DATA) {
+                    selectedItem = cat.items.find(item => item.id === selectedItemId);
+                    if (selectedItem) break;
+                }
+            }
+            if (!selectedItem) selectedItem = MENU_DATA[1].items[0]; // Default: Classic Beef Burger
+            
+            const hero = selectedItem.img;
+            const itemName = selectedItem.name;
+            const itemDesc = selectedItem.desc;
+            const itemPrice = selectedItem.price;
             const backBtn = `<div onclick="goBack('${theme}')" style="width:36px;height:36px;border-radius:50%;background:${theme==='glassmorphism'?'rgba(255,255,255,0.1)':'var(--pill-bg)'};display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('arrow-left', 'font-size:16px;color:'+textColor+';')}</div>`;
 
             if (style === 'default') {
+                // ─── DESIGN 1: Neumorphism/Light — Hero + soft card body ───
                 return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
                     <div style="position:relative;height:250px;flex-shrink:0;">
                         <img src="${hero}" style="width:100%;height:100%;object-fit:cover;">
+                        <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,${pageBg} 100%);"></div>
                         <div style="position:absolute;top:16px;left:16px;">${backBtn}</div>
+                        <div style="position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.1);">${iconFor(theme, 'heart', 'font-size:16px;color:var(--accent);')}</div>
                     </div>
                     <div style="flex:1;overflow-y:auto;padding:20px 16px 100px;">
-                        <div style="font-size:22px;font-weight:800;color:${textColor};margin-bottom:6px;">Classic Beef Burger</div>
-                        <div style="font-size:13px;color:${subColor};line-height:1.6;margin-bottom:16px;">Juicy double beef patty with melted cheddar, fresh lettuce, tomato, and our signature sauce on a toasted brioche bun.</div>
-                        <div style="font-size:24px;font-weight:900;color:${accent};margin-bottom:20px;">${formatPrice(12.99)}</div>
-                        <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:10px;">Size</div>
-                        <div style="display:flex;gap:8px;margin-bottom:20px;">
-                            <span style="padding:8px 20px;border-radius:9999px;background:${accent};color:#fff;font-size:12px;font-weight:700;cursor:pointer;">Small</span>
-                            <span style="padding:8px 20px;border-radius:9999px;background:var(--pill-bg);color:${textColor};font-size:12px;font-weight:600;cursor:pointer;">Medium</span>
-                            <span style="padding:8px 20px;border-radius:9999px;background:var(--pill-bg);color:${textColor};font-size:12px;font-weight:600;cursor:pointer;">Large</span>
+                        <div style="font-size:22px;font-weight:800;color:${textColor};letter-spacing:-0.3px;margin-bottom:6px;">${itemName}</div>
+                        <div style="font-size:13px;color:${subColor};line-height:1.6;margin-bottom:16px;">${itemDesc}</div>
+                        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+                            <div style="font-size:24px;font-weight:900;color:${accent};">${formatPrice(itemPrice)}</div>
+                            <span style="font-size:11px;color:${subColor};background:var(--pill-bg);padding:3px 10px;border-radius:9999px;">430 cal</span>
+                            <span style="font-size:11px;color:${subColor};display:flex;align-items:center;gap:3px;">${iconFor(theme, 'star', 'font-size:12px;color:#FFB800;')}4.6</span>
                         </div>
-                        <div onclick="navigateToPage('${theme}','upsell-page')" style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:10px;cursor:pointer;">Make it a Meal <span style="font-size:10px;color:${subColor};">See all</span></div>
-                        <div style="background:var(--pill-bg);border-radius:14px;padding:14px;margin-bottom:20px;">
-                            <div style="display:flex;align-items:center;gap:12px;">
-                                <span style="width:20px;height:20px;border-radius:4px;border:2px solid ${accent};display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('check', 'font-size:12px;color:'+accent+';')}</span>
-                                <span style="flex:1;font-size:12px;font-weight:600;color:${textColor};">Add fries + drink for ${formatPrice(3.99)}</span>
-                                <span style="font-size:13px;font-weight:700;color:${accent};">+${formatPrice(3.99)}</span>
-                            </div>
+                        <div style="font-size:13px;font-weight:800;color:${textColor};margin-bottom:10px;">Choose Size</div>
+                        <div style="display:flex;gap:8px;margin-bottom:20px;">
+                            <span onclick="this.parentElement.querySelectorAll('span').forEach(s=>{s.style.background='var(--pill-bg)';s.style.color='${textColor}'});this.style.background='${accent}';this.style.color='#fff'" style="padding:10px 22px;border-radius:9999px;background:${accent};color:#fff;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px ${accent}30;transition:all 0.15s;">Small</span>
+                            <span onclick="this.parentElement.querySelectorAll('span').forEach(s=>{s.style.background='var(--pill-bg)';s.style.color='${textColor}'});this.style.background='${accent}';this.style.color='#fff'" style="padding:10px 22px;border-radius:9999px;background:var(--pill-bg);color:${textColor};font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;">Medium</span>
+                            <span onclick="this.parentElement.querySelectorAll('span').forEach(s=>{s.style.background='var(--pill-bg)';s.style.color='${textColor}'});this.style.background='${accent}';this.style.color='#fff'" style="padding:10px 22px;border-radius:9999px;background:var(--pill-bg);color:${textColor};font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;">Large</span>
+                        </div>
+                        <div style="font-size:13px;font-weight:800;color:${textColor};margin-bottom:10px;">Make it a Meal</div>
+                        <div onclick="navigateToPage('${theme}','upsell-page')" style="background:var(--pill-bg);border-radius:16px;padding:14px;margin-bottom:20px;cursor:pointer;display:flex;align-items:center;gap:12px;box-shadow:var(--card-shadow);transition:all 0.15s;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
+                            <span style="width:20px;height:20px;border-radius:6px;background:${accent};display:flex;align-items:center;justify-content:center;">${iconFor(theme, 'check', 'font-size:11px;color:#fff;')}</span>
+                            <span style="flex:1;font-size:12px;font-weight:600;color:${textColor};">Add fries + drink for ${formatPrice(3.99)}</span>
+                            <span style="font-size:14px;font-weight:800;color:${accent};">+${formatPrice(3.99)}</span>
                         </div>
                     </div>
-                    <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
-                        <div onclick="navigateToPage('${theme}','cart-page')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Add to Cart - ${formatPrice(12.99)}</div>
+                    <div style="padding:12px 16px 72px;border-top:1px solid var(--border-color);background:${pageBg};">
+                        <div onclick="navigateToPage('${theme}','cart-page')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:16px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px ${accent}30;">Add to Cart - ${formatPrice(itemPrice)}</div>
                     </div>
                 </div>`;
             }
 
             if (style === 'option 1') {
-                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
-                    <div style="display:flex;flex:1;overflow:hidden;">
-                        <div style="width:40%;height:100%;overflow:hidden;flex-shrink:0;">
-                            <img src="${hero}" style="width:100%;height:100%;object-fit:cover;">
+                // ─── DESIGN 2: Glassmorphism/Dark — Full-bleed hero + sliding glass panel ───
+                return `<div style="position:absolute;inset:0;background:#0A0A0A;z-index:100;display:flex;flex-direction:column;">
+                    <!-- Hero Image -->
+                    <div style="position:relative;height:220px;flex-shrink:0;">
+                        <img src="${hero}" style="width:100%;height:100%;object-fit:cover;" alt="${itemName}">
+                        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.3) 0%,transparent 30%,transparent 50%,rgba(10,10,10,0.95) 100%);"></div>
+                        <!-- Top bar -->
+                        <div style="position:absolute;top:0;left:0;right:0;padding:16px;display:flex;align-items:center;justify-content:space-between;z-index:2;">
+                            ${backBtn}
+                            <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.1);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFor(theme, 'heart-line', 'font-size:16px;color:#fff;')}</div>
                         </div>
-                        <div style="flex:1;display:flex;flex-direction:column;padding:16px;overflow-y:auto;">
-                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">${backBtn}<div style="width:36px;"></div></div>
-                            <div style="font-size:20px;font-weight:800;color:${textColor};margin-bottom:4px;">Classic Beef Burger</div>
-                            <div style="font-size:20px;font-weight:900;color:${accent};margin-bottom:12px;">${formatPrice(12.99)}</div>
-                            <div style="font-size:12px;color:${subColor};line-height:1.6;margin-bottom:16px;">Juicy double beef patty with melted cheddar, fresh lettuce, tomato, and our signature sauce.</div>
-                            <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:8px;">Modifiers</div>
-                            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">
-                                <span style="padding:6px 14px;border-radius:9999px;background:${accent};color:#fff;font-size:11px;font-weight:700;cursor:pointer;">Extra Cheese +$1</span>
-                                <span style="padding:6px 14px;border-radius:9999px;background:var(--pill-bg);color:${textColor};font-size:11px;font-weight:600;cursor:pointer;">Bacon +$2</span>
-                                <span style="padding:6px 14px;border-radius:9999px;background:var(--pill-bg);color:${textColor};font-size:11px;font-weight:600;cursor:pointer;">Avocado +$1.5</span>
-                            </div>
-                            <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:6px;">Quantity</div>
-                            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-                                <span style="width:32px;height:32px;border-radius:50%;background:var(--pill-bg);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;cursor:pointer;">-</span>
-                                <span style="font-size:16px;font-weight:700;color:${textColor};">1</span>
-                                <span style="width:32px;height:32px;border-radius:50%;background:${accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;cursor:pointer;">+</span>
-                            </div>
-                            <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:6px;">Special Instructions</div>
-                            <textarea placeholder="Any allergies or preferences..." style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border-color);background:var(--pill-bg);color:${textColor};font-size:11px;resize:none;height:60px;margin-bottom:16px;"></textarea>
+                        <!-- Rating badge floating on image -->
+                        <div style="position:absolute;top:16px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;background:rgba(0,0,0,0.4);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.1);border-radius:9999px;padding:5px 12px;">
+                            ${iconFor(theme, 'star-fill', 'font-size:11px;color:#FFB800;')}
+                            <span style="font-size:11px;font-weight:700;color:#fff;">4.6</span>
+                            <span style="font-size:10px;color:rgba(255,255,255,0.5);">(238)</span>
                         </div>
                     </div>
-                    <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
-                        <div style="font-size:18px;font-weight:900;color:${accent};">${formatPrice(12.99)}</div>
-                        <div onclick="navigateToPage('${theme}','cart-page')" style="flex:1;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;">Add to Cart</div>
+
+                    <!-- Glass Panel -->
+                    <div style="flex:1;display:flex;flex-direction:column;margin-top:-24px;position:relative;z-index:3;">
+                        <div style="flex:1;background:rgba(255,255,255,0.04);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);border-top:1px solid rgba(255,255,255,0.08);border-radius:24px 24px 0 0;display:flex;flex-direction:column;overflow:hidden;">
+                            <!-- Drag handle -->
+                            <div style="display:flex;justify-content:center;padding:10px 0 4px;flex-shrink:0;">
+                                <div style="width:36px;height:4px;border-radius:9999px;background:rgba(255,255,255,0.2);"></div>
+                            </div>
+
+                            <div style="padding:8px 20px 20px;flex:1;overflow-y:auto;">
+                                <!-- Name + Price -->
+                                <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;">
+                                    <div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.3px;line-height:1.2;">${itemName}</div>
+                                </div>
+                                <div style="font-size:12px;color:rgba(255,255,255,0.45);line-height:1.6;margin-bottom:16px;">${itemDesc}</div>
+
+                                <!-- Stat chips -->
+                                <div style="display:flex;gap:8px;margin-bottom:20px;">
+                                    <div style="display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:8px 12px;flex:1;">
+                                        ${iconFor(theme, 'clock', 'font-size:13px;color:var(--accent);')}
+                                        <div>
+                                            <div style="font-size:11px;font-weight:700;color:#fff;">25-30</div>
+                                            <div style="font-size:9px;color:rgba(255,255,255,0.4);">min</div>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:8px 12px;flex:1;">
+                                        ${iconFor(theme, 'flame', 'font-size:13px;color:var(--accent);')}
+                                        <div>
+                                            <div style="font-size:11px;font-weight:700;color:#fff;">430</div>
+                                            <div style="font-size:9px;color:rgba(255,255,255,0.4);">cal</div>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:8px 12px;flex:1;">
+                                        ${iconFor(theme, 'star', 'font-size:13px;color:#FFB800;')}
+                                        <div>
+                                            <div style="font-size:11px;font-weight:700;color:#fff;">4.6</div>
+                                            <div style="font-size:9px;color:rgba(255,255,255,0.4);">rating</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Size picker -->
+                                <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.7);margin-bottom:10px;">Choose Size</div>
+                                <div style="display:flex;gap:8px;margin-bottom:20px;">
+                                    <div onclick="this.parentElement.querySelectorAll('div').forEach(s=>{s.style.background='rgba(255,255,255,0.04)';s.style.borderColor='rgba(255,255,255,0.06)';s.querySelector('span:last-child').style.color='rgba(255,255,255,0.5)';});this.style.background='rgba(212,165,116,0.15)';this.style.borderColor='rgba(212,165,116,0.4)';this.querySelector('span:last-child').style.color='#fff'" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 8px;border-radius:14px;background:rgba(212,165,116,0.15);border:1px solid rgba(212,165,116,0.4);cursor:pointer;transition:all 0.2s;">
+                                        <span style="font-size:18px;">🍔</span>
+                                        <span style="font-size:11px;font-weight:700;color:#fff;">Small</span>
+                                        <span style="font-size:10px;color:rgba(255,255,255,0.5);">${formatPrice(itemPrice)}</span>
+                                    </div>
+                                    <div onclick="this.parentElement.querySelectorAll('div').forEach(s=>{s.style.background='rgba(255,255,255,0.04)';s.style.borderColor='rgba(255,255,255,0.06)';s.querySelector('span:last-child').style.color='rgba(255,255,255,0.5)';});this.style.background='rgba(212,165,116,0.15)';this.style.borderColor='rgba(212,165,116,0.4)';this.querySelector('span:last-child').style.color='#fff'" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 8px;border-radius:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);cursor:pointer;transition:all 0.2s;">
+                                        <span style="font-size:22px;">🍔</span>
+                                        <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.5);">Medium</span>
+                                        <span style="font-size:10px;color:rgba(255,255,255,0.5);">${formatPrice(itemPrice + 2)}</span>
+                                    </div>
+                                    <div onclick="this.parentElement.querySelectorAll('div').forEach(s=>{s.style.background='rgba(255,255,255,0.04)';s.style.borderColor='rgba(255,255,255,0.06)';s.querySelector('span:last-child').style.color='rgba(255,255,255,0.5)';});this.style.background='rgba(212,165,116,0.15)';this.style.borderColor='rgba(212,165,116,0.4)';this.querySelector('span:last-child').style.color='#fff'" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 8px;border-radius:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);cursor:pointer;transition:all 0.2s;">
+                                        <span style="font-size:26px;">🍔</span>
+                                        <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.5);">Large</span>
+                                        <span style="font-size:10px;color:rgba(255,255,255,0.5);">${formatPrice(itemPrice + 4)}</span>
+                                    </div>
+                                </div>
+
+                                <!-- Add-ons -->
+                                <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.7);margin-bottom:10px;">Add-ons</div>
+                                <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                                    <div onclick="var a=this.classList.toggle('addon-on');this.style.background=a?'rgba(212,165,116,0.15)':'rgba(255,255,255,0.04)';this.style.borderColor=a?'rgba(212,165,116,0.35)':'rgba(255,255,255,0.06)';" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9999px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);cursor:pointer;transition:all 0.2s;">
+                                        <span style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.7);">Extra Cheese</span>
+                                        <span style="font-size:10px;font-weight:700;color:var(--accent);">+$1.00</span>
+                                    </div>
+                                    <div onclick="var a=this.classList.toggle('addon-on');this.style.background=a?'rgba(212,165,116,0.15)':'rgba(255,255,255,0.04)';this.style.borderColor=a?'rgba(212,165,116,0.35)':'rgba(255,255,255,0.06)';" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9999px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);cursor:pointer;transition:all 0.2s;">
+                                        <span style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.7);">Bacon</span>
+                                        <span style="font-size:10px;font-weight:700;color:var(--accent);">+$2.00</span>
+                                    </div>
+                                    <div onclick="var a=this.classList.toggle('addon-on');this.style.background=a?'rgba(212,165,116,0.15)':'rgba(255,255,255,0.04)';this.style.borderColor=a?'rgba(212,165,116,0.35)':'rgba(255,255,255,0.06)';" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9999px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);cursor:pointer;transition:all 0.2s;">
+                                        <span style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.7);">Avocado</span>
+                                        <span style="font-size:10px;font-weight:700;color:var(--accent);">+$1.50</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fixed Bottom CTA -->
+                        <div style="flex-shrink:0;padding:12px 20px max(72px, env(safe-area-inset-bottom, 72px));background:rgba(10,10,10,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:12px;">
+                            <!-- Quantity -->
+                            <div style="display:flex;align-items:center;gap:0;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:14px;overflow:hidden;">
+                                <div onclick="var n=this.nextElementSibling;var v=Math.max(1,parseInt(n.textContent)-1);n.textContent=v" style="width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:16px;color:rgba(255,255,255,0.6);cursor:pointer;">-</div>
+                                <div style="width:28px;text-align:center;font-size:14px;font-weight:700;color:#fff;">1</div>
+                                <div onclick="var n=this.previousElementSibling;n.textContent=parseInt(n.textContent)+1" style="width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--accent);cursor:pointer;">+</div>
+                            </div>
+                            <!-- Add to Cart -->
+                            <div onclick="navigateToPage('${theme}','cart-page')" style="flex:1;padding:14px 0;background:var(--accent);color:#0A0A0A;text-align:center;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 0 24px rgba(212,165,116,0.35),0 4px 12px rgba(0,0,0,0.3);letter-spacing:-0.2px;transition:all 0.2s;" onmouseover="this.style.boxShadow='0 0 32px rgba(212,165,116,0.5),0 4px 16px rgba(0,0,0,0.4)'" onmouseout="this.style.boxShadow='0 0 24px rgba(212,165,116,0.35),0 4px 12px rgba(0,0,0,0.3)'">Add to Cart · ${formatPrice(itemPrice)}</div>
+                        </div>
                     </div>
                 </div>`;
             }
 
-            // Option 2: Dark/gradient hero with overlay text
+            // Option 2: Neubrutalism/Modern — Bold hero, chunky borders
             return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
-                <div style="position:relative;height:280px;flex-shrink:0;">
-                    <img src="${hero}" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.5);">
-                    <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,${pageBg} 100%);"></div>
+                <div style="position:relative;height:270px;flex-shrink:0;">
+                    <img src="${hero}" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.55);">
+                    <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(245,237,228,0.95) 100%);"></div>
                     <div style="position:absolute;top:16px;left:16px;">${backBtn}</div>
-                    <div style="position:absolute;bottom:30px;left:16px;right:16px;">
-                        <div style="font-size:24px;font-weight:800;color:#fff;margin-bottom:4px;">Classic Beef Burger</div>
-                        <div style="font-size:14px;color:rgba(255,255,255,0.7);">with cheddar & lettuce</div>
+                    <div style="position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1.5px solid var(--border-color);box-shadow:2px 2px 0 var(--border-color);">${iconFor(theme, 'heart', 'font-size:16px;color:var(--accent);')}</div>
+                    <div style="position:absolute;bottom:24px;left:16px;right:16px;">
+                        <div style="font-size:24px;font-weight:900;color:#3D3229;margin-bottom:4px;letter-spacing:-0.3px;">${itemName}</div>
+                        <div style="font-size:13px;color:#6B5E51;">${itemDesc}</div>
                     </div>
                 </div>
-                <div style="flex:1;overflow-y:auto;padding:16px 16px 100px;">
-                    <div style="display:flex;gap:16px;margin-bottom:20px;">
-                        <div><div style="font-size:22px;font-weight:900;color:${accent};">${formatPrice(12.99)}</div></div>
-                        <div><div style="font-size:11px;color:${subColor};">430 cal</div><div style="font-size:11px;color:${subColor};">per serving</div></div>
+                <div style="flex:1;overflow-y:auto;padding:8px 16px 100px;">
+                    <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;background:var(--card-bg);border:1.5px solid var(--border-color);border-radius:12px;padding:14px;box-shadow:3px 3px 0 rgba(61,50,41,0.08);">
+                        <div><div style="font-size:24px;font-weight:900;color:${accent};">${formatPrice(itemPrice)}</div></div>
+                        <div style="width:1px;height:32px;background:var(--border-color);"></div>
+                        <div><div style="font-size:11px;font-weight:700;color:${textColor};">430 cal</div><div style="font-size:9px;color:${subColor};">per serving</div></div>
+                        <div style="width:1px;height:32px;background:var(--border-color);"></div>
+                        <div><div style="font-size:11px;font-weight:700;color:${textColor};display:flex;align-items:center;gap:3px;">${iconFor(theme, 'star', 'font-size:10px;color:#FFB800;')}4.6</div><div style="font-size:9px;color:${subColor};">rating</div></div>
                     </div>
-                    <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:8px;">Ingredients</div>
-                    <div style="font-size:11px;color:${subColor};line-height:1.8;margin-bottom:16px;">Beef patty, cheddar cheese, lettuce, tomato, brioche bun, signature sauce, pickles, onion.</div>
-                    <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:8px;">Customize</div>
-                    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
-                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;"><span style="width:18px;height:18px;border-radius:4px;border:2px solid ${accent};display:flex;align-items:center;justify-content:center;">${iconFA('check', 'font-size:10px;color:'+accent+';')}</span><span style="font-size:12px;color:${textColor};">Extra Cheese <span style="color:${subColor};">+$1.00</span></span></label>
-                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;"><span style="width:18px;height:18px;border-radius:4px;border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;"></span><span style="font-size:12px;color:${textColor};">No Onions</span></label>
-                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;"><span style="width:18px;height:18px;border-radius:4px;border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;"></span><span style="font-size:12px;color:${textColor};">Add Bacon <span style="color:${subColor};">+$2.00</span></span></label>
-                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;"><span style="width:18px;height:18px;border-radius:4px;border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;"></span><span style="font-size:12px;color:${textColor};">Gluten-Free Bun <span style="color:${subColor};">+$1.50</span></span></label>
+                    <div style="font-size:14px;font-weight:800;color:${textColor};margin-bottom:10px;">Ingredients</div>
+                    <div style="font-size:11px;color:${subColor};line-height:1.8;margin-bottom:20px;background:var(--pill-bg);border-radius:10px;padding:12px 14px;border:1px solid var(--border-color);">Beef patty, cheddar cheese, lettuce, tomato, brioche bun, signature sauce, pickles, onion.</div>
+                    <div style="font-size:14px;font-weight:800;color:${textColor};margin-bottom:10px;">Customize Your Order</div>
+                    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:20px;">
+                        <label onclick="var b=this.querySelector('div');b.style.border=b.style.border.includes('var(--accent)')?'2px solid var(--border-color)':'2px solid var(--accent)';b.querySelector('span').style.display=b.style.border.includes('var(--accent)')?'none':'flex'" style="display:flex;align-items:center;gap:10px;cursor:pointer;background:var(--card-bg);border:1.5px solid var(--border-color);border-radius:10px;padding:12px 14px;box-shadow:2px 2px 0 var(--border-color);transition:all 0.1s;" onmousedown="this.style.boxShadow='none';this.style.transform='translate(2px,2px)'" onmouseup="this.style.boxShadow='2px 2px 0 var(--border-color)';this.style.transform='translate(0,0)'" onmouseleave="this.style.boxShadow='2px 2px 0 var(--border-color)';this.style.transform='translate(0,0)'">
+                            <div style="width:18px;height:18px;border-radius:4px;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="display:flex;">${iconFor(theme, 'check', 'font-size:10px;color:var(--accent);')}</span></div>
+                            <span style="flex:1;font-size:12px;font-weight:700;color:${textColor};">Extra Cheese</span>
+                            <span style="font-size:11px;font-weight:700;color:${accent};">+$1.00</span>
+                        </label>
+                        <label onclick="var b=this.querySelector('div');b.style.border=b.style.border.includes('var(--accent)')?'2px solid var(--border-color)':'2px solid var(--accent)';b.querySelector('span').style.display=b.style.border.includes('var(--accent)')?'none':'flex'" style="display:flex;align-items:center;gap:10px;cursor:pointer;background:var(--card-bg);border:1.5px solid var(--border-color);border-radius:10px;padding:12px 14px;box-shadow:2px 2px 0 var(--border-color);transition:all 0.1s;" onmousedown="this.style.boxShadow='none';this.style.transform='translate(2px,2px)'" onmouseup="this.style.boxShadow='2px 2px 0 var(--border-color)';this.style.transform='translate(0,0)'" onmouseleave="this.style.boxShadow='2px 2px 0 var(--border-color)';this.style.transform='translate(0,0)'">
+                            <div style="width:18px;height:18px;border-radius:4px;border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="display:none;">${iconFor(theme, 'check', 'font-size:10px;color:var(--accent);')}</span></div>
+                            <span style="flex:1;font-size:12px;font-weight:700;color:${textColor};">No Onions</span>
+                            <span style="font-size:11px;color:${subColor};">Free</span>
+                        </label>
+                        <label onclick="var b=this.querySelector('div');b.style.border=b.style.border.includes('var(--accent)')?'2px solid var(--border-color)':'2px solid var(--accent)';b.querySelector('span').style.display=b.style.border.includes('var(--accent)')?'none':'flex'" style="display:flex;align-items:center;gap:10px;cursor:pointer;background:var(--card-bg);border:1.5px solid var(--border-color);border-radius:10px;padding:12px 14px;box-shadow:2px 2px 0 var(--border-color);transition:all 0.1s;" onmousedown="this.style.boxShadow='none';this.style.transform='translate(2px,2px)'" onmouseup="this.style.boxShadow='2px 2px 0 var(--border-color)';this.style.transform='translate(0,0)'" onmouseleave="this.style.boxShadow='2px 2px 0 var(--border-color)';this.style.transform='translate(0,0)'">
+                            <div style="width:18px;height:18px;border-radius:4px;border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="display:none;">${iconFor(theme, 'check', 'font-size:10px;color:var(--accent);')}</span></div>
+                            <span style="flex:1;font-size:12px;font-weight:700;color:${textColor};">Add Bacon</span>
+                            <span style="font-size:11px;font-weight:700;color:${accent};">+$2.00</span>
+                        </label>
+                        <label onclick="var b=this.querySelector('div');b.style.border=b.style.border.includes('var(--accent)')?'2px solid var(--border-color)':'2px solid var(--accent)';b.querySelector('span').style.display=b.style.border.includes('var(--accent)')?'none':'flex'" style="display:flex;align-items:center;gap:10px;cursor:pointer;background:var(--card-bg);border:1.5px solid var(--border-color);border-radius:10px;padding:12px 14px;box-shadow:2px 2px 0 var(--border-color);transition:all 0.1s;" onmousedown="this.style.boxShadow='none';this.style.transform='translate(2px,2px)'" onmouseup="this.style.boxShadow='2px 2px 0 var(--border-color)';this.style.transform='translate(0,0)'" onmouseleave="this.style.boxShadow='2px 2px 0 var(--border-color)';this.style.transform='translate(0,0)'">
+                            <div style="width:18px;height:18px;border-radius:4px;border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="display:none;">${iconFor(theme, 'check', 'font-size:10px;color:var(--accent);')}</span></div>
+                            <span style="flex:1;font-size:12px;font-weight:700;color:${textColor};">Gluten-Free Bun</span>
+                            <span style="font-size:11px;font-weight:700;color:${accent};">+$1.50</span>
+                        </label>
                     </div>
                 </div>
-                <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
-                    <div onclick="navigateToPage('${theme}','cart-page')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px ${accent}40;">Add to Cart - ${formatPrice(12.99)}</div>
+                <div style="padding:12px 16px 72px;border-top:1.5px solid var(--border-color);background:${pageBg};">
+                    <div onclick="navigateToPage('${theme}','cart-page')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,0.2);transition:all 0.1s;" onmousedown="this.style.boxShadow='none';this.style.transform='translateY(4px)'" onmouseup="this.style.boxShadow='0 4px 0 rgba(0,0,0,0.2)';this.style.transform='translateY(0)'" onmouseleave="this.style.boxShadow='0 4px 0 rgba(0,0,0,0.2)';this.style.transform='translateY(0)'">Add to Cart - ${formatPrice(itemPrice)}</div>
                 </div>
             </div>`;
         }
@@ -7415,17 +7776,13 @@ function drawAnnouncementStrip(theme, style = 'default') {
         }
 
         function drawCategoryTiles(theme, style = 'default') {
-            const ctLines = getCardText('category-tiles', theme);
-            const catNames = ctLines ? [ctLines[3], ctLines[8], ctLines[13], ctLines[18], ctLines[23], ctLines[28], ctLines[33], ctLines[38]] : null;
             const cats = [
-                { name: catNames ? catNames[0] : 'Bakery', img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=200&q=80', count: 24, cal: '320', time: '25 min' },
-                { name: catNames ? catNames[1] : 'Brew', img: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=200&q=80', count: 18, cal: '150', time: '5 min' },
-                { name: catNames ? catNames[2] : 'Sweets', img: 'https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=200&q=80', count: 31, cal: '450', time: '30 min' },
-                { name: catNames ? catNames[3] : 'Bundles', img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=200&q=80', count: 12, cal: '600', time: '15 min' },
-                { name: catNames ? catNames[4] : 'Pizza', img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80', count: 15, cal: '850', time: '20 min' },
-                { name: catNames ? catNames[5] : 'Salads', img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=200&q=80', count: 9, cal: '180', time: '10 min' },
-                { name: catNames ? catNames[6] : 'Burgers', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80', count: 22, cal: '720', time: '15 min' },
-                { name: catNames ? catNames[7] : 'Sushi', img: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=200&q=80', count: 14, cal: '350', time: '12 min' }
+                { name: 'Breakfast', img: 'https://images.unsplash.com/photo-1528207776546-365bb710ee93?auto=format&fit=crop&w=200&q=80', count: 7, cal: '320', time: '25 min' },
+                { name: 'Burger', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80', count: 8, cal: '720', time: '15 min' },
+                { name: 'Pizza', img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80', count: 12, cal: '850', time: '20 min' },
+                { name: 'Salad', img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=200&q=80', count: 6, cal: '180', time: '10 min' },
+                { name: 'Dessert', img: 'https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=200&q=80', count: 8, cal: '450', time: '30 min' },
+                { name: 'Drinks', img: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=200&q=80', count: 20, cal: '150', time: '5 min' }
             ];
             const badge = (cal, time) => `<div style="display:flex;gap:6px;">
                 <span style="display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:600;"><span style="font-size:10px;">🔥</span>${cal}</span>
@@ -7434,14 +7791,14 @@ function drawAnnouncementStrip(theme, style = 'default') {
 
             // ══════════════  OPTION 1: Full Masonry Grid → View 2 / Dark  ══════════════
             if (style === 'option 1') {
-                const imgHeights = [110, 150, 90, 135, 105, 145, 115, 130];
+                const imgHeights = [110, 150, 90, 135, 105, 145];
                 return `
                 <div style="padding:0 16px 20px;">
                     ${sectionHeader(theme, 'option 1', 'CATEGORIES', "What's your craving?", 'menu-page')}
                     <div style="column-count:2;column-gap:10px;">
-                        ${cats.slice(0, 8).map((c, i) => {
+                        ${cats.map((c, i) => {
                             const imgH = imgHeights[i];
-                            return `<div onclick="navigateToPage('${theme}','menu-page')" style="background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;overflow:hidden;cursor:pointer;box-shadow:var(--card-shadow);break-inside:avoid;margin-bottom:10px;">
+                            return `<div onclick="navigateToPage('${theme}','menu-page','${c.name.toLowerCase()}')" style="background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;overflow:hidden;cursor:pointer;box-shadow:var(--card-shadow);break-inside:avoid;margin-bottom:10px;">
                                 <div style="height:${imgH}px;overflow:hidden;">
                                     <img src="${c.img}" style="width:100%;height:100%;object-fit:cover;" alt="${c.name}" loading="lazy">
                                 </div>
@@ -7466,7 +7823,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                     ${sectionHeader(theme, 'option 2', 'CATEGORIES', "What's your craving?", 'menu-page')}
                     <div style="position:relative;overflow:hidden;padding:0;">
                         <div id="${trackId}" style="display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding:4px 0 10px;">
-                            ${cats.map((c, idx) => `<div onclick="navigateToPage('${theme}','menu-page')" style="flex-shrink:0;width:${cardW}px;scroll-snap-align:center;cursor:pointer;">
+                            ${cats.map((c, idx) => `<div onclick="navigateToPage('${theme}','menu-page','${c.name.toLowerCase()}')" style="flex-shrink:0;width:${cardW}px;scroll-snap-align:center;cursor:pointer;">
                                 <div style="border-radius:20px;overflow:hidden;box-shadow:4px 4px 0 var(--border-color);background:var(--card-bg);border:1.5px solid var(--border-color);">
                                     <div style="height:170px;overflow:hidden;">
                                         <img src="${c.img}" style="width:100%;height:100%;object-fit:cover;" alt="${c.name}" loading="lazy">
@@ -7495,7 +7852,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                 <div style="padding:0 16px 20px;">
                     ${sectionHeader(theme, 'default', 'CATEGORIES', "What's your craving?", 'menu-page')}
                     <div style="display:flex;gap:10px;overflow-x:auto;padding:0 0 8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;">
-                        ${cats.map(c => `<div onclick="navigateToPage('${theme}','menu-page')" style="flex-shrink:0;width:140px;scroll-snap-align:start;cursor:pointer;">
+                        ${cats.map(c => `<div onclick="navigateToPage('${theme}','menu-page','${c.name.toLowerCase()}')" style="flex-shrink:0;width:140px;scroll-snap-align:start;cursor:pointer;">
                             <div style="border-radius:20px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,0.08);background:var(--card-bg);">
                                 <div style="height:100px;overflow:hidden;">
                                     <img src="${c.img}" style="width:100%;height:100%;object-fit:cover;" alt="${c.name}" loading="lazy">
@@ -7513,14 +7870,14 @@ function drawAnnouncementStrip(theme, style = 'default') {
 
             // ── GLASSMORPHISM: App 2 — Full Masonry Grid ──
             if (theme === 'glassmorphism') {
-                const masonryHeights = [140, 180, 115, 165, 130, 175, 145, 160];
+                const masonryHeights = [140, 180, 115, 165, 130, 175];
                 return `
                 <div style="padding:0 16px 20px;">
                     ${sectionHeader('glassmorphism', 'default', 'CATEGORIES', "What's your craving?", 'menu-page')}
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                        ${cats.slice(0, 8).map((c, i) => {
+                        ${cats.map((c, i) => {
                             const imgH = masonryHeights[i] - 42;
-                            return `<div onclick="navigateToPage('${theme}','menu-page')" style="background:var(--card-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border-color);border-radius:18px;overflow:hidden;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.2);height:${masonryHeights[i]}px;display:flex;flex-direction:column;">
+                            return `<div onclick="navigateToPage('${theme}','menu-page','${c.name.toLowerCase()}')" style="background:var(--card-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border-color);border-radius:18px;overflow:hidden;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.2);height:${masonryHeights[i]}px;display:flex;flex-direction:column;">
                                 <div style="height:${imgH}px;overflow:hidden;flex-shrink:0;">
                                     <img src="${c.img}" style="width:100%;height:100%;object-fit:cover;filter:saturate(1.2);" alt="${c.name}" loading="lazy">
                                 </div>
@@ -7536,7 +7893,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
             }
 
             // ── NEUBRUTALISM: App 3 — Stacked Deck of Cards ──
-            const deckItems = cats.slice(0, 5);
+            const deckItems = cats;
             return `
             <div style="padding:0 16px 20px;">
                 ${sectionHeader('neubrutalism', 'default', 'CATEGORIES', "What's your craving?", 'menu-page')}
@@ -7549,7 +7906,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         const scale = 1 - i * 0.04;
                         const borderStyle = isTop ? '1.5px solid var(--border-color)' : '1px solid var(--border-color)';
                         const shadow = isTop ? '4px 4px 0 var(--border-color)' : '2px 2px 0 var(--border-color)';
-                        return `<div onclick="navigateToPage('${theme}','menu-page')" style="position:absolute;top:${top}px;left:0;right:0;z-index:${z};display:flex;align-items:center;gap:12px;background:var(--card-bg);border:${borderStyle};border-radius:18px;padding:12px 14px;box-shadow:${shadow};cursor:pointer;opacity:${opacity};transform:scale(${scale});transform-origin:top center;transition:transform 0.15s ease;">
+                        return `<div onclick="navigateToPage('${theme}','menu-page','${c.name.toLowerCase()}')" style="position:absolute;top:${top}px;left:0;right:0;z-index:${z};display:flex;align-items:center;gap:12px;background:var(--card-bg);border:${borderStyle};border-radius:18px;padding:12px 14px;box-shadow:${shadow};cursor:pointer;opacity:${opacity};transform:scale(${scale});transform-origin:top center;transition:transform 0.15s ease;">
                             <div style="width:56px;height:56px;border-radius:14px;overflow:hidden;flex-shrink:0;border:1.5px solid var(--border-color);">
                                 <img src="${c.img}" style="width:100%;height:100%;object-fit:cover;" alt="${c.name}" loading="lazy">
                             </div>
