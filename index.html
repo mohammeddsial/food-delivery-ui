@@ -2070,6 +2070,23 @@
             return window.appState.cart[theme];
         }
 
+        function updateFabVisibility(theme) {
+            var phase = window.appState.orderPhase[theme];
+            var cartFab = document.getElementById('fabCart-' + theme);
+            var trackerFab = document.getElementById('fabTracker-' + theme);
+            if (!cartFab || !trackerFab) return;
+            if (phase === 'placed' || phase === 'tracking') {
+                cartFab.style.display = 'none';
+                trackerFab.style.display = 'flex';
+            } else if (phase === 'carted' || phase === 'checkout') {
+                cartFab.style.display = 'flex';
+                trackerFab.style.display = 'none';
+            } else {
+                cartFab.style.display = 'flex';
+                trackerFab.style.display = 'flex';
+            }
+        }
+
         // ─── TOAST NOTIFICATIONS ───────────────────────────────────────────────
         function showToast(message, type = 'success') {
             document.querySelectorAll('.phone-viewport').forEach(vp => {
@@ -4043,6 +4060,7 @@ if (currentPageByTheme[theme] === 'order-tracking' || currentPageByTheme[theme] 
                         setTimeout(() => startMapCarousel(theme), 500);
                     }
                 }
+                updateFabVisibility(theme);
             });
 
             if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -5135,9 +5153,9 @@ function drawAnnouncementStrip(theme, style = 'default') {
             // ─── DEFAULT: Step progress + illustration + countdown ──────
             if (style === 'default') {
                 const steps = [
-                    { label: 'Received', time: '10:52 AM, 23 May', img: chefImg, done: true },
-                    { label: 'Preparing', time: '10:55 AM', img: cookImg, done: true },
-                    { label: 'Ready', time: '', img: bagImg, done: false }
+                    { label: 'Order Received', time: '10:52 AM, 23 May', img: chefImg, done: true },
+                    { label: 'On the way', time: '10:55 AM', img: cookImg, done: true },
+                    { label: 'Delivered', time: '', img: bagImg, done: false }
                 ];
                 const activeIdx = 1;
                 const stepDots = steps.map((s, i) => {
@@ -5154,8 +5172,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                     </div>`;
                 }).join('');
 
-                const illustration = activeIdx === 0 ? chefImg : activeIdx === 1 ? cookImg : bagImg;
-                const statusText = activeIdx === 0 ? 'Order Confirmed' : activeIdx === 1 ? 'Your order is being prepared' : 'Your order is ready to pick up';
+                const statusText = activeIdx === 0 ? 'Order Received' : activeIdx === 1 ? 'Your order is on the way' : 'Your order has been delivered';
 
                 return `
                 <div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
@@ -5230,24 +5247,15 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         <div style="flex:1;display:flex;flex-direction:column;gap:0;margin-bottom:8px;">
                             ${timelineHtml}
                         </div>
-                        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--pill-bg);border-radius:14px;">
-                            <img src="${driverImg}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;" alt="driver">
-                            <div style="flex:1;"><div style="font-size:12px;font-weight:700;color:${textColor};">Gustavo Barrientos</div><div style="font-size:10px;color:${subColor};">Conductor designado</div></div>
-                            <div style="display:flex;gap:8px;">
-                                <div style="width:36px;height:36px;border-radius:50%;background:var(--pill-bg);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;">${iconFA('phone', 'font-size:14px;color:'+textColor+';')}</div>
-                                <div style="width:36px;height:36px;border-radius:50%;background:var(--pill-bg);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;">${iconFA('comment', 'font-size:14px;color:'+textColor+';')}</div>
-                            </div>
-                        </div>
                     </div>
                 </div>`;
             }
 
             // ─── OPTION 2: Dark map + timeline bottom sheet ──────
             const darkTimeline = [
-                { label: 'Entregado', time: '', done: false, icon: '' },
-                { label: 'En camino', time: '14:10', done: true, sub: 'Gustavo está llegando', highlight: true },
-                { label: 'Ingresado en sucursal', time: '21/09 08:00hs', done: false, icon: iconFA('box', 'font-size:10px;color:'+subColor+';') },
-                { label: 'Pendiente de ingreso', time: '20/09 18:00hs', done: false, icon: iconFA('clock', 'font-size:10px;color:'+subColor+';') }
+                { label: 'Order Received', time: '10:52 AM, 23 May 2022', done: true, icon: iconFA('check', 'font-size:9px;color:#fff;') },
+                { label: 'On the way', time: '10:52 AM', done: true, sub: 'Driver is arriving', highlight: true },
+                { label: 'Delivered', time: 'Finish time in 3 min', done: false, icon: '' }
             ];
             const darkTimelineHtml = darkTimeline.map((s, i) => {
                 const dotBg = s.highlight ? accent : s.done ? accent : 'var(--pill-bg)';
@@ -5275,25 +5283,19 @@ function drawAnnouncementStrip(theme, style = 'default') {
 
             return `
             <div style="position:absolute;inset:0;background:${theme==='glassmorphism'?'rgba(20,20,20,0.98)':'#1a1a1a'};z-index:100;display:flex;flex-direction:column;">
-                <div style="position:relative;height:45%;overflow:hidden;">
-                    <img src="${darkMapImg}" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.6);" alt="map">
+                <div style="position:relative;height:45%;overflow:hidden;" id="mapCarousel-${theme}">
+                    ${MAP_FRAMES.map((f,i) => '<img src="' + f.img + '" class="' + (i===0?'active':'') + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(0.6);opacity:' + (i===0?'1':'0') + ';transition:opacity 1.5s ease-in-out;">').join('')}
+                    <div class="map-pulse-ring" style="left:40%;top:50%;width:24px;height:24px;background:${accent};"></div>
+                    <div class="map-route-dot" style="left:40%;top:50%;background:${accent};"></div>
+                    <div class="map-driver-label" style="left:40%;top:calc(50% - 22px);">Driver</div>
+                    <div class="map-progress-bar"><div class="map-progress-fill" style="width:60%;background:${accent};"></div></div>
                     <div style="position:absolute;top:16px;left:16px;">${`<div onclick="goBack('${theme}')" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('arrow-left', 'font-size:16px;color:#fff;')}</div>`}</div>
-                    <div style="position:absolute;top:50%;left:40%;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 6px rgba(255,107,53,0.2);">${iconFA('location-dot', 'font-size:14px;color:#fff;')}</div>
-                    <div style="position:absolute;top:35%;left:60%;width:30px;height:30px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 6px rgba(255,107,53,0.15);">${iconFA('moto', 'font-size:14px;color:#fff;')}</div>
                 </div>
                 <div style="flex:1;background:#1a1a1a;border-radius:20px 20px 0 0;margin-top:-16px;position:relative;z-index:2;padding:16px 20px 80px;display:flex;flex-direction:column;overflow-y:auto;">
                     <div style="width:40px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto 14px;"></div>
-                    <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:14px;">Detalles del envío</div>
+                    <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:14px;">Tracking Details</div>
                     <div style="display:flex;flex-direction:column;gap:0;margin-bottom:16px;">
                         ${darkTimelineHtml}
-                    </div>
-                    <div style="display:flex;align-items:center;gap:12px;padding:12px;background:rgba(255,255,255,0.06);border-radius:14px;">
-                        <img src="${driverImg}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;" alt="driver">
-                        <div style="flex:1;"><div style="font-size:12px;font-weight:700;color:#fff;">Gustavo Barrientos</div><div style="font-size:10px;color:rgba(255,255,255,0.5);">Conductor designado</div></div>
-                        <div style="display:flex;gap:8px;">
-                            <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;">${iconFA('phone', 'font-size:14px;color:#fff;')}</div>
-                            <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;">${iconFA('comment', 'font-size:14px;color:#fff;')}</div>
-                        </div>
                     </div>
                 </div>
             </div>`;
