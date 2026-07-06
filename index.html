@@ -5924,7 +5924,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                             <div onclick="removeFromCart('${theme}','${item.id}')" style="font-size:10px;color:#EF4444;cursor:pointer;padding:2px 6px;">✕</div>
                         </div>
                         <div style="display:flex;justify-content:space-between;align-items:center;">
-                            <div style="font-size:10px;color:${subColor};margin-top:2px;">${item.options}</div>
+                            <div style="font-size:10px;color:${subColor};margin-top:2px;">${item.options || ''}</div>
                             <div style="font-size:13px;font-weight:700;color:${textColor};">${formatPrice(item.price * item.qty)}</div>
                         </div>
                         <div style="display:flex;align-items:center;gap:6px;margin-top:6px;">
