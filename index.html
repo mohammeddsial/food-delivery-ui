@@ -2005,7 +2005,8 @@
             cart: { neumorphism: [], glassmorphism: [], neubrutalism: [] },
             orderPhase: { neumorphism: 'browsing', glassmorphism: 'browsing', neubrutalism: 'browsing' },
             trackingETA: { neumorphism: 0, glassmorphism: 0, neubrutalism: 0 },
-            trackingInterval: { neumorphism: null, glassmorphism: null, neubrutalism: null }
+            trackingInterval: { neumorphism: null, glassmorphism: null, neubrutalism: null },
+            promoCode: { neumorphism: null, glassmorphism: null, neubrutalism: null }
         };
 
         // ─── CART FUNCTIONS ────────────────────────────────────────────────────
@@ -3287,7 +3288,8 @@
 
         function placeOrder(theme) {
             window.appState.orderPhase[theme] = 'placed';
-            navigateToPage(theme, 'upsell-page');
+            window.appState.cart[theme] = [];
+            navigateToPage(theme, 'order-success-page');
         }
 
         function trackOrder(theme) {
@@ -3303,11 +3305,11 @@
 
         // ─── LIVE MAP CAROUSEL ──────────────────────────────────────────
         const MAP_FRAMES = [
-            {img:'https://images.unsplash.com/photo-1517090504332-edb6b5e38c48?auto=format&fit=crop&w=600&q=80',dotX:'30%',dotY:'70%',label:'Restaurant'},
-            {img:'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=600&q=80',dotX:'40%',dotY:'60%',label:'On the way'},
-            {img:'https://images.unsplash.com/photo-1542704792-e30dac463c90?auto=format&fit=crop&w=600&q=80',dotX:'50%',dotY:'50%',label:'Nearby'},
-            {img:'https://images.unsplash.com/photo-1559511260-66a68e7e7b5f?auto=format&fit=crop&w=600&q=80',dotX:'60%',dotY:'40%',label:'Almost there'},
-            {img:'https://images.unsplash.com/photo-1496568816309-51d7c20e3b21?auto=format&fit=crop&w=600&q=80',dotX:'75%',dotY:'35%',label:'Arriving'}
+            {img:'https://images.unsplash.com/photo-1727584458575-dcbe11711717?auto=format&fit=crop&w=600&q=80',dotX:'30%',dotY:'70%',label:'Restaurant'},
+            {img:'https://images.unsplash.com/photo-1682796085409-31d67c8a29ec?auto=format&fit=crop&w=600&q=80',dotX:'40%',dotY:'60%',label:'On the way'},
+            {img:'https://images.unsplash.com/photo-1720143029515-139f2e68905c?auto=format&fit=crop&w=600&q=80',dotX:'50%',dotY:'50%',label:'Nearby'},
+            {img:'https://images.unsplash.com/photo-1766650410501-a256eb27fa8c?auto=format&fit=crop&w=600&q=80',dotX:'60%',dotY:'40%',label:'Almost there'},
+            {img:'https://images.unsplash.com/photo-1641255114380-0b1377729b07?auto=format&fit=crop&w=600&q=80',dotX:'75%',dotY:'35%',label:'Arriving'}
         ];
         function startMapCarousel(theme) {
             const container = document.getElementById('mapCarousel-' + theme);
@@ -3323,10 +3325,15 @@
                 if(dot){dot.style.left = f.dotX; dot.style.top = f.dotY;}
                 if(label){label.textContent = f.label; label.style.left = f.dotX; label.style.top = 'calc(' + f.dotY + ' - 22px)';}
                 if(progress){progress.style.width = ((frame + 1) / 5 * 100) + '%';}
-                frame = (frame + 1) % 5;
+                if (frame === 4) {
+                    clearInterval(timer);
+                    setTimeout(() => navigateToPage(theme, 'reviews-page'), 2000);
+                    return;
+                }
+                frame++;
             }
             cycle();
-            return setInterval(cycle, 2500);
+            var timer = setInterval(cycle, 2500);
         }
 
         // ─── VOICE SEARCH ───────────────────────────────────────────────
@@ -3374,7 +3381,12 @@
             var feedback = (text && text.value.trim()) || 'Great experience!';
             showToast('Review submitted! ★' + (window._reviewRating && window._reviewRating[theme] || 5) + '/5');
             if (text) text.value = '';
+            window.appState.cart[theme] = [];
+            window.appState.orderPhase[theme] = 'browsing';
             closeReviewModal(theme);
+            currentPageByTheme[theme] = 'feed';
+            renderAllViewports();
+            renderPageViewPicker();
         }
 
         let panoState = {};
@@ -5210,8 +5222,8 @@ function drawAnnouncementStrip(theme, style = 'default') {
 
         // ─── ORDER TRACKING PAGE ────────────────────────────────────────
         function drawOrderTrackingPage(theme, style = 'default') {
-            const mapImg = 'https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=600&q=80';
-            const darkMapImg = 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=600&q=80';
+            const mapImg = 'https://images.unsplash.com/photo-1682796085409-31d67c8a29ec?auto=format&fit=crop&w=600&q=80';
+            const darkMapImg = 'https://images.unsplash.com/photo-1720143029515-139f2e68905c?auto=format&fit=crop&w=600&q=80';
             const driverImg = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80';
             const chefImg = 'https://images.unsplash.com/photo-1577219491135-ce3907841583?auto=format&fit=crop&w=200&q=80';
             const cookImg = 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=200&q=80';
@@ -5321,6 +5333,9 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         <div style="flex:1;display:flex;flex-direction:column;gap:0;margin-bottom:8px;">
                             ${timelineHtml}
                         </div>
+                        <div onclick="navigateToPage('${theme}','tracking-map')" style="width:100%;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+                            GO TO TRACK ${iconFA('arrow-right', 'font-size:14px;')}
+                        </div>
                     </div>
                 </div>`;
             }
@@ -5370,6 +5385,9 @@ function drawAnnouncementStrip(theme, style = 'default') {
                     <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:14px;">Tracking Details</div>
                     <div style="display:flex;flex-direction:column;gap:0;margin-bottom:16px;">
                         ${darkTimelineHtml}
+                    </div>
+                    <div onclick="navigateToPage('${theme}','tracking-map')" style="width:100%;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+                        GO TO TRACK ${iconFA('arrow-right', 'font-size:14px;')}
                     </div>
                 </div>
             </div>`;
@@ -5859,6 +5877,62 @@ function drawAnnouncementStrip(theme, style = 'default') {
             </div>`;
         }
 
+        const SIDES_OPTIONS = [
+            { id: 's1', name: 'French Fries', price: 2.99 },
+            { id: 's2', name: 'Onion Rings', price: 3.49 },
+            { id: 's3', name: 'Sweet Potato Fries', price: 3.29 },
+            { id: 's4', name: 'Side Salad', price: 3.99 },
+            { id: 's5', name: 'Coleslaw', price: 2.49 }
+        ];
+        const DRINKS_OPTIONS = [
+            { id: 'd1', name: 'Classic Cola', price: 2.99 },
+            { id: 'd2', name: 'Fresh Lemonade', price: 4.99 },
+            { id: 'd3', name: 'Iced Tea', price: 3.49 },
+            { id: 'd4', name: 'Chocolate Milkshake', price: 5.99 },
+            { id: 'd5', name: 'Berry Smoothie', price: 6.49 }
+        ];
+        const VARIANT_OPTIONS = [
+            { id: 'v1', name: 'Beef Patty', price: 0 },
+            { id: 'v2', name: 'Chicken Patty', price: 0 },
+            { id: 'v3', name: 'Veggie Patty', price: 0 },
+            { id: 'v4', name: 'Double Patty', price: 2.50 }
+        ];
+
+        function updatePDPPrice(theme) {
+            window.pdpState = window.pdpState || {};
+            window.pdpState[theme] = window.pdpState[theme] || { variant: null, sides: [], drink: null };
+            const st = window.pdpState[theme];
+            const selectedItemId = window.selectedItemByTheme && window.selectedItemByTheme[theme];
+            let basePrice = 12.99;
+            if (selectedItemId) {
+                for (const cat of MENU_DATA) {
+                    const item = cat.items.find(i => i.id === selectedItemId);
+                    if (item) { basePrice = item.price; break; }
+                }
+            }
+            let variantAdj = 0;
+            if (st.variant) {
+                const v = VARIANT_OPTIONS.find(v => v.id === st.variant);
+                if (v) variantAdj = v.price;
+            }
+            let sidesTotal = 0;
+            for (const sid of st.sides) {
+                const s = SIDES_OPTIONS.find(s => s.id === sid);
+                if (s) sidesTotal += s.price;
+            }
+            let drinkTotal = 0;
+            if (st.drink) {
+                const d = DRINKS_OPTIONS.find(d => d.id === st.drink);
+                if (d) drinkTotal = d.price;
+            }
+            const total = basePrice + variantAdj + sidesTotal + drinkTotal;
+            const totalEl = document.getElementById('pdp-total-' + theme);
+            if (totalEl) totalEl.textContent = formatPrice(total);
+            const btnEl = document.getElementById('pdp-add-btn-' + theme);
+            if (btnEl) btnEl.innerHTML = 'Add to Cart ' + iconFA('shopping-bag', 'font-size:13px;') + ' ' + formatPrice(total);
+            return total;
+        }
+
         // ─── PRODUCT DETAIL PAGE ──────────────────────────────────
         function drawProductDetailPage(theme, style = 'default') {
             const textColor = theme === 'glassmorphism' ? '#fff' : 'var(--text-primary)';
@@ -5909,7 +5983,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                             <div class="video-mute-btn" id="videoMuteBtn-${theme}" onclick="toggleVideoMute('${theme}')">&#128266;</div>
                         </div>
                     </div>
-                    <div style="flex:1;overflow-y:auto;padding:20px 16px 100px;">
+                    <div style="flex:1;overflow-y:auto;padding:20px 16px 30px;-webkit-overflow-scrolling:touch;">
                         <div style="font-size:22px;font-weight:800;color:${textColor};letter-spacing:-0.3px;margin-bottom:6px;">${itemName}</div>
                         <div style="font-size:13px;color:${subColor};line-height:1.6;margin-bottom:16px;">${itemDesc}</div>
                         <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
@@ -5923,6 +5997,26 @@ function drawAnnouncementStrip(theme, style = 'default') {
                             <span onclick="this.parentElement.querySelectorAll('span').forEach(s=>{s.style.background='var(--pill-bg)';s.style.color='${textColor}'});this.style.background='${accent}';this.style.color='#fff'" style="padding:10px 22px;border-radius:9999px;background:var(--pill-bg);color:${textColor};font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;">Medium</span>
                             <span onclick="this.parentElement.querySelectorAll('span').forEach(s=>{s.style.background='var(--pill-bg)';s.style.color='${textColor}'});this.style.background='${accent}';this.style.color='#fff'" style="padding:10px 22px;border-radius:9999px;background:var(--pill-bg);color:${textColor};font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;">Large</span>
                         </div>
+                        <div style="font-size:13px;font-weight:800;color:${textColor};margin-bottom:10px;">Choose Variant</div>
+                        <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+                            ${VARIANT_OPTIONS.map(v => `<span onclick="window.pdpState=window.pdpState||{};window.pdpState['${theme}']=window.pdpState['${theme}']||{variant:null,sides:[],drink:null};window.pdpState['${theme}'].variant='${v.id}';this.parentElement.querySelectorAll('span').forEach(s=>{s.style.background='var(--pill-bg)';s.style.color='${textColor}'});this.style.background='${accent}';this.style.color='#fff';updatePDPPrice('${theme}')" style="padding:8px 16px;border-radius:9999px;background:var(--pill-bg);color:${textColor};font-size:11px;font-weight:600;cursor:pointer;transition:all 0.15s;box-shadow:0 1px 3px rgba(0,0,0,0.05);">${v.name}${v.price>0?' +'+formatPrice(v.price):''}</span>`).join('')}
+                        </div>
+                        <div style="font-size:13px;font-weight:800;color:${textColor};margin-bottom:10px;">Add Sides</div>
+                        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;">
+                            ${SIDES_OPTIONS.map(s => `<div onclick="window.pdpState=window.pdpState||{};window.pdpState['${theme}']=window.pdpState['${theme}']||{variant:null,sides:[],drink:null};var st=window.pdpState['${theme}'];var idx=st.sides.indexOf('${s.id}');if(idx>-1){st.sides.splice(idx,1);this.style.background='var(--pill-bg)';this.style.borderColor='transparent';this.querySelector('.pdp-check').style.display='none'}else{st.sides.push('${s.id}');this.style.background='${accent}20';this.style.borderColor='${accent}';this.querySelector('.pdp-check').style.display='flex'}updatePDPPrice('${theme}')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9999px;background:var(--pill-bg);border:1.5px solid transparent;cursor:pointer;transition:all 0.15s;">
+                                <span class="pdp-check" style="display:none;width:16px;height:16px;border-radius:50%;background:${accent};align-items:center;justify-content:center;flex-shrink:0;">${iconFor(theme,'check','font-size:9px;color:#fff;')}</span>
+                                <span style="font-size:11px;font-weight:600;color:${textColor};">${s.name}</span>
+                                <span style="font-size:10px;font-weight:700;color:${accent};">+${formatPrice(s.price)}</span>
+                            </div>`).join('')}
+                        </div>
+                        <div style="font-size:13px;font-weight:800;color:${textColor};margin-bottom:10px;">Add Drink</div>
+                        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;">
+                            ${DRINKS_OPTIONS.map(d => `<div onclick="window.pdpState=window.pdpState||{};window.pdpState['${theme}']=window.pdpState['${theme}']||{variant:null,sides:[],drink:null};var st=window.pdpState['${theme}'];if(st.drink==='${d.id}'){st.drink=null;this.style.background='var(--pill-bg)';this.style.borderColor='transparent';this.querySelector('.pdp-dcheck').style.display='none'}else{this.parentElement.querySelectorAll('div').forEach(el=>{el.style.background='var(--pill-bg)';el.style.borderColor='transparent';el.querySelector('.pdp-dcheck').style.display='none'});st.drink='${d.id}';this.style.background='${accent}20';this.style.borderColor='${accent}';this.querySelector('.pdp-dcheck').style.display='flex'}updatePDPPrice('${theme}')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9999px;background:var(--pill-bg);border:1.5px solid transparent;cursor:pointer;transition:all 0.15s;">
+                                <span class="pdp-dcheck" style="display:none;width:16px;height:16px;border-radius:50%;background:${accent};align-items:center;justify-content:center;flex-shrink:0;">${iconFor(theme,'check','font-size:9px;color:#fff;')}</span>
+                                <span style="font-size:11px;font-weight:600;color:${textColor};">${d.name}</span>
+                                <span style="font-size:10px;font-weight:700;color:${accent};">+${formatPrice(d.price)}</span>
+                            </div>`).join('')}
+                        </div>
                         <div style="font-size:13px;font-weight:800;color:${textColor};margin-bottom:10px;">Make it a Meal</div>
                         <div onclick="navigateToPage('${theme}','upsell-page')" style="background:var(--pill-bg);border-radius:16px;padding:14px;margin-bottom:20px;cursor:pointer;display:flex;align-items:center;gap:12px;box-shadow:var(--card-shadow);transition:all 0.15s;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
                             <span style="width:20px;height:20px;border-radius:6px;background:${accent};display:flex;align-items:center;justify-content:center;">${iconFor(theme, 'check', 'font-size:11px;color:#fff;')}</span>
@@ -5930,8 +6024,12 @@ function drawAnnouncementStrip(theme, style = 'default') {
                             <span style="font-size:14px;font-weight:800;color:${accent};">+${formatPrice(3.99)}</span>
                         </div>
                     </div>
-                    <div style="padding:12px 16px 80px;border-top:1px solid var(--border-color);background:${pageBg};">
-                        <div onclick="animateFlyToCart('${theme}', this);addToCart('${theme}',{id:'${selectedItem.id}',name:'${itemName}',price:${itemPrice},img:'${hero}',desc:'${itemDesc}'});setActiveNav(3);navigateToPage('${theme}','cart-page')" class="neu-add-btn" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:16px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px ${accent}30;">Add to Cart - ${formatPrice(itemPrice)}</div>
+                    <div style="padding:12px 16px 20px;border-top:1px solid var(--border-color);background:${pageBg};flex-shrink:0;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                            <span style="font-size:14px;font-weight:700;color:${textColor};">Total</span>
+                            <span id="pdp-total-${theme}" style="font-size:18px;font-weight:900;color:${accent};">${formatPrice(itemPrice)}</span>
+                        </div>
+                        <div onclick="var _t=updatePDPPrice('${theme}');animateFlyToCart('${theme}', this);addToCart('${theme}',{id:'${selectedItem.id}',name:'${itemName}',price:_t,img:'${hero}',desc:'${itemDesc}'});setActiveNav(3);navigateToPage('${theme}','cart-page')" id="pdp-add-btn-${theme}" class="neu-add-btn" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:16px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px ${accent}30;">Add to Cart ${iconFA('shopping-bag','font-size:13px;')} ${formatPrice(itemPrice)}</div>
                     </div>
                 </div>`;
             }
@@ -5958,7 +6056,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
 
                     <!-- Glass Panel -->
                     <div style="flex:1;display:flex;flex-direction:column;margin-top:-24px;position:relative;z-index:3;">
-                        <div style="flex:1;background:rgba(255,255,255,0.04);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);border-top:1px solid rgba(255,255,255,0.08);border-radius:24px 24px 0 0;display:flex;flex-direction:column;overflow:hidden;">
+                        <div style="flex:1;background:rgba(255,255,255,0.04);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);border-top:1px solid rgba(255,255,255,0.08);border-radius:24px 24px 0 0;display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;">
                             <!-- Drag handle -->
                             <div style="display:flex;justify-content:center;padding:10px 0 4px;flex-shrink:0;">
                                 <div style="width:36px;height:4px;border-radius:9999px;background:rgba(255,255,255,0.2);"></div>
@@ -6032,6 +6130,29 @@ function drawAnnouncementStrip(theme, style = 'default') {
                                         <span style="font-size:10px;font-weight:700;color:var(--accent);">+$1.50</span>
                                     </div>
                                 </div>
+                                <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.7);margin-bottom:10px;margin-top:20px;">Choose Variant</div>
+                                <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+                                    ${VARIANT_OPTIONS.map(v => `<div onclick="window.pdpState=window.pdpState||{};window.pdpState['${theme}']=window.pdpState['${theme}']||{variant:null,sides:[],drink:null};window.pdpState['${theme}'].variant='${v.id}';this.parentElement.querySelectorAll('div').forEach(s=>{s.style.background='rgba(255,255,255,0.04)';s.style.borderColor='rgba(255,255,255,0.06)';s.querySelector('span:last-child').style.color='rgba(255,255,255,0.5)';});this.style.background='rgba(212,165,116,0.15)';this.style.borderColor='rgba(212,165,116,0.4)';this.querySelector('span:last-child').style.color='#fff';updatePDPPrice('${theme}')" style="padding:8px 16px;border-radius:9999px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:4px;">
+                                        <span style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.7);">${v.name}</span>
+                                        <span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.5);">${v.price>0?'+'+formatPrice(v.price):''}</span>
+                                    </div>`).join('')}
+                                </div>
+                                <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.7);margin-bottom:10px;">Add Sides</div>
+                                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;">
+                                    ${SIDES_OPTIONS.map(s => `<div onclick="window.pdpState=window.pdpState||{};window.pdpState['${theme}']=window.pdpState['${theme}']||{variant:null,sides:[],drink:null};var st=window.pdpState['${theme}'];var idx=st.sides.indexOf('${s.id}');if(idx>-1){st.sides.splice(idx,1);this.style.background='rgba(255,255,255,0.04)';this.style.borderColor='rgba(255,255,255,0.06)';this.querySelector('.g-check').style.display='none'}else{st.sides.push('${s.id}');this.style.background='rgba(212,165,116,0.15)';this.style.borderColor='rgba(212,165,116,0.35)';this.querySelector('.g-check').style.display='flex'}updatePDPPrice('${theme}')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9999px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);cursor:pointer;transition:all 0.2s;">
+                                        <span class="g-check" style="display:none;width:16px;height:16px;border-radius:50%;background:var(--accent);align-items:center;justify-content:center;flex-shrink:0;">${iconFor(theme,'check','font-size:9px;color:#0A0A0A;')}</span>
+                                        <span style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.7);">${s.name}</span>
+                                        <span style="font-size:10px;font-weight:700;color:var(--accent);">+${formatPrice(s.price)}</span>
+                                    </div>`).join('')}
+                                </div>
+                                <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.7);margin-bottom:10px;">Add Drink</div>
+                                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;">
+                                    ${DRINKS_OPTIONS.map(d => `<div onclick="window.pdpState=window.pdpState||{};window.pdpState['${theme}']=window.pdpState['${theme}']||{variant:null,sides:[],drink:null};var st=window.pdpState['${theme}'];if(st.drink==='${d.id}'){st.drink=null;this.style.background='rgba(255,255,255,0.04)';this.style.borderColor='rgba(255,255,255,0.06)';this.querySelector('.g-dcheck').style.display='none'}else{this.parentElement.querySelectorAll('div').forEach(el=>{el.style.background='rgba(255,255,255,0.04)';el.style.borderColor='rgba(255,255,255,0.06)';el.querySelector('.g-dcheck').style.display='none'});st.drink='${d.id}';this.style.background='rgba(212,165,116,0.15)';this.style.borderColor='rgba(212,165,116,0.35)';this.querySelector('.g-dcheck').style.display='flex'}updatePDPPrice('${theme}')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9999px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);cursor:pointer;transition:all 0.2s;">
+                                        <span class="g-dcheck" style="display:none;width:16px;height:16px;border-radius:50%;background:var(--accent);align-items:center;justify-content:center;flex-shrink:0;">${iconFor(theme,'check','font-size:9px;color:#0A0A0A;')}</span>
+                                        <span style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.7);">${d.name}</span>
+                                        <span style="font-size:10px;font-weight:700;color:var(--accent);">+${formatPrice(d.price)}</span>
+                                    </div>`).join('')}
+                                </div>
                             </div>
                         </div>
 
@@ -6043,8 +6164,14 @@ function drawAnnouncementStrip(theme, style = 'default') {
                                 <div style="width:28px;text-align:center;font-size:14px;font-weight:700;color:#fff;">1</div>
                                 <div onclick="var n=this.previousElementSibling;n.textContent=parseInt(n.textContent)+1" style="width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--accent);cursor:pointer;">+</div>
                             </div>
-                            <!-- Add to Cart -->
-                            <div onclick="animateFlyToCart('${theme}', this);addToCart('${theme}',{id:'${selectedItem.id}',name:'${itemName}',price:${itemPrice},img:'${hero}',desc:'${itemDesc}'});setActiveNav(3);navigateToPage('${theme}','cart-page')" class="glass-add-btn" style="flex:1;padding:14px 0;background:var(--accent);color:#0A0A0A;text-align:center;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 0 24px rgba(212,165,116,0.35),0 4px 12px rgba(0,0,0,0.3);letter-spacing:-0.2px;transition:all 0.2s;" onmouseover="this.style.boxShadow='0 0 32px rgba(212,165,116,0.5),0 4px 16px rgba(0,0,0,0.4)'" onmouseout="this.style.boxShadow='0 0 24px rgba(212,165,116,0.35),0 4px 12px rgba(0,0,0,0.3)'">Add to Cart · ${formatPrice(itemPrice)}</div>
+                            <div style="flex:1;display:flex;flex-direction:column;gap:2px;">
+                                <div style="display:flex;justify-content:space-between;align-items:center;">
+                                    <span style="font-size:10px;color:rgba(255,255,255,0.5);">Total</span>
+                                    <span id="pdp-total-${theme}" style="font-size:16px;font-weight:900;color:var(--accent);">${formatPrice(itemPrice)}</span>
+                                </div>
+                                <!-- Add to Cart -->
+                                <div onclick="var _t=updatePDPPrice('${theme}');animateFlyToCart('${theme}', this);addToCart('${theme}',{id:'${selectedItem.id}',name:'${itemName}',price:_t,img:'${hero}',desc:'${itemDesc}'});setActiveNav(3);navigateToPage('${theme}','cart-page')" id="pdp-add-btn-${theme}" class="glass-add-btn" style="padding:10px 0;background:var(--accent);color:#0A0A0A;text-align:center;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 0 24px rgba(212,165,116,0.35),0 4px 12px rgba(0,0,0,0.3);letter-spacing:-0.2px;transition:all 0.2s;" onmouseover="this.style.boxShadow='0 0 32px rgba(212,165,116,0.5),0 4px 16px rgba(0,0,0,0.4)'" onmouseout="this.style.boxShadow='0 0 24px rgba(212,165,116,0.35),0 4px 12px rgba(0,0,0,0.3)'">Add to Cart · ${formatPrice(itemPrice)}</div>
+                            </div>
                         </div>
                     </div>
                 </div>`;
@@ -6062,7 +6189,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         <div style="font-size:13px;color:#6B5E51;">${itemDesc}</div>
                     </div>
                 </div>
-                <div style="flex:1;overflow-y:auto;padding:8px 16px 100px;">
+                <div style="flex:1;overflow-y:auto;padding:8px 16px 30px;-webkit-overflow-scrolling:touch;">
                     <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;background:var(--card-bg);border:1.5px solid var(--border-color);border-radius:12px;padding:14px;box-shadow:3px 3px 0 rgba(61,50,41,0.08);">
                         <div><div style="font-size:24px;font-weight:900;color:${accent};">${formatPrice(itemPrice)}</div></div>
                         <div style="width:1px;height:32px;background:var(--border-color);"></div>
@@ -6095,11 +6222,50 @@ function drawAnnouncementStrip(theme, style = 'default') {
                             <span style="font-size:11px;font-weight:700;color:${accent};">+$1.50</span>
                         </label>
                     </div>
+                    <div style="font-size:14px;font-weight:800;color:${textColor};margin-bottom:10px;">Choose Variant</div>
+                    <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+                        ${VARIANT_OPTIONS.map(v => `<span onclick="window.pdpState=window.pdpState||{};window.pdpState['${theme}']=window.pdpState['${theme}']||{variant:null,sides:[],drink:null};window.pdpState['${theme}'].variant='${v.id}';this.parentElement.querySelectorAll('span').forEach(s=>{s.style.background='var(--pill-bg)';s.style.color='${textColor}';s.style.border='1.5px solid var(--border-color)';s.style.boxShadow='2px 2px 0 var(--border-color)'});this.style.background='${accent}';this.style.color='#fff';this.style.border='1.5px solid ${accent}';this.style.boxShadow='2px 2px 0 ${accent}';updatePDPPrice('${theme}')" style="padding:8px 16px;border-radius:8px;background:var(--pill-bg);color:${textColor};font-size:11px;font-weight:600;cursor:pointer;transition:all 0.1s;border:1.5px solid var(--border-color);box-shadow:2px 2px 0 var(--border-color);">${v.name}${v.price>0?' +'+formatPrice(v.price):''}</span>`).join('')}
+                    </div>
+                    <div style="font-size:14px;font-weight:800;color:${textColor};margin-bottom:10px;">Add Sides</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;">
+                        ${SIDES_OPTIONS.map(s => `<div onclick="window.pdpState=window.pdpState||{};window.pdpState['${theme}']=window.pdpState['${theme}']||{variant:null,sides:[],drink:null};var st=window.pdpState['${theme}'];var idx=st.sides.indexOf('${s.id}');if(idx>-1){st.sides.splice(idx,1);this.style.background='var(--pill-bg)';this.style.borderColor='var(--border-color)';this.querySelector('.b-check').style.display='none'}else{st.sides.push('${s.id}');this.style.background='${accent}20';this.style.borderColor='${accent}';this.querySelector('.b-check').style.display='flex'}updatePDPPrice('${theme}')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;background:var(--pill-bg);border:1.5px solid var(--border-color);cursor:pointer;transition:all 0.1s;box-shadow:2px 2px 0 var(--border-color);">
+                            <span class="b-check" style="display:none;width:16px;height:16px;border-radius:4px;background:${accent};align-items:center;justify-content:center;flex-shrink:0;">${iconFor(theme,'check','font-size:9px;color:#fff;')}</span>
+                            <span style="font-size:11px;font-weight:600;color:${textColor};">${s.name}</span>
+                            <span style="font-size:10px;font-weight:700;color:${accent};">+${formatPrice(s.price)}</span>
+                        </div>`).join('')}
+                    </div>
+                    <div style="font-size:14px;font-weight:800;color:${textColor};margin-bottom:10px;">Add Drink</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;">
+                        ${DRINKS_OPTIONS.map(d => `<div onclick="window.pdpState=window.pdpState||{};window.pdpState['${theme}']=window.pdpState['${theme}']||{variant:null,sides:[],drink:null};var st=window.pdpState['${theme}'];if(st.drink==='${d.id}'){st.drink=null;this.style.background='var(--pill-bg)';this.style.borderColor='var(--border-color)';this.querySelector('.b-dcheck').style.display='none'}else{this.parentElement.querySelectorAll('div').forEach(el=>{el.style.background='var(--pill-bg)';el.style.borderColor='var(--border-color)';el.querySelector('.b-dcheck').style.display='none'});st.drink='${d.id}';this.style.background='${accent}20';this.style.borderColor='${accent}';this.querySelector('.b-dcheck').style.display='flex'}updatePDPPrice('${theme}')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;background:var(--pill-bg);border:1.5px solid var(--border-color);cursor:pointer;transition:all 0.1s;box-shadow:2px 2px 0 var(--border-color);">
+                            <span class="b-dcheck" style="display:none;width:16px;height:16px;border-radius:4px;background:${accent};align-items:center;justify-content:center;flex-shrink:0;">${iconFor(theme,'check','font-size:9px;color:#fff;')}</span>
+                            <span style="font-size:11px;font-weight:600;color:${textColor};">${d.name}</span>
+                            <span style="font-size:10px;font-weight:700;color:${accent};">+${formatPrice(d.price)}</span>
+                        </div>`).join('')}
+                    </div>
                 </div>
-                <div style="padding:12px 16px 80px;border-top:1.5px solid var(--border-color);background:${pageBg};">
-                    <div onclick="animateFlyToCart('${theme}', this);addToCart('${theme}',{id:'${selectedItem.id}',name:'${itemName}',price:${itemPrice},img:'${hero}',desc:'${itemDesc}'});setActiveNav(3);navigateToPage('${theme}','cart-page')" class="brutal-add-btn" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,0.2);transition:all 0.1s;" onmousedown="this.style.boxShadow='none';this.style.transform='translateY(4px)'" onmouseup="this.style.boxShadow='0 4px 0 rgba(0,0,0,0.2)';this.style.transform='translateY(0)'" onmouseleave="this.style.boxShadow='0 4px 0 rgba(0,0,0,0.2)';this.style.transform='translateY(0)'">Add to Cart - ${formatPrice(itemPrice)}</div>
+                <div style="padding:12px 16px 20px;border-top:1.5px solid var(--border-color);background:${pageBg};flex-shrink:0;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                        <span style="font-size:14px;font-weight:800;color:${textColor};">Total</span>
+                        <span id="pdp-total-${theme}" style="font-size:20px;font-weight:900;color:${accent};">${formatPrice(itemPrice)}</span>
+                    </div>
+                    <div onclick="var _t=updatePDPPrice('${theme}');animateFlyToCart('${theme}', this);addToCart('${theme}',{id:'${selectedItem.id}',name:'${itemName}',price:_t,img:'${hero}',desc:'${itemDesc}'});setActiveNav(3);navigateToPage('${theme}','cart-page')" id="pdp-add-btn-${theme}" class="brutal-add-btn" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,0.2);transition:all 0.1s;" onmousedown="this.style.boxShadow='none';this.style.transform='translateY(4px)'" onmouseup="this.style.boxShadow='0 4px 0 rgba(0,0,0,0.2)';this.style.transform='translateY(0)'" onmouseleave="this.style.boxShadow='0 4px 0 rgba(0,0,0,0.2)';this.style.transform='translateY(0)'">Add to Cart ${iconFA('shopping-bag','font-size:13px;')} ${formatPrice(itemPrice)}</div>
                 </div>
             </div>`;
+        }
+
+        // ─── PROMO CODES ──────────────────────────────────────────
+        const PROMO_CODES = {
+            'SAVE10': { type: 'percent', value: 10, label: '10% OFF' },
+            'FREEDEL': { type: 'free_delivery', value: 0, label: 'Free Delivery' },
+            'WELCOME5': { type: 'fixed', value: 5, label: '$5 OFF' }
+        };
+
+        function applyPromoCode(theme) {
+            const input = document.getElementById(`promo-input-${theme}`);
+            if (!input) return;
+            const code = input.value.trim().toUpperCase();
+            window.appState.promoCode[theme] = PROMO_CODES[code] ? code : null;
+            navigateToPage(theme, 'cart-page');
         }
 
         // ─── CART PAGE ─────────────────────────────────────────────
@@ -6114,7 +6280,27 @@ function drawAnnouncementStrip(theme, style = 'default') {
             const subtotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
             const delivery = subtotal >= RESTAURANT_DATA.config.freeDeliveryMin ? 0 : RESTAURANT_DATA.config.deliveryFee;
             const tax = (subtotal + delivery) * RESTAURANT_DATA.config.taxRate;
-            const total = subtotal + delivery + tax;
+
+            const promoCode = window.appState.promoCode[theme];
+            const promo = promoCode ? PROMO_CODES[promoCode] : null;
+            let discount = 0;
+            let discountLabel = '';
+            if (promo) {
+                if (promo.type === 'percent') {
+                    discount = subtotal * promo.value / 100;
+                } else if (promo.type === 'free_delivery') {
+                    discount = delivery;
+                } else if (promo.type === 'fixed') {
+                    discount = promo.value;
+                }
+                discountLabel = promo.label;
+            }
+
+            const total = subtotal + delivery + tax - discount;
+
+            const promoBadge = promo ? `<div style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:#22C55E;color:#fff;border-radius:9999px;font-size:10px;font-weight:700;margin-bottom:12px;"><span>${discountLabel}</span><span onclick="window.appState.promoCode['${theme}']=null;navigateToPage('${theme}','cart-page')" style="cursor:pointer;margin-left:2px;">✕</span></div>` : '';
+
+            const discountLine = promo ? `<div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:6px;"><span>Discount (${discountLabel})</span><span style="color:#22C55E;">-${formatPrice(discount)}</span></div>` : '';
 
             const itemRow = (item) => `
                 <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--pill-bg);border-radius:14px;margin-bottom:10px;">
@@ -6154,13 +6340,15 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         ` : `
                         ${cartItems.map(itemRow).join('')}
                         <textarea placeholder="Add special notes for the restaurant..." style="width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--border-color);background:var(--pill-bg);color:${textColor};font-size:11px;resize:none;height:56px;margin-bottom:16px;"></textarea>
-                        <div style="display:flex;gap:8px;margin-bottom:20px;">
-                            <input placeholder="Promo code" style="flex:1;padding:12px 14px;border-radius:var(--btn-radius);border:1px solid var(--border-color);background:var(--pill-bg);color:${textColor};font-size:12px;">
-                            <span style="padding:12px 20px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:12px;font-weight:700;cursor:pointer;">Apply</span>
+                        <div style="display:flex;gap:8px;margin-bottom:${promo ? '8px' : '20px'};">
+                            <input id="promo-input-${theme}" placeholder="Promo code" style="flex:1;padding:12px 14px;border-radius:var(--btn-radius);border:1px solid var(--border-color);background:var(--pill-bg);color:${textColor};font-size:12px;" value="${promoCode || ''}">
+                            <span onclick="applyPromoCode('${theme}')" style="padding:12px 20px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:12px;font-weight:700;cursor:pointer;">Apply</span>
                         </div>
+                        ${promoBadge}
                         <div style="border-top:1px solid var(--border-color);padding-top:12px;">
                             <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:6px;"><span>Subtotal</span><span style="color:${textColor};">${formatPrice(subtotal)}</span></div>
                             <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:6px;"><span>Delivery Fee</span><span style="color:${textColor};">${formatPrice(delivery)}</span></div>
+                            ${discountLine}
                             <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:6px;"><span>Tax</span><span style="color:${textColor};">${formatPrice(tax)}</span></div>
                             <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:${textColor};padding-top:10px;border-top:1px solid var(--border-color);margin-top:6px;"><span>Total</span><span style="color:${accent};">${formatPrice(total)}</span></div>
                         </div>
@@ -6190,14 +6378,17 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         </div>
                         ` : `
                         ${cartItems.map(itemRow).join('')}
-                        <div style="background:var(--pill-bg);border-radius:14px;padding:16px;margin-top:16px;">
+                        <textarea placeholder="Add special notes for the restaurant..." style="width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--border-color);background:var(--pill-bg);color:${textColor};font-size:11px;resize:none;height:56px;margin-top:12px;margin-bottom:12px;"></textarea>
+                        <div style="background:var(--pill-bg);border-radius:14px;padding:16px;">
                             <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:12px;">Order Summary</div>
-                            <div style="display:flex;gap:8px;margin-bottom:12px;">
-                                <input placeholder="Coupon code" style="flex:1;padding:10px 14px;border-radius:var(--btn-radius);border:1px solid var(--border-color);background:${pageBg};color:${textColor};font-size:11px;">
-                                <span style="padding:10px 16px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:11px;font-weight:700;cursor:pointer;">Apply</span>
+                            <div style="display:flex;gap:8px;margin-bottom:${promo ? '8px' : '12px'};">
+                                <input id="promo-input-${theme}" placeholder="Coupon code" style="flex:1;padding:10px 14px;border-radius:var(--btn-radius);border:1px solid var(--border-color);background:${pageBg};color:${textColor};font-size:11px;" value="${promoCode || ''}">
+                                <span onclick="applyPromoCode('${theme}')" style="padding:10px 16px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:11px;font-weight:700;cursor:pointer;">Apply</span>
                             </div>
+                            ${promoBadge}
                             <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Subtotal</span><span style="color:${textColor};">${formatPrice(subtotal)}</span></div>
                             <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Delivery</span><span style="color:${textColor};">${formatPrice(delivery)}</span></div>
+                            ${discountLine}
                             <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Tax</span><span style="color:${textColor};">${formatPrice(tax)}</span></div>
                             <div style="font-size:11px;color:${accent};margin-top:6px;">${iconFA('clock', 'font-size:10px;')} Estimated delivery: 25-35 min</div>
                         </div>
@@ -6210,7 +6401,6 @@ function drawAnnouncementStrip(theme, style = 'default') {
                 </div>`;
             }
 
-            // Option 2: Minimal list with inline promo + sticky bottom bar
             return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
                 <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-color);">
                     ${backBtn}
@@ -6241,15 +6431,17 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         <div onclick="removeFromCart('${theme}','${item.id}')" style="font-size:10px;color:#EF4444;cursor:pointer;padding:2px 4px;">✕</div>
                         <div style="font-size:12px;font-weight:700;color:${textColor};min-width:50px;text-align:right;">${formatPrice(item.price * item.qty)}</div>
                     </div>`).join('')}
-                    <div style="display:flex;gap:6px;margin-top:12px;">
-                        <input placeholder="Promo code" style="flex:1;padding:8px 12px;border-radius:var(--btn-radius);border:1px solid var(--border-color);background:var(--pill-bg);color:${textColor};font-size:11px;">
-                        <span style="padding:8px 12px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:11px;font-weight:700;cursor:pointer;">Apply</span>
+                    <textarea placeholder="Add special notes for the restaurant..." style="width:100%;padding:8px 12px;border-radius:var(--btn-radius);border:1.5px solid var(--border-color);background:var(--pill-bg);color:${textColor};font-size:11px;resize:none;height:48px;margin-top:12px;margin-bottom:12px;"></textarea>
+                    <div style="display:flex;gap:6px;">
+                        <input id="promo-input-${theme}" placeholder="Promo code" style="flex:1;padding:8px 12px;border-radius:var(--btn-radius);border:1px solid var(--border-color);background:var(--pill-bg);color:${textColor};font-size:11px;" value="${promoCode || ''}">
+                        <span onclick="applyPromoCode('${theme}')" style="padding:8px 12px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:11px;font-weight:700;cursor:pointer;">Apply</span>
                     </div>
+                    ${promoBadge}
                     `}
                 </div>
                 ${cartItems.length > 0 ? `
                 <div style="padding:12px 16px 80px;border-top:1px solid var(--border-color);background:${pageBg};display:flex;align-items:center;gap:12px;">
-                    <div><div style="font-size:10px;color:${subColor};">Total</div><div style="font-size:18px;font-weight:900;color:${accent};">${formatPrice(total)}</div></div>
+                    <div>${promo ? `<div style="font-size:10px;color:#22C55E;margin-bottom:2px;">Discount: -${formatPrice(discount)}</div>` : ''}<div style="font-size:10px;color:${subColor};">Total</div><div style="font-size:18px;font-weight:900;color:${accent};">${formatPrice(total)}</div></div>
                     <div onclick="proceedToCheckout('${theme}')" style="flex:1;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;">Checkout</div>
                 </div>` : ''}
             </div>`;
@@ -6407,70 +6599,61 @@ function drawAnnouncementStrip(theme, style = 'default') {
                 </div>`;
             }
 
-            // ─── OPTION 2: Bold neubrutalism split layout ───
-            const isBrut = theme === 'neubrutalism';
-            const bgDark = isBrut ? '#F8F6F3' : '#1a1a1a';
-            const textDark = isBrut ? '#3D3229' : '#fff';
-            const subDark = isBrut ? '#8A7E72' : 'rgba(255,255,255,0.5)';
-            const sectionBg = isBrut ? '#fff' : 'rgba(255,255,255,0.06)';
-            const sectionBorder = isBrut ? '2px solid #3D3229' : '1px solid rgba(255,255,255,0.08)';
-            const sectionShadow = isBrut ? '4px 4px 0 #3D3229' : 'none';
-            const accentDark = isBrut ? '#FF6B35' : '#4CAF50';
-            const orderBtnBg = isBrut ? '#00615F' : '#4CAF50';
-            const orderBtnText = '#fff';
-            const orderBtnBorder = isBrut ? '2px solid #3D3229' : 'none';
-            const orderBtnShadow = isBrut ? '4px 4px 0 #3D3229' : 'none';
-            const orderBtnRadius = isBrut ? '4px' : '12px';
-            return `<div style="position:absolute;inset:0;background:${bgDark};z-index:100;display:flex;flex-direction:column;">
-                <div style="padding:12px 16px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #3D3229;background:${bgDark};">
-                    <div onclick="goBack('${theme}')" style="width:36px;height:36px;border-radius:6px;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #3D3229;box-shadow:2px 2px 0 #3D3229;">${iconFA('arrow-left', 'font-size:14px;color:#3D3229;')}</div>
-                    <div style="font-size:16px;font-weight:900;color:${textDark};letter-spacing:-0.3px;">CHECKOUT</div>
-                    <div style="margin-left:auto;background:#FF6B35;color:#fff;font-size:9px;font-weight:800;padding:4px 8px;border:2px solid #3D3229;box-shadow:2px 2px 0 #3D3229;">STEP 2/3</div>
+            // ─── OPTION 2: Neubrutalism — follows same card layout as default ───
+            return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
+                <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1.5px solid var(--border-color);">
+                    ${backBtn}
+                    <div style="font-size:16px;font-weight:700;color:${textColor};">Checkout</div>
                 </div>
                 <div style="flex:1;overflow-y:auto;padding:12px 12px 100px;">
-                    <div style="background:${sectionBg};border:${sectionBorder};border-radius:4px;padding:14px;margin-bottom:10px;box-shadow:${sectionShadow};">
-                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-                            <div style="background:${accentDark};color:#fff;width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;">${iconFA('map-pin', 'font-size:12px;')}</div>
-                            <span style="font-size:12px;font-weight:800;color:${textDark};text-transform:uppercase;letter-spacing:0.5px;">Deliver To</span>
-                            <span onclick="navigateToPage('${theme}','add-location')" style="margin-left:auto;font-size:9px;font-weight:800;color:${accentDark};cursor:pointer;padding:4px 8px;border:1.5px solid ${accentDark};box-shadow:1.5px 1.5px 0 ${accentDark};">CHANGE</span>
+                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;padding:0 4px;">
+                        <div style="display:flex;flex-direction:column;align-items:center;">
+                            <div style="width:28px;height:28px;border-radius:50%;background:${accent};color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--border-color);box-shadow:2px 2px 0 var(--border-color);}">1</div>
+                            <span style="font-size:9px;font-weight:600;color:${accent};margin-top:3px;">Cart</span>
                         </div>
-                        <div style="font-size:13px;font-weight:700;color:${textDark};">921 Church St</div>
-                        <div style="font-size:10px;color:${subDark};">San Francisco, CA 94114</div>
+                        <div style="flex:1;height:2px;background:${accent};margin:0 2px;margin-bottom:16px;"></div>
+                        <div style="display:flex;flex-direction:column;align-items:center;">
+                            <div style="width:28px;height:28px;border-radius:50%;background:${accent};color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--border-color);box-shadow:2px 2px 0 var(--border-color);}">2</div>
+                            <span style="font-size:9px;font-weight:600;color:${accent};margin-top:3px;">Pay</span>
+                        </div>
+                        <div style="flex:1;height:2px;background:var(--border-color);margin:0 2px;margin-bottom:16px;"></div>
+                        <div style="display:flex;flex-direction:column;align-items:center;">
+                            <div style="width:28px;height:28px;border-radius:50%;background:var(--pill-bg);color:${textColor};font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--border-color);">3</div>
+                            <span style="font-size:9px;font-weight:600;color:${subColor};margin-top:3px;">Done</span>
+                        </div>
                     </div>
-                    <div style="background:${sectionBg};border:${sectionBorder};border-radius:4px;padding:14px;margin-bottom:10px;box-shadow:${sectionShadow};">
-                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-                            <div style="background:${accentDark};color:#fff;width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;">${iconFA('clock', 'font-size:12px;')}</div>
-                            <span style="font-size:12px;font-weight:800;color:${textDark};text-transform:uppercase;letter-spacing:0.5px;">When?</span>
+                    <div style="background:var(--pill-bg);border-radius:4px;padding:14px;margin-bottom:10px;border:1.5px solid var(--border-color);box-shadow:3px 3px 0 var(--border-color);">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                            <div style="font-size:12px;font-weight:700;color:${textColor};">${iconFA('map-pin', 'font-size:12px;margin-right:6px;')}Delivery Address</div>
+                            <div onclick="navigateToPage('${theme}','add-location')" style="font-size:10px;font-weight:700;color:${accent};cursor:pointer;">+ Change</div>
                         </div>
+                        <div style="font-size:12px;color:${textColor};">921 Church St</div>
+                        <div style="font-size:10px;color:${subColor};">San Francisco, CA 94114</div>
+                    </div>
+                    <div style="background:var(--pill-bg);border-radius:4px;padding:14px;margin-bottom:10px;border:1.5px solid var(--border-color);box-shadow:3px 3px 0 var(--border-color);">
+                        <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:10px;">${iconFA('clock', 'font-size:12px;margin-right:6px;')}Delivery Time</div>
                         <div style="display:flex;gap:6px;margin-bottom:8px;">
-                            <span style="padding:6px 14px;background:${accentDark};color:#fff;border:2px solid #3D3229;box-shadow:2px 2px 0 #3D3229;font-size:10px;font-weight:800;cursor:pointer;">TODAY</span>
-                            <span style="padding:6px 14px;background:#fff;color:#3D3229;border:2px solid #3D3229;font-size:10px;font-weight:700;cursor:pointer;">TOMORROW</span>
+                            <span style="padding:6px 14px;background:${accent};color:#fff;border-radius:4px;font-size:10px;font-weight:700;cursor:pointer;border:1.5px solid var(--border-color);box-shadow:1.5px 1.5px 0 var(--border-color);">Today</span>
+                            <span style="padding:6px 14px;background:var(--card-bg);color:${textColor};border-radius:4px;font-size:10px;font-weight:600;cursor:pointer;border:1.5px solid var(--border-color);">Tomorrow</span>
                         </div>
-                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">${timeSlots.map(t => `<span style="padding:6px;text-align:center;background:#fff;border:1.5px solid #3D3229;font-size:9px;font-weight:700;color:#3D3229;cursor:pointer;">${t}</span>`).join('')}</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">${timeSlots.slice(0,3).map(t => `<span style="padding:6px;text-align:center;background:var(--card-bg);border-radius:4px;font-size:9px;font-weight:600;color:${textColor};cursor:pointer;border:1.5px solid var(--border-color);">${t}</span>`).join('')}</div>
                     </div>
-                    <div style="background:${sectionBg};border:${sectionBorder};border-radius:4px;padding:14px;margin-bottom:10px;box-shadow:${sectionShadow};">
-                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-                            <div style="background:${accentDark};color:#fff;width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;">$$</div>
-                            <span style="font-size:12px;font-weight:800;color:${textDark};text-transform:uppercase;letter-spacing:0.5px;">Pay With</span>
-                        </div>
-                        <div style="display:flex;gap:6px;">
-                            <span style="flex:1;background:${accentDark};color:#fff;border:2px solid #3D3229;box-shadow:2px 2px 0 #3D3229;padding:10px;text-align:center;font-size:10px;font-weight:800;cursor:pointer;">CARD</span>
-                            <span style="flex:1;background:#fff;color:#3D3229;border:2px solid #3D3229;padding:10px;text-align:center;font-size:10px;font-weight:700;cursor:pointer;">CASH</span>
-                            <span style="flex:1;background:#fff;color:#3D3229;border:2px solid #3D3229;padding:10px;text-align:center;font-size:10px;font-weight:700;cursor:pointer;">PAYPAL</span>
+                    <div style="background:var(--pill-bg);border-radius:4px;padding:14px;margin-bottom:10px;border:1.5px solid var(--border-color);box-shadow:3px 3px 0 var(--border-color);">
+                        <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:8px;">Payment</div>
+                        <div style="display:flex;gap:8px;">
+                            <div style="flex:1;background:${accent};color:#fff;padding:12px;border-radius:4px;text-align:center;font-size:10px;font-weight:700;cursor:pointer;border:1.5px solid var(--border-color);box-shadow:2px 2px 0 var(--border-color);">${iconFA('credit-card', 'font-size:14px;')}<br><span style="font-size:9px;">Card</span></div>
+                            <div style="flex:1;background:var(--card-bg);color:${textColor};padding:12px;border-radius:4px;text-align:center;font-size:10px;font-weight:600;cursor:pointer;border:1.5px solid var(--border-color);">${iconFA('dollar-sign', 'font-size:14px;')}<br><span style="font-size:9px;">Cash</span></div>
+                            <div style="flex:1;background:var(--card-bg);color:${textColor};padding:12px;border-radius:4px;text-align:center;font-size:10px;font-weight:600;cursor:pointer;border:1.5px solid var(--border-color);">${iconFA('smartphone', 'font-size:14px;')}<br><span style="font-size:9px;">PayPal</span></div>
                         </div>
                     </div>
-                    <div style="background:${sectionBg};border:${sectionBorder};border-radius:4px;padding:14px;box-shadow:${sectionShadow};">
-                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-                            <div style="background:#3D3229;color:#fff;width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;">#</div>
-                            <span style="font-size:12px;font-weight:800;color:${textDark};text-transform:uppercase;letter-spacing:0.5px;">Summary</span>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;font-size:11px;color:${subDark};margin-bottom:3px;"><span>Subtotal</span><span style="color:${textDark};font-weight:700;">${formatPrice(subtotal)}</span></div>
-                        <div style="display:flex;justify-content:space-between;font-size:11px;color:${subDark};margin-bottom:3px;"><span>Delivery</span><span style="color:${textDark};font-weight:700;">${formatPrice(delivery)}</span></div>
-                        <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:900;color:${textDark};padding-top:8px;border-top:2px solid #3D3229;margin-top:6px;"><span>TOTAL</span><span style="color:${accentDark};font-size:16px;">${formatPrice(total)}</span></div>
+                    <div style="background:var(--pill-bg);border-radius:4px;padding:14px;margin-bottom:10px;border:1.5px solid var(--border-color);box-shadow:3px 3px 0 var(--border-color);">
+                        <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>Subtotal</span><span style="color:${textColor};">${formatPrice(subtotal)}</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>Delivery</span><span style="color:${textColor};">${formatPrice(delivery)}</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:800;color:${textColor};padding-top:8px;border-top:1.5px solid var(--border-color);margin-top:4px;"><span>Total</span><span style="color:${accent};">${formatPrice(total)}</span></div>
                     </div>
                 </div>
-                <div style="padding:10px 12px 80px;border-top:2px solid #3D3229;background:${bgDark};">
-                    <div onclick="placeOrder('${theme}')" style="width:100%;padding:16px;background:${orderBtnBg};color:${orderBtnText};text-align:center;border:${orderBtnBorder};border-radius:${orderBtnRadius};font-size:15px;font-weight:900;cursor:pointer;box-shadow:${orderBtnShadow};letter-spacing:1px;text-transform:uppercase;">ORDER & PAY - ${formatPrice(total)}</div>
+                <div style="padding:10px 12px 80px;border-top:1.5px solid var(--border-color);background:${pageBg};">
+                    <div onclick="placeOrder('${theme}')" style="width:100%;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:4px;font-size:14px;font-weight:700;cursor:pointer;border:1.5px solid var(--border-color);box-shadow:3px 3px 0 var(--border-color);">Place Order - ${formatPrice(total)}</div>
                 </div>
             </div>`;
         }
@@ -6481,7 +6664,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
             const subColor = theme === 'glassmorphism' ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
             const accent = theme === 'neubrutalism' ? '#FF6B35' : 'var(--accent)';
             const pageBg = theme === 'glassmorphism' ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
-            const driverImg = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80';
+            const mapCanada = 'https://images.unsplash.com/photo-1727584458575-dcbe11711717?auto=format&fit=crop&w=600&q=80';
 
             if (style === 'default') {
                 return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
@@ -6492,13 +6675,8 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         <div style="font-size:11px;color:${subColor};margin-bottom:24px;">Estimated arrival</div>
                         <div id="eta-${theme}" style="font-size:36px;font-weight:900;color:${accent};margin-bottom:24px;">25:00</div>
                         <div style="width:100%;height:120px;background:var(--pill-bg);border-radius:16px;margin-bottom:20px;overflow:hidden;position:relative;">
-                            <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=600&q=80" style="width:100%;height:100%;object-fit:cover;">
+                            <img src="${mapCanada}" style="width:100%;height:100%;object-fit:cover;">
                             <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 8px ${accent}30;">${iconFA('moto', 'font-size:18px;color:#fff;')}</div>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--pill-bg);border-radius:14px;width:100%;margin-bottom:24px;">
-                            <img src="${driverImg}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
-                            <div style="flex:1;"><div style="font-size:12px;font-weight:700;color:${textColor};">Mike</div><div style="font-size:10px;color:${subColor};">Your driver is nearby</div></div>
-                            <div style="width:36px;height:36px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('phone', 'font-size:14px;color:#fff;')}</div>
                         </div>
                         <div onclick="trackOrder('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:12px;">Track Order</div>
                         <div onclick="goBack('${theme}')" style="font-size:12px;color:${subColor};cursor:pointer;text-decoration:underline;">Continue Shopping</div>
@@ -6522,10 +6700,8 @@ function drawAnnouncementStrip(theme, style = 'default') {
                             <div style="font-size:11px;color:${subColor};">Estimated Delivery</div>
                             <div id="eta-${theme}" style="font-size:20px;font-weight:900;color:${accent};">25-35 min</div>
                         </div>
-                        <div style="display:flex;gap:12px;width:100%;margin-bottom:12px;">
-                            <div onclick="navigator.clipboard.writeText('Order #ORD-5682');this.textContent='Copied!';setTimeout(()=>{this.textContent='Share'},2000)" style="flex:1;padding:14px;border:2px solid var(--border-color);color:${textColor};text-align:center;border-radius:var(--btn-radius);font-size:13px;font-weight:700;cursor:pointer;">${iconFA('share-2', 'font-size:14px;margin-right:6px;')}Share</div>
-                            <div onclick="navigateToPage('${theme}','reviews-page')" style="flex:1;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:13px;font-weight:700;cursor:pointer;">Rate Experience</div>
-                        </div>
+                        <div onclick="trackOrder('${theme}')" style="width:100%;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:13px;font-weight:700;cursor:pointer;margin-bottom:12px;">Track Order</div>
+                        <div onclick="goBack('${theme}')" style="font-size:12px;color:${subColor};cursor:pointer;text-decoration:underline;">Continue Shopping</div>
                     </div>
                 </div>`;
             }
@@ -6543,7 +6719,8 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         <div style="border-top:1px solid var(--border-color);margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;font-size:14px;font-weight:800;"><span style="color:${textColor};">Total</span><span style="color:${accent};">${formatPrice(28.96)}</span></div>
                     </div>
                     <div onclick="showToast('Receipt downloaded!')" style="display:flex;align-items:center;gap:6px;font-size:11px;color:${accent};cursor:pointer;margin-bottom:24px;">${iconFA('download', 'font-size:12px;')} Download Receipt</div>
-                    <div onclick="goBack('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;">Back to Home</div>
+                    <div onclick="trackOrder('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:12px;">Track Order</div>
+                    <div onclick="goBack('${theme}')" style="font-size:12px;color:${subColor};cursor:pointer;text-decoration:underline;">Continue Shopping</div>
                 </div>
             </div>`;
         }
@@ -6668,8 +6845,10 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         <div style="font-size:11px;color:${textColor};">${r.text}</div>
                         <div style="position:absolute;right:8px;bottom:8px;font-size:9px;color:${subColor};opacity:0.5;">&#8592; swipe</div>
                     </div>`).join('')}
-                </div>
-            </div>`;
+                                    <div style="padding:12px 16px 80px;border-top:1px solid var(--border-color);background:${pageBg};">
+                        <div onclick="openReviewModal('${theme}')" style="width:100%;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:13px;font-weight:700;cursor:pointer;">Write a Review</div>
+                    </div>
+                </div>`;
         }
 
         // ─── REWARDS PAGE ──────────────────────────────────────────
@@ -6832,7 +7011,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                             <div style="font-size:12px;color:${subColor};margin:6px 0;">Add any 2 items & save $2.00</div>
                             <div style="font-size:18px;font-weight:900;color:${accent};">$6.99</div>
                             <div style="font-size:10px;color:${subColor};text-decoration:line-through;">$8.99</div>
-                            <div onclick="showToast('Meal bundle added to cart!')" style="margin-top:10px;padding:12px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:12px;font-weight:700;cursor:pointer;">Add Bundle</div>
+                            <div onclick="addToCart('${theme}',{id:'bundle1',name:'Meal Bundle',price:6.99,img:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80',desc:'Any 2 items + save $2'});showToast('Meal bundle added to cart!')" style="margin-top:10px;padding:12px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:12px;font-weight:700;cursor:pointer;">Add Bundle</div>
                         </div>
                         <div onclick="navigateToPage('${theme}','order-success-page')" style="text-align:center;font-size:11px;color:${subColor};text-decoration:underline;cursor:pointer;padding:8px;">No thanks, skip add-ons</div>
                     </div>
@@ -6870,6 +7049,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                     </div>
                     <div style="padding:12px 16px 80px;border-top:1px solid var(--border-color);background:${pageBg};">
                         <div onclick="addToCart('${theme}',{id:'bundle',name:'Value Bundle',price:7.49,img:items[0].img,desc:'2 selected items'});showToast('2 items added to cart!')" style="width:100%;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:13px;font-weight:700;cursor:pointer;">Add Selected (2) - $7.49</div>
+                        <div onclick="navigateToPage('${theme}','order-success-page')" style="text-align:center;font-size:11px;color:${subColor};text-decoration:underline;cursor:pointer;padding:8px;">No thanks, skip add-ons</div>
                     </div>
                 </div>`;
             }
@@ -6879,7 +7059,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
             return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
                 <div style="position:relative;flex:1;display:flex;flex-direction:column;justify-content:flex-end;background:linear-gradient(180deg,${pageBg} 0%,${theme==='glassmorphism'?'#111':'#1a1a1a'} 100%);overflow:hidden;">
                     <div style="position:absolute;top:16px;right:16px;z-index:10;">
-                        <div onclick="goBack('${theme}')" style="padding:8px 16px;background:rgba(255,255,255,0.15);border-radius:999px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;backdrop-filter:blur(8px);">Skip</div>
+                        <div onclick="navigateToPage('${theme}','order-success-page')" style="padding:8px 16px;background:rgba(255,255,255,0.15);border-radius:999px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;backdrop-filter:blur(8px);">Skip</div>
                     </div>
                     <div style="padding:0 24px 24px;">
                         <div style="background:rgba(255,255,255,0.1);border-radius:var(--card-radius);overflow:hidden;backdrop-filter:blur(16px);margin-bottom:16px;">
@@ -7287,7 +7467,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         </div>
                     </div>
                     <div style="padding:12px 16px 80px;border-top:1px solid var(--border-color);background:${pageBg};">
-                        <div onclick="goBack('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Save Address</div>
+                        <div onclick="navigateToPage('${theme}','checkout-page')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Save Address</div>
                     </div>
                 </div>`;
             }

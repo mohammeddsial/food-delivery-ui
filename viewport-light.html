@@ -1663,6 +1663,23 @@
             return window.appState.cart[theme];
         }
 
+        function updateFabVisibility(theme) {
+            var phase = window.appState.orderPhase[theme];
+            var cartFab = document.getElementById('fabCart-' + theme);
+            var trackerFab = document.getElementById('fabTracker-' + theme);
+            if (!cartFab || !trackerFab) return;
+            if (phase === 'placed' || phase === 'tracking') {
+                cartFab.style.display = 'none';
+                trackerFab.style.display = 'flex';
+            } else if (phase === 'carted' || phase === 'checkout') {
+                cartFab.style.display = 'flex';
+                trackerFab.style.display = 'none';
+            } else {
+                cartFab.style.display = 'none';
+                trackerFab.style.display = 'none';
+            }
+        }
+
         // ─── TOAST NOTIFICATIONS ───────────────────────────────────────────────
         function showToast(message, type = 'success') {
             document.querySelectorAll('.phone-viewport').forEach(vp => {
@@ -1678,6 +1695,13 @@
                     setTimeout(() => toast.remove(), 300);
                 }, 2000);
             });
+        }
+
+        function submitReview(theme) {
+            showToast('Review submitted! Thank you for your feedback!');
+            currentPageByTheme[theme] = 'feed';
+            renderAllViewports();
+            renderPageViewPicker();
         }
 
         // ─── ORDER TRACKING ────────────────────────────────────────────────────
@@ -2717,11 +2741,6 @@
         }
 
         function placeOrder(theme) {
-            const payment = (window.appState.paymentMethod || {})[theme];
-            if (!payment) {
-                showToast('Please select a payment method', 'error');
-                return;
-            }
             window.appState.orderPhase[theme] = 'placed';
             navigateToPage(theme, 'order-success-page');
         }
@@ -3364,9 +3383,20 @@
                         case 'deals-page':
                             pageHtml = drawDealsPage(theme, pageStyle);
                             break;
+                        case 'login-page':
+                            pageHtml = drawLoginPage(theme, pageStyle);
+                            break;
+                        case 'search-page':
+                            pageHtml = drawSearchPage(theme, pageStyle);
+                            break;
+                        case 'live-map':
+                            pageHtml = drawLiveMapPage(theme, pageStyle);
+                            break;
                     }
-                    container.innerHTML += pageHtml;
+                    container.innerHTML += `<div style="animation:pageSlideEnter 0.35s cubic-bezier(0.16,1,0.3,1);">${pageHtml}</div>`;
+                    container.innerHTML += `<div style="animation:pageSlideEnter 0.35s cubic-bezier(0.16,1,0.3,1) 0.05s both;">${generateBottomBar(theme, 'default').replace('z-index:30;', 'z-index:101;')}</div>`;
                 }
+                updateFabVisibility(theme);
             });
 
             if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -3646,12 +3676,13 @@
             renderAllViewports();
         }
 
-        function generateBottomBar(theme) {
+        function generateBottomBar(theme, style = 'default') {
             const pal = window.colorPalettes[theme]?.colors || window.colorPalettes.neumorphism.colors;
             const navItems = [
                 { icon: 'home', label: 'Home' },
                 { icon: 'menu', label: 'Menu' },
                 { icon: 'gift', label: 'Rewards' },
+                { icon: 'mic', label: 'Search' },
                 { icon: 'cart', label: 'Cart', badge: getCartCount(theme) || null },
                 { icon: 'user', label: 'Profile' }
             ];
@@ -3661,6 +3692,7 @@
                     home: 'home',
                     menu: 'utensils',
                     gift: 'gift',
+                    mic: 'microphone',
                     cart: 'shopping-bag',
                     user: 'user'
                 },
@@ -3668,6 +3700,7 @@
                     home: 'home-line',
                     menu: 'restaurant-line',
                     gift: 'gift-line',
+                    mic: 'mic-line',
                     cart: 'shopping-cart-line',
                     user: 'user-line'
                 },
@@ -3675,6 +3708,7 @@
                     home: 'home',
                     menu: 'tools-kitchen-2',
                     gift: 'gift',
+                    mic: 'microphone',
                     cart: 'shopping-bag',
                     user: 'user'
                 }
@@ -3735,6 +3769,7 @@
                 if (item.icon === 'home') clickHandler = `goBack('${theme}')`;
                 else if (item.icon === 'menu') clickHandler = `navigateToPage('${theme}','menu-page')`;
                 else if (item.icon === 'gift') clickHandler = `navigateToPage('${theme}','rewards-page')`;
+                else if (item.icon === 'mic') clickHandler = `navigateToPage('${theme}','search-page')`;
                 else if (item.icon === 'cart') clickHandler = `navigateToPage('${theme}','cart-page')`;
                 else if (item.icon === 'user') clickHandler = `navigateToPage('${theme}','profile-settings')`;
                 return `<button onclick="${clickHandler}" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;cursor:pointer;padding:6px 8px;position:relative;transition:transform 0.15s;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform='scale(1)'" onmouseleave="this.style.transform='scale(1)'">${iconHtml}<span style="font-size:10px;${labelStyle}">${item.label}</span>${dotHtml}${badgeHtml}</button>`;
@@ -4365,8 +4400,8 @@ function drawAnnouncementStrip(theme, style = 'default') {
 
         // ─── ORDER TRACKING PAGE ────────────────────────────────────────
         function drawOrderTrackingPage(theme, style = 'default') {
-            const mapImg = 'https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=600&q=80';
-            const darkMapImg = 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=600&q=80';
+            const mapImg = 'https://images.unsplash.com/photo-1727584458575-dcbe11711717?auto=format&fit=crop&w=600&q=80';
+            const darkMapImg = 'https://images.unsplash.com/photo-1766650410501-a256eb27fa8c?auto=format&fit=crop&w=600&q=80';
             const driverImg = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80';
             const chefImg = 'https://images.unsplash.com/photo-1577219491135-ce3907841583?auto=format&fit=crop&w=200&q=80';
             const cookImg = 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=200&q=80';
@@ -4670,7 +4705,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                         <img src="${hero}" style="width:100%;height:100%;object-fit:cover;">
                         <div style="position:absolute;top:16px;left:16px;">${backBtn}</div>
                     </div>
-                    <div style="flex:1;overflow-y:auto;padding:20px 16px 100px;">
+                    <div style="flex:1;overflow-y:auto;padding:20px 16px 30px;-webkit-overflow-scrolling:touch;">
                         <div style="font-size:22px;font-weight:800;color:${textColor};margin-bottom:6px;">Classic Beef Burger</div>
                         <div style="font-size:13px;color:${subColor};line-height:1.6;margin-bottom:16px;">Juicy double beef patty with melted cheddar, fresh lettuce, tomato, and our signature sauce on a toasted brioche bun.</div>
                         <div style="font-size:24px;font-weight:900;color:${accent};margin-bottom:20px;">${formatPrice(12.99)}</div>
@@ -4689,7 +4724,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                             </div>
                         </div>
                     </div>
-                    <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
+                    <div style="padding:12px 16px 20px;border-top:1px solid var(--border-color);background:${pageBg};flex-shrink:0;">
                         <div onclick="navigateToPage('${theme}','cart-page')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Add to Cart - ${formatPrice(12.99)}</div>
                     </div>
                 </div>`;
@@ -4697,7 +4732,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
 
             if (style === 'option 1') {
                 return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
-                    <div style="display:flex;flex:1;overflow:hidden;">
+                    <div style="display:flex;flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;">
                         <div style="width:40%;height:100%;overflow:hidden;flex-shrink:0;">
                             <img src="${hero}" style="width:100%;height:100%;object-fit:cover;">
                         </div>
@@ -5144,8 +5179,6 @@ if (style === 'option 1') {
             const subColor = theme === 'glassmorphism' ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
             const accent = theme === 'neubrutalism' ? '#FF6B35' : 'var(--accent)';
             const pageBg = theme === 'glassmorphism' ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
-            const driverImg = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80';
-
             if (style === 'default') {
                 return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
                     <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;">
@@ -5155,13 +5188,8 @@ if (style === 'option 1') {
                         <div style="font-size:11px;color:${subColor};margin-bottom:24px;">Estimated arrival</div>
                         <div id="eta-${theme}" style="font-size:36px;font-weight:900;color:${accent};margin-bottom:24px;">25:00</div>
                         <div style="width:100%;height:120px;background:var(--pill-bg);border-radius:16px;margin-bottom:20px;overflow:hidden;position:relative;">
-                            <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=600&q=80" style="width:100%;height:100%;object-fit:cover;">
+                            <img src="https://images.unsplash.com/photo-1727584458575-dcbe11711717?auto=format&fit=crop&w=600&q=80" style="width:100%;height:100%;object-fit:cover;">
                             <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 8px ${accent}30;">${iconFA('moto', 'font-size:18px;color:#fff;')}</div>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--pill-bg);border-radius:14px;width:100%;margin-bottom:24px;">
-                            <img src="${driverImg}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
-                            <div style="flex:1;"><div style="font-size:12px;font-weight:700;color:${textColor};">Mike</div><div style="font-size:10px;color:${subColor};">Your driver is nearby</div></div>
-                            <div style="width:36px;height:36px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('phone', 'font-size:14px;color:#fff;')}</div>
                         </div>
                         <div onclick="trackOrder('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:12px;">Track Order</div>
                         <div onclick="goBack('${theme}')" style="font-size:12px;color:${subColor};cursor:pointer;text-decoration:underline;">Continue Shopping</div>
@@ -5257,7 +5285,7 @@ if (style === 'option 1') {
                         ${reviewsHtml}
                     </div>
                     <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
-                        <div onclick="alert('Write a Review')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;">Write a Review</div>
+                        <div onclick="submitReview('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;">Write a Review</div>
                     </div>
                 </div>`;
             }
@@ -5294,7 +5322,7 @@ if (style === 'option 1') {
                         </div>`).join('')}
                     </div>
                     <div style="position:sticky;bottom:0;padding:12px 16px;background:${pageBg};border-top:1px solid var(--border-color);">
-                        <div onclick="alert('Write a Review')" style="width:100%;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:13px;font-weight:700;cursor:pointer;">Write a Review</div>
+                        <div onclick="submitReview('${theme}')" style="width:100%;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:13px;font-weight:700;cursor:pointer;">Write a Review</div>
                     </div>
                 </div>`;
             }
@@ -5485,7 +5513,7 @@ if (style === 'option 1') {
                                     <div style="font-size:11px;font-weight:700;color:${textColor};">${item.name}</div>
                                     <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
                                         <span style="font-size:13px;font-weight:800;color:${accent};">${item.price}</span>
-                                        <div onclick="alert('Added ${item.name}')" style="padding:4px 12px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:10px;font-weight:700;cursor:pointer;">Add</div>
+                                        <div onclick="addToCart('${theme}',{id:'upsell-${item.name}',name:'${item.name}',price:${item.price.replace('$','')},img:'${item.img}',desc:'Upsell item'});showToast('${item.name} added to cart!')" style="padding:4px 12px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:10px;font-weight:700;cursor:pointer;">Add</div>
                                     </div>
                                 </div>
                             </div>`).join('')}
@@ -5495,9 +5523,9 @@ if (style === 'option 1') {
                             <div style="font-size:12px;color:${subColor};margin:6px 0;">Add any 2 items & save $2.00</div>
                             <div style="font-size:18px;font-weight:900;color:${accent};">$6.99</div>
                             <div style="font-size:10px;color:${subColor};text-decoration:line-through;">$8.99</div>
-                            <div onclick="alert('Bundle added!')" style="margin-top:10px;padding:12px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:12px;font-weight:700;cursor:pointer;">Add Bundle</div>
+                            <div onclick="addToCart('${theme}',{id:'meal-bundle',name:'Meal Bundle',price:6.99,img:items[0].img,desc:'2 selected items'});showToast('Meal bundle added to cart!')" style="margin-top:10px;padding:12px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:12px;font-weight:700;cursor:pointer;">Add Bundle</div>
                         </div>
-                        <div onclick="goBack('${theme}')" style="text-align:center;font-size:11px;color:${subColor};text-decoration:underline;cursor:pointer;padding:8px;">No thanks, skip add-ons</div>
+                        <div onclick="navigateToPage('${theme}','order-success-page')" style="text-align:center;font-size:11px;color:${subColor};text-decoration:underline;cursor:pointer;padding:8px;">No thanks, skip add-ons</div>
                     </div>
                 </div>`;
             }
@@ -5532,7 +5560,7 @@ if (style === 'option 1') {
                         </div>
                     </div>
                     <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
-                        <div onclick="alert('Added 2 items!')" style="width:100%;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:13px;font-weight:700;cursor:pointer;">Add Selected (2) - $7.49</div>
+                        <div onclick="addToCart('${theme}',{id:'value-bundle',name:'Value Bundle',price:7.49,img:items[0].img,desc:'2 selected items'});showToast('2 items added to cart!')" style="width:100%;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:13px;font-weight:700;cursor:pointer;">Add Selected (2) - $7.49</div>
                     </div>
                 </div>`;
             }
@@ -5550,7 +5578,7 @@ if (style === 'option 1') {
                             <div style="padding:20px;">
                                 <div style="font-size:18px;font-weight:800;color:#fff;">Craft Latte</div>
                                 <div style="font-size:11px;color:rgba(255,255,255,0.5);margin:4px 0 8px;">Rich espresso with steamed oat milk</div>
-                                <div onclick="alert('Added!')" style="width:100%;padding:14px;background:${accent2};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;">Add for $3.50</div>
+                                <div onclick="addToCart('${theme}',{id:'craft-latte',name:'Craft Latte',price:3.50,img:'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=200&q=80',desc:'Rich espresso with steamed oat milk'});showToast('Craft Latte added to cart!')" style="width:100%;padding:14px;background:${accent2};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;">Add for $3.50</div>
                             </div>
                         </div>
                         <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.6);margin-bottom:10px;">More to love</div>
@@ -5821,7 +5849,7 @@ if (style === 'option 1') {
                         </div>
                     </div>
                     <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
-                        <div onclick="goBack('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Save Address</div>
+                        <div onclick="navigateToPage('${theme}','checkout-page')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Save Address</div>
                     </div>
                 </div>`;
             }
@@ -5857,7 +5885,7 @@ if (style === 'option 1') {
                         <div style="${cardStyle}padding:14px 16px;font-size:12px;color:${subColor};min-height:60px;line-height:1.5;">Leave at the door, ring doorbell</div>
                     </div>
                     <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
-                        <div onclick="goBack('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Save Address</div>
+                        <div onclick="navigateToPage('${theme}','checkout-page')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Save Address</div>
                     </div>
                 </div>`;
             }
@@ -5897,7 +5925,7 @@ if (style === 'option 1') {
                     </div>
                 </div>
                 <div style="padding:12px 16px;border-top:1px solid var(--border-color);background:${pageBg};">
-                    <div onclick="goBack('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:800;cursor:pointer;${isBrut ? 'border:2px solid var(--border-color);box-shadow:4px 4px 0 var(--border-color);' : ''}">Save Address</div>
+                    <div onclick="navigateToPage('${theme}','checkout-page')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:800;cursor:pointer;${isBrut ? 'border:2px solid var(--border-color);box-shadow:4px 4px 0 var(--border-color);' : ''}">Save Address</div>
                 </div>
             </div>`;
         }
