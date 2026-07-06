@@ -6277,7 +6277,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
                             <div id="eta-${theme}" style="font-size:20px;font-weight:900;color:${accent};">25-35 min</div>
                         </div>
                         <div style="display:flex;gap:12px;width:100%;margin-bottom:12px;">
-                            <div onclick="navigator.clipboard.writeText('Order #ORD-5682');this.textContent='Copied!';setTimeout(()=>this.innerHTML='${iconFA('share-2', 'font-size:14px;margin-right:6px;')}Share',2000)" style="flex:1;padding:14px;border:2px solid var(--border-color);color:${textColor};text-align:center;border-radius:var(--btn-radius);font-size:13px;font-weight:700;cursor:pointer;">${iconFA('share-2', 'font-size:14px;margin-right:6px;')}Share</div>
+                            <div onclick="navigator.clipboard.writeText('Order #ORD-5682');this.textContent='Copied!';setTimeout(()=>{this.textContent='Share'},2000)" style="flex:1;padding:14px;border:2px solid var(--border-color);color:${textColor};text-align:center;border-radius:var(--btn-radius);font-size:13px;font-weight:700;cursor:pointer;">${iconFA('share-2', 'font-size:14px;margin-right:6px;')}Share</div>
                             <div onclick="navigateToPage('${theme}','reviews-page')" style="flex:1;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:13px;font-weight:700;cursor:pointer;">Rate Experience</div>
                         </div>
                     </div>
