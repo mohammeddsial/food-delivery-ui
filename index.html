@@ -1691,8 +1691,12 @@
 <body class="p-6 h-screen w-screen flex overflow-hidden">
 
     <!-- LEFT PANEL: Controller + Palette Editor -->
-    <div class="flex flex-col h-full"
-        style="width:28%; min-width:300px; max-width:400px; background:#141414; border-right:1px solid #2a2a2a; overflow-y:auto;">
+    <div id="leftPanel" class="flex flex-col h-full"
+        style="width:28%; min-width:300px; max-width:400px; background:#141414; border-right:1px solid #2a2a2a; overflow-y:auto; transition:width 0.3s, min-width 0.3s, opacity 0.3s;">
+
+        <div onclick="toggleLeftPanel()" style="position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:flex-end;padding:4px 8px;cursor:pointer;background:#141414;border-bottom:1px solid #2a2a2a;">
+            <span id="collapseIcon" style="color:#666;font-size:12px;font-weight:700;">◀ Collapse</span>
+        </div>
 
         <!-- CONTROLLER -->
         <div class="controller" id="controllerPanel" style="width:100%; border-right:none; height:auto; flex-shrink:0;">
@@ -2088,8 +2092,8 @@
                 cartFab.style.display = 'flex';
                 trackerFab.style.display = 'none';
             } else {
-                cartFab.style.display = 'flex';
-                trackerFab.style.display = 'flex';
+                cartFab.style.display = 'none';
+                trackerFab.style.display = 'none';
             }
         }
 
@@ -4432,7 +4436,6 @@ if (currentPageByTheme[theme] === 'order-tracking' || currentPageByTheme[theme] 
                 { icon: 'menu', label: 'Menu' },
                 { icon: 'gift', label: 'Rewards' },
                 { icon: 'mic', label: 'Search' },
-                { icon: 'map', label: 'Map' },
                 { icon: 'cart', label: 'Cart', badge: getCartCount(theme) || null },
                 { icon: 'user', label: 'Profile' }
             ];
@@ -4444,8 +4447,7 @@ if (currentPageByTheme[theme] === 'order-tracking' || currentPageByTheme[theme] 
                     gift: 'gift',
                     mic: 'microphone',
                     cart: 'shopping-bag',
-                    user: 'user',
-                    map: 'map-pin'
+                    user: 'user'
                 },
                 glassmorphism: {
                     home: 'home-line',
@@ -4453,8 +4455,7 @@ if (currentPageByTheme[theme] === 'order-tracking' || currentPageByTheme[theme] 
                     gift: 'gift-line',
                     mic: 'mic-line',
                     cart: 'shopping-cart-line',
-                    user: 'user-line',
-                    map: 'map-pin-line'
+                    user: 'user-line'
                 },
                 neubrutalism: {
                     home: 'home',
@@ -4462,8 +4463,7 @@ if (currentPageByTheme[theme] === 'order-tracking' || currentPageByTheme[theme] 
                     gift: 'gift',
                     mic: 'microphone',
                     cart: 'shopping-bag',
-                    user: 'user',
-                    map: 'map-pin'
+                    user: 'user'
                 }
             };
 
@@ -4499,7 +4499,6 @@ if (currentPageByTheme[theme] === 'order-tracking' || currentPageByTheme[theme] 
                     else if (item.icon === 'menu') clickHandler = `navigateToPage('${theme}','menu-page')`;
                     else if (item.icon === 'gift') clickHandler = `navigateToPage('${theme}','rewards-page')`;
                     else if (item.icon === 'mic') clickHandler = `navigateToPage('${theme}','search-page')`;
-                    else if (item.icon === 'map') clickHandler = `navigateToPage('${theme}','live-map')`;
                     else if (item.icon === 'cart') clickHandler = `navigateToPage('${theme}','cart-page')`;
                     else if (item.icon === 'user') clickHandler = `navigateToPage('${theme}','profile-settings')`;
 
@@ -4538,7 +4537,6 @@ if (currentPageByTheme[theme] === 'order-tracking' || currentPageByTheme[theme] 
                     else if (item.icon === 'menu') clickHandler = `navigateToPage('${theme}','menu-page')`;
                     else if (item.icon === 'gift') clickHandler = `navigateToPage('${theme}','rewards-page')`;
                     else if (item.icon === 'mic') clickHandler = `navigateToPage('${theme}','search-page')`;
-                    else if (item.icon === 'map') clickHandler = `navigateToPage('${theme}','live-map')`;
                     else if (item.icon === 'cart') clickHandler = `navigateToPage('${theme}','cart-page')`;
                     else if (item.icon === 'user') clickHandler = `navigateToPage('${theme}','profile-settings')`;
 
@@ -6261,7 +6259,7 @@ function drawAnnouncementStrip(theme, style = 'default') {
         function drawCheckoutPage(theme, style = 'default') {
             const textColor = theme === 'glassmorphism' ? '#fff' : 'var(--text-primary)';
             const subColor = theme === 'glassmorphism' ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
-            const accent = theme === 'neubrutalism' ? '#FF6B35' : 'var(--accent)';
+            const accent = theme === 'neubrutalism' ? '#FF6B35' : (theme === 'glassmorphism' ? '#4CAF50' : 'var(--accent)');
             const pageBg = theme === 'glassmorphism' ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
             const backBtn = `<div onclick="goBack('${theme}')" style="width:36px;height:36px;border-radius:50%;background:${theme==='glassmorphism'?'rgba(255,255,255,0.1)':'var(--pill-bg)'};display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('arrow-left', 'font-size:16px;color:'+textColor+';')}</div>`;
             const subtotal = 25.97;
@@ -6270,177 +6268,209 @@ function drawAnnouncementStrip(theme, style = 'default') {
 
             const timeSlots = ['10:00-10:30', '10:30-11:00', '11:00-11:30', '11:30-12:00', '12:00-12:30', '12:30-13:00'];
 
+            // ─── DEFAULT: Soft neumorphism card layout ───
             if (style === 'default') {
+                const isG = theme === 'glassmorphism';
+                const isB = theme === 'neubrutalism';
+                const cardShadow = isG ? 'none' : '0 2px 12px rgba(0,0,0,0.06)';
+                const cardRadius = isB ? '4px' : '14px';
+                const cardBorder = isB ? '1.5px solid var(--border-color)' : 'none';
+                const neubrutalismShadow = isB ? ', 3px 3px 0 var(--border-color)' : '';
                 return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
                     <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-color);">
                         ${backBtn}
                         <div style="font-size:16px;font-weight:700;color:${textColor};">Checkout</div>
                     </div>
-                    <div style="flex:1;overflow-y:auto;padding:16px 16px 100px;">
-                        <div class="checkout-steps">
+                    <div style="flex:1;overflow-y:auto;padding:12px 12px 100px;">
+                        <div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;padding:0 4px;">
                             <div style="display:flex;flex-direction:column;align-items:center;">
-                                <div class="checkout-step-dot" style="background:${accent};color:#fff;">1</div>
-                                <div class="checkout-step-label" style="color:${accent};">Cart</div>
+                                <div style="width:28px;height:28px;border-radius:50%;background:${accent};color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:${isB?'2px solid var(--border-color)':'none'};box-shadow:${isB?'2px 2px 0 var(--border-color)':'0 2px 8px '+accent+'40'};}">1</div>
+                                <span style="font-size:9px;font-weight:600;color:${accent};margin-top:3px;">Cart</span>
                             </div>
-                            <div style="flex:1;height:2px;background:${accent};margin:0 4px;margin-top:-20px;"></div>
+                            <div style="flex:1;height:2px;background:${accent};margin:0 2px;margin-bottom:16px;"></div>
                             <div style="display:flex;flex-direction:column;align-items:center;">
-                                <div class="checkout-step-dot" style="background:${accent};color:#fff;">2</div>
-                                <div class="checkout-step-label" style="color:${accent};">Checkout</div>
+                                <div style="width:28px;height:28px;border-radius:50%;background:${accent};color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:${isB?'2px solid var(--border-color)':'none'};box-shadow:${isB?'2px 2px 0 var(--border-color)':'0 2px 8px '+accent+'40'};}">2</div>
+                                <span style="font-size:9px;font-weight:600;color:${accent};margin-top:3px;">Pay</span>
                             </div>
-                            <div style="flex:1;height:2px;background:var(--border-color);margin:0 4px;margin-top:-20px;"></div>
+                            <div style="flex:1;height:2px;background:var(--border-color);margin:0 2px;margin-bottom:16px;"></div>
                             <div style="display:flex;flex-direction:column;align-items:center;">
-                                <div class="checkout-step-dot" style="background:var(--pill-bg);color:${textColor};border:2px solid var(--border-color);">3</div>
-                                <div class="checkout-step-label" style="color:${subColor};">Confirm</div>
+                                <div style="width:28px;height:28px;border-radius:50%;background:var(--pill-bg);color:${textColor};font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid var(--border-color);">3</div>
+                                <span style="font-size:9px;font-weight:600;color:${subColor};margin-top:3px;">Done</span>
                             </div>
                         </div>
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                            <div style="font-size:13px;font-weight:700;color:${textColor};">Delivery Address</div>
-                            <div onclick="navigateToPage('${theme}','add-location')" style="font-size:11px;font-weight:700;color:${accent};cursor:pointer;display:flex;align-items:center;gap:4px;">${iconFA('plus', 'font-size:10px;')} Add Address</div>
-                        </div>
-                        <div onclick="navigateToPage('${theme}','add-location')" style="background:var(--pill-bg);border-radius:14px;padding:14px;margin-bottom:20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;">
-                            <div>
-                                <div style="font-size:12px;font-weight:700;color:${textColor};">921 Church St</div>
-                                <div style="font-size:11px;color:${subColor};">San Francisco, CA 94114</div>
+                        <div style="background:var(--pill-bg);border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow}${neubrutalismShadow};border:${cardBorder};">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                                <div style="font-size:12px;font-weight:700;color:${textColor};">${iconFA('map-pin', 'font-size:12px;margin-right:6px;')}Delivery Address</div>
+                                <div onclick="navigateToPage('${theme}','add-location')" style="font-size:10px;font-weight:700;color:${accent};cursor:pointer;">+ Change</div>
                             </div>
-                            <div style="color:${subColor};">${iconFA('chevron-right', 'font-size:12px;')}</div>
+                            <div style="font-size:12px;color:${textColor};">921 Church St</div>
+                            <div style="font-size:10px;color:${subColor};">San Francisco, CA 94114</div>
                         </div>
-                        <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:10px;">Delivery Time</div>
-                        <div style="display:flex;gap:8px;margin-bottom:20px;overflow-x:auto;">
-                            <span style="padding:10px 16px;background:${accent};color:#fff;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">Today</span>
-                            <span style="padding:10px 16px;background:var(--pill-bg);color:${textColor};border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">Tomorrow</span>
+                        <div style="background:var(--pill-bg);border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow}${neubrutalismShadow};border:${cardBorder};">
+                            <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:10px;">${iconFA('clock', 'font-size:12px;margin-right:6px;')}Delivery Time</div>
+                            <div style="display:flex;gap:6px;margin-bottom:8px;">
+                                <span style="padding:6px 14px;background:${accent};color:#fff;border-radius:8px;font-size:10px;font-weight:700;cursor:pointer;border:${isB?'1.5px solid var(--border-color)':'none'};box-shadow:${isB?'1.5px 1.5px 0 var(--border-color)':'none'};">Today</span>
+                                <span style="padding:6px 14px;background:var(--card-bg);color:${textColor};border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;">Tomorrow</span>
+                            </div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">${timeSlots.slice(0,3).map(t => `<span style="padding:6px;text-align:center;background:var(--card-bg);border-radius:6px;font-size:9px;font-weight:600;color:${textColor};cursor:pointer;">${t}</span>`).join('')}</div>
                         </div>
-                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px;">${timeSlots.map(t => `<span style="padding:8px;text-align:center;background:var(--pill-bg);border-radius:10px;font-size:10px;font-weight:600;color:${textColor};cursor:pointer;">${t}</span>`).join('')}</div>
-                        <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:10px;">Tip</div>
-                        <div style="display:flex;gap:8px;margin-bottom:20px;">
-                            <span style="padding:10px 16px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:11px;font-weight:700;cursor:pointer;">15%</span>
-                            <span style="padding:10px 16px;background:var(--pill-bg);color:${textColor};border-radius:var(--btn-radius);font-size:11px;font-weight:600;cursor:pointer;">18%</span>
-                            <span style="padding:10px 16px;background:var(--pill-bg);color:${textColor};border-radius:var(--btn-radius);font-size:11px;font-weight:600;cursor:pointer;">20%</span>
-                            <span style="padding:10px 16px;background:var(--pill-bg);color:${textColor};border-radius:var(--btn-radius);font-size:11px;font-weight:600;cursor:pointer;">Custom</span>
+                        <div style="background:var(--pill-bg);border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow}${neubrutalismShadow};border:${cardBorder};">
+                            <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:8px;">Payment</div>
+                            <div style="display:flex;gap:8px;">
+                                <div style="flex:1;background:${accent};color:#fff;padding:12px;border-radius:10px;text-align:center;font-size:10px;font-weight:700;cursor:pointer;border:${isB?'1.5px solid var(--border-color)':'none'};box-shadow:${isB?'2px 2px 0 var(--border-color)':'none'};">${iconFA('credit-card', 'font-size:14px;')}<br><span style="font-size:9px;">Card</span></div>
+                                <div style="flex:1;background:var(--card-bg);color:${textColor};padding:12px;border-radius:10px;text-align:center;font-size:10px;font-weight:600;cursor:pointer;">${iconFA('dollar-sign', 'font-size:14px;')}<br><span style="font-size:9px;">Cash</span></div>
+                                <div style="flex:1;background:var(--card-bg);color:${textColor};padding:12px;border-radius:10px;text-align:center;font-size:10px;font-weight:600;cursor:pointer;">${iconFA('smartphone', 'font-size:14px;')}<br><span style="font-size:9px;">PayPal</span></div>
+                            </div>
                         </div>
-                        <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:10px;">Payment Method</div>
-                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px;">
-                            <div style="background:${accent};color:#fff;padding:14px;border-radius:14px;text-align:center;font-size:11px;font-weight:700;cursor:pointer;">${iconFA('credit-card', 'font-size:16px;')}<br>Card</div>
-                            <div style="background:var(--pill-bg);color:${textColor};padding:14px;border-radius:14px;text-align:center;font-size:11px;font-weight:600;cursor:pointer;">${iconFA('dollar-sign', 'font-size:16px;')}<br>Cash</div>
-                            <div style="background:var(--pill-bg);color:${textColor};padding:14px;border-radius:14px;text-align:center;font-size:11px;font-weight:600;cursor:pointer;">${iconFA('smartphone', 'font-size:16px;')}<br>PayPal</div>
-                        </div>
-                        <div style="border-top:1px solid var(--border-color);padding-top:12px;">
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Subtotal</span><span style="color:${textColor};">${formatPrice(subtotal)}</span></div>
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Delivery</span><span style="color:${textColor};">${formatPrice(delivery)}</span></div>
-                            <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:${textColor};padding-top:10px;border-top:1px solid var(--border-color);margin-top:6px;"><span>Total</span><span style="color:${accent};">${formatPrice(total)}</span></div>
+                        <div style="background:var(--pill-bg);border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow}${neubrutalismShadow};border:${cardBorder};">
+                            <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>Subtotal</span><span style="color:${textColor};">${formatPrice(subtotal)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>Delivery</span><span style="color:${textColor};">${formatPrice(delivery)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:800;color:${textColor};padding-top:8px;border-top:1px solid var(--border-color);margin-top:4px;"><span>Total</span><span style="color:${accent};">${formatPrice(total)}</span></div>
                         </div>
                     </div>
-                    <div style="padding:12px 16px 80px;border-top:1px solid var(--border-color);background:${pageBg};">
-                        <div onclick="placeOrder('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Place Order - ${formatPrice(total)}</div>
+                    <div style="padding:10px 12px 80px;border-top:1px solid var(--border-color);background:${pageBg};">
+                        <div onclick="placeOrder('${theme}')" style="width:100%;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:${isB?'4px':'var(--btn-radius)'};font-size:14px;font-weight:700;cursor:pointer;border:${isB?'1.5px solid var(--border-color)':'none'};box-shadow:${isB?'3px 3px 0 var(--border-color)':'0 2px 12px '+accent+'40'};}">Place Order - ${formatPrice(total)}</div>
                     </div>
                 </div>`;
             }
 
+            // ─── OPTION 1: Glass accordion with floating panels ───
             if (style === 'option 1') {
+                const g = theme === 'glassmorphism';
+                const cardGlass = g ? 'rgba(255,255,255,0.06)' : 'var(--pill-bg)';
+                const glassBorder = g ? '1px solid rgba(255,255,255,0.08)' : 'none';
+                const glassBlur = g ? 'backdrop-filter:blur(12px);' : '';
+                const tabActive = g ? 'background:#4CAF50;color:#fff;border:none;' : 'background:var(--accent);color:#fff;';
+                const tabInactive = g ? 'background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.06);' : 'background:var(--card-bg);color:var(--text-secondary);';
                 return `<div style="position:absolute;inset:0;background:${pageBg};z-index:100;display:flex;flex-direction:column;">
-                    <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-color);">
+                    <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:${g?'1px solid rgba(255,255,255,0.06)':'1px solid var(--border-color)'};">
                         ${backBtn}
                         <div style="font-size:16px;font-weight:700;color:${textColor};">Checkout</div>
                     </div>
-                    <div style="flex:1;overflow-y:auto;padding:16px 16px 100px;">
-                        <div style="background:var(--pill-bg);border-radius:14px;margin-bottom:12px;overflow:hidden;">
+                    <div style="flex:1;overflow-y:auto;padding:12px 12px 100px;">
+                        <div style="background:${cardGlass};border-radius:16px;margin-bottom:10px;overflow:hidden;${glassBorder}${glassBlur}">
                             <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;">
-                                <span style="font-size:13px;font-weight:700;color:${textColor};">${iconFA('map-pin', 'font-size:13px;margin-right:8px;')}Delivery Address</span>
-                                <span style="font-size:14px;color:${subColor};">${iconFA('chevron-down', 'font-size:12px;')}</span>
+                                <span style="font-size:12px;font-weight:700;color:${textColor};">${iconFA('map-pin', 'font-size:12px;margin-right:8px;')}Delivery Address</span>
+                                <span style="font-size:14px;color:${subColor};">${iconFA('chevron-down', 'font-size:11px;')}</span>
                             </div>
                             <div style="display:block;padding:0 14px 14px;">
-                                <div style="font-size:12px;color:${textColor};margin-bottom:10px;">921 Church St, San Francisco, CA 94114</div>
-                                <div onclick="navigateToPage('${theme}','add-location')" style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:${accent};cursor:pointer;">${iconFA('plus', 'font-size:10px;')} Add Address</div>
+                                <div style="display:flex;align-items:center;gap:10px;">
+                                    <div style="width:40px;height:40px;border-radius:10px;background:${g?'rgba(76,175,80,0.15)':'var(--card-bg)'};display:flex;align-items:center;justify-content:center;color:#4CAF50;">${iconFA('map-pin', 'font-size:16px;')}</div>
+                                    <div>
+                                        <div style="font-size:12px;color:${textColor};margin-bottom:2px;">921 Church St</div>
+                                        <div style="font-size:10px;color:${subColor};">San Francisco, CA 94114</div>
+                                    </div>
+                                </div>
+                                <div onclick="navigateToPage('${theme}','add-location')" style="display:flex;align-items:center;gap:6px;font-size:10px;font-weight:700;color:#4CAF50;cursor:pointer;margin-top:8px;padding:6px 12px;background:${g?'rgba(76,175,80,0.1)':'var(--card-bg)'};border-radius:8px;width:fit-content;">${iconFA('plus', 'font-size:9px;')} Add Address</div>
                             </div>
                         </div>
-                        <div style="background:var(--pill-bg);border-radius:14px;margin-bottom:12px;overflow:hidden;">
+                        <div style="background:${cardGlass};border-radius:16px;margin-bottom:10px;overflow:hidden;${glassBorder}${glassBlur}">
                             <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;">
-                                <span style="font-size:13px;font-weight:700;color:${textColor};">${iconFA('clock', 'font-size:13px;margin-right:8px;')}Delivery Time</span>
-                                <span style="font-size:14px;color:${subColor};">${iconFA('chevron-down', 'font-size:12px;')}</span>
+                                <span style="font-size:12px;font-weight:700;color:${textColor};">${iconFA('clock', 'font-size:12px;margin-right:8px;')}Delivery Time</span>
+                                <span style="font-size:14px;color:${subColor};">${iconFA('chevron-down', 'font-size:11px;')}</span>
                             </div>
                             <div style="display:none;padding:0 14px 14px;">
-                                <div style="display:flex;gap:8px;margin-bottom:8px;"><span style="padding:6px 14px;background:${accent};color:#fff;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;">Today</span><span style="padding:6px 14px;background:var(--card-bg);color:${textColor};border-radius:8px;font-size:11px;cursor:pointer;">Tomorrow</span></div>
-                                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">${timeSlots.slice(0,3).map(t => `<span style="padding:6px;text-align:center;background:var(--card-bg);border-radius:8px;font-size:10px;color:${textColor};cursor:pointer;">${t}</span>`).join('')}</div>
+                                <div style="display:flex;gap:6px;margin-bottom:8px;">
+                                    <span style="padding:6px 14px;${tabActive}border-radius:8px;font-size:10px;font-weight:700;cursor:pointer;">Today</span>
+                                    <span style="padding:6px 14px;${tabInactive}border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;">Tomorrow</span>
+                                </div>
+                                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">${timeSlots.map(t => `<span style="padding:6px;text-align:center;${tabInactive}border-radius:8px;font-size:9px;cursor:pointer;">${t}</span>`).join('')}</div>
                             </div>
                         </div>
-                        <div style="background:var(--pill-bg);border-radius:14px;margin-bottom:12px;overflow:hidden;">
+                        <div style="background:${cardGlass};border-radius:16px;margin-bottom:10px;overflow:hidden;${glassBorder}${glassBlur}">
                             <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;">
-                                <span style="font-size:13px;font-weight:700;color:${textColor};">${iconFA('credit-card', 'font-size:13px;margin-right:8px;')}Payment</span>
-                                <span style="font-size:14px;color:${subColor};">${iconFA('chevron-down', 'font-size:12px;')}</span>
+                                <span style="font-size:12px;font-weight:700;color:${textColor};">${iconFA('credit-card', 'font-size:12px;margin-right:8px;')}Payment</span>
+                                <span style="font-size:14px;color:${subColor};">${iconFA('chevron-down', 'font-size:11px;')}</span>
                             </div>
                             <div style="display:none;padding:0 14px 14px;">
-                                <div style="display:flex;gap:8px;margin-bottom:8px;">
-                                    <span style="padding:8px 16px;background:${accent};color:#fff;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;">Card</span>
-                                    <span style="padding:8px 16px;background:var(--card-bg);color:${textColor};border-radius:8px;font-size:11px;cursor:pointer;">Cash</span>
-                                    <span style="padding:8px 16px;background:var(--card-bg);color:${textColor};border-radius:8px;font-size:11px;cursor:pointer;">PayPal</span>
+                                <div style="display:flex;gap:6px;">
+                                    <span style="padding:8px 14px;${tabActive}border-radius:8px;font-size:10px;font-weight:700;cursor:pointer;">Card</span>
+                                    <span style="padding:8px 14px;${tabInactive}border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;">Cash</span>
+                                    <span style="padding:8px 14px;${tabInactive}border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;">PayPal</span>
                                 </div>
                             </div>
                         </div>
-                        <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:8px;">Tip</div>
-                        <div style="margin-bottom:20px;"><input type="range" min="0" max="30" value="15" style="width:100%;accent-color:${accent};"></div>
-                        <div style="border-top:1px solid var(--border-color);padding-top:12px;">
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Subtotal</span><span style="color:${textColor};">${formatPrice(subtotal)}</span></div>
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Delivery</span><span style="color:${textColor};">${formatPrice(delivery)}</span></div>
-                            <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:${textColor};padding-top:10px;border-top:1px solid var(--border-color);"><span>Total</span><span style="color:${accent};">${formatPrice(total)}</span></div>
+                        <div style="background:${cardGlass};border-radius:16px;padding:14px;${glassBorder}${glassBlur}">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                                <span style="font-size:12px;font-weight:700;color:${textColor};">Order Summary</span>
+                                <span style="font-size:10px;color:#4CAF50;font-weight:600;">${getCartCount(theme)} items</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>Subtotal</span><span style="color:${textColor};">${formatPrice(subtotal)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>Delivery</span><span style="color:${textColor};">${formatPrice(delivery)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:8px;"><span>Tip</span><span style="color:${textColor};">15%</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:800;color:${textColor};padding-top:8px;border-top:1px solid ${g?'rgba(255,255,255,0.08)':'var(--border-color)'};"><span>Total</span><span style="color:#4CAF50;">${formatPrice(total)}</span></div>
                         </div>
                     </div>
-                    <div style="padding:12px 16px 80px;border-top:1px solid var(--border-color);background:${pageBg};">
-                        <div onclick="placeOrder('${theme}')" style="width:100%;padding:18px;background:#4CAF50;color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:16px;font-weight:800;cursor:pointer;">Place Order - ${formatPrice(total)}</div>
+                    <div style="padding:10px 12px 80px;border-top:1px solid ${g?'rgba(255,255,255,0.06)':'var(--border-color)'};background:${pageBg};">
+                        <div onclick="placeOrder('${theme}')" style="width:100%;padding:16px;background:linear-gradient(135deg,#4CAF50,#388E3C);color:#fff;text-align:center;border-radius:14px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 20px rgba(76,175,80,0.3);">Place Order - ${formatPrice(total)}</div>
                     </div>
                 </div>`;
             }
 
-            // Option 2: Dark compact layout
-            const darkText = '#fff';
-            const darkSub = 'rgba(255,255,255,0.5)';
-            const darkBg = theme === 'glassmorphism' ? 'rgba(20,20,20,0.98)' : '#1a1a1a';
-            const cardBg = 'rgba(255,255,255,0.06)';
-            return `<div style="position:absolute;inset:0;background:${darkBg};z-index:100;display:flex;flex-direction:column;">
-                <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,0.08);">
-                    ${`<div onclick="goBack('${theme}')" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('arrow-left', 'font-size:16px;color:#fff;')}</div>`}
-                    <div style="font-size:16px;font-weight:700;color:#fff;">Checkout</div>
+            // ─── OPTION 2: Bold neubrutalism split layout ───
+            const isBrut = theme === 'neubrutalism';
+            const bgDark = isBrut ? '#F8F6F3' : '#1a1a1a';
+            const textDark = isBrut ? '#3D3229' : '#fff';
+            const subDark = isBrut ? '#8A7E72' : 'rgba(255,255,255,0.5)';
+            const sectionBg = isBrut ? '#fff' : 'rgba(255,255,255,0.06)';
+            const sectionBorder = isBrut ? '2px solid #3D3229' : '1px solid rgba(255,255,255,0.08)';
+            const sectionShadow = isBrut ? '4px 4px 0 #3D3229' : 'none';
+            const accentDark = isBrut ? '#FF6B35' : '#4CAF50';
+            const orderBtnBg = isBrut ? '#00615F' : '#4CAF50';
+            const orderBtnText = '#fff';
+            const orderBtnBorder = isBrut ? '2px solid #3D3229' : 'none';
+            const orderBtnShadow = isBrut ? '4px 4px 0 #3D3229' : 'none';
+            const orderBtnRadius = isBrut ? '4px' : '12px';
+            return `<div style="position:absolute;inset:0;background:${bgDark};z-index:100;display:flex;flex-direction:column;">
+                <div style="padding:12px 16px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #3D3229;background:${bgDark};">
+                    <div onclick="goBack('${theme}')" style="width:36px;height:36px;border-radius:6px;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #3D3229;box-shadow:2px 2px 0 #3D3229;">${iconFA('arrow-left', 'font-size:14px;color:#3D3229;')}</div>
+                    <div style="font-size:16px;font-weight:900;color:${textDark};letter-spacing:-0.3px;">CHECKOUT</div>
+                    <div style="margin-left:auto;background:#FF6B35;color:#fff;font-size:9px;font-weight:800;padding:4px 8px;border:2px solid #3D3229;box-shadow:2px 2px 0 #3D3229;">STEP 2/3</div>
                 </div>
-                <div style="flex:1;overflow-y:auto;padding:16px 16px 100px;">
-                    <div onclick="navigateToPage('${theme}','add-location')" style="background:${cardBg};border-radius:14px;padding:14px;margin-bottom:12px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;">
-                        <div>
-                            <div style="font-size:11px;color:${darkSub};margin-bottom:4px;">Deliver to</div>
-                            <div style="font-size:12px;font-weight:700;color:#fff;">921 Church St, San Francisco</div>
+                <div style="flex:1;overflow-y:auto;padding:12px 12px 100px;">
+                    <div style="background:${sectionBg};border:${sectionBorder};border-radius:4px;padding:14px;margin-bottom:10px;box-shadow:${sectionShadow};">
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                            <div style="background:${accentDark};color:#fff;width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;">${iconFA('map-pin', 'font-size:12px;')}</div>
+                            <span style="font-size:12px;font-weight:800;color:${textDark};text-transform:uppercase;letter-spacing:0.5px;">Deliver To</span>
+                            <span onclick="navigateToPage('${theme}','add-location')" style="margin-left:auto;font-size:9px;font-weight:800;color:${accentDark};cursor:pointer;padding:4px 8px;border:1.5px solid ${accentDark};box-shadow:1.5px 1.5px 0 ${accentDark};">CHANGE</span>
                         </div>
-                        <div style="display:flex;align-items:center;gap:8px;">
-                            <span onclick="event.stopPropagation();navigateToPage('${theme}','add-location')" style="font-size:10px;font-weight:700;color:${accent};cursor:pointer;">${iconFA('plus', 'font-size:9px;')} Add</span>
-                            <span style="color:rgba(255,255,255,0.3);">${iconFA('chevron-right', 'font-size:12px;')}</span>
+                        <div style="font-size:13px;font-weight:700;color:${textDark};">921 Church St</div>
+                        <div style="font-size:10px;color:${subDark};">San Francisco, CA 94114</div>
+                    </div>
+                    <div style="background:${sectionBg};border:${sectionBorder};border-radius:4px;padding:14px;margin-bottom:10px;box-shadow:${sectionShadow};">
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                            <div style="background:${accentDark};color:#fff;width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;">${iconFA('clock', 'font-size:12px;')}</div>
+                            <span style="font-size:12px;font-weight:800;color:${textDark};text-transform:uppercase;letter-spacing:0.5px;">When?</span>
+                        </div>
+                        <div style="display:flex;gap:6px;margin-bottom:8px;">
+                            <span style="padding:6px 14px;background:${accentDark};color:#fff;border:2px solid #3D3229;box-shadow:2px 2px 0 #3D3229;font-size:10px;font-weight:800;cursor:pointer;">TODAY</span>
+                            <span style="padding:6px 14px;background:#fff;color:#3D3229;border:2px solid #3D3229;font-size:10px;font-weight:700;cursor:pointer;">TOMORROW</span>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">${timeSlots.map(t => `<span style="padding:6px;text-align:center;background:#fff;border:1.5px solid #3D3229;font-size:9px;font-weight:700;color:#3D3229;cursor:pointer;">${t}</span>`).join('')}</div>
+                    </div>
+                    <div style="background:${sectionBg};border:${sectionBorder};border-radius:4px;padding:14px;margin-bottom:10px;box-shadow:${sectionShadow};">
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                            <div style="background:${accentDark};color:#fff;width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;">$$</div>
+                            <span style="font-size:12px;font-weight:800;color:${textDark};text-transform:uppercase;letter-spacing:0.5px;">Pay With</span>
+                        </div>
+                        <div style="display:flex;gap:6px;">
+                            <span style="flex:1;background:${accentDark};color:#fff;border:2px solid #3D3229;box-shadow:2px 2px 0 #3D3229;padding:10px;text-align:center;font-size:10px;font-weight:800;cursor:pointer;">CARD</span>
+                            <span style="flex:1;background:#fff;color:#3D3229;border:2px solid #3D3229;padding:10px;text-align:center;font-size:10px;font-weight:700;cursor:pointer;">CASH</span>
+                            <span style="flex:1;background:#fff;color:#3D3229;border:2px solid #3D3229;padding:10px;text-align:center;font-size:10px;font-weight:700;cursor:pointer;">PAYPAL</span>
                         </div>
                     </div>
-                    <div style="display:flex;align-items:center;justify-content:space-between;background:${cardBg};border-radius:14px;padding:14px;margin-bottom:20px;">
-                        <div style="display:flex;align-items:center;gap:10px;">
-                            <span style="font-size:16px;">${iconFA('zap', 'font-size:16px;color:#FFD54F;')}</span>
-                            <div><div style="font-size:12px;font-weight:700;color:#fff;">Express Delivery</div><div style="font-size:10px;color:${darkSub};">30 min or less</div></div>
+                    <div style="background:${sectionBg};border:${sectionBorder};border-radius:4px;padding:14px;box-shadow:${sectionShadow};">
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                            <div style="background:#3D3229;color:#fff;width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;">#</div>
+                            <span style="font-size:12px;font-weight:800;color:${textDark};text-transform:uppercase;letter-spacing:0.5px;">Summary</span>
                         </div>
-                        <span style="width:40px;height:22px;background:#4CAF50;border-radius:11px;display:flex;align-items:center;justify-content:flex-end;padding:2px;cursor:pointer;"><span style="width:18px;height:18px;border-radius:50%;background:#fff;"></span></span>
-                    </div>
-                    <div style="background:${cardBg};border-radius:14px;padding:14px;margin-bottom:20px;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                            <span style="font-size:11px;color:${darkSub};">Card ending in 4242</span>
-                            <span style="font-size:10px;color:${accent};">Change</span>
-                        </div>
-                        <div style="background:linear-gradient(135deg,#2a2a2a,#1a1a1a);border-radius:10px;padding:14px;border:1px solid rgba(255,255,255,0.1);">
-                            <div style="display:flex;justify-content:space-between;align-items:center;">
-                                <span style="font-size:14px;font-weight:800;color:#fff;">•••• 4242</span>
-                                <span style="font-size:10px;color:${darkSub};">VISA</span>
-                            </div>
-                            <div style="display:flex;justify-content:space-between;margin-top:8px;">
-                                <span style="font-size:9px;color:${darkSub};">EXP 12/28</span>
-                                <span style="font-size:9px;color:${darkSub};">CVV ***</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:12px;">
-                        <div style="display:flex;justify-content:space-between;font-size:11px;color:${darkSub};margin-bottom:4px;"><span>Subtotal</span><span style="color:#fff;">${formatPrice(subtotal)}</span></div>
-                        <div style="display:flex;justify-content:space-between;font-size:11px;color:${darkSub};margin-bottom:4px;"><span>Delivery</span><span style="color:#fff;">${formatPrice(delivery)}</span></div>
-                        <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:800;color:#fff;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);margin-top:6px;"><span>Total</span><span style="color:#4CAF50;">${formatPrice(total)}</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:11px;color:${subDark};margin-bottom:3px;"><span>Subtotal</span><span style="color:${textDark};font-weight:700;">${formatPrice(subtotal)}</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:11px;color:${subDark};margin-bottom:3px;"><span>Delivery</span><span style="color:${textDark};font-weight:700;">${formatPrice(delivery)}</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:900;color:${textDark};padding-top:8px;border-top:2px solid #3D3229;margin-top:6px;"><span>TOTAL</span><span style="color:${accentDark};font-size:16px;">${formatPrice(total)}</span></div>
                     </div>
                 </div>
-                <div style="padding:12px 16px 80px;border-top:1px solid rgba(255,255,255,0.08);background:${darkBg};">
-                    <div onclick="placeOrder('${theme}')" style="width:100%;padding:16px;background:#4CAF50;color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:800;cursor:pointer;">Order & Pay - ${formatPrice(total)}</div>
+                <div style="padding:10px 12px 80px;border-top:2px solid #3D3229;background:${bgDark};">
+                    <div onclick="placeOrder('${theme}')" style="width:100%;padding:16px;background:${orderBtnBg};color:${orderBtnText};text-align:center;border:${orderBtnBorder};border-radius:${orderBtnRadius};font-size:15px;font-weight:900;cursor:pointer;box-shadow:${orderBtnShadow};letter-spacing:1px;text-transform:uppercase;">ORDER & PAY - ${formatPrice(total)}</div>
                 </div>
             </div>`;
         }
