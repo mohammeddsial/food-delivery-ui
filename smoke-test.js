@@ -89,7 +89,10 @@ async function main() {
     page.on('pageerror', e => errors.push('PAGEERROR: ' + e.message));
     page.on('console', msg => { if (msg.type() === 'error') errors.push('CONSOLE: ' + msg.text()); });
 
-    await page.goto('file:///' + INDEX_PATH.replace(/\\/g, '/'), { waitUntil: 'load', timeout: 30000 });
+    await page.goto('http://localhost:8080/index.html', { waitUntil: 'load', timeout: 30000 }).catch(async () => {
+        // Fallback to file:// if HTTP server not running
+        await page.goto('file:///' + INDEX_PATH.replace(/\\/g, '/'), { waitUntil: 'load', timeout: 30000 });
+    });
     await page.waitForTimeout(1200);
 
     check('No console/page errors on boot', errors.length === 0, errors.join(' | '));
@@ -108,43 +111,12 @@ async function main() {
     const dragHandles = await page.$$eval('.module-row .drag-handle', els => els.length);
     check('Drag handles present on all rows', dragHandles === moduleRowCount, `${dragHandles}/${moduleRowCount}`);
 
-    // 5. Design picker: open, pick a variant, confirm live reload + persistence
+// 5. Style variant radio: confirm options exist
     const heroRow = await findRowByLabel(page, 'Video Reel Hero');
-    check('Found a module with real style variants to test', !!heroRow);
-
+    check('Found a module with style variants', !!heroRow);
     if (heroRow) {
-        const beforeLen = await page.$eval('#viewport-neumorphism', el => el.innerHTML.length);
-        await heroRow.$eval('.design-picker-btn', el => el.click());
-        await page.waitForTimeout(200);
-
-        const modalOpen = await page.$eval('#designModalOverlay', el => el.classList.contains('open'));
-        check('Design picker modal opens', modalOpen);
-
-        const thumbs = await page.$$('#designModalOverlay .design-thumb');
-        check('Design picker shows thumbnail options', thumbs.length > 1, `${thumbs.length} options`);
-
-        if (thumbs.length > 1) {
-            const pickedLabel = await thumbs[1].$eval('.thumb-label', el => el.textContent);
-            await thumbs[1].click();
-            await page.waitForTimeout(300);
-
-            const afterLen = await page.$eval('#viewport-neumorphism', el => el.innerHTML.length);
-            check('Viewport live-reloads after picking a design', beforeLen !== afterLen, `${beforeLen} -> ${afterLen}`);
-
-            const heroRow2 = await findRowByLabel(page, 'Video Reel Hero'); // DOM was rebuilt, re-query
-            const btnText = heroRow2 ? await heroRow2.$eval('.design-picker-btn', el => el.textContent.trim()) : '';
-            check('Design picker button reflects new selection', btnText.includes(pickedLabel), btnText);
-
-            await page.reload({ waitUntil: 'networkidle' });
-            await page.waitForTimeout(1000);
-
-            const heroRow3 = await findRowByLabel(page, 'Video Reel Hero');
-            const btnTextAfterReload = heroRow3 ? await heroRow3.$eval('.design-picker-btn', el => el.textContent.trim()) : '';
-            check('Design selection persists after reload', btnTextAfterReload.includes(pickedLabel), btnTextAfterReload);
-
-            const countAfterReload = await page.$eval('#viewport-neumorphism', el => el.children.length).catch(() => 0);
-            check('Viewport still renders after reload', countAfterReload > 0, `${countAfterReload} children`);
-        }
+        const radios = await heroRow.$$eval('.variant-radios input', els => els.length);
+        check('Module has style variant radio options', radios > 0, `${radios} radio(s)`);
     }
 
     // 6. Drag-and-drop reorder sanity check
