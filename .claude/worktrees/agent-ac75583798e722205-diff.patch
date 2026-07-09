@@ -1,0 +1,151 @@
+diff --git a/index.html b/index.html
+index c372d33..f23ce8f 100644
+--- a/index.html
++++ b/index.html
+@@ -107,6 +107,12 @@
+             --btn-radius: 9999px;
+             --card-radius: 20px;
+             --highlight: #A5AB8B;
++            /* Type scale */
++            --text-caption: 10px;
++            --text-body: 12px;
++            --text-subtitle: 14px;
++            --text-title: 18px;
++            --text-display: 24px;
+         }
+ 
+         .neu-flat {
+@@ -195,6 +201,12 @@
+             --pill-bg: rgba(255, 255, 255, 0.08);
+             --btn-radius: 9999px;
+             --highlight: #C8956C;
++            /* Type scale */
++            --text-caption: 10px;
++            --text-body: 12px;
++            --text-subtitle: 14px;
++            --text-title: 18px;
++            --text-display: 24px;
+         }
+ 
+         .theme-glassmorphism::before {
+@@ -268,6 +280,12 @@
+             --pill-bg: #F5EDE4;
+             --btn-radius: 12px;
+             --highlight: #FF6B35;
++            /* Type scale */
++            --text-caption: 10px;
++            --text-body: 12px;
++            --text-subtitle: 14px;
++            --text-title: 18px;
++            --text-display: 24px;
+         }
+ 
+         .brutal-card {
+@@ -1548,6 +1566,107 @@
+             opacity: 1;
+             transform: translateX(-50%) translateY(0);
+         }
++
++        /* ===== TYPOGRAPHY SYSTEM ===== */
++
++        /* Dark theme (Outfit) ΓÇö heading weight contrast */
++        .theme-glassmorphism h1,
++        .theme-glassmorphism h2,
++        .theme-glassmorphism h3,
++        .theme-glassmorphism [style*="font-weight:800"],
++        .theme-glassmorphism [style*="font-weight:700"] {
++            font-weight: 900 !important;
++        }
++        .theme-glassmorphism p,
++        .theme-glassmorphism span,
++        .theme-glassmorphism div {
++            font-weight: 300;
++        }
++        /* Preserve weight for badges, buttons, and bold-intent elements */
++        .theme-glassmorphism .glass-add-btn,
++        .theme-glassmorphism [class*="badge"],
++        .theme-glassmorphism [class*="btn"],
++        .theme-glassmorphism [class*="qty"],
++        .theme-glassmorphism [style*="font-weight:700"],
++        .theme-glassmorphism [style*="font-weight:800"],
++        .theme-glassmorphism [style*="font-weight:900"] {
++            font-weight: inherit;
++        }
++
++        /* Section header utility */
++        .section-header {
++            font-size: 10px;
++            text-transform: uppercase;
++            letter-spacing: 0.1em;
++            margin-bottom: 6px;
++            font-weight: 700;
++            opacity: 0.6;
++        }
++
++        /* ===== VISUAL HIERARCHY ===== */
++
++        /* Hero/featured card dominance */
++        .hero-card-dominant {
++            min-height: 220px;
++        }
++
++        /* Section spacing for scrollable content */
++        .phone-viewport .scrollable-content > div + div {
++            margin-top: 20px;
++        }
++        .phone-viewport .scrollable-content > div:first-child {
++            margin-top: 0;
++        }
++
++        /* ===== COLOR CONSISTENCY ===== */
++
++        /* Glassmorphism ΓÇö standardized glass opacity tiers */
++        /* Tier 1 (subtle):   rgba(255,255,255,0.05) */
++        /* Tier 2 (cards):    rgba(255,255,255,0.08) */
++        /* Tier 3 (elevated): rgba(255,255,255,0.12) */
++
++        .theme-glassmorphism .glass-panel {
++            background: rgba(255, 255, 255, 0.08);
++            border: 1px solid rgba(255, 255, 255, 0.08);
++        }
++
++        .theme-glassmorphism .glass-pill {
++            background: rgba(255, 255, 255, 0.08);
++            border: 1px solid rgba(255, 255, 255, 0.12);
++        }
++
++        .theme-glassmorphism .glass-card-dark {
++            background: rgba(30, 30, 30, 0.9);
++            border: 1px solid rgba(255, 255, 255, 0.05);
++        }
++
++        .theme-glassmorphism .drawer {
++            background: rgba(20, 20, 20, 0.98);
++        }
++
++        .theme-glassmorphism .drawer .drawer-header {
++            border-bottom-color: rgba(255, 255, 255, 0.08);
++        }
++
++        .theme-glassmorphism .drawer .drawer-header .close-btn {
++            background: rgba(255, 255, 255, 0.08);
++        }
++
++        .theme-glassmorphism .drawer .drawer-nav a {
++            color: rgba(255, 255, 255, 0.7);
++        }
++
++        .theme-glassmorphism .drawer .drawer-nav a:hover {
++            background: rgba(255, 255, 255, 0.05);
++        }
++
++        /* Neubrutalism ΓÇö unified accent palette (primary: #00615F, complement: #FF6B35) */
++        .theme-neubrutalism .brutal-accent-yellow {
++            background-color: #FF6B35;
++        }
++        .theme-neubrutalism .brutal-accent-pink {
++            background-color: #00615F;
++        }
+     </style>
+ </head>
+ 

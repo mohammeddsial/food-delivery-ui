@@ -3250,7 +3250,20 @@
 
         function selectPageView(pageId) {
             if (viewAllMode) {
-                VIEW_THEMES.forEach(t => navigateToPage(t, pageId));
+                // Batch: update state for all themes first, then render ONCE.
+                // Calling navigateToPage per theme triggers 3 full renderAllViewports()
+                // passes back-to-back, which freezes the main thread.
+                VIEW_THEMES.forEach(t => {
+                    if (currentPageByTheme[t] !== pageId) {
+                        pageHistoryByTheme[t].push(currentPageByTheme[t]);
+                    }
+                    currentPageByTheme[t] = pageId;
+                    window.selectedCatByTheme = window.selectedCatByTheme || {};
+                    window.selectedCatByTheme[t] = null;
+                    window.selectedItemByTheme = window.selectedItemByTheme || {};
+                    window.selectedItemByTheme[t] = null;
+                });
+                renderAllViewports();
             } else {
                 navigateToPage(activeViewTheme, pageId);
             }
