@@ -4,5 +4,7 @@ Thumbs.db
 *.log
 .vscode/
 .idea/
-
+.opencode/
+.clude/
 .vercel
+
