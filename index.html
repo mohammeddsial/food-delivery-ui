@@ -4598,6 +4598,107 @@
             }
         }
 
+        function openPaymentSheet(theme, type) {
+            const container = document.getElementById('viewport-' + theme);
+            if (!container) return;
+            const existing = container.querySelector('.payment-sheet-overlay');
+            if (existing) existing.remove();
+            const isGlass = theme === 'glassmorphism';
+            const isBrut = theme === 'neubrutalism';
+            const sheetBg = isGlass ? 'rgba(28,28,32,0.98)' : (isBrut ? '#FFFBF0' : 'var(--card-bg)');
+            const textColor = isGlass ? '#fff' : 'var(--text-primary)';
+            const subColor = isGlass ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
+            const accent = isBrut ? '#FF6B35' : (isGlass ? '#4CAF50' : 'var(--accent)');
+            const cardRadius = isBrut ? '4px' : (isGlass ? '12px' : '14px');
+            const borderColor = isGlass ? 'rgba(255,255,255,0.08)' : 'var(--border-color)';
+            const inputBg = isGlass ? 'rgba(255,255,255,0.04)' : 'var(--pill-bg)';
+
+            let items = '';
+            if (type === 'card') {
+                items = `
+                    <div style="font-size:10px;font-weight:700;color:${subColor};text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Saved Cards</div>
+                    <div onclick="closePaymentSheet('${theme}')" style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--accent-light);border:1.5px solid ${accent};border-radius:${cardRadius};margin-bottom:8px;cursor:pointer;">
+                        <span style="font-size:22px;">💳</span>
+                        <div style="flex:1;">
+                            <div style="font-size:13px;font-weight:700;color:${textColor};">•••• 4242</div>
+                            <div style="font-size:10px;color:${subColor};margin-top:1px;">Visa · Exp 12/27</div>
+                        </div>
+                        <div style="width:20px;height:20px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;">
+                            <span style="font-size:10px;color:#fff;">✓</span>
+                        </div>
+                    </div>
+                    <div onclick="closePaymentSheet('${theme}')" style="display:flex;align-items:center;gap:12px;padding:14px;background:${inputBg};border:1px solid ${borderColor};border-radius:${cardRadius};margin-bottom:12px;cursor:pointer;">
+                        <span style="font-size:22px;">💳</span>
+                        <div style="flex:1;">
+                            <div style="font-size:13px;font-weight:700;color:${textColor};">•••• 8910</div>
+                            <div style="font-size:10px;color:${subColor};margin-top:1px;">Mastercard · Exp 03/26</div>
+                        </div>
+                        <div style="width:20px;height:20px;border-radius:50%;border:2px solid ${borderColor};"></div>
+                    </div>
+                    <div onclick="closePaymentSheet('${theme}')" style="display:flex;align-items:center;gap:12px;padding:14px;border:1.5px dashed ${borderColor};border-radius:${cardRadius};cursor:pointer;">
+                        <span style="font-size:16px;color:${accent};">+</span>
+                        <div style="font-size:13px;font-weight:600;color:${accent};">Add New Card</div>
+                    </div>`;
+            } else {
+                items = `
+                    <div style="font-size:10px;font-weight:700;color:${subColor};text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Saved Wallets</div>
+                    <div onclick="closePaymentSheet('${theme}')" style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--accent-light);border:1.5px solid ${accent};border-radius:${cardRadius};margin-bottom:8px;cursor:pointer;">
+                        <span style="font-size:22px;">📱</span>
+                        <div style="flex:1;">
+                            <div style="font-size:13px;font-weight:700;color:${textColor};">Google Pay</div>
+                            <div style="font-size:10px;color:${subColor};margin-top:1px;">john@gmail.com</div>
+                        </div>
+                        <div style="width:20px;height:20px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;">
+                            <span style="font-size:10px;color:#fff;">✓</span>
+                        </div>
+                    </div>
+                    <div onclick="closePaymentSheet('${theme}')" style="display:flex;align-items:center;gap:12px;padding:14px;background:${inputBg};border:1px solid ${borderColor};border-radius:${cardRadius};margin-bottom:12px;cursor:pointer;">
+                        <span style="font-size:22px;">🍎</span>
+                        <div style="flex:1;">
+                            <div style="font-size:13px;font-weight:700;color:${textColor};">Apple Pay</div>
+                            <div style="font-size:10px;color:${subColor};margin-top:1px;">john@icloud.com</div>
+                        </div>
+                        <div style="width:20px;height:20px;border-radius:50%;border:2px solid ${borderColor};"></div>
+                    </div>
+                    <div onclick="closePaymentSheet('${theme}')" style="display:flex;align-items:center;gap:12px;padding:14px;border:1.5px dashed ${borderColor};border-radius:${cardRadius};cursor:pointer;">
+                        <span style="font-size:16px;color:${accent};">+</span>
+                        <div style="font-size:13px;font-weight:600;color:${accent};">Add New Wallet</div>
+                    </div>`;
+            }
+
+            const title = type === 'card' ? 'Payment Cards' : 'Digital Wallets';
+            const overlay = document.createElement('div');
+            overlay.className = 'payment-sheet-overlay';
+            overlay.style.cssText = 'position:absolute;inset:0;z-index:100;display:flex;flex-direction:column;justify-content:flex-end;';
+            overlay.innerHTML = `
+                <div onclick="closePaymentSheet('${theme}')" style="flex:1;background:rgba(0,0,0,0.5);"></div>
+                <div class="payment-sheet-panel" style="background:${sheetBg};border-radius:18px 18px 0 0;padding:20px 16px 30px;max-height:70%;overflow-y:auto;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);">
+                    <div style="width:36px;height:4px;border-radius:2px;background:${isGlass ? 'rgba(255,255,255,0.15)' : '#ccc'};margin:0 auto 16px;"></div>
+                    <div style="font-size:16px;font-weight:800;color:${textColor};margin-bottom:16px;">${title}</div>
+                    ${items}
+                </div>`;
+            container.style.position = 'relative';
+            container.appendChild(overlay);
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    overlay.querySelector('.payment-sheet-panel').style.transform = 'translateY(0)';
+                });
+            });
+        }
+
+        function closePaymentSheet(theme) {
+            const container = document.getElementById('viewport-' + theme);
+            if (!container) return;
+            const panel = container.querySelector('.payment-sheet-panel');
+            if (panel) {
+                panel.style.transform = 'translateY(100%)';
+                setTimeout(() => {
+                    const overlay = container.querySelector('.payment-sheet-overlay');
+                    if (overlay) overlay.remove();
+                }, 350);
+            }
+        }
+
         // ═══════════════════════════════════════════════════
         // RENDER ENGINE — Renders all 3 viewports
         // ═══════════════════════════════════════════════════
@@ -8122,27 +8223,15 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                     </div>
                     <div style="background:${cardBg};border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow};border:${cardBorder};${glassBlur}">
                         <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:10px;">${iconFA('wallet', 'font-size:12px;margin-right:6px;')}Payment</div>
-                        <div id="pay-with-points-${theme}" style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:${accent}10;border:1.5px solid var(--border-color);border-radius:12px;margin-bottom:8px;cursor:pointer;" onclick="var chk=document.getElementById('points-chk-${theme}');var toggled=chk.dataset.on!=='1';chk.dataset.on=toggled?'1':'0';chk.style.background=toggled?'${accent}':'transparent';chk.style.borderColor=toggled?'${accent}':'var(--border-color)';chk.querySelector('span').style.display=toggled?'block':'none';var tot=document.getElementById('cta-total-${theme}');var pts=document.getElementById('pts-remain-${theme}');pts.textContent=toggled?'$${formatPrice(defaultTotal-8.20)}':'$${formatPrice(defaultTotal)}';tot.textContent=toggled?'${(defaultTotal-8.20).toFixed(2)}':'${defaultTotal.toFixed(2)}'">
+                        <div id="pay-with-points-${theme}" style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:${accent}10;border:1.5px solid var(--border-color);border-radius:12px;margin-bottom:8px;cursor:pointer;" onclick="var chk=document.getElementById('points-chk-${theme}');var toggled=chk.dataset.on!=='1';chk.dataset.on=toggled?'1':'0';chk.style.background=toggled?'${accent}':'transparent';chk.style.borderColor=toggled?'${accent}':'var(--border-color)';chk.querySelector('span').style.display=toggled?'block':'none';var tot=document.getElementById('cta-total-${theme}');var pts=document.getElementById('pts-remain-${theme}');pts.textContent=toggled?'$${formatPrice(defaultTotal-8.20)}':'$${formatPrice(defaultTotal)}';tot.textContent=toggled?'${(defaultTotal-8.20).toFixed(2)}':'${defaultTotal.toFixed(2)}';var pl=document.getElementById('points-line-${theme}');if(pl)pl.style.display=toggled?'flex':'none';var tl=document.getElementById('summary-total-${theme}');if(tl)tl.textContent='${formatPrice(defaultTotal)}';if(tl&&toggled)tl.textContent='${formatPrice(defaultTotal-8.20)}'">
                             <span style="font-size:18px;">⭐</span>
                             <div style="flex:1;"><div style="font-size:12px;font-weight:700;color:${textColor};">Pay with Points</div><div style="font-size:10px;color:${subColor};">820 pts = $8.20 available</div></div>
                             <div id="pts-remain-${theme}" style="font-size:11px;font-weight:700;color:${subColor};">Save $8.20</div>
                             <div id="points-chk-${theme}" data-on="0" style="width:20px;height:20px;border-radius:50%;border:2px solid var(--border-color);transition:all 0.15s;display:flex;align-items:center;justify-content:center;"><span style="display:none;font-size:11px;color:#fff;">✓</span></div>
                         </div>
                         <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                            <div id="pay-pill-card-${theme}" onclick="var p=document.getElementById('payment-detail-${theme}');p.style.display=p.style.display==='none'?'block':'none';var pills=document.querySelectorAll('[id^=pay-pill-${theme}]');pills.forEach(function(el){el.style.border='1px solid var(--border-color)';el.style.background='${chipInactiveBg}'});this.style.border='2px solid ${accent}';this.style.background='${accent}15'" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:${accent}15;border:2px solid ${accent};border-radius:999px;font-size:11px;font-weight:700;color:${textColor};cursor:pointer;"><span>💳</span>Card</div>
-                            <div id="pay-pill-wallet-${theme}" onclick="var p=document.getElementById('payment-detail-${theme}');p.style.display=p.style.display==='none'?'block':'none';var pills=document.querySelectorAll('[id^=pay-pill-${theme}]');pills.forEach(function(el){el.style.border='1px solid var(--border-color)';el.style.background='${chipInactiveBg}'});this.style.border='2px solid ${accent}';this.style.background='${accent}15'" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:${chipInactiveBg};border:1px solid var(--border-color);border-radius:999px;font-size:11px;font-weight:600;color:${textColor};cursor:pointer;"><span>📱</span>Wallet</div>
-                            <div id="pay-pill-cash-${theme}" onclick="var p=document.getElementById('payment-detail-${theme}');p.style.display=p.style.display==='none'?'block':'none';var pills=document.querySelectorAll('[id^=pay-pill-${theme}]');pills.forEach(function(el){el.style.border='1px solid var(--border-color)';el.style.background='${chipInactiveBg}'});this.style.border='2px solid ${accent}';this.style.background='${accent}15'" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:${chipInactiveBg};border:1px solid var(--border-color);border-radius:999px;font-size:11px;font-weight:600;color:${textColor};cursor:pointer;"><span>💵</span>Cash</div>
-                        </div>
-                        <div id="payment-detail-${theme}" style="display:none;margin-top:10px;padding:12px;background:${chipInactiveBg};border:${chipInactiveBorder};border-radius:12px;">
-                            <div style="display:flex;align-items:center;gap:10px;padding:10px;border:2px solid ${accent};border-radius:10px;margin-bottom:6px;background:${accent}08;">
-                                <span style="font-size:18px;">💳</span>
-                                <div style="flex:1;"><div style="font-size:11px;font-weight:700;color:${textColor};">•••• 4242</div><div style="font-size:9px;color:${subColor};">Visa · Exp 12/27</div></div>
-                                <span style="width:18px;height:18px;border-radius:50%;background:${accent};display:inline-flex;align-items:center;justify-content:center;font-size:10px;color:#fff;">✓</span>
-                            </div>
-                            <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1.5px dashed var(--border-color);border-radius:10px;cursor:pointer;font-size:10px;font-weight:600;color:${accent};margin-bottom:4px;">+ Add Card</div>
-                            <div style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--border-color);border-radius:10px;background:${chipInactiveBg};">
-                                <span style="font-size:16px;">📱</span><div style="font-size:11px;font-weight:600;color:${textColor};">Google Pay</div>
-                            </div>
+                            <div onclick="openPaymentSheet('${theme}','card')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:${accent}15;border:2px solid ${accent};border-radius:999px;font-size:11px;font-weight:700;color:${textColor};cursor:pointer;"><span>💳</span>Card</div>
+                            <div onclick="openPaymentSheet('${theme}','wallet')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:${chipInactiveBg};border:1px solid var(--border-color);border-radius:999px;font-size:11px;font-weight:600;color:${textColor};cursor:pointer;"><span>📱</span>Wallet</div>
                         </div>
                     </div>
                     <div style="background:${cardBg};border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow};border:${cardBorder};${glassBlur}">
@@ -8152,8 +8241,9 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                         <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>Tax</span><span style="color:${textColor};">${formatPrice(tax)}</span></div>
                         <div id="tip-line-${theme}" style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>Tip (${defaultPct}%)</span><span style="color:${textColor};">${formatPrice(defaultAmt)}</span></div>
                         <div style="display:flex;justify-content:space-between;font-size:11px;color:${isGlass ? '#4CAF50' : '#2e7d32'};margin-bottom:3px;"><span>Promo applied (SAVE3)</span><span>-${formatPrice(Math.abs(promo))}</span></div>
+                        <div id="points-line-${theme}" style="display:none;justify-content:space-between;font-size:11px;color:${isGlass ? '#4CAF50' : '#2e7d32'};margin-bottom:3px;"><span>⭐ Points (820 pts)</span><span>-$8.20</span></div>
                         <div style="border-top:1px solid ${isGlass ? 'rgba(255,255,255,0.08)' : 'var(--border-color)'};margin-top:4px;padding-top:8px;"></div>
-                        <div id="total-line-${theme}" style="display:flex;justify-content:space-between;font-size:15px;font-weight:800;color:${textColor};"><span>Total</span><span style="color:${accent};">${formatPrice(defaultTotal)}</span></div>
+                        <div id="total-line-${theme}" style="display:flex;justify-content:space-between;font-size:15px;font-weight:800;color:${textColor};"><span>Total</span><span id="summary-total-${theme}" style="color:${accent};">${formatPrice(defaultTotal)}</span></div>
                     </div>
                 </div>
                 <div style="padding:10px 12px 80px;border-top:${headerBorder};background:${pageBg};">
@@ -8197,14 +8287,14 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                 </div>`;
 
             const paymentContent = `
-                <div onclick="var chk=document.getElementById('pts-ac-${theme}');var t=chk.dataset.on!=='1';chk.dataset.on=t?'1':'0';chk.style.background=t?'${kv.accent}':'transparent';chk.style.borderColor=t?'${kv.accent}':'var(--border-color)';chk.querySelector('span').style.display=t?'block':'none';var rem=document.getElementById('pts-rem-ac-${theme}');rem.textContent=t?'Save $8.20 (820 pts)':'820 pts = $8.20 available'" style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:${kv.accent}08;border-radius:8px;margin-bottom:8px;cursor:pointer;">
+                <div onclick="var chk=document.getElementById('pts-ac-${theme}');var t=chk.dataset.on!=='1';chk.dataset.on=t?'1':'0';chk.style.background=t?'${kv.accent}':'transparent';chk.style.borderColor=t?'${kv.accent}':'var(--border-color)';chk.querySelector('span').style.display=t?'block':'none';var rem=document.getElementById('pts-rem-ac-${theme}');rem.textContent=t?'Save $8.20 (820 pts)':'820 pts = $8.20 available';var pl=document.getElementById('points-line-ac-${theme}');if(pl)pl.style.display=t?'flex':'none';var tl=document.getElementById('summary-total-ac-${theme}');if(tl)tl.textContent=t?'${formatPrice(total-8.20)}':'${formatPrice(total)}'" style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:${kv.accent}08;border-radius:8px;margin-bottom:8px;cursor:pointer;">
                     <span style="font-size:14px;">⭐</span>
                     <span style="flex:1;font-size:10px;font-weight:600;color:${kv.textColor};" id="pts-rem-ac-${theme}">820 pts = $8.20 available</span>
                     <div id="pts-ac-${theme}" data-on="0" style="width:16px;height:16px;border-radius:50%;border:2px solid var(--border-color);transition:all 0.15s;display:flex;align-items:center;justify-content:center;"><span style="display:none;font-size:9px;color:#fff;">✓</span></div>
                 </div>
                 <div style="display:flex;gap:5px;margin-bottom:6px;">
-                    <span style="padding:5px 10px;background:${kv.accent}15;border:1.5px solid ${kv.accent};border-radius:999px;font-size:9px;font-weight:700;color:${kv.textColor};cursor:pointer;">💳 Card</span>
-                    <span style="padding:5px 10px;background:${kv.chipInactiveBg};border:1px solid var(--border-color);border-radius:999px;font-size:9px;font-weight:600;color:${kv.textColor};cursor:pointer;">📱 Wallet</span>
+                    <span onclick="openPaymentSheet('${theme}','card')" style="padding:5px 10px;background:${kv.accent}15;border:1.5px solid ${kv.accent};border-radius:999px;font-size:9px;font-weight:700;color:${kv.textColor};cursor:pointer;">💳 Card</span>
+                    <span onclick="openPaymentSheet('${theme}','wallet')" style="padding:5px 10px;background:${kv.chipInactiveBg};border:1px solid var(--border-color);border-radius:999px;font-size:9px;font-weight:600;color:${kv.textColor};cursor:pointer;">📱 Wallet</span>
                 </div>
                 <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:${kv.isGlass?'rgba(76,175,80,0.1)':'var(--accent-light)'};border:1px solid ${kv.accent}40;border-radius:8px;">
                     <span style="font-size:14px;">💳</span>
@@ -8227,7 +8317,8 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                         <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.subColor};margin-bottom:3px;"><span>${isPickup ? 'Service Fee' : 'Delivery'}</span><span style="color:${kv.textColor};">${formatPrice(delivery)}</span></div>
                         <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.subColor};margin-bottom:3px;"><span>Tax</span><span style="color:${kv.textColor};">${formatPrice(tax)}</span></div>
                         <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.isGlass?'#4CAF50':'#2e7d32'};margin-bottom:3px;"><span>Promo (SAVE3)</span><span>-${formatPrice(Math.abs(promo))}</span></div>
-                        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:800;color:${kv.accent};padding-top:6px;border-top:1px solid var(--border-color);margin-top:4px;"><span>Total</span><span>${formatPrice(total)}</span></div>
+                        <div id="points-line-ac-${theme}" style="display:none;justify-content:space-between;font-size:10px;color:${kv.isGlass?'#4CAF50':'#2e7d32'};margin-bottom:3px;"><span>⭐ Points (820 pts)</span><span>-$8.20</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:800;color:${kv.accent};padding-top:6px;border-top:1px solid var(--border-color);margin-top:4px;"><span>Total</span><span id="summary-total-ac-${theme}">${formatPrice(total)}</span></div>
                     </div>
                 </div>
                 <div style="padding:8px 12px 80px;border-top:${kv.headerBorder};background:${kv.pageBg};">
@@ -8276,15 +8367,14 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                 </div>`;
 
             const paymentContent = `
-                <div onclick="var chk=document.getElementById('pts-tl-${theme}');var t=chk.dataset.on!=='1';chk.dataset.on=t?'1':'0';chk.style.background=t?'${kv.accent}':'transparent';chk.style.borderColor=t?'${kv.accent}':'var(--border-color)';chk.querySelector('span').style.display=t?'block':'none'" style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:${kv.accent}08;border-radius:8px;margin-bottom:8px;cursor:pointer;">
+                <div onclick="var chk=document.getElementById('pts-tl-${theme}');var t=chk.dataset.on!=='1';chk.dataset.on=t?'1':'0';chk.style.background=t?'${kv.accent}':'transparent';chk.style.borderColor=t?'${kv.accent}':'var(--border-color)';chk.querySelector('span').style.display=t?'block':'none';var pl=document.getElementById('points-line-tl-${theme}');if(pl)pl.style.display=t?'flex':'none';var tl=document.getElementById('summary-total-tl-${theme}');if(tl)tl.textContent=t?'${formatPrice(total-8.20)}':'${formatPrice(total)}'" style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:${kv.accent}08;border-radius:8px;margin-bottom:8px;cursor:pointer;">
                     <span style="font-size:14px;">⭐</span>
                     <span style="flex:1;font-size:10px;font-weight:600;color:${kv.textColor};">Pay with Points · 820 pts ($8.20)</span>
                     <div id="pts-tl-${theme}" data-on="0" style="width:16px;height:16px;border-radius:50%;border:2px solid var(--border-color);transition:all 0.15s;display:flex;align-items:center;justify-content:center;"><span style="display:none;font-size:9px;color:#fff;">✓</span></div>
                 </div>
                 <div style="display:flex;gap:5px;margin-bottom:8px;">
-                    <span style="padding:5px 10px;background:${kv.accent}15;border:1.5px solid ${kv.accent};border-radius:999px;font-size:9px;font-weight:700;color:${kv.textColor};cursor:pointer;">💳 Card</span>
-                    <span style="padding:5px 10px;background:${kv.chipInactiveBg};border:1px solid var(--border-color);border-radius:999px;font-size:9px;font-weight:600;color:${kv.textColor};cursor:pointer;">📱 Wallet</span>
-                    <span style="padding:5px 10px;background:${kv.chipInactiveBg};border:1px solid var(--border-color);border-radius:999px;font-size:9px;font-weight:600;color:${kv.textColor};cursor:pointer;">💵 Cash</span>
+                    <span onclick="openPaymentSheet('${theme}','card')" style="padding:5px 10px;background:${kv.accent}15;border:1.5px solid ${kv.accent};border-radius:999px;font-size:9px;font-weight:700;color:${kv.textColor};cursor:pointer;">💳 Card</span>
+                    <span onclick="openPaymentSheet('${theme}','wallet')" style="padding:5px 10px;background:${kv.chipInactiveBg};border:1px solid var(--border-color);border-radius:999px;font-size:9px;font-weight:600;color:${kv.textColor};cursor:pointer;">📱 Wallet</span>
                 </div>
                 <div style="display:flex;align-items:center;gap:8px;">
                     <span style="font-size:20px;">💳</span>
@@ -8311,7 +8401,8 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                         <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.subColor};margin-bottom:3px;"><span>${isPickup ? 'Service Fee' : 'Delivery'}</span><span style="color:${kv.textColor};">${formatPrice(delivery)}</span></div>
                         <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.subColor};margin-bottom:3px;"><span>Tax</span><span style="color:${kv.textColor};">${formatPrice(tax)}</span></div>
                         <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.isGlass?'#4CAF50':'#2e7d32'};margin-bottom:3px;"><span>Promo SAVE3</span><span>-${formatPrice(Math.abs(promo))}</span></div>
-                        <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:900;color:${kv.accent};padding-top:6px;border-top:1px solid var(--border-color);margin-top:4px;"><span>Total</span><span>${formatPrice(total)}</span></div>
+                        <div id="points-line-tl-${theme}" style="display:none;justify-content:space-between;font-size:10px;color:${kv.isGlass?'#4CAF50':'#2e7d32'};margin-bottom:3px;"><span>⭐ Points (820 pts)</span><span>-$8.20</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:900;color:${kv.accent};padding-top:6px;border-top:1px solid var(--border-color);margin-top:4px;"><span>Total</span><span id="summary-total-tl-${theme}">${formatPrice(total)}</span></div>
                     </div>
                 </div>
                 <div style="padding:10px 16px 80px;border-top:${kv.headerBorder};background:${kv.pageBg};">
