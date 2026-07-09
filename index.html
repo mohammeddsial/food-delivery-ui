@@ -7383,19 +7383,19 @@ ${bOtherCats}
         function drawPDPOffersBanner(theme, kit) {
             const themedOffers = {
                 neumorphism: [
-                    { title: '50% OFF', sub: '', desc: 'Your first order over $20', bg: 'linear-gradient(135deg,var(--accent),#F09080)' },
-                    { title: 'Buy 1 Get 1', sub: 'FREE', desc: 'On all pizzas today', bg: 'linear-gradient(135deg,var(--accent-light),var(--accent))' },
-                    { title: 'Free Delivery', sub: '', desc: 'Orders over $25', bg: 'linear-gradient(135deg,var(--highlight),var(--accent))' }
+                    { text: '50% OFF Your first order over $20', bg: 'linear-gradient(135deg,var(--accent),#F09080)' },
+                    { text: 'Buy 1 Get 1 FREE On all pizzas today', bg: 'linear-gradient(135deg,var(--accent-light),var(--accent))' },
+                    { text: 'Free Delivery Orders over $25', bg: 'linear-gradient(135deg,var(--highlight),var(--accent))' }
                 ],
                 glassmorphism: [
-                    { title: '$5 OFF', sub: 'SAVE5', desc: 'Orders $20+', bg: 'linear-gradient(135deg,rgba(212,165,116,0.6),rgba(200,150,100,0.4))' },
-                    { title: 'Flash Sale', sub: '30%', desc: 'Ends in 2 hours', bg: 'linear-gradient(135deg,rgba(255,107,157,0.5),rgba(255,80,140,0.3))' },
-                    { title: 'Combo Deal', sub: '$12.99', desc: 'Burger+Fries+Drink', bg: 'linear-gradient(135deg,rgba(76,175,80,0.5),rgba(60,140,60,0.3))' }
+                    { text: '$5 OFF SAVE5 · Orders $20+', bg: 'linear-gradient(135deg,rgba(212,165,116,0.6),rgba(200,150,100,0.4))' },
+                    { text: 'Flash Sale 30% · Ends in 2 hours', bg: 'linear-gradient(135deg,rgba(255,107,157,0.5),rgba(255,80,140,0.3))' },
+                    { text: 'Combo Deal $12.99 · Burger+Fries+Drink', bg: 'linear-gradient(135deg,rgba(76,175,80,0.5),rgba(60,140,60,0.3))' }
                 ],
                 neubrutalism: [
-                    { title: '2X Points', sub: '', desc: 'Earn double rewards this week', bg: '#F0F7F6' },
-                    { title: 'Free Dessert', sub: '', desc: 'With every order $15+', bg: '#FFF3E0' },
-                    { title: 'Happy Hour', sub: '30% OFF', desc: 'Daily 2-5PM', bg: '#F0F7F6' }
+                    { text: '2X Points · Earn double rewards this week', bg: '#F0F7F6' },
+                    { text: 'Free Dessert · With every order $15+', bg: '#FFF3E0' },
+                    { text: 'Happy Hour 30% OFF · Daily 2-5PM', bg: '#F0F7F6' }
                 ]
             };
             const banners = themedOffers[theme] || themedOffers.neumorphism;
@@ -7408,12 +7408,9 @@ ${bOtherCats}
             const cardRadius = isBrut ? '12px' : '14px';
             const cardBorder = isBrut ? 'border:2px solid var(--border-color);box-shadow:3px 3px 0 var(--border-color);' : 'box-shadow:0 4px 16px rgba(0,0,0,0.15);';
             const bannerSlides = banners.map(b => `
-                <div style="flex:0 0 100%;scroll-snap-align:start;display:flex;align-items:center;gap:12px;padding:14px 16px;background:${b.bg};border-radius:${cardRadius};color:${textColor};${cardBorder}">
-                    <div style="flex:1;">
-                        <div style="font-size:15px;font-weight:900;letter-spacing:-0.3px;">${b.title} ${b.sub}</div>
-                        <div style="font-size:10px;opacity:0.85;margin-top:2px;color:${subColor};">${b.desc}</div>
-                    </div>
-                    <div style="background:${pillBg};border-radius:9999px;padding:6px 14px;font-size:10px;font-weight:700;white-space:nowrap;color:${pillColor};">Claim</div>
+                <div style="flex:0 0 100%;scroll-snap-align:start;display:flex;align-items:center;gap:10px;padding:10px 14px;background:${b.bg};border-radius:${cardRadius};color:${textColor};${cardBorder}">
+                    <span style="flex:1;font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${b.text}</span>
+                    <span style="background:${pillBg};border-radius:9999px;padding:4px 12px;font-size:10px;font-weight:700;white-space:nowrap;color:${pillColor};flex-shrink:0;">Claim</span>
                 </div>`).join('');
             const dots = banners.map((_, i) => `<span class="pdp-offer-dot-${theme}" style="width:${i === 0 ? '14px' : '6px'};height:6px;border-radius:3px;background:${i === 0 ? kit.accent : 'rgba(255,255,255,0.3)'};transition:all 0.3s;display:inline-block;"></span>`).join('');
             const timerId = `pdpOfferTimer_${theme}`;
