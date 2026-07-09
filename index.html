@@ -7081,8 +7081,8 @@ ${bOtherCats}
             const offersBanner = drawPDPOffersBanner(theme, kit);
 
             return `<div style="position:absolute;inset:0;background:${kit.pageBg};z-index:5;display:flex;flex-direction:column;">
-                <div style="flex:1;overflow-y:auto;padding:0 0 100px;-webkit-overflow-scrolling:touch;">
-                    <div style="position:relative;height:280px;overflow:hidden;">
+                <div style="flex:1;overflow-y:auto;padding:0 0 100px;-webkit-overflow-scrolling:touch;" onscroll="var h=document.getElementById('pdp-hero-${theme}');if(h)h.style.transform='translateY('+(this.scrollTop*0.4)+'px)'">
+                    <div id="pdp-hero-${theme}" style="position:relative;height:280px;overflow:hidden;">
                         ${_pdpHeroCarousel(theme, item, kit.heroFilter, kit.dotOn, kit.dotOff)}
                         <div style="position:absolute;inset:0;background:${kit.heroGrad};pointer-events:none;"></div>
                         ${backBtn}${heartBtn}
@@ -7212,8 +7212,8 @@ ${bOtherCats}
             const glassCardStyle = 'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:18px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:16px;';
 
             return `<div style="position:absolute;inset:0;background:${kit.pageBg};z-index:5;display:flex;flex-direction:column;">
-                <div style="flex:1;overflow-y:auto;padding:0 0 100px;-webkit-overflow-scrolling:touch;">
-                    <div style="position:relative;height:280px;overflow:hidden;border-radius:0 0 28px 28px;">
+                <div style="flex:1;overflow-y:auto;padding:0 0 100px;-webkit-overflow-scrolling:touch;" onscroll="var h=document.getElementById('pdp-hero-${theme}');if(h)h.style.transform='translateY('+(this.scrollTop*0.4)+'px)'">
+                    <div id="pdp-hero-${theme}" style="position:relative;height:280px;overflow:hidden;border-radius:0 0 28px 28px;">
                         ${_pdpHeroCarousel(theme, item, '', '#fff', 'rgba(255,255,255,0.4)')}
                         <div style="position:absolute;inset:0;background:${kit.heroGrad};pointer-events:none;"></div>
                         ${backBtn}${heartBtn}
@@ -7246,7 +7246,7 @@ ${bOtherCats}
                         </div>
                         <div style="${glassCardStyle}margin-top:-8px;">
                             ${sectionHeading('Choose Variant', 'Required', 'pdp-var-err-' + theme)}
-                            <div style="display:flex;gap:8px;flex-wrap:wrap;">${variantPills}</div>
+                            <div style="display:flex;gap:8px;flex-wrap:wrap;flex-direction:column;">${variantPills}</div>
                         </div>
                         <div style="${glassCardStyle}margin-top:-8px;">
                             ${sectionHeading('Add Sides', 'Select up to 5')}
@@ -7327,8 +7327,8 @@ ${bOtherCats}
             const offersBanner = drawPDPOffersBanner(theme, kit);
 
             return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:5;display:flex;flex-direction:column;">
-                <div style="flex:1;overflow-y:auto;padding:0 0 100px;-webkit-overflow-scrolling:touch;">
-                    <div style="position:relative;height:270px;overflow:hidden;border-bottom:4px solid ${accent};">
+                <div style="flex:1;overflow-y:auto;padding:0 0 100px;-webkit-overflow-scrolling:touch;" onscroll="var h=document.getElementById('pdp-hero-${theme}');if(h)h.style.transform='translateY('+(this.scrollTop*0.4)+'px)'">
+                    <div id="pdp-hero-${theme}" style="position:relative;height:270px;overflow:hidden;border-bottom:4px solid ${accent};">
                         ${_pdpHeroCarousel(theme, item, 'brightness(0.85)', '#fff', 'rgba(255,255,255,0.55)')}
                         <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.2) 0%,transparent 30%,transparent 50%,rgba(0,0,0,0.75) 100%);pointer-events:none;"></div>
                         ${backBtn}${heartBtn}
