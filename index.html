@@ -4688,23 +4688,18 @@
 
                 const cartCount = getCartCount(theme);
                 // Left FAB – Cart
-                const fabLabelColor = isGlass ? 'rgba(255,255,255,0.5)' : (isBrut ? 'var(--text-secondary)' : '#999');
                 container.innerHTML += `
-                    <div style="position:absolute;bottom:${fabBottom};left:16px;display:flex;flex-direction:column;align-items:center;gap:4px;z-index:45;">
-                        <div id="fabCart-${theme}" onclick="toggleFabSheet('${theme}','cart')" style="width:${fabSize};height:${fabSize};border-radius:50%;background:${fabBg};box-shadow:${fabShadow};display:flex;align-items:center;justify-content:center;cursor:pointer;border:${fabBorder};transition:transform 0.2s cubic-bezier(0.16,1,0.3,1);color:${fabIconColor};position:relative;">
-                            ${cartIcon}
-                            <span id="fabCartBadge-${theme}" style="position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;background:#FF3B30;color:#fff;font-size:10px;font-weight:700;display:${cartCount > 0 ? 'flex' : 'none'};align-items:center;justify-content:center;padding:0 4px;box-shadow:0 2px 6px rgba(255,59,48,0.4);">${cartCount}</span>
-                        </div>
-                        <span style="font-size:9px;font-weight:600;color:${fabLabelColor};">Cart</span>
+                    <div id="fabCart-${theme}" onclick="toggleFabSheet('${theme}','cart')" style="position:absolute;bottom:${fabBottom};left:16px;height:48px;border-radius:24px;background:${fabBg};box-shadow:${fabShadow};display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;z-index:45;border:${fabBorder};transition:transform 0.2s cubic-bezier(0.16,1,0.3,1);color:${fabIconColor};padding:0 16px;">
+                        ${cartIcon}
+                        <span style="font-size:11px;font-weight:700;color:${fabIconColor};white-space:nowrap;">Cart</span>
+                        <span id="fabCartBadge-${theme}" style="min-width:18px;height:18px;border-radius:9px;background:#FF3B30;color:#fff;font-size:10px;font-weight:700;display:${cartCount > 0 ? 'flex' : 'none'};align-items:center;justify-content:center;padding:0 4px;">${cartCount}</span>
                     </div>`;
 
                 // Right FAB – Order Tracker
                 container.innerHTML += `
-                    <div style="position:absolute;bottom:${fabBottom};right:16px;display:flex;flex-direction:column;align-items:center;gap:4px;z-index:45;">
-                        <div id="fabTracker-${theme}" onclick="toggleFabSheet('${theme}','tracker')" style="width:${fabSize};height:${fabSize};border-radius:50%;background:${fabBg};box-shadow:${fabShadow};display:flex;align-items:center;justify-content:center;cursor:pointer;border:${fabBorder};transition:transform 0.2s cubic-bezier(0.16,1,0.3,1);color:${fabIconColor};">
-                            ${trackerIcon}
-                        </div>
-                        <span style="font-size:9px;font-weight:600;color:${fabLabelColor};">Track</span>
+                    <div id="fabTracker-${theme}" onclick="toggleFabSheet('${theme}','tracker')" style="position:absolute;bottom:${fabBottom};right:16px;height:48px;border-radius:24px;background:${fabBg};box-shadow:${fabShadow};display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;z-index:45;border:${fabBorder};transition:transform 0.2s cubic-bezier(0.16,1,0.3,1);color:${fabIconColor};padding:0 16px;">
+                        ${trackerIcon}
+                        <span style="font-size:11px;font-weight:700;color:${fabIconColor};white-space:nowrap;">Track</span>
                     </div>`;
 
                 // Voice Search Modal
