@@ -8205,28 +8205,37 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                         <div style="font-size:10px;color:${subColor};margin-top:1px;">Step 2 of 3 · Add Extras</div>
                     </div>
                 </div>
-                <div style="padding:8px 16px;display:flex;align-items:center;gap:6px;">
-                    <span style="width:${isBrut?'10px':'8px'};height:${isBrut?'10px':'8px'};border-radius:50%;background:${accent};${isBrut?'border:2px solid var(--border-color);':''}"></span>
-                    <span style="width:${isBrut?'10px':'8px'};height:${isBrut?'10px':'8px'};border-radius:50%;background:${accent};${isBrut?'border:2px solid var(--border-color);':''}"></span>
-                    <span style="width:20px;height:3px;border-radius:2px;background:var(--border-color);"></span>
-                    <span style="width:${isBrut?'10px':'8px'};height:${isBrut?'10px':'8px'};border-radius:50%;background:var(--border-color);"></span>
-                </div>
-                <div style="font-size:11px;font-weight:700;color:${textColor};padding:12px 16px 6px;">Frequently ordered together</div>
-                <div style="padding:0 16px;overflow-x:auto;display:flex;gap:10px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;">
-                    ${items.map(addonCard).join('')}
-                    <div style="flex-shrink:0;width:150px;background:linear-gradient(135deg,${isGlass?'rgba(212,165,116,0.15)':isBrut?'rgba(255,107,53,0.1)':'rgba(0,97,95,0.08)'},${isGlass?'rgba(212,165,116,0.05)':isBrut?'rgba(255,107,53,0.03)':'rgba(0,97,95,0.03)'});border:${cardBorder};border-radius:14px;padding:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;${cardShadow}${cardBackdrop}">
-                        <span style="font-size:28px;">🔥</span>
-                        <div style="font-size:11px;font-weight:800;color:${textColor};">Bundle & Save</div>
-                        <div style="font-size:9px;color:${subColor};">Add <span id="count-${theme}">0</span> items</div>
-                        <div style="font-size:9px;color:${subColor};text-decoration:line-through;">${formatPrice(items[0].price+items[1].price)}</div>
-                        <div style="font-size:14px;font-weight:900;color:${accent};">${formatPrice(items[0].price+items[1].price-2)}</div>
+                <div style="font-size:11px;font-weight:700;color:${textColor};padding:12px 16px 6px;">Goes great with your order</div>
+                <div style="flex:1;overflow-y:auto;padding:0 16px 100px;">
+                    ${items.map((item, idx) => `
+                    <div style="width:100%;display:flex;align-items:center;gap:14px;padding:${idx===0?'14px 0 10px':'10px 0'};border-bottom:${idx<items.length-1?'1px solid var(--border-color)':'none'};cursor:pointer;" onclick="var b=this.querySelector('[data-upsell-check]');b.style.background=b.style.background==='${accent}'?'transparent':'${accent}';var svg=b.querySelector('span');svg.textContent=b.style.background==='${accent}'?'✓':'';var add=document.getElementById('upsell-total-${theme}');var v=parseFloat(add.dataset.value||0);var p=${item.price};if(b.style.background==='${accent}'){v+=p;add.dataset.selected=(parseInt(add.dataset.selected||0)+1)}else{v-=p;add.dataset.selected=(parseInt(add.dataset.selected||0)-1)}add.dataset.value=v;var show=parseInt(add.dataset.selected||0)>0?'block':'none';add.style.display=show;add.textContent='Add '+add.dataset.selected+' items - '+window.formatPrice(v);document.getElementById('upsell-count-${theme}').textContent=add.dataset.selected||0">
+                        <div style="width:64px;height:64px;border-radius:14px;overflow:hidden;flex-shrink:0;">
+                            <img src="${item.img}" style="width:100%;height:100%;object-fit:cover;">
+                        </div>
+                        <div style="flex:1;">
+                            <div style="font-size:14px;font-weight:700;color:${textColor};">${item.name}</div>
+                            <div style="font-size:11px;color:${subColor};margin-top:2px;">${item.desc}</div>
+                        </div>
+                        <div style="text-align:right;flex-shrink:0;">
+                            <div style="font-size:15px;font-weight:800;color:${accent};margin-bottom:4px;">${formatPrice(item.price)}</div>
+                            <div data-upsell-check style="width:24px;height:24px;border-radius:50%;border:2px solid ${accent};display:inline-flex;align-items:center;justify-content:center;transition:all 0.15s;"><span style="font-size:12px;font-weight:700;color:#fff;"></span></div>
+                        </div>
+                    </div>`).join('')}
+                    <div style="margin-top:16px;display:flex;align-items:center;gap:12px;padding:14px;background:linear-gradient(135deg,${isGlass?'rgba(212,165,116,0.15)':isBrut?'rgba(255,107,53,0.1)':'rgba(0,97,95,0.08)'},${isGlass?'rgba(212,165,116,0.05)':isBrut?'rgba(255,107,53,0.03)':'rgba(0,97,95,0.03)'});border:${cardBorder};border-radius:14px;${cardShadow}${cardBackdrop}">
+                        <span style="font-size:32px;flex-shrink:0;">🔥</span>
+                        <div style="flex:1;">
+                            <div style="font-size:14px;font-weight:800;color:${textColor};">Bundle & Save $2.00</div>
+                            <div style="font-size:11px;color:${subColor};margin-top:2px;">Save when you pick 2+ items</div>
+                        </div>
+                        <div style="text-align:right;flex-shrink:0;">
+                            <div style="font-size:10px;color:${subColor};text-decoration:line-through;">${formatPrice(8.49)}</div>
+                            <div style="font-size:16px;font-weight:900;color:${accent};">${formatPrice(6.49)}</div>
+                        </div>
                     </div>
-                </div>
-                <div style="flex:1;overflow-y:auto;padding:0 16px 100px;margin-top:12px;">
-                    <div onclick="var t=document.getElementById('upsell-total-${theme}');var s=parseInt(t.dataset.selected||0);var v=parseFloat(t.dataset.value||0);if(s>=2){v-=2;t.dataset.value=v;t.textContent='Add Selected - '+window.formatPrice(v)};var sel=this.parentElement.querySelectorAll('[style*=\&quot;background:'+accent+'\&quot;]');sel.forEach(function(el){el.click()});if(s>=0){addToCart('${theme}',{id:'bundle',name:'Value Bundle',price:v,img:'${items[0].img}',desc:s+' selected items'});showToast(s+' items added to cart!')}" style="width:100%;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;${isBrut?'border:2px solid var(--border-color);box-shadow:3px 3px 0 var(--border-color);':''}" id="upsell-total-${theme}" data-value="0" data-selected="0">Add Selected - CA$0.00</div>
+                    <div onclick="var v=parseFloat(this.dataset.value||0);var s=parseInt(this.dataset.selected||0);if(s>=2){v-=2;this.dataset.value=v}if(v>0){addToCart('${theme}',{id:'bundle',name:'Value Bundle',price:v,img:'${items[0].img}',desc:s+' items'});showToast(s+' items added!')}navigateToPage('${theme}','checkout-page')" id="upsell-total-${theme}" data-value="0" data-selected="0" style="display:none;width:100%;padding:15px;background:${accent};color:#fff;text-align:center;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;margin-top:12px;${isBrut?'border:2px solid var(--border-color);box-shadow:3px 3px 0 var(--border-color);':''}">Add 0 items - CA$0.00</div>
                 </div>
                 <div style="padding:0 16px 80px;text-align:center;">
-                    <span onclick="navigateToPage('${theme}','order-success-page')" style="font-size:12px;font-weight:600;color:${subColor};cursor:pointer;padding:8px 20px;border-radius:8px;background:${isGlass?'rgba(255,255,255,0.06)':'var(--pill-bg)'};border:${isBrut?'2px solid var(--border-color)':isGlass?'1px solid rgba(255,255,255,0.08)':'1px solid var(--border-color)'};">Skip add-ons →</span>
+                    <span onclick="navigateToPage('${theme}','checkout-page')" style="font-size:12px;font-weight:600;color:${subColor};cursor:pointer;padding:8px 20px;border-radius:8px;background:${isGlass?'rgba(255,255,255,0.06)':'var(--pill-bg)'};border:${isBrut?'2px solid var(--border-color)':isGlass?'1px solid rgba(255,255,255,0.08)':'1px solid var(--border-color)'};">Skip add-ons →</span>
                 </div>
             </div>`;
         }
