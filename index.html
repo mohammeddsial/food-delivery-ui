@@ -2550,6 +2550,7 @@
             <div class="ctrl-section" style="margin-top:0;">
                 <h3>Editing View</h3>
                 <div class="ctrl-group" id="viewSwitcherContainer" style="display:flex;gap:4px;padding:6px;"></div>
+                <button id="viewAllBtn" onclick="toggleViewAll()" style="width:100%;margin-top:4px;padding:6px;background:transparent;color:#888;border:1px dashed #333;border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;transition:all 0.15s;" onmouseover="if(!viewAllMode){this.style.color='#fff';this.style.borderColor='#555'}" onmouseout="if(!viewAllMode){this.style.color='#888';this.style.borderColor='#333'}">View All Viewports</button>
             </div>
 
             <div class="ctrl-section">
@@ -3173,6 +3174,18 @@
         const VIEW_COLORS = { neumorphism: '#1A1A1A', glassmorphism: '#4CAF50', neubrutalism: '#00615F' };
 
         let activeViewTheme = 'neumorphism';
+        let viewAllMode = false;
+
+        function toggleViewAll() {
+            viewAllMode = !viewAllMode;
+            const btn = document.getElementById('viewAllBtn');
+            if (btn) {
+                btn.style.background = viewAllMode ? '#00615F' : 'transparent';
+                btn.style.color = viewAllMode ? '#fff' : '#888';
+                btn.style.borderColor = viewAllMode ? '#00615F' : '#333';
+            }
+            renderPageViewPicker();
+        }
 
         function switchView(theme) {
             activeViewTheme = theme;
@@ -3198,26 +3211,37 @@
             { id: 'reviews-page', label: 'Reviews' },
             { id: 'rewards-page', label: 'Rewards' },
             { id: 'upsell-page', label: 'Upsell' },
-            { id: 'profile-settings', label: 'Profile' }
+            { id: 'profile-settings', label: 'Profile' },
+            { id: 'login-page', label: 'Login' },
+            { id: 'add-location', label: 'Addr' },
+            { id: 'deals-page', label: 'Deals' },
+            { id: 'search-page', label: 'Search' }
         ];
 
         function renderPageViewPicker() {
             const container = document.getElementById('pageViewContainer');
             if (!container) return;
-            const currentPage = currentPageByTheme[activeViewTheme] || 'feed';
+            const currentPage = viewAllMode
+                ? (VIEW_THEMES.every(t => currentPageByTheme[t] === currentPageByTheme[activeViewTheme]) ? currentPageByTheme[activeViewTheme] : null)
+                : currentPageByTheme[activeViewTheme] || 'feed';
             const orchSection = document.getElementById('moduleOrchestratorSection');
             if (orchSection) {
                 orchSection.style.opacity = (currentPage !== 'feed') ? '0.4' : '1';
                 orchSection.style.pointerEvents = (currentPage !== 'feed') ? 'none' : '';
             }
+            const activeColor = viewAllMode ? '#00615F' : '#00615F';
             container.innerHTML = PAGE_VIEW_OPTIONS.map(p => {
                 const isActive = p.id === currentPage;
-                return `<button onclick="selectPageView('${p.id}')" style="padding:5px 10px;border:none;border-radius:999px;font-size:10px;font-weight:700;cursor:pointer;transition:0.15s;white-space:nowrap;${isActive ? 'background:#00615F;color:#fff;' : 'background:#222;color:#888;'}">${p.label}</button>`;
+                return `<button onclick="selectPageView('${p.id}')" style="padding:5px 10px;border:none;border-radius:999px;font-size:10px;font-weight:700;cursor:pointer;transition:0.15s;white-space:nowrap;${isActive ? 'background:' + activeColor + ';color:#fff;' : 'background:#222;color:#888;'}">${p.label}</button>`;
             }).join('');
         }
 
         function selectPageView(pageId) {
-            navigateToPage(activeViewTheme, pageId);
+            if (viewAllMode) {
+                VIEW_THEMES.forEach(t => navigateToPage(t, pageId));
+            } else {
+                navigateToPage(activeViewTheme, pageId);
+            }
             renderPageViewPicker();
         }
 
