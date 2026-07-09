@@ -7763,28 +7763,34 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                         <div style="display:flex;gap:6px;">${tipChipsHTML}${customChip}</div>
                     </div>
                     <div style="background:${cardBg};border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow};border:${cardBorder};${glassBlur}">
-                        <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:8px;">${iconFA('credit-card', 'font-size:12px;margin-right:6px;')}Payment Method</div>
-                        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:${accent}15;border:1.5px solid ${accent};border-radius:10px;margin-bottom:10px;">
-                            ${iconFA('credit-card', 'font-size:18px;color:'+accent+';')}
-                            <div style="flex:1;"><div style="font-size:11px;font-weight:700;color:${textColor};">•••• 4242</div><div style="font-size:9px;color:${subColor};">Visa · Exp 12/27</div></div>
-                            <span style="width:18px;height:18px;border-radius:50%;background:${accent};display:inline-flex;align-items:center;justify-content:center;"><span style="font-size:10px;color:#fff;">✓</span></span>
+                        <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:10px;">${iconFA('credit-card', 'font-size:12px;margin-right:6px;')}Payment Method</div>
+                        <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:${accent}15;border:2px solid ${accent};border-radius:12px;margin-bottom:8px;cursor:pointer;">
+                            <span style="font-size:20px;">💳</span>
+                            <div style="flex:1;"><div style="font-size:12px;font-weight:700;color:${textColor};">•••• 4242</div><div style="font-size:10px;color:${subColor};">Visa · Exp 12/27</div></div>
+                            <span style="width:20px;height:20px;border-radius:50%;background:${accent};display:inline-flex;align-items:center;justify-content:center;"><span style="font-size:11px;color:#fff;">✓</span></span>
                         </div>
-                        <div onclick="var f=document.getElementById('addcard-${theme}');f.style.display=f.style.display==='none'?'block':'none'" style="display:flex;align-items:center;gap:8px;padding:8px 14px;border:1.5px dashed var(--border-color);border-radius:10px;cursor:pointer;margin-bottom:6px;">
-                            <span style="font-size:14px;color:${accent};">+</span>
-                            <span style="font-size:11px;font-weight:600;color:${accent};">Add New Card</span>
+                        <div onclick="var f=document.getElementById('addcard-${theme}');f.style.display=f.style.display==='none'?'block':'none'" style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:1.5px dashed var(--border-color);border-radius:12px;cursor:pointer;margin-bottom:8px;">
+                            <span style="font-size:16px;color:${accent};">+</span>
+                            <span style="font-size:11px;font-weight:600;color:${accent};">Add Credit/Debit Card</span>
                         </div>
-                        <div id="addcard-${theme}" style="display:none;">
-                            <input type="text" placeholder="Card Number" style="width:100%;padding:10px 12px;border-radius:8px;border:${chipInactiveBorder};background:${chipInactiveBg};color:${textColor};font-size:12px;margin-bottom:8px;outline:none;">
-                            <div style="display:flex;gap:8px;margin-bottom:8px;">
-                                <input type="text" placeholder="MM/YY" style="flex:1;padding:10px 12px;border-radius:8px;border:${chipInactiveBorder};background:${chipInactiveBg};color:${textColor};font-size:12px;outline:none;">
-                                <input type="text" placeholder="CVV" style="flex:1;padding:10px 12px;border-radius:8px;border:${chipInactiveBorder};background:${chipInactiveBg};color:${textColor};font-size:12px;outline:none;">
+                        <div id="addcard-${theme}" style="display:none;margin-bottom:8px;">
+                            <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:${chipInactiveBg};border:${chipInactiveBorder};border-radius:10px;margin-bottom:6px;">
+                                <span style="font-size:16px;">💳</span>
+                                <input type="text" placeholder="Card Number" style="flex:1;border:none;background:transparent;color:${textColor};font-size:12px;outline:none;">
                             </div>
-                            <input type="text" placeholder="Cardholder Name" style="width:100%;padding:10px 12px;border-radius:8px;border:${chipInactiveBorder};background:${chipInactiveBg};color:${textColor};font-size:12px;margin-bottom:8px;outline:none;">
-                            <div onclick="this.parentElement.style.display='none';showToast('Card added!')" style="padding:10px;background:${accent};color:#fff;text-align:center;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">Save Card</div>
+                            <div style="display:flex;gap:8px;margin-bottom:6px;">
+                                <input type="text" placeholder="MM/YY" style="flex:1;padding:10px 12px;border-radius:10px;border:${chipInactiveBorder};background:${chipInactiveBg};color:${textColor};font-size:12px;outline:none;">
+                                <input type="text" placeholder="CVV" style="flex:1;padding:10px 12px;border-radius:10px;border:${chipInactiveBorder};background:${chipInactiveBg};color:${textColor};font-size:12px;outline:none;">
+                            </div>
+                            <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:${chipInactiveBg};border:${chipInactiveBorder};border-radius:10px;margin-bottom:8px;">
+                                <span style="font-size:16px;">👤</span>
+                                <input type="text" placeholder="Cardholder Name" style="flex:1;border:none;background:transparent;color:${textColor};font-size:12px;outline:none;">
+                            </div>
+                            <div onclick="this.parentElement.style.display='none';showToast('Card added!')" style="padding:12px;background:${accent};color:#fff;text-align:center;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;">Save Card</div>
                         </div>
-                        <div style="display:flex;gap:8px;">
-                            <div style="flex:1;background:${chipInactiveBg};color:${textColor};padding:10px 8px;border-radius:${chipRadius};text-align:center;font-size:10px;font-weight:600;cursor:pointer;border:${chipInactiveBorder};">${iconFA('money-bill', 'font-size:14px;')}<br><span style="font-size:9px;">Cash</span></div>
-                            <div style="flex:1;background:${chipInactiveBg};color:${textColor};padding:10px 8px;border-radius:${chipRadius};text-align:center;font-size:10px;font-weight:600;cursor:pointer;border:${chipInactiveBorder};">${iconFA('mobile', 'font-size:14px;')}<br><span style="font-size:9px;">Apple Pay</span></div>
+                        <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:${chipInactiveBg};border:${chipInactiveBorder};border-radius:12px;cursor:pointer;">
+                            <span style="font-size:20px;">📱</span>
+                            <div style="flex:1;"><div style="font-size:12px;font-weight:600;color:${textColor};">Google Pay</div></div>
                         </div>
                     </div>
                     <div style="background:${cardBg};border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow};border:${cardBorder};${glassBlur}">
