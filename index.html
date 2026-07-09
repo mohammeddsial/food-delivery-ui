@@ -7491,11 +7491,19 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
         // ─── PAGE: CART PAGE (drawCartPage) ───
         // ─── CART PAGE ─────────────────────────────────────────────
         function drawCartPage(theme, style = 'default') {
-            const textColor = theme === 'glassmorphism' ? '#fff' : 'var(--text-primary)';
-            const subColor = theme === 'glassmorphism' ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
-            const accent = theme === 'neubrutalism' ? '#FF6B35' : 'var(--accent)';
-            const pageBg = theme === 'glassmorphism' ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
-            const backBtn = `<div onclick="goBack('${theme}')" style="width:36px;height:36px;border-radius:50%;background:${theme === 'glassmorphism' ? 'rgba(255,255,255,0.1)' : 'var(--pill-bg)'};display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('arrow-left', 'font-size:16px;color:' + textColor + ';')}</div>`;
+            const isGlass = theme === 'glassmorphism';
+            const isBrut = theme === 'neubrutalism';
+            const textColor = isGlass ? '#fff' : 'var(--text-primary)';
+            const subColor = isGlass ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
+            const accent = isBrut ? '#FF6B35' : 'var(--accent)';
+            const pageBg = isGlass ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
+            const btnStyle = isBrut ? 'border-radius:10px;box-shadow:0 4px 0 rgba(0,0,0,0.2);' : 'border-radius:var(--btn-radius);';
+            const cardBg = isGlass ? 'rgba(255,255,255,0.04)' : (isBrut ? 'var(--card-bg)' : 'var(--pill-bg)');
+            const cardBorder = isGlass ? '1px solid rgba(255,255,255,0.06)' : (isBrut ? '2px solid var(--border-color)' : '1px solid var(--border-color)');
+            const cardRadius = isBrut ? '10px' : '14px';
+            const cardShadow = isBrut ? 'box-shadow:3px 3px 0 var(--border-color);' : '';
+            const itemBg = isGlass ? 'rgba(255,255,255,0.04)' : (isBrut ? 'var(--card-bg)' : 'var(--pill-bg)');
+            const backBtn = `<div onclick="goBack('${theme}')" style="width:36px;height:36px;border-radius:50%;background:${isGlass?'rgba(255,255,255,0.1)':'var(--pill-bg)'};display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('arrow-left','font-size:16px;color:'+textColor+';')}</div>`;
 
             const cartItems = window.appState.cart[theme] || [];
             const subtotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
@@ -7504,167 +7512,106 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
 
             const promoCode = window.appState.promoCode[theme];
             const promo = promoCode ? PROMO_CODES[promoCode] : null;
-            let discount = 0;
-            let discountLabel = '';
+            let discount = 0, discountLabel = '';
             if (promo) {
-                if (promo.type === 'percent') {
-                    discount = subtotal * promo.value / 100;
-                } else if (promo.type === 'free_delivery') {
-                    discount = delivery;
-                } else if (promo.type === 'fixed') {
-                    discount = promo.value;
-                }
+                if (promo.type === 'percent') discount = subtotal * promo.value / 100;
+                else if (promo.type === 'free_delivery') discount = delivery;
+                else if (promo.type === 'fixed') discount = promo.value;
                 discountLabel = promo.label;
             }
+            let total = subtotal + delivery + tax - discount;
 
-            const total = subtotal + delivery + tax - discount;
-
-            const promoBadge = promo ? `<div style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:#22C55E;color:#fff;border-radius:9999px;font-size:10px;font-weight:700;margin-bottom:12px;"><span>${discountLabel}</span><span onclick="window.appState.promoCode['${theme}']=null;navigateToPage('${theme}','cart-page')" style="cursor:pointer;margin-left:2px;">✕</span></div>` : '';
-
-            const discountLine = promo ? `<div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:6px;"><span>Discount (${discountLabel})</span><span style="color:#22C55E;">-${formatPrice(discount)}</span></div>` : '';
-
-            const itemRow = (item) => `
-                <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--pill-bg);border-radius:14px;margin-bottom:10px;">
-                    <img src="${item.img}" style="width:52px;height:52px;border-radius:var(--card-img-radius);object-fit:cover;flex-shrink:0;">
-                    <div style="flex:1;min-width:0;">
-                        <div style="display:flex;justify-content:space-between;align-items:start;">
-                            <div style="font-size:13px;font-weight:700;color:${textColor};">${item.name}</div>
-                            <div onclick="removeFromCart('${theme}','${item.id}')" style="font-size:10px;color:#EF4444;cursor:pointer;padding:2px 6px;">✕</div>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;align-items:center;">
-                            <div style="font-size:10px;color:${subColor};margin-top:2px;">${item.options || ''}</div>
-                            <div style="font-size:13px;font-weight:700;color:${textColor};">${formatPrice(item.price * item.qty)}</div>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:6px;margin-top:6px;">
-                            <span onclick="updateCartQty('${theme}','${item.id}',-1)" style="width:24px;height:24px;border-radius:50%;background:var(--pill-bg);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;">-</span>
-                            <span style="font-size:12px;font-weight:700;color:${textColor};min-width:16px;text-align:center;">${item.qty}</span>
-                            <span onclick="updateCartQty('${theme}','${item.id}',1)" style="width:24px;height:24px;border-radius:50%;background:${accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;">+</span>
-                        </div>
-                    </div>
+            // Yes/No pill toggle function
+            const ynPill = (label, defaultValue, id) => `
+                <div style="display:inline-flex;gap:0;background:${isGlass?'rgba(255,255,255,0.06)':'var(--pill-bg)'};border-radius:6px;overflow:hidden;border:${isBrut?'1.5px solid var(--border-color)':isGlass?'1px solid rgba(255,255,255,0.08)':'1px solid var(--border-color)'};">
+                    <span id="${id}-y" onclick="var p=this.parentElement;var n=p.querySelector('[id$=-n]');this.style.background='${accent}';this.style.color='#fff';n.style.background='transparent';n.style.color='${subColor}'" style="padding:2px 8px;font-size:9px;font-weight:700;cursor:pointer;background:${defaultValue?accent:'transparent'};color:${defaultValue?'#fff':subColor};white-space:nowrap;">Yes</span>
+                    <span id="${id}-n" onclick="var p=this.parentElement;var y=p.querySelector('[id$=-y]');this.style.background='${accent}';this.style.color='#fff';y.style.background='transparent';y.style.color='${subColor}'" style="padding:2px 8px;font-size:9px;font-weight:700;cursor:pointer;background:${defaultValue?'transparent':accent};color:${defaultValue?subColor:'#fff'};white-space:nowrap;">No</span>
                 </div>`;
 
-            if (style === 'default') {
-                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:5;display:flex;flex-direction:column;">
-                    <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-color);">
-                        ${backBtn}
-                        <div style="font-size:16px;font-weight:700;color:${textColor};">My Cart</div>
-                        <span style="margin-left:auto;font-size:11px;color:${subColor};">${cartItems.length} items</span>
-                    </div>
-                    <div style="flex:1;overflow-y:auto;padding:16px;">
-                        ${cartItems.length === 0 ? `
-                        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;">
-                            <div class="empty-state-icon">${iconFA('shopping-bag', 'font-size:28px;color:var(--accent);')}</div>
-                            <div style="font-size:16px;font-weight:700;color:${textColor};margin-bottom:8px;">Your cart is empty</div>
-                            <div style="font-size:12px;color:${subColor};margin-bottom:20px;">Add some delicious items from our menu</div>
-                            <div onclick="navigateToPage('${theme}','menu-page')" style="padding:12px 24px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:13px;font-weight:700;cursor:pointer;">Browse Menu</div>
-                        </div>
-                        ` : `
-                        ${cartItems.map(itemRow).join('')}
-                        <textarea placeholder="Add special notes for the restaurant..." style="width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--border-color);background:var(--pill-bg);color:${textColor};font-size:11px;resize:none;height:56px;margin-bottom:16px;"></textarea>
-                        <div style="display:flex;gap:8px;margin-bottom:${promo ? '8px' : '20px'};">
-                            <input id="promo-input-${theme}" placeholder="Promo code" style="flex:1;padding:12px 14px;border-radius:var(--btn-radius);border:1px solid var(--border-color);background:var(--pill-bg);color:${textColor};font-size:12px;" value="${promoCode || ''}">
-                            <span onclick="applyPromoCode('${theme}')" style="padding:12px 20px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:12px;font-weight:700;cursor:pointer;">Apply</span>
-                        </div>
-                        ${promoBadge}
-                        <div style="border-top:1px solid var(--border-color);padding-top:12px;">
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:6px;"><span>Subtotal</span><span style="color:${textColor};">${formatPrice(subtotal)}</span></div>
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:6px;"><span>Delivery Fee</span><span style="color:${textColor};">${formatPrice(delivery)}</span></div>
-                            ${discountLine}
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:6px;"><span>Tax</span><span style="color:${textColor};">${formatPrice(tax)}</span></div>
-                            <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:${textColor};padding-top:10px;border-top:1px solid var(--border-color);margin-top:6px;"><span>Total</span><span style="color:${accent};">${formatPrice(total)}</span></div>
-                        </div>
-                        `}
-                    </div>
-                    ${cartItems.length > 0 ? `
-                    <div style="padding:12px 16px 80px;border-top:1px solid var(--border-color);background:${pageBg};">
-                        <div onclick="proceedToCheckout('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Checkout - ${formatPrice(total)}</div>
-                    </div>` : ''}
-                </div>`;
-            }
-
-            if (style === 'option 1') {
-                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:5;display:flex;flex-direction:column;">
-                    <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-color);">
-                        ${backBtn}
-                        <div style="font-size:16px;font-weight:700;color:${textColor};">Your Items</div>
-                        <span style="margin-left:auto;font-size:10px;color:${subColor};">Swipe to delete</span>
-                    </div>
-                    <div style="flex:1;overflow-y:auto;padding:16px;">
-                        ${cartItems.length === 0 ? `
-                        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;">
-                            <div class="empty-state-icon">${iconFA('shopping-bag', 'font-size:28px;color:var(--accent);')}</div>
-                            <div style="font-size:16px;font-weight:700;color:${textColor};margin-bottom:8px;">Your cart is empty</div>
-                            <div style="font-size:12px;color:${subColor};margin-bottom:20px;">Add some delicious items from our menu</div>
-                            <div onclick="navigateToPage('${theme}','menu-page')" style="padding:12px 24px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:13px;font-weight:700;cursor:pointer;">Browse Menu</div>
-                        </div>
-                        ` : `
-                        ${cartItems.map(itemRow).join('')}
-                        <textarea placeholder="Add special notes for the restaurant..." style="width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--border-color);background:var(--pill-bg);color:${textColor};font-size:11px;resize:none;height:56px;margin-top:12px;margin-bottom:12px;"></textarea>
-                        <div style="background:var(--pill-bg);border-radius:14px;padding:16px;">
-                            <div style="font-size:13px;font-weight:700;color:${textColor};margin-bottom:12px;">Order Summary</div>
-                            <div style="display:flex;gap:8px;margin-bottom:${promo ? '8px' : '12px'};">
-                                <input id="promo-input-${theme}" placeholder="Coupon code" style="flex:1;padding:10px 14px;border-radius:var(--btn-radius);border:1px solid var(--border-color);background:${pageBg};color:${textColor};font-size:11px;" value="${promoCode || ''}">
-                                <span onclick="applyPromoCode('${theme}')" style="padding:10px 16px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:11px;font-weight:700;cursor:pointer;">Apply</span>
+            const itemRow = (item) => {
+                const iid = item.id.replace(/[^a-z0-9]/g,'');
+                return `
+                <div style="padding:12px;background:${itemBg};border:${cardBorder};border-radius:${cardRadius};margin-bottom:10px;${cardShadow}">
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <img src="${item.img}" style="width:52px;height:52px;border-radius:${isBrut?'8px':'var(--card-img-radius)'};object-fit:cover;flex-shrink:0;">
+                        <div style="flex:1;min-width:0;">
+                            <div style="display:flex;justify-content:space-between;align-items:start;">
+                                <div style="font-size:13px;font-weight:700;color:${textColor};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.name}</div>
+                                <div onclick="removeFromCart('${theme}','${item.id}')" style="font-size:11px;color:#EF4444;cursor:pointer;padding:2px 4px;">✕</div>
                             </div>
-                            ${promoBadge}
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Subtotal</span><span style="color:${textColor};">${formatPrice(subtotal)}</span></div>
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Delivery</span><span style="color:${textColor};">${formatPrice(delivery)}</span></div>
-                            ${discountLine}
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Tax</span><span style="color:${textColor};">${formatPrice(tax)}</span></div>
-                            <div style="font-size:11px;color:${accent};margin-top:6px;">${iconFA('clock', 'font-size:10px;')} Estimated delivery: 25-35 min</div>
+                            <div style="font-size:11px;color:${subColor};margin-top:1px;">${item.desc||''}</div>
                         </div>
-                        `}
                     </div>
-                    ${cartItems.length > 0 ? `
-                    <div style="padding:12px 16px 80px;border-top:1px solid var(--border-color);background:${pageBg};">
-                        <div onclick="proceedToCheckout('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;">Checkout - ${formatPrice(total)}</div>
-                    </div>` : ''}
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            <span onclick="updateCartQty('${theme}','${item.id}',-1)" style="width:28px;height:28px;border-radius:50%;background:${isGlass?'rgba(255,255,255,0.08)':'var(--pill-bg)'};border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;cursor:pointer;color:${textColor};">-</span>
+                            <span style="font-size:13px;font-weight:700;color:${textColor};min-width:20px;text-align:center;">${item.qty}</span>
+                            <span onclick="updateCartQty('${theme}','${item.id}',1)" style="width:28px;height:28px;border-radius:50%;background:${accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;cursor:pointer;">+</span>
+                        </div>
+                        <span style="font-size:15px;font-weight:800;color:${textColor};">${formatPrice(item.price * item.qty)}</span>
+                    </div>
                 </div>`;
-            }
+            };
 
+            const offersKit = { accent: accent, text: textColor, sub: subColor, divider: isBrut ? 'var(--border-color)' : (isGlass ? 'rgba(255,255,255,0.08)' : 'var(--border-color)'), stepper: 'a', inputCss: 'a' };
+            const offersBanner = drawPDPOffersBanner(theme, offersKit);
+
+            const promoBadge = promo ? `<div style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:#22C55E;color:#fff;border-radius:9999px;font-size:10px;font-weight:700;"><span>${discountLabel}</span><span onclick="window.appState.promoCode['${theme}']=null;navigateToPage('${theme}','cart-page')" style="cursor:pointer;margin-left:2px;">✕</span></div>` : '';
+            const discountLine = promo ? `<div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Discount (${discountLabel})</span><span style="color:#22C55E;">-${formatPrice(discount)}</span></div>` : '';
+
+            const emptyState = `
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;">
+                    <div class="empty-state-icon">${iconFA('shopping-bag','font-size:28px;color:var(--accent);')}</div>
+                    <div style="font-size:16px;font-weight:700;color:${textColor};margin-bottom:8px;">Your cart is empty</div>
+                    <div style="font-size:12px;color:${subColor};margin-bottom:20px;">Add some delicious items from our menu</div>
+                    <div onclick="navigateToPage('${theme}','menu-page')" style="padding:12px 24px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:13px;font-weight:700;cursor:pointer;">Browse Menu</div>
+                </div>`;
+
+            const promoInput = `
+                <div style="display:flex;gap:8px;margin-bottom:12px;">
+                    <input id="promo-input-${theme}" placeholder="Promo code" style="flex:1;padding:10px 14px;border-radius:8px;border:${cardBorder};background:${isGlass?'rgba(255,255,255,0.06)':'var(--pill-bg)'};color:${textColor};font-size:12px;outline:none;" value="${promoCode||''}">
+                    <span onclick="applyPromoCode('${theme}')" style="padding:10px 18px;background:${accent};color:#fff;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;${isBrut?'border:2px solid var(--border-color);box-shadow:2px 2px 0 var(--border-color);':''}">Apply</span>
+                </div>`;
+
+            const priceBreakdown = `
+                <div style="border-top:1px solid var(--border-color);padding-top:12px;">
+                    <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Subtotal</span><span style="color:${textColor};">${formatPrice(subtotal)}</span></div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Delivery Fee</span><span style="color:${textColor};">${formatPrice(delivery)}</span></div>
+                    ${discountLine}
+                    <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Tax</span><span style="color:${textColor};">${formatPrice(tax)}</span></div>
+                    <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:${textColor};padding-top:10px;border-top:1px solid var(--border-color);margin-top:6px;"><span>Total</span><span style="color:${accent};">${formatPrice(total)}</span></div>
+                </div>`;
+
+            const checkoutBtn = cartItems.length > 0 ? `
+                <div style="padding:12px 16px 80px;border-top:1px solid var(--border-color);background:${pageBg};flex-shrink:0;">
+                    <div onclick="proceedToCheckout('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;${btnStyle}font-size:15px;font-weight:700;cursor:pointer;">Checkout - ${formatPrice(total)}</div>
+                </div>` : '';
+
+            // Single unified layout for all 3 views
             return `<div style="position:absolute;inset:0;background:${pageBg};z-index:5;display:flex;flex-direction:column;">
                 <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-color);">
                     ${backBtn}
-                    <div style="font-size:16px;font-weight:700;color:${textColor};">Cart</div>
-                    <span style="margin-left:auto;background:${accent};color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:9999px;">${cartItems.length}</span>
+                    <div style="font-size:16px;font-weight:700;color:${textColor};">My Cart</div>
+                    <span style="margin-left:auto;font-size:11px;color:${subColor};">${cartItems.length} items</span>
                 </div>
-                <div style="flex:1;overflow-y:auto;padding:12px 16px;">
-                    ${cartItems.length === 0 ? `
-                    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;">
-                        <div class="empty-state-icon">${iconFA('shopping-bag', 'font-size:28px;color:var(--accent);')}</div>
-                        <div style="font-size:16px;font-weight:700;color:${textColor};margin-bottom:8px;">Your cart is empty</div>
-                        <div style="font-size:12px;color:${subColor};margin-bottom:20px;">Add some delicious items from our menu</div>
-                        <div onclick="navigateToPage('${theme}','menu-page')" style="padding:12px 24px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:13px;font-weight:700;cursor:pointer;">Browse Menu</div>
-                    </div>
-                    ` : `
-                    ${cartItems.map(item => `
-                    <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-color);">
-                        <img src="${item.img}" style="width:40px;height:40px;border-radius:var(--card-img-radius);object-fit:cover;flex-shrink:0;">
-                        <div style="flex:1;">
-                            <div style="font-size:12px;font-weight:700;color:${textColor};">${item.name}</div>
-                            <div style="font-size:10px;color:${subColor};">${item.options}</div>
+                <div style="flex:1;overflow-y:auto;padding:16px;">
+                    ${offersBanner}
+                    ${cartItems.length === 0 ? emptyState : `
+                        ${cartItems.map(itemRow).join('')}
+                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;padding:10px 12px;background:${cardBg};border:${cardBorder};border-radius:${cardRadius};${cardShadow}">
+                            <span style="font-size:10px;font-weight:700;color:${textColor};margin-right:4px;">Preferences:</span>
+                            ${ynPill('Cutlery', true, 'cutlery-${theme}')}
+                            ${ynPill('No-contact', true, 'nocontact-${theme}')}
+                            ${ynPill('Leave at door', false, 'leavedoor-${theme}')}
+                            ${ynPill('Rewards', false, 'rewards-${theme}')}
+                            ${ynPill('Gift', false, 'gift-${theme}')}
                         </div>
-                        <div style="display:flex;align-items:center;gap:4px;">
-                            <span onclick="updateCartQty('${theme}','${item.id}',-1)" style="width:20px;height:20px;border-radius:50%;background:var(--pill-bg);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;cursor:pointer;">-</span>
-                            <span style="font-size:11px;font-weight:700;color:${textColor};min-width:14px;text-align:center;">${item.qty}</span>
-                            <span onclick="updateCartQty('${theme}','${item.id}',1)" style="width:20px;height:20px;border-radius:50%;background:${accent};color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;cursor:pointer;">+</span>
-                        </div>
-                        <div onclick="removeFromCart('${theme}','${item.id}')" style="font-size:10px;color:#EF4444;cursor:pointer;padding:2px 4px;">✕</div>
-                        <div style="font-size:12px;font-weight:700;color:${textColor};min-width:50px;text-align:right;">${formatPrice(item.price * item.qty)}</div>
-                    </div>`).join('')}
-                    <textarea placeholder="Add special notes for the restaurant..." style="width:100%;padding:8px 12px;border-radius:var(--btn-radius);border:1.5px solid var(--border-color);background:var(--pill-bg);color:${textColor};font-size:11px;resize:none;height:48px;margin-top:12px;margin-bottom:12px;"></textarea>
-                    <div style="display:flex;gap:6px;">
-                        <input id="promo-input-${theme}" placeholder="Promo code" style="flex:1;padding:8px 12px;border-radius:var(--btn-radius);border:1px solid var(--border-color);background:var(--pill-bg);color:${textColor};font-size:11px;" value="${promoCode || ''}">
-                        <span onclick="applyPromoCode('${theme}')" style="padding:8px 12px;background:${accent};color:#fff;border-radius:var(--btn-radius);font-size:11px;font-weight:700;cursor:pointer;">Apply</span>
-                    </div>
-                    ${promoBadge}
+                        ${promoInput}
+                        ${promoBadge}
+                        ${priceBreakdown}
                     `}
                 </div>
-                ${cartItems.length > 0 ? `
-                <div style="padding:12px 16px 80px;border-top:1px solid var(--border-color);background:${pageBg};display:flex;align-items:center;gap:12px;">
-                    <div>${promo ? `<div style="font-size:10px;color:#22C55E;margin-bottom:2px;">Discount: -${formatPrice(discount)}</div>` : ''}<div style="font-size:10px;color:${subColor};">Total</div><div style="font-size:18px;font-weight:900;color:${accent};">${formatPrice(total)}</div></div>
-                    <div onclick="proceedToCheckout('${theme}')" style="flex:1;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;">Checkout</div>
-                </div>` : ''}
+                ${checkoutBtn}
             </div>`;
         }
 
