@@ -7637,211 +7637,153 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
         // ─── PAGE: CHECKOUT PAGE (drawCheckoutPage) ───
         // ─── CHECKOUT PAGE ────────────────────────────────────────────
         function drawCheckoutPage(theme, style = 'default') {
-            const textColor = theme === 'glassmorphism' ? '#fff' : 'var(--text-primary)';
-            const subColor = theme === 'glassmorphism' ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
-            const accent = theme === 'neubrutalism' ? '#FF6B35' : (theme === 'glassmorphism' ? '#4CAF50' : 'var(--accent)');
-            const pageBg = theme === 'glassmorphism' ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
-            const backBtn = `<div onclick="goBack('${theme}')" style="width:36px;height:36px;border-radius:50%;background:${theme === 'glassmorphism' ? 'rgba(255,255,255,0.1)' : 'var(--pill-bg)'};display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('arrow-left', 'font-size:16px;color:' + textColor + ';')}</div>`;
+            const isGlass = theme === 'glassmorphism';
+            const isBrut = theme === 'neubrutalism';
+
+            const textColor = isGlass ? '#fff' : 'var(--text-primary)';
+            const subColor = isGlass ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
+            const accent = isBrut ? '#FF6B35' : (isGlass ? '#4CAF50' : 'var(--accent)');
+            const pageBg = isGlass ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
+
+            const cardBg = isGlass ? 'rgba(255,255,255,0.06)' : 'var(--pill-bg)';
+            const cardBorder = isBrut ? '1.5px solid var(--border-color)' : (isGlass ? '1px solid rgba(255,255,255,0.08)' : 'none');
+            const cardShadow = isBrut ? '3px 3px 0 var(--border-color)' : (isGlass ? 'none' : '0 2px 12px rgba(0,0,0,0.06)');
+            const cardRadius = isBrut ? '4px' : '14px';
+            const glassBlur = isGlass ? 'backdrop-filter:blur(12px);' : '';
+
+            const ctaRadius = isBrut ? '4px' : 'var(--btn-radius)';
+            const ctaShadow = isBrut ? '3px 3px 0 var(--border-color)' : '0 2px 12px ' + accent + '40';
+            const ctaBorder = isBrut ? '1.5px solid var(--border-color)' : 'none';
+
+            const chipActiveBg = accent;
+            const chipActiveCl = '#fff';
+            const chipActiveBorder = isBrut ? '1.5px solid var(--border-color)' : 'none';
+            const chipActiveShadow = isBrut ? '2px 2px 0 var(--border-color)' : 'none';
+            const chipInactiveBg = isGlass ? 'rgba(255,255,255,0.04)' : 'var(--card-bg)';
+            const chipInactiveBorder = isBrut ? '1.5px solid var(--border-color)' : (isGlass ? '1px solid rgba(255,255,255,0.06)' : 'none');
+
+            const headerBorder = isGlass ? '1px solid rgba(255,255,255,0.06)' : (isBrut ? '1.5px solid var(--border-color)' : '1px solid var(--border-color)');
+            const chipRadius = isBrut ? '4px' : '10px';
+
+            const backBtn = `<div onclick="goBack('${theme}')" style="width:36px;height:36px;border-radius:50%;background:${isGlass ? 'rgba(255,255,255,0.1)' : 'var(--pill-bg)'};display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('arrow-left', 'font-size:16px;color:' + textColor + ';')}</div>`;
+
             const subtotal = 25.97;
             const delivery = 2.99;
-            const total = subtotal + delivery;
+            const tax = 2.34;
+            const promo = -3.00;
 
-            const timeSlots = ['10:00-10:30', '10:30-11:00', '11:00-11:30', '11:30-12:00', '12:00-12:30', '12:30-13:00'];
+            const tips = [
+                { pct: 10, amt: +(subtotal * 0.10).toFixed(2) },
+                { pct: 15, amt: +(subtotal * 0.15).toFixed(2) },
+                { pct: 18, amt: +(subtotal * 0.18).toFixed(2) },
+                { pct: 20, amt: +(subtotal * 0.20).toFixed(2) },
+            ];
+            const defaultPct = 18;
+            const defaultAmt = +(subtotal * 0.18).toFixed(2);
 
-            // ─── DEFAULT: Soft neumorphism card layout ───
-            if (style === 'default') {
-                const isG = theme === 'glassmorphism';
-                const isB = theme === 'neubrutalism';
-                const cardShadow = isG ? 'none' : '0 2px 12px rgba(0,0,0,0.06)';
-                const cardRadius = isB ? '4px' : '14px';
-                const cardBorder = isB ? '1.5px solid var(--border-color)' : 'none';
-                const neubrutalismShadow = isB ? ', 3px 3px 0 var(--border-color)' : '';
-                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:5;display:flex;flex-direction:column;">
-                    <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-color);">
-                        ${backBtn}
-                        <div style="font-size:16px;font-weight:700;color:${textColor};">Checkout</div>
-                    </div>
-                    <div style="flex:1;overflow-y:auto;padding:12px 12px 100px;">
-                        <div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;padding:0 4px;">
-                            <div style="display:flex;flex-direction:column;align-items:center;">
-                                <div style="width:28px;height:28px;border-radius:50%;background:${accent};color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:${isB ? '2px solid var(--border-color)' : 'none'};box-shadow:${isB ? '2px 2px 0 var(--border-color)' : '0 2px 8px ' + accent + '40'};}">1</div>
-                                <span style="font-size:9px;font-weight:600;color:${accent};margin-top:3px;">Cart</span>
-                            </div>
-                            <div style="flex:1;height:2px;background:${accent};margin:0 2px;margin-bottom:16px;"></div>
-                            <div style="display:flex;flex-direction:column;align-items:center;">
-                                <div style="width:28px;height:28px;border-radius:50%;background:${accent};color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:${isB ? '2px solid var(--border-color)' : 'none'};box-shadow:${isB ? '2px 2px 0 var(--border-color)' : '0 2px 8px ' + accent + '40'};}">2</div>
-                                <span style="font-size:9px;font-weight:600;color:${accent};margin-top:3px;">Pay</span>
-                            </div>
-                            <div style="flex:1;height:2px;background:var(--border-color);margin:0 2px;margin-bottom:16px;"></div>
-                            <div style="display:flex;flex-direction:column;align-items:center;">
-                                <div style="width:28px;height:28px;border-radius:50%;background:var(--pill-bg);color:${textColor};font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid var(--border-color);">3</div>
-                                <span style="font-size:9px;font-weight:600;color:${subColor};margin-top:3px;">Done</span>
-                            </div>
-                        </div>
-                        <div style="background:var(--pill-bg);border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow}${neubrutalismShadow};border:${cardBorder};">
-                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                                <div style="font-size:12px;font-weight:700;color:${textColor};">${iconFA('map-pin', 'font-size:12px;margin-right:6px;')}Delivery Address</div>
-                                <div onclick="navigateToPage('${theme}','add-location')" style="font-size:10px;font-weight:700;color:${accent};cursor:pointer;">+ Change</div>
-                            </div>
-                            <div style="font-size:12px;color:${textColor};">921 Church St</div>
-                            <div style="font-size:10px;color:${subColor};">San Francisco, CA 94114</div>
-                        </div>
-                        <div style="background:var(--pill-bg);border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow}${neubrutalismShadow};border:${cardBorder};">
-                            <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:10px;">${iconFA('clock', 'font-size:12px;margin-right:6px;')}Delivery Time</div>
-                            <div style="display:flex;gap:6px;margin-bottom:8px;">
-                                <span style="padding:6px 14px;background:${accent};color:#fff;border-radius:8px;font-size:10px;font-weight:700;cursor:pointer;border:${isB ? '1.5px solid var(--border-color)' : 'none'};box-shadow:${isB ? '1.5px 1.5px 0 var(--border-color)' : 'none'};">Today</span>
-                                <span style="padding:6px 14px;background:var(--card-bg);color:${textColor};border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;">Tomorrow</span>
-                            </div>
-                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">${timeSlots.slice(0, 3).map(t => `<span style="padding:6px;text-align:center;background:var(--card-bg);border-radius:6px;font-size:9px;font-weight:600;color:${textColor};cursor:pointer;">${t}</span>`).join('')}</div>
-                        </div>
-                        <div style="background:var(--pill-bg);border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow}${neubrutalismShadow};border:${cardBorder};">
-                            <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:8px;">Payment</div>
-                            <div style="display:flex;gap:8px;">
-                                <div style="flex:1;background:${accent};color:#fff;padding:12px;border-radius:10px;text-align:center;font-size:10px;font-weight:700;cursor:pointer;border:${isB ? '1.5px solid var(--border-color)' : 'none'};box-shadow:${isB ? '2px 2px 0 var(--border-color)' : 'none'};">${iconFA('credit-card', 'font-size:14px;')}<br><span style="font-size:9px;">Card</span></div>
-                                <div style="flex:1;background:var(--card-bg);color:${textColor};padding:12px;border-radius:10px;text-align:center;font-size:10px;font-weight:600;cursor:pointer;">${iconFA('dollar-sign', 'font-size:14px;')}<br><span style="font-size:9px;">Cash</span></div>
-                                <div style="flex:1;background:var(--card-bg);color:${textColor};padding:12px;border-radius:10px;text-align:center;font-size:10px;font-weight:600;cursor:pointer;">${iconFA('smartphone', 'font-size:14px;')}<br><span style="font-size:9px;">PayPal</span></div>
-                            </div>
-                        </div>
-                        <div style="background:var(--pill-bg);border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow}${neubrutalismShadow};border:${cardBorder};">
-                            <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>Subtotal</span><span style="color:${textColor};">${formatPrice(subtotal)}</span></div>
-                            <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>Delivery</span><span style="color:${textColor};">${formatPrice(delivery)}</span></div>
-                            <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:800;color:${textColor};padding-top:8px;border-top:1px solid var(--border-color);margin-top:4px;"><span>Total</span><span style="color:${accent};">${formatPrice(total)}</span></div>
-                        </div>
-                    </div>
-                    <div style="padding:10px 12px 80px;border-top:1px solid var(--border-color);background:${pageBg};">
-                        <div onclick="placeOrder('${theme}')" style="width:100%;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:${isB ? '4px' : 'var(--btn-radius)'};font-size:14px;font-weight:700;cursor:pointer;border:${isB ? '1.5px solid var(--border-color)' : 'none'};box-shadow:${isB ? '3px 3px 0 var(--border-color)' : '0 2px 12px ' + accent + '40'};}">Place Order - ${formatPrice(total)}</div>
-                    </div>
-                </div>`;
-            }
+            const calcTotal = function(tipAmt) { return +(subtotal + delivery + tax + tipAmt + promo).toFixed(2); };
+            const defaultTotal = calcTotal(defaultAmt);
 
-            // ─── OPTION 1: Glass accordion with floating panels ───
-            if (style === 'option 1') {
-                const g = theme === 'glassmorphism';
-                const cardGlass = g ? 'rgba(255,255,255,0.06)' : 'var(--pill-bg)';
-                const glassBorder = g ? '1px solid rgba(255,255,255,0.08)' : 'none';
-                const glassBlur = g ? 'backdrop-filter:blur(12px);' : '';
-                const tabActive = g ? 'background:' + accent + ';color:#fff;border:none;' : 'background:var(--accent);color:#fff;';
-                const tabInactive = g ? 'background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.06);' : 'background:var(--card-bg);color:var(--text-secondary);';
-                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:5;display:flex;flex-direction:column;">
-                    <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:${g ? '1px solid rgba(255,255,255,0.06)' : '1px solid var(--border-color)'};">
-                        ${backBtn}
-                        <div style="font-size:16px;font-weight:700;color:${textColor};">Checkout</div>
-                    </div>
-                    <div style="flex:1;overflow-y:auto;padding:12px 12px 100px;">
-                        <div style="background:${cardGlass};border-radius:16px;margin-bottom:10px;overflow:hidden;${glassBorder}${glassBlur}">
-                            <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;">
-                                <span style="font-size:12px;font-weight:700;color:${textColor};">${iconFA('map-pin', 'font-size:12px;margin-right:8px;')}Delivery Address</span>
-                                <span style="font-size:14px;color:${subColor};">${iconFA('chevron-down', 'font-size:11px;')}</span>
-                            </div>
-                            <div style="display:block;padding:0 14px 14px;">
-                                <div style="display:flex;align-items:center;gap:10px;">
-                                    <div style="width:40px;height:40px;border-radius:10px;background:${g ? 'rgba(76,175,80,0.15)' : 'var(--card-bg)'};display:flex;align-items:center;justify-content:center;color:${accent};">${iconFA('map-pin', 'font-size:16px;')}</div>
-                                    <div>
-                                        <div style="font-size:12px;color:${textColor};margin-bottom:2px;">921 Church St</div>
-                                        <div style="font-size:10px;color:${subColor};">San Francisco, CA 94114</div>
-                                    </div>
-                                </div>
-                                <div onclick="navigateToPage('${theme}','add-location')" style="display:flex;align-items:center;gap:6px;font-size:10px;font-weight:700;color:${accent};cursor:pointer;margin-top:8px;padding:6px 12px;background:${g ? 'rgba(76,175,80,0.1)' : 'var(--card-bg)'};border-radius:8px;width:fit-content;">${iconFA('plus', 'font-size:9px;')} Add Address</div>
-                            </div>
-                        </div>
-                        <div style="background:${cardGlass};border-radius:16px;margin-bottom:10px;overflow:hidden;${glassBorder}${glassBlur}">
-                            <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;">
-                                <span style="font-size:12px;font-weight:700;color:${textColor};">${iconFA('clock', 'font-size:12px;margin-right:8px;')}Delivery Time</span>
-                                <span style="font-size:14px;color:${subColor};">${iconFA('chevron-down', 'font-size:11px;')}</span>
-                            </div>
-                            <div style="display:none;padding:0 14px 14px;">
-                                <div style="display:flex;gap:6px;margin-bottom:8px;">
-                                    <span style="padding:6px 14px;${tabActive}border-radius:8px;font-size:10px;font-weight:700;cursor:pointer;">Today</span>
-                                    <span style="padding:6px 14px;${tabInactive}border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;">Tomorrow</span>
-                                </div>
-                                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">${timeSlots.map(t => `<span style="padding:6px;text-align:center;${tabInactive}border-radius:8px;font-size:9px;cursor:pointer;">${t}</span>`).join('')}</div>
-                            </div>
-                        </div>
-                        <div style="background:${cardGlass};border-radius:16px;margin-bottom:10px;overflow:hidden;${glassBorder}${glassBlur}">
-                            <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;">
-                                <span style="font-size:12px;font-weight:700;color:${textColor};">${iconFA('credit-card', 'font-size:12px;margin-right:8px;')}Payment</span>
-                                <span style="font-size:14px;color:${subColor};">${iconFA('chevron-down', 'font-size:11px;')}</span>
-                            </div>
-                            <div style="display:none;padding:0 14px 14px;">
-                                <div style="display:flex;gap:6px;">
-                                    <span style="padding:8px 14px;${tabActive}border-radius:8px;font-size:10px;font-weight:700;cursor:pointer;">Card</span>
-                                    <span style="padding:8px 14px;${tabInactive}border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;">Cash</span>
-                                    <span style="padding:8px 14px;${tabInactive}border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;">PayPal</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="background:${cardGlass};border-radius:16px;padding:14px;${glassBorder}${glassBlur}">
-                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                                <span style="font-size:12px;font-weight:700;color:${textColor};">Order Summary</span>
-                                <span style="font-size:10px;color:${accent};font-weight:600;">${getCartCount(theme)} items</span>
-                            </div>
-                            <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>Subtotal</span><span style="color:${textColor};">${formatPrice(subtotal)}</span></div>
-                            <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>Delivery</span><span style="color:${textColor};">${formatPrice(delivery)}</span></div>
-                            <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:8px;"><span>Tip</span><span style="color:${textColor};">15%</span></div>
-                            <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:800;color:${textColor};padding-top:8px;border-top:1px solid ${g ? 'rgba(255,255,255,0.08)' : 'var(--border-color)'};"><span>Total</span><span style="color:${accent};">${formatPrice(total)}</span></div>
-                        </div>
-                    </div>
-                    <div style="padding:10px 12px 80px;border-top:1px solid ${g ? 'rgba(255,255,255,0.06)' : 'var(--border-color)'};background:${pageBg};">
-                        <div onclick="placeOrder('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:14px;font-size:15px;font-weight:800;cursor:pointer;">Place Order - ${formatPrice(total)}</div>
-                    </div>
-                </div>`;
-            }
+            function escAttr(v) { return v.replace(/'/g, "\\'"); }
+            function escHtml(v) { return v.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
 
-            // ─── OPTION 2: Neubrutalism — follows same card layout as default ───
+            const tipChipsHTML = tips.map(function(t) {
+                var isActive = t.pct === defaultPct;
+                var bg = isActive ? chipActiveBg : chipInactiveBg;
+                var cl = isActive ? chipActiveCl : textColor;
+                var bd = isActive ? chipActiveBorder : chipInactiveBorder;
+                var sh = isActive ? chipActiveShadow : 'none';
+                var newTotal = calcTotal(t.amt);
+                var ft = formatPrice(newTotal);
+                var fa = formatPrice(t.amt);
+                var amtStr = t.amt.toFixed(2);
+                var totalStr = newTotal.toFixed(2);
+                var tClr = escAttr(textColor);
+                var aClr = escAttr(accent);
+                var iBg = escAttr(chipInactiveBg);
+                var iBd = escAttr(chipInactiveBorder);
+                var aBg = escAttr(chipActiveBg);
+                var aBd = escAttr(chipActiveBorder);
+                var aSh = escAttr(chipActiveShadow);
+
+                var onclick = '';
+                if (!isActive) {
+                    onclick = ' onclick="var c=this.parentElement.querySelectorAll(\'span\');for(var i=0;i<c.length;i++){c[i].style.background=\'' + iBg + '\';c[i].style.color=\'' + tClr + '\';c[i].style.border=\'' + iBd + '\';c[i].style.boxShadow=\'none\'}this.style.background=\'' + aBg + '\';this.style.color=\'' + aClr + '\';this.style.border=\'' + aBd + '\';this.style.boxShadow=\'' + aSh + '\';document.getElementById(\'tip-line-' + theme + '\').innerHTML=\'<span>Tip (' + t.pct + '%)</span><span style=&quot;color:' + escHtml(textColor) + ';&quot;>' + fa + '</span>\';document.getElementById(\'total-line-' + theme + '\').innerHTML=\'<span>Total</span><span style=&quot;color:' + escHtml(accent) + ';&quot;>' + ft + '</span>\';document.getElementById(\'cta-total-' + theme + '\').textContent=\'' + totalStr + '\';"';
+                }
+
+                return '<span' + onclick + ' style="flex:1;padding:8px 6px;text-align:center;background:' + bg + ';color:' + cl + ';border-radius:' + chipRadius + ';font-size:10px;font-weight:700;cursor:pointer;border:' + bd + ';box-shadow:' + sh + ';white-space:nowrap;transition:all 0.15s ease;">' + t.pct + '%<br><span style="font-size:8px;font-weight:500;opacity:0.8;">$' + amtStr + '</span></span>';
+            }).join('');
+
+            var customOnclick = 'onclick="var amt=parseFloat(prompt(\'Enter custom tip amount ($):\',\'\'));if(!isNaN(amt)&&amt>=0){amt=+amt.toFixed(2);var nt=+(' + subtotal + '+' + delivery + '+' + tax + '+amt+' + promo + ').toFixed(2);document.getElementById(\'tip-line-' + theme + '\').innerHTML=\'<span>Tip (Custom)</span><span style=&quot;color:' + escHtml(textColor) + ';&quot;>$' + "'+amt.toFixed(2)+'" + '</span>\';document.getElementById(\'total-line-' + theme + '\').innerHTML=\'<span>Total</span><span style=&quot;color:' + escHtml(accent) + ';&quot;>$' + "'+nt.toFixed(2)+'" + '</span>\';document.getElementById(\'cta-total-' + theme + '\').textContent=nt.toFixed(2);var c=this.parentElement.querySelectorAll(\'span\');for(var i=0;i<c.length;i++){c[i].style.background=\'' + escAttr(chipInactiveBg) + '\';c[i].style.color=\'' + escAttr(textColor) + '\';c[i].style.border=\'' + escAttr(chipInactiveBorder) + '\';c[i].style.boxShadow=\'none\'}this.style.background=\'' + escAttr(chipActiveBg) + '\';this.style.color=\'' + chipActiveCl + '\';this.style.border=\'' + escAttr(chipActiveBorder) + '\';this.style.boxShadow=\'' + escAttr(chipActiveShadow) + '\';}"';
+
+            var customChip = '<span ' + customOnclick + ' style="flex:1;padding:8px 6px;text-align:center;background:' + chipInactiveBg + ';color:' + textColor + ';border-radius:' + chipRadius + ';font-size:10px;font-weight:700;cursor:pointer;border:' + chipInactiveBorder + ';white-space:nowrap;transition:all 0.15s ease;">Custom</span>';
+
+            var timeSlots = ['10:00-10:30', '10:30-11:00', '11:00-11:30'];
+            var timeSlotsHTML = timeSlots.map(function(t, i) {
+                var isActive = i === 0;
+                var bg = isActive ? chipActiveBg : chipInactiveBg;
+                var cl = isActive ? chipActiveCl : textColor;
+                var bd = isActive ? chipActiveBorder : chipInactiveBorder;
+                var sh = isActive ? chipActiveShadow : 'none';
+                return '<span style="padding:6px;text-align:center;background:' + bg + ';color:' + cl + ';border-radius:' + chipRadius + ';font-size:9px;font-weight:600;cursor:pointer;border:' + bd + ';box-shadow:' + sh + ';">' + t + '</span>';
+            }).join('');
+
+            var subtotalPaid = subtotal + promo;
+
             return `<div style="position:absolute;inset:0;background:${pageBg};z-index:5;display:flex;flex-direction:column;">
-                <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1.5px solid var(--border-color);">
+                <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:${headerBorder};">
                     ${backBtn}
-                    <div style="font-size:16px;font-weight:700;color:${textColor};">Checkout</div>
-                </div>
-                <div style="flex:1;overflow-y:auto;padding:12px 12px 100px;">
-                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;padding:0 4px;">
-                        <div style="display:flex;flex-direction:column;align-items:center;">
-                            <div style="width:28px;height:28px;border-radius:50%;background:${accent};color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--border-color);box-shadow:2px 2px 0 var(--border-color);}">1</div>
-                            <span style="font-size:9px;font-weight:600;color:${accent};margin-top:3px;">Cart</span>
-                        </div>
-                        <div style="flex:1;height:2px;background:${accent};margin:0 2px;margin-bottom:16px;"></div>
-                        <div style="display:flex;flex-direction:column;align-items:center;">
-                            <div style="width:28px;height:28px;border-radius:50%;background:${accent};color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--border-color);box-shadow:2px 2px 0 var(--border-color);}">2</div>
-                            <span style="font-size:9px;font-weight:600;color:${accent};margin-top:3px;">Pay</span>
-                        </div>
-                        <div style="flex:1;height:2px;background:var(--border-color);margin:0 2px;margin-bottom:16px;"></div>
-                        <div style="display:flex;flex-direction:column;align-items:center;">
-                            <div style="width:28px;height:28px;border-radius:50%;background:var(--pill-bg);color:${textColor};font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--border-color);">3</div>
-                            <span style="font-size:9px;font-weight:600;color:${subColor};margin-top:3px;">Done</span>
-                        </div>
+                    <div style="flex:1;display:flex;flex-direction:column;">
+                        <div style="font-size:16px;font-weight:700;color:${textColor};">Checkout</div>
+                        <div style="font-size:9px;font-weight:600;color:${subColor};">Step 2 of 3</div>
                     </div>
-                    <div style="background:var(--pill-bg);border-radius:4px;padding:14px;margin-bottom:10px;border:1.5px solid var(--border-color);box-shadow:3px 3px 0 var(--border-color);">
+                </div>
+                <div style="flex:1;overflow-y:auto;padding:12px 12px 120px;">
+                    <div style="background:${cardBg};border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow};border:${cardBorder};${glassBlur}">
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
                             <div style="font-size:12px;font-weight:700;color:${textColor};">${iconFA('map-pin', 'font-size:12px;margin-right:6px;')}Delivery Address</div>
-                            <div onclick="navigateToPage('${theme}','add-location')" style="font-size:10px;font-weight:700;color:${accent};cursor:pointer;">+ Change</div>
+                            <div onclick="navigateToPage('${theme}','add-location')" style="font-size:10px;font-weight:700;color:${accent};cursor:pointer;">Change</div>
                         </div>
                         <div style="font-size:12px;color:${textColor};">921 Church St</div>
                         <div style="font-size:10px;color:${subColor};">San Francisco, CA 94114</div>
                     </div>
-                    <div style="background:var(--pill-bg);border-radius:4px;padding:14px;margin-bottom:10px;border:1.5px solid var(--border-color);box-shadow:3px 3px 0 var(--border-color);">
+                    <div style="background:${cardBg};border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow};border:${cardBorder};${glassBlur}">
                         <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:10px;">${iconFA('clock', 'font-size:12px;margin-right:6px;')}Delivery Time</div>
                         <div style="display:flex;gap:6px;margin-bottom:8px;">
-                            <span style="padding:6px 14px;background:${accent};color:#fff;border-radius:4px;font-size:10px;font-weight:700;cursor:pointer;border:1.5px solid var(--border-color);box-shadow:1.5px 1.5px 0 var(--border-color);">Today</span>
-                            <span style="padding:6px 14px;background:var(--card-bg);color:${textColor};border-radius:4px;font-size:10px;font-weight:600;cursor:pointer;border:1.5px solid var(--border-color);">Tomorrow</span>
+                            <span style="padding:6px 14px;background:${accent};color:#fff;border-radius:${chipRadius};font-size:10px;font-weight:700;cursor:pointer;border:${chipActiveBorder};box-shadow:${chipActiveShadow};">Today</span>
+                            <span style="padding:6px 14px;background:${chipInactiveBg};color:${textColor};border-radius:${chipRadius};font-size:10px;font-weight:600;cursor:pointer;border:${chipInactiveBorder};">Tomorrow</span>
                         </div>
-                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">${timeSlots.slice(0, 3).map(t => `<span style="padding:6px;text-align:center;background:var(--card-bg);border-radius:4px;font-size:9px;font-weight:600;color:${textColor};cursor:pointer;border:1.5px solid var(--border-color);">${t}</span>`).join('')}</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">${timeSlotsHTML}</div>
                     </div>
-                    <div style="background:var(--pill-bg);border-radius:4px;padding:14px;margin-bottom:10px;border:1.5px solid var(--border-color);box-shadow:3px 3px 0 var(--border-color);">
-                        <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:8px;">Payment</div>
+                    <div style="background:${cardBg};border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow};border:${cardBorder};${glassBlur}">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                            <div style="font-size:12px;font-weight:700;color:${textColor};">${iconFA('hand-holding-heart', 'font-size:12px;margin-right:6px;')}Tip</div>
+                            <span id="tip-amount-${theme}" style="font-size:11px;font-weight:700;color:${accent};">${formatPrice(defaultAmt)}</span>
+                        </div>
+                        <div style="display:flex;gap:6px;">${tipChipsHTML}${customChip}</div>
+                    </div>
+                    <div style="background:${cardBg};border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow};border:${cardBorder};${glassBlur}">
+                        <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:8px;">${iconFA('credit-card', 'font-size:12px;margin-right:6px;')}Payment</div>
                         <div style="display:flex;gap:8px;">
-                            <div style="flex:1;background:${accent};color:#fff;padding:12px;border-radius:4px;text-align:center;font-size:10px;font-weight:700;cursor:pointer;border:1.5px solid var(--border-color);box-shadow:2px 2px 0 var(--border-color);">${iconFA('credit-card', 'font-size:14px;')}<br><span style="font-size:9px;">Card</span></div>
-                            <div style="flex:1;background:var(--card-bg);color:${textColor};padding:12px;border-radius:4px;text-align:center;font-size:10px;font-weight:600;cursor:pointer;border:1.5px solid var(--border-color);">${iconFA('dollar-sign', 'font-size:14px;')}<br><span style="font-size:9px;">Cash</span></div>
-                            <div style="flex:1;background:var(--card-bg);color:${textColor};padding:12px;border-radius:4px;text-align:center;font-size:10px;font-weight:600;cursor:pointer;border:1.5px solid var(--border-color);">${iconFA('smartphone', 'font-size:14px;')}<br><span style="font-size:9px;">PayPal</span></div>
+                            <div style="flex:1;background:${accent};color:#fff;padding:12px 8px;border-radius:${chipRadius};text-align:center;font-size:10px;font-weight:700;cursor:pointer;border:${chipActiveBorder};box-shadow:${chipActiveShadow};">${iconFA('credit-card', 'font-size:14px;')}<br><span style="font-size:9px;">Card</span></div>
+                            <div style="flex:1;background:${chipInactiveBg};color:${textColor};padding:12px 8px;border-radius:${chipRadius};text-align:center;font-size:10px;font-weight:600;cursor:pointer;border:${chipInactiveBorder};">${iconFA('money-bill', 'font-size:14px;')}<br><span style="font-size:9px;">Cash</span></div>
+                            <div style="flex:1;background:${chipInactiveBg};color:${textColor};padding:12px 8px;border-radius:${chipRadius};text-align:center;font-size:10px;font-weight:600;cursor:pointer;border:${chipInactiveBorder};">${iconFA('mobile', 'font-size:14px;')}<br><span style="font-size:9px;">Apple Pay</span></div>
                         </div>
                     </div>
-                    <div style="background:var(--pill-bg);border-radius:4px;padding:14px;margin-bottom:10px;border:1.5px solid var(--border-color);box-shadow:3px 3px 0 var(--border-color);">
+                    <div style="background:${cardBg};border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow};border:${cardBorder};${glassBlur}">
+                        <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:8px;">${iconFA('receipt', 'font-size:12px;margin-right:6px;')}Order Summary</div>
                         <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>Subtotal</span><span style="color:${textColor};">${formatPrice(subtotal)}</span></div>
-                        <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>Delivery</span><span style="color:${textColor};">${formatPrice(delivery)}</span></div>
-                        <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:800;color:${textColor};padding-top:8px;border-top:1.5px solid var(--border-color);margin-top:4px;"><span>Total</span><span style="color:${accent};">${formatPrice(total)}</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>Delivery Fee</span><span style="color:${textColor};">${formatPrice(delivery)}</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>Tax</span><span style="color:${textColor};">${formatPrice(tax)}</span></div>
+                        <div id="tip-line-${theme}" style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>Tip (${defaultPct}%)</span><span style="color:${textColor};">${formatPrice(defaultAmt)}</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:11px;color:${isGlass ? '#4CAF50' : '#2e7d32'};margin-bottom:3px;"><span>Promo applied (SAVE3)</span><span>-${formatPrice(Math.abs(promo))}</span></div>
+                        <div style="border-top:1px solid ${isGlass ? 'rgba(255,255,255,0.08)' : 'var(--border-color)'};margin-top:4px;padding-top:8px;"></div>
+                        <div id="total-line-${theme}" style="display:flex;justify-content:space-between;font-size:15px;font-weight:800;color:${textColor};"><span>Total</span><span style="color:${accent};">${formatPrice(defaultTotal)}</span></div>
                     </div>
                 </div>
-                <div style="padding:10px 12px 80px;border-top:1.5px solid var(--border-color);background:${pageBg};">
-                    <div onclick="placeOrder('${theme}')" style="width:100%;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:4px;font-size:14px;font-weight:700;cursor:pointer;border:1.5px solid var(--border-color);box-shadow:3px 3px 0 var(--border-color);">Place Order - ${formatPrice(total)}</div>
+                <div style="padding:10px 12px 80px;border-top:${headerBorder};background:${pageBg};">
+                    <div onclick="placeOrder('${theme}')" style="width:100%;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:${ctaRadius};font-size:14px;font-weight:700;cursor:pointer;border:${ctaBorder};box-shadow:${ctaShadow};margin-bottom:6px;">Place Order &middot; $<span id="cta-total-${theme}">${defaultTotal.toFixed(2)}</span></div>
+                    <div style="text-align:center;font-size:9px;color:${subColor};font-weight:600;">Est. delivery 25&ndash;35 min</div>
                 </div>
             </div>`;
         }
@@ -7849,67 +7791,47 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
         // ─── PAGE: ORDER SUCCESS (drawOrderSuccessPage) ───
         // ─── ORDER SUCCESS PAGE ────────────────────────────────────────
         function drawOrderSuccessPage(theme, style = 'default') {
-            const textColor = theme === 'glassmorphism' ? '#fff' : 'var(--text-primary)';
-            const subColor = theme === 'glassmorphism' ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
-            const accent = theme === 'neubrutalism' ? '#FF6B35' : 'var(--accent)';
-            const pageBg = theme === 'glassmorphism' ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
-            const mapCanada = 'https://images.unsplash.com/photo-1727584458575-dcbe11711717?auto=format&fit=crop&w=600&q=80';
+            const isGlass = theme === 'glassmorphism';
+            const isBrut = theme === 'neubrutalism';
+            const textColor = isGlass ? '#fff' : 'var(--text-primary)';
+            const subColor = isGlass ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
+            const accent = isBrut ? '#FF6B35' : 'var(--accent)';
+            const pageBg = isGlass ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
+            const cardBg = isGlass ? 'rgba(255,255,255,0.04)' : 'var(--card-bg)';
+            const cardBorder = isGlass ? 'rgba(255,255,255,0.08)' : 'var(--border-color)';
+            const cardShadow = isGlass ? 'none' : (isBrut ? '3px 3px 0 var(--border-color)' : 'var(--card-shadow)');
+            const btnShadow = isBrut ? 'border:2px solid var(--border-color);box-shadow:4px 4px 0 var(--border-color);' : '';
+            const copyIcon = isGlass ? iconMaterial('file-copy-line', 'font-size:11px;opacity:0.6;') : (isBrut ? iconBS('copy', 'font-size:11px;opacity:0.6;') : iconFA('copy', 'font-size:11px;opacity:0.6;'));
+            const chevronIcon = isGlass ? iconMaterial('arrow-drop-down-line', '') : (isBrut ? iconBS('chevron-down', '') : iconFA('chevron-down', ''));
 
-            if (style === 'default') {
-                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:5;display:flex;flex-direction:column;">
-                    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;">
-                        <div style="width:80px;height:80px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;margin-bottom:20px;">${iconFA('check', 'font-size:36px;color:#fff;')}</div>
-                        <div style="font-size:22px;font-weight:800;color:${textColor};margin-bottom:6px;">Order Placed!</div>
-                        <div style="font-size:13px;color:${subColor};margin-bottom:4px;">Order #ORD-5682</div>
-                        <div style="font-size:11px;color:${subColor};margin-bottom:24px;">Estimated arrival</div>
-                        <div id="eta-${theme}" style="font-size:36px;font-weight:900;color:${accent};margin-bottom:24px;">25:00</div>
-                        <div style="width:100%;height:120px;background:var(--pill-bg);border-radius:16px;margin-bottom:20px;overflow:hidden;position:relative;">
-                            <img src="${mapCanada}" style="width:100%;height:100%;object-fit:cover;">
-                            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 8px ${accent}30;">${iconFA('moto', 'font-size:18px;color:#fff;')}</div>
-                        </div>
-                        <div onclick="trackOrder('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:12px;">Track Order</div>
-                        <div onclick="goBack('${theme}')" style="font-size:12px;color:${subColor};cursor:pointer;text-decoration:underline;">Continue Shopping</div>
-                    </div>
-                </div>`;
-            }
-
-            if (style === 'option 1') {
-                return `<div style="position:absolute;inset:0;background:${pageBg};z-index:5;display:flex;flex-direction:column;">
-                    <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:24px;">
-                        <div style="font-size:48px;margin-bottom:12px;">${iconFA('party-popper', 'font-size:44px;color:' + accent + ';')}</div>
-                        <div style="font-size:22px;font-weight:800;color:${textColor};margin-bottom:4px;">Order Confirmed!</div>
-                        <div style="font-size:13px;color:${subColor};margin-bottom:20px;">Your delicious food is on its way</div>
-                        <div style="background:var(--pill-bg);border-radius:16px;padding:20px;width:100%;margin-bottom:20px;">
-                            <div style="font-size:14px;font-weight:800;color:${textColor};margin-bottom:12px;">Order Summary</div>
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Pepperoni Pizza x1</span><span style="color:${textColor};">${formatPrice(9.99)}</span></div>
-                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:4px;"><span>Beef Burger x2</span><span style="color:${textColor};">${formatPrice(15.98)}</span></div>
-                            <div style="border-top:1px solid var(--border-color);margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;font-size:14px;font-weight:800;color:${textColor};"><span>Total</span><span style="color:${accent};">${formatPrice(28.96)}</span></div>
-                        </div>
-                        <div style="background:var(--pill-bg);border-radius:14px;padding:14px;width:100%;text-align:center;margin-bottom:20px;">
-                            <div style="font-size:11px;color:${subColor};">Estimated Delivery</div>
-                            <div id="eta-${theme}" style="font-size:20px;font-weight:900;color:${accent};">25-35 min</div>
-                        </div>
-                        <div onclick="trackOrder('${theme}')" style="width:100%;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:13px;font-weight:700;cursor:pointer;margin-bottom:12px;">Track Order</div>
-                        <div onclick="goBack('${theme}')" style="font-size:12px;color:${subColor};cursor:pointer;text-decoration:underline;">Continue Shopping</div>
-                    </div>
-                </div>`;
-            }
-
-            // Option 2: Minimal success screen
             return `<div style="position:absolute;inset:0;background:${pageBg};z-index:5;display:flex;flex-direction:column;">
-                <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;">
-                    <div style="width:72px;height:72px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;margin-bottom:20px;animation:pulse 2s infinite;">${iconFA('check', 'font-size:32px;color:#fff;')}</div>
-                    <style>@keyframes pulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.08);opacity:0.9}100%{transform:scale(1);opacity:1}}</style>
-                    <div style="font-size:20px;font-weight:800;color:${textColor};margin-bottom:4px;">Success!</div>
-                    <div style="font-size:12px;color:${subColor};margin-bottom:20px;">Order #ORD-5682</div>
-                    <div style="background:var(--pill-bg);border-radius:14px;padding:16px;width:100%;margin-bottom:20px;">
-                        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;"><span style="color:${subColor};">Pepperoni Pizza x1</span><span style="color:${textColor};">${formatPrice(9.99)}</span></div>
-                        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;"><span style="color:${subColor};">Beef Burger x2</span><span style="color:${textColor};">${formatPrice(15.98)}</span></div>
-                        <div style="border-top:1px solid var(--border-color);margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;font-size:14px;font-weight:800;"><span style="color:${textColor};">Total</span><span style="color:${accent};">${formatPrice(28.96)}</span></div>
+                <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;align-items:center;padding:32px 24px 24px;">
+                    <div style="width:88px;height:88px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;margin-bottom:16px;animation:successPop 0.5s cubic-bezier(0.175,0.885,0.32,1.275);">
+                        <span style="font-size:44px;color:#fff;line-height:1;">&#10003;</span>
                     </div>
-                    <div onclick="showToast('Receipt downloaded!')" style="display:flex;align-items:center;gap:6px;font-size:11px;color:${accent};cursor:pointer;margin-bottom:24px;">${iconFA('download', 'font-size:12px;')} Download Receipt</div>
-                    <div onclick="trackOrder('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:12px;">Track Order</div>
-                    <div onclick="goBack('${theme}')" style="font-size:12px;color:${subColor};cursor:pointer;text-decoration:underline;">Continue Shopping</div>
+                    <style>@keyframes successPop{0%{transform:scale(0);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}</style>
+                    <div style="font-size:22px;font-weight:800;color:${textColor};margin-bottom:4px;">Order Placed!</div>
+                    <div style="font-size:13px;color:${subColor};margin-bottom:20px;">Your food is being prepared</div>
+                    <div style="background:${cardBg};border-radius:var(--card-radius);padding:18px;width:100%;margin-bottom:16px;box-shadow:${cardShadow};border:1px solid ${cardBorder};text-align:center;">
+                        <div style="font-size:14px;font-weight:700;color:${textColor};margin-bottom:6px;">Eaterny Kitchen</div>
+                        <div onclick="navigator.clipboard.writeText('ORD-5682');showToast('Order number copied!')" style="font-size:12px;color:${accent};font-weight:600;cursor:pointer;margin-bottom:10px;display:inline-flex;align-items:center;gap:4px;">#ORD-5682 ${copyIcon}</div>
+                        <div style="font-size:20px;font-weight:900;color:${accent};">25-35 min</div>
+                        <div style="font-size:11px;color:${subColor};">Estimated delivery</div>
+                    </div>
+                    <div style="background:${cardBg};border-radius:var(--card-radius);padding:0;width:100%;margin-bottom:20px;box-shadow:${cardShadow};border:1px solid ${cardBorder};overflow:hidden;">
+                        <div onclick="var el=document.getElementById('orderSummaryBody-${theme}');var ico=document.getElementById('orderSummaryIcon-${theme}');if(el.style.display==='none'){el.style.display='block';ico.style.transform='rotate(180deg)'}else{el.style.display='none';ico.style.transform='rotate(0deg)'}" style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;cursor:pointer;">
+                            <span style="font-size:14px;font-weight:700;color:${textColor};">Order Summary</span>
+                            <span id="orderSummaryIcon-${theme}" style="font-size:12px;color:${subColor};transition:transform 0.2s;">${chevronIcon}</span>
+                        </div>
+                        <div id="orderSummaryBody-${theme}" style="padding:0 18px 16px;">
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:6px;"><span>Pepperoni Pizza x1</span><span style="color:${textColor};">${formatPrice(9.99)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:6px;"><span>Classic Beef Burger x2</span><span style="color:${textColor};">${formatPrice(15.98)}</span></div>
+                            <div style="display:flex;justify-content:space-between;font-size:12px;color:${subColor};margin-bottom:6px;"><span>Delivery Fee</span><span style="color:${textColor};">${formatPrice(2.99)}</span></div>
+                            <div style="border-top:1px solid ${cardBorder};margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;font-size:14px;font-weight:800;color:${textColor};"><span>Total</span><span style="color:${accent};">${formatPrice(28.96)}</span></div>
+                        </div>
+                    </div>
+                    <div onclick="trackOrder('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;margin-bottom:12px;${btnShadow}">Track Order</div>
+                    <div onclick="goBack('${theme}')" style="font-size:13px;color:${subColor};cursor:pointer;text-decoration:underline;padding:8px;">Continue Shopping</div>
                 </div>
             </div>`;
         }
