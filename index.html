@@ -2915,7 +2915,8 @@
                 cartFab.style.display = 'none';
                 trackerFab.style.display = 'flex';
             } else if (phase === 'carted' || phase === 'checkout') {
-                cartFab.style.display = 'flex';
+                var onCartPage = currentPageByTheme[theme] === 'cart-page';
+                cartFab.style.display = onCartPage ? 'none' : 'flex';
                 trackerFab.style.display = 'none';
             } else {
                 cartFab.style.display = 'none';
@@ -4687,16 +4688,23 @@
 
                 const cartCount = getCartCount(theme);
                 // Left FAB – Cart
+                const fabLabelColor = isGlass ? 'rgba(255,255,255,0.5)' : (isBrut ? 'var(--text-secondary)' : '#999');
                 container.innerHTML += `
-                    <div id="fabCart-${theme}" onclick="toggleFabSheet('${theme}','cart')" style="position:absolute;bottom:${fabBottom};left:16px;width:${fabSize};height:${fabSize};border-radius:50%;background:${fabBg};box-shadow:${fabShadow};display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:45;border:${fabBorder};transition:transform 0.2s cubic-bezier(0.16,1,0.3,1);color:${fabIconColor};">
-                        ${cartIcon}
-                        <span id="fabCartBadge-${theme}" style="position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;background:#FF3B30;color:#fff;font-size:10px;font-weight:700;display:${cartCount > 0 ? 'flex' : 'none'};align-items:center;justify-content:center;padding:0 4px;box-shadow:0 2px 6px rgba(255,59,48,0.4);">${cartCount}</span>
+                    <div style="position:absolute;bottom:${fabBottom};left:16px;display:flex;flex-direction:column;align-items:center;gap:4px;z-index:45;">
+                        <div id="fabCart-${theme}" onclick="toggleFabSheet('${theme}','cart')" style="width:${fabSize};height:${fabSize};border-radius:50%;background:${fabBg};box-shadow:${fabShadow};display:flex;align-items:center;justify-content:center;cursor:pointer;border:${fabBorder};transition:transform 0.2s cubic-bezier(0.16,1,0.3,1);color:${fabIconColor};position:relative;">
+                            ${cartIcon}
+                            <span id="fabCartBadge-${theme}" style="position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;background:#FF3B30;color:#fff;font-size:10px;font-weight:700;display:${cartCount > 0 ? 'flex' : 'none'};align-items:center;justify-content:center;padding:0 4px;box-shadow:0 2px 6px rgba(255,59,48,0.4);">${cartCount}</span>
+                        </div>
+                        <span style="font-size:9px;font-weight:600;color:${fabLabelColor};">Cart</span>
                     </div>`;
 
                 // Right FAB – Order Tracker
                 container.innerHTML += `
-                    <div id="fabTracker-${theme}" onclick="toggleFabSheet('${theme}','tracker')" style="position:absolute;bottom:${fabBottom};right:16px;width:${fabSize};height:${fabSize};border-radius:50%;background:${fabBg};box-shadow:${fabShadow};display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:45;border:${fabBorder};transition:transform 0.2s cubic-bezier(0.16,1,0.3,1);color:${fabIconColor};">
-                        ${trackerIcon}
+                    <div style="position:absolute;bottom:${fabBottom};right:16px;display:flex;flex-direction:column;align-items:center;gap:4px;z-index:45;">
+                        <div id="fabTracker-${theme}" onclick="toggleFabSheet('${theme}','tracker')" style="width:${fabSize};height:${fabSize};border-radius:50%;background:${fabBg};box-shadow:${fabShadow};display:flex;align-items:center;justify-content:center;cursor:pointer;border:${fabBorder};transition:transform 0.2s cubic-bezier(0.16,1,0.3,1);color:${fabIconColor};">
+                            ${trackerIcon}
+                        </div>
+                        <span style="font-size:9px;font-weight:600;color:${fabLabelColor};">Track</span>
                     </div>`;
 
                 // Voice Search Modal
@@ -7123,7 +7131,7 @@ return `<div style="position:absolute;inset:0;background:${kit.pageBg};z-index:5
                     <div style="display:flex;align-items:center;gap:10px;">
                         <div style="display:flex;align-items:center;${kit.stepper}overflow:hidden;flex-shrink:0;">
                             <div onclick="var n=this.nextElementSibling;var v=Math.max(1,parseInt(n.textContent)-1);n.textContent=v" style="width:36px;height:42px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:${kit.text};cursor:pointer;">-</div>
-                            <div style="width:28px;text-align:center;font-size:14px;font-weight:900;color:${kit.text};">1</div>
+                            <div id="pdp-qty-${theme}" style="width:28px;text-align:center;font-size:14px;font-weight:900;color:${kit.text};">1</div>
                             <div onclick="var n=this.previousElementSibling;n.textContent=parseInt(n.textContent)+1" style="width:36px;height:42px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:${kit.accent};cursor:pointer;">+</div>
                         </div>
                         <div onclick="pdpAddToCart('${theme}','${item.id}','${itemName.replace(/'/g, "\\'")}','${hero.replace(/'/g, "\\'")}','${itemDesc.replace(/'/g, "\\'")}')" id="pdp-add-btn-${theme}" class="neu-add-btn" style="flex:1;padding:14px;background:${kit.accent};color:${kit.accentText};text-align:center;${kit.ctaCss}font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.15s;"><span style="font-size:11px;color:rgba(255,255,255,0.7);">Total</span> ${iconFA('shopping-bag', 'font-size:13px;')} <span id="pdp-total-${theme}">${formatPrice(itemPrice)}</span></div>
@@ -7266,7 +7274,7 @@ return `<div style="position:absolute;inset:0;background:${kit.pageBg};z-index:5
                     <div style="display:flex;align-items:center;gap:10px;">
                         <div style="display:flex;align-items:center;${kit.stepper}overflow:hidden;flex-shrink:0;">
                             <div onclick="var n=this.nextElementSibling;var v=Math.max(1,parseInt(n.textContent)-1);n.textContent=v" style="width:36px;height:42px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:${kit.text};cursor:pointer;">-</div>
-                            <div style="width:28px;text-align:center;font-size:14px;font-weight:900;color:${kit.text};">1</div>
+                            <div id="pdp-qty-${theme}" style="width:28px;text-align:center;font-size:14px;font-weight:900;color:${kit.text};">1</div>
                             <div onclick="var n=this.previousElementSibling;n.textContent=parseInt(n.textContent)+1" style="width:36px;height:42px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:${kit.accent};cursor:pointer;">+</div>
                         </div>
                         <div onclick="pdpAddToCart('${theme}','${item.id}','${itemName.replace(/'/g, "\\'")}','${hero.replace(/'/g, "\\'")}','${itemDesc.replace(/'/g, "\\'")}')" id="pdp-add-btn-${theme}" class="neu-add-btn" style="flex:1;padding:14px;background:${kit.accent};color:${kit.accentText};text-align:center;${kit.ctaCss}font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.15s;"><span style="font-size:11px;color:rgba(255,255,255,0.7);">Total</span> ${iconFA('shopping-bag', 'font-size:13px;')} <span id="pdp-total-${theme}">${formatPrice(itemPrice)}</span></div>
@@ -7431,12 +7439,19 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
             if (!st.variant) {
                 var errEl = document.getElementById('pdp-var-err-' + theme);
                 if (errEl) { errEl.style.color = '#EF4444'; errEl.textContent = 'Please select a variant'; }
-                var headingEl = document.querySelector('#viewport-' + theme + ' [id=\"pdp-var-err-' + theme + '\"]');
                 return;
             }
             var _t = updatePDPPrice(theme);
+            var qtyEl = document.getElementById('pdp-qty-' + theme);
+            var qty = qtyEl ? parseInt(qtyEl.textContent) || 1 : 1;
             animateFlyToCart(theme, document.getElementById('pdp-add-btn-' + theme));
-            addToCart(theme, { id: itemId, name: itemName, price: _t, img: hero, desc: itemDesc });
+            var cart = window.appState.cart[theme];
+            var existing = cart.find(i => i.id === itemId);
+            if (existing) { existing.qty += qty; }
+            else { cart.push({ id: itemId, name: itemName, price: _t, img: hero, desc: itemDesc, qty: qty }); }
+            window.appState.orderPhase[theme] = 'carted';
+            showToast(itemName + ' x' + qty + ' added to cart');
+            renderAllViewports();
             setActiveNav(3);
             navigateToPage(theme, 'cart-page');
         }
