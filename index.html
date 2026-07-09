@@ -2513,7 +2513,7 @@
         style="width:28%; min-width:300px; max-width:400px; background:#141414; border-right:1px solid #2a2a2a; overflow-y:auto; transition:width 0.3s, min-width 0.3s, opacity 0.3s;">
 
         <div onclick="toggleLeftPanel()"
-            style="position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:flex-end;padding:4px 8px;cursor:pointer;background:#141414;border-bottom:1px solid #2a2a2a;">
+            style="position:relative;top:auto;z-index:10;display:flex;align-items:center;justify-content:flex-end;padding:4px 8px;cursor:pointer;background:#141414;border-bottom:1px solid #2a2a2a;">
             <span id="collapseIcon" style="color:#666;font-size:12px;font-weight:700;">◀ Collapse</span>
         </div>
 
@@ -7081,7 +7081,7 @@ ${bOtherCats}
             const offersBanner = drawPDPOffersBanner(theme, kit);
 
 return `<div style="position:absolute;inset:0;background:${kit.pageBg};z-index:5;display:flex;flex-direction:column;">
-                <div id="pdp-hero-${theme}" style="position:sticky;top:0;z-index:1;height:280px;overflow:hidden;flex-shrink:0;">
+                <div id="pdp-hero-${theme}" style="position:relative;top:auto;z-index:1;height:280px;overflow:hidden;flex-shrink:0;">
                     ${_pdpHeroCarousel(theme, item, kit.heroFilter, kit.dotOn, kit.dotOff)}
                     <div style="position:absolute;inset:0;background:${kit.heroGrad};pointer-events:none;"></div>
                     ${backBtn}${heartBtn}
@@ -7211,7 +7211,7 @@ return `<div style="position:absolute;inset:0;background:${kit.pageBg};z-index:5
             const glassCardStyle = 'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:18px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:16px;';
 
 return `<div style="position:absolute;inset:0;background:${kit.pageBg};z-index:5;display:flex;flex-direction:column;">
-                <div id="pdp-hero-${theme}" style="position:sticky;top:0;z-index:1;height:280px;overflow:hidden;flex-shrink:0;">
+                <div id="pdp-hero-${theme}" style="position:relative;top:auto;z-index:1;height:280px;overflow:hidden;flex-shrink:0;">
                     ${_pdpHeroCarousel(theme, item, '', '#fff', 'rgba(255,255,255,0.4)')}
                     <div style="position:absolute;inset:0;background:${kit.heroGrad};pointer-events:none;"></div>
                     ${backBtn}${heartBtn}
@@ -7325,7 +7325,7 @@ return `<div style="position:absolute;inset:0;background:${kit.pageBg};z-index:5
             const offersBanner = drawPDPOffersBanner(theme, kit);
 
 return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:5;display:flex;flex-direction:column;">
-                <div id="pdp-hero-${theme}" style="position:sticky;top:0;z-index:1;height:270px;overflow:hidden;flex-shrink:0;border-bottom:4px solid ${accent};">
+                <div id="pdp-hero-${theme}" style="position:relative;top:auto;z-index:1;height:270px;overflow:hidden;flex-shrink:0;border-bottom:4px solid ${accent};">
                     ${_pdpHeroCarousel(theme, item, 'brightness(0.85)', '#fff', 'rgba(255,255,255,0.55)')}
                     <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.2) 0%,transparent 30%,transparent 50%,rgba(0,0,0,0.75) 100%);pointer-events:none;"></div>
                     ${backBtn}${heartBtn}
