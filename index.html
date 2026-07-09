@@ -3275,22 +3275,15 @@
         function renderTopBarStylePicker() {
             const container = document.getElementById('topBarStyleContainer');
             if (!container) return;
-            let html = '<div style="display:grid;grid-template-columns:40px 1fr 1fr 1fr;gap:2px;font-size:8px;color:#888;">';
-            html += '<span></span>' + TOP_BAR_STYLES.map(s => '<span style="text-align:center;">' + s.label.replace(/V\d /,'') + '</span>').join('');
-            VIEW_THEMES.forEach(t => {
-                const current = topNavStyleByTheme[t];
-                html += '<span style="display:flex;align-items:center;font-weight:600;color:'+VIEW_COLORS[t]+';">'+VIEW_NAMES[t]+'</span>';
-                html += TOP_BAR_STYLES.map(s => {
-                    const checked = s.id === current;
-                    return '<label style="display:flex;align-items:center;justify-content:center;cursor:pointer;padding:2px;border-radius:4px;'+(checked?'background:'+VIEW_COLORS[t]+'20;':'')+'"><input type="checkbox" '+(checked?'checked':'')+' onchange="var cbs=this.closest(\'div\').querySelectorAll(\'input\');cbs.forEach(function(cb){if(cb!==this)cb.checked=false},this);setTopBarStyle(\''+t+'\',\''+s.id+'\')" style="cursor:pointer;width:10px;height:10px;"></label>';
-                }).join('');
-            });
-            html += '</div>';
-            container.innerHTML = html;
+            const current = topNavStyleByTheme[activeViewTheme];
+            container.innerHTML = TOP_BAR_STYLES.map(s => {
+                const isActive = s.id === current;
+                return `<button onclick="setTopBarStyle('${s.id}')" style="flex:1;padding:6px 2px;border:none;border-radius:6px;font-size:9px;font-weight:700;cursor:pointer;transition:0.15s;${isActive ? 'background:' + VIEW_COLORS[activeViewTheme] + ';color:#fff;' : 'background:#222;color:#888;'}">${s.label}</button>`;
+            }).join('');
         }
 
-        function setTopBarStyle(theme, style) {
-            topNavStyleByTheme[theme] = style;
+        function setTopBarStyle(style) {
+            topNavStyleByTheme[activeViewTheme] = style;
             saveConfig();
             renderTopBarStylePicker();
             renderAllViewports();
@@ -3305,22 +3298,15 @@
         function renderBottomNavStylePicker() {
             const container = document.getElementById('bottomNavStyleContainer');
             if (!container) return;
-            let html = '<div style="display:grid;grid-template-columns:40px 1fr 1fr 1fr;gap:2px;font-size:8px;color:#888;">';
-            html += '<span></span>' + BOTTOM_BAR_STYLES.map(s => '<span style="text-align:center;">' + s.label.replace(/V\d /,'') + '</span>').join('');
-            VIEW_THEMES.forEach(t => {
-                const current = bottomNavStyleByTheme[t];
-                html += '<span style="display:flex;align-items:center;font-weight:600;color:'+VIEW_COLORS[t]+';">'+VIEW_NAMES[t]+'</span>';
-                html += BOTTOM_BAR_STYLES.map(s => {
-                    const checked = s.id === current;
-                    return '<label style="display:flex;align-items:center;justify-content:center;cursor:pointer;padding:2px;border-radius:4px;'+(checked?'background:'+VIEW_COLORS[t]+'20;':'')+'"><input type="checkbox" '+(checked?'checked':'')+' onchange="var cbs=this.closest(\'div\').querySelectorAll(\'input\');cbs.forEach(function(cb){if(cb!==this)cb.checked=false},this);setBottomNavStyle(\''+t+'\',\''+s.id+'\')" style="cursor:pointer;width:10px;height:10px;"></label>';
-                }).join('');
-            });
-            html += '</div>';
-            container.innerHTML = html;
+            const current = bottomNavStyleByTheme[activeViewTheme];
+            container.innerHTML = BOTTOM_BAR_STYLES.map(s => {
+                const isActive = s.id === current;
+                return `<button onclick="setBottomNavStyle('${s.id}')" style="flex:1;padding:6px 2px;border:none;border-radius:6px;font-size:9px;font-weight:700;cursor:pointer;transition:0.15s;${isActive ? 'background:' + VIEW_COLORS[activeViewTheme] + ';color:#fff;' : 'background:#222;color:#888;'}">${s.label}</button>`;
+            }).join('');
         }
 
-        function setBottomNavStyle(theme, style) {
-            bottomNavStyleByTheme[theme] = style;
+        function setBottomNavStyle(style) {
+            bottomNavStyleByTheme[activeViewTheme] = style;
             saveConfig();
             renderBottomNavStylePicker();
             renderAllViewports();
