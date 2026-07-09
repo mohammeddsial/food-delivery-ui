@@ -42,6 +42,8 @@ if (!pvoMatch) {
         'add-location': 'drawAddLocationPage',
         'deals-page': 'drawDealsPage',
         'search-page': 'drawSearchPage',
+        'subscription-page': 'drawSubscriptionPage',
+        'order-progress': 'drawOrderProgressPage',
     };
 
     console.log('\n  ─── Pages in picker → draw function ───');
