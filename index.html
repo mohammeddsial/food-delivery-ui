@@ -4478,14 +4478,6 @@
             if (mode === 'delivery') {
                 content = `
                     ${searchBar}
-                    <div style="display:flex;align-items:center;gap:12px;padding:14px;background:${inputBg};border:1px solid var(--border-color);border-radius:var(--card-radius);margin-bottom:12px;">
-                        <div style="width:44px;height:44px;border-radius:12px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;">${mapIcon}</div>
-                        <div style="flex:1;">
-                            <div style="font-size:9px;color:${subColor};font-weight:600;letter-spacing:0.5px;margin-bottom:2px;">USE MAP</div>
-                            <div style="font-size:12px;font-weight:600;color:${textColor};">Pin location on map</div>
-                        </div>
-                        <span style="color:var(--text-secondary);">${isGlass ? iconMaterial('arrow-right-s-line', 'color:var(--text-secondary);') : isBrut ? iconBS('chevron-right', 'color:var(--text-secondary);') : iconFA('chevron-right', 'color:var(--text-secondary);')}</span>
-                    </div>
                     <div style="font-size:10px;font-weight:700;color:${subColor};text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Current Address</div>
                     <div onclick="selectLocationAddress('${theme}','Manhattan West, NY');closeLocationSheet('${theme}')" style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--accent-light);border:1px solid var(--accent);border-radius:var(--card-radius);margin-bottom:16px;cursor:pointer;">
                         ${pinIcon}
@@ -4495,6 +4487,15 @@
                         </div>
                         <div style="width:20px;height:20px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;">
                             <div style="width:10px;height:10px;border-radius:50%;background:var(--accent);"></div>
+                        </div>
+                    </div>
+                    <div onclick="selectLocationAddress('${theme}','Brooklyn Heights, NY');closeLocationSheet('${theme}')" style="display:flex;align-items:center;gap:12px;padding:14px;background:${inputBg};border:1px solid var(--border-color);border-radius:var(--card-radius);margin-bottom:16px;cursor:pointer;">
+                        ${pinIcon}
+                        <div style="flex:1;">
+                            <div style="font-size:13px;font-weight:700;color:${textColor};">Brooklyn Heights, NY</div>
+                            <div style="font-size:10px;color:${subColor};margin-top:1px;">4.1 km away</div>
+                        </div>
+                        <div style="width:20px;height:20px;border-radius:50%;border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;">
                         </div>
                     </div>
                     <div onclick="closeLocationSheet('${theme}');navigateToPage('${theme}','add-location')" style="display:flex;align-items:center;gap:12px;padding:14px;border:1.5px dashed var(--border-color);border-radius:var(--card-radius);cursor:pointer;">
@@ -5352,7 +5353,7 @@
                 { icon: 'home', label: 'Home' },
                 { icon: 'menu', label: 'Menu' },
                 { icon: 'gift', label: 'Rewards' },
-                { icon: 'mic', label: 'Search' },
+                
                 { icon: 'cart', label: 'Cart', badge: getCartCount(theme) || null },
                 { icon: 'user', label: 'Profile' }
             ];
@@ -7990,6 +7991,13 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
             const accent = isBrut ? '#FF6B35' : (isGlass ? '#4CAF50' : 'var(--accent)');
             const pageBg = isGlass ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
 
+            const isPickup = deliveryModeByTheme[theme] === 'pickup';
+            const addressLabel = isPickup ? 'Pickup Location' : 'Delivery Address';
+            const addressIcon = isPickup ? 'store' : 'map-pin';
+            const addressText = isPickup ? 'Downtown NYC (1.2 mi)' : '921 Church St';
+            const addressSub = isPickup ? 'Open until 10 PM' : 'San Francisco, CA 94114';
+            const timeLabel = isPickup ? 'Pickup Time' : 'Delivery Time';
+
             const cardBg = isGlass ? 'rgba(255,255,255,0.06)' : 'var(--pill-bg)';
             const cardBorder = isBrut ? '1.5px solid var(--border-color)' : (isGlass ? '1px solid rgba(255,255,255,0.08)' : 'none');
             const cardShadow = isBrut ? '3px 3px 0 var(--border-color)' : (isGlass ? 'none' : '0 2px 12px rgba(0,0,0,0.06)');
@@ -8091,14 +8099,14 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                 <div style="flex:1;overflow-y:auto;padding:12px 12px 120px;">
                     <div style="background:${cardBg};border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow};border:${cardBorder};${glassBlur}">
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                            <div style="font-size:12px;font-weight:700;color:${textColor};">${iconFA('map-pin', 'font-size:12px;margin-right:6px;')}Delivery Address</div>
-                            <div onclick="navigateToPage('${theme}','add-location')" style="font-size:10px;font-weight:700;color:${accent};cursor:pointer;">Change</div>
+                            <div style="font-size:12px;font-weight:700;color:${textColor};">${iconFA(addressIcon, 'font-size:12px;margin-right:6px;')}${addressLabel}</div>
+                            <div onclick="openLocationSheet('${theme}')" style="font-size:10px;font-weight:700;color:${accent};cursor:pointer;">Change</div>
                         </div>
-                        <div style="font-size:12px;color:${textColor};">921 Church St</div>
-                        <div style="font-size:10px;color:${subColor};">San Francisco, CA 94114</div>
+                        <div style="font-size:12px;color:${textColor};">${addressText}</div>
+                        <div style="font-size:10px;color:${subColor};">${addressSub}</div>
                     </div>
                     <div style="background:${cardBg};border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow};border:${cardBorder};${glassBlur}">
-                        <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:10px;">${iconFA('clock', 'font-size:12px;margin-right:6px;')}Delivery Time</div>
+                        <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:10px;">${iconFA('clock', 'font-size:12px;margin-right:6px;')}${timeLabel}</div>
                         <div style="display:flex;gap:6px;margin-bottom:8px;">
                             <span style="padding:6px 14px;background:${accent};color:#fff;border-radius:${chipRadius};font-size:10px;font-weight:700;cursor:pointer;border:${chipActiveBorder};box-shadow:${chipActiveShadow};">Today</span>
                             <span style="padding:6px 14px;background:${chipInactiveBg};color:${textColor};border-radius:${chipRadius};font-size:10px;font-weight:600;cursor:pointer;border:${chipInactiveBorder};">Tomorrow</span>
@@ -8114,7 +8122,7 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                     </div>
                     <div style="background:${cardBg};border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow};border:${cardBorder};${glassBlur}">
                         <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:10px;">${iconFA('wallet', 'font-size:12px;margin-right:6px;')}Payment</div>
-                        <div id="pay-with-points-${theme}" style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:${accent}10;border:1.5px solid var(--border-color);border-radius:12px;margin-bottom:8px;cursor:pointer;" onclick="var chk=document.getElementById('points-chk-${theme}');var toggled=chk.dataset.on!=='1';chk.dataset.on=toggled?'1':'0';chk.style.background=toggled?'${accent}':'transparent';chk.style.borderColor=toggled?'${accent}':'var(--border-color)';chk.querySelector('span').style.display=toggled?'block':'none';var tot=document.getElementById('cta-total-${theme}');var pts=document.getElementById('pts-remain-${theme}');pts.textContent=toggled?'$${formatPrice(total-8.20)}':'$${formatPrice(total)}';tot.textContent=toggled?'${(total-8.20).toFixed(2)}':'${total.toFixed(2)}'">
+                        <div id="pay-with-points-${theme}" style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:${accent}10;border:1.5px solid var(--border-color);border-radius:12px;margin-bottom:8px;cursor:pointer;" onclick="var chk=document.getElementById('points-chk-${theme}');var toggled=chk.dataset.on!=='1';chk.dataset.on=toggled?'1':'0';chk.style.background=toggled?'${accent}':'transparent';chk.style.borderColor=toggled?'${accent}':'var(--border-color)';chk.querySelector('span').style.display=toggled?'block':'none';var tot=document.getElementById('cta-total-${theme}');var pts=document.getElementById('pts-remain-${theme}');pts.textContent=toggled?'$${formatPrice(defaultTotal-8.20)}':'$${formatPrice(defaultTotal)}';tot.textContent=toggled?'${(defaultTotal-8.20).toFixed(2)}':'${defaultTotal.toFixed(2)}'">
                             <span style="font-size:18px;">⭐</span>
                             <div style="flex:1;"><div style="font-size:12px;font-weight:700;color:${textColor};">Pay with Points</div><div style="font-size:10px;color:${subColor};">820 pts = $8.20 available</div></div>
                             <div id="pts-remain-${theme}" style="font-size:11px;font-weight:700;color:${subColor};">Save $8.20</div>
@@ -8140,7 +8148,7 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                     <div style="background:${cardBg};border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow};border:${cardBorder};${glassBlur}">
                         <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:8px;">${iconFA('receipt', 'font-size:12px;margin-right:6px;')}Order Summary</div>
                         <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>Subtotal</span><span style="color:${textColor};">${formatPrice(subtotal)}</span></div>
-                        <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>Delivery Fee</span><span style="color:${textColor};">${formatPrice(delivery)}</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>${isPickup ? 'Service Fee' : 'Delivery Fee'}</span><span style="color:${textColor};">${formatPrice(delivery)}</span></div>
                         <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>Tax</span><span style="color:${textColor};">${formatPrice(tax)}</span></div>
                         <div id="tip-line-${theme}" style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>Tip (${defaultPct}%)</span><span style="color:${textColor};">${formatPrice(defaultAmt)}</span></div>
                         <div style="display:flex;justify-content:space-between;font-size:11px;color:${isGlass ? '#4CAF50' : '#2e7d32'};margin-bottom:3px;"><span>Promo applied (SAVE3)</span><span>-${formatPrice(Math.abs(promo))}</span></div>
@@ -8150,7 +8158,7 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                 </div>
                 <div style="padding:10px 12px 80px;border-top:${headerBorder};background:${pageBg};">
                     <div onclick="placeOrder('${theme}')" style="width:100%;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:${ctaRadius};font-size:14px;font-weight:700;cursor:pointer;border:${ctaBorder};box-shadow:${ctaShadow};margin-bottom:6px;">Place Order &middot; $<span id="cta-total-${theme}">${defaultTotal.toFixed(2)}</span></div>
-                    <div style="text-align:center;font-size:9px;color:${subColor};font-weight:600;">Est. delivery 25&ndash;35 min</div>
+                    <div style="text-align:center;font-size:9px;color:${subColor};font-weight:600;">${isPickup ? 'Est. pickup 25&ndash;35 min' : 'Est. delivery 25&ndash;35 min'}</div>
                 </div>
             </div>`;
         }
@@ -8159,6 +8167,7 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
         function drawCheckoutAccordion(theme, kv) {
             const subtotal = 25.97, delivery = 2.99, tax = 2.34, promo = -3.00;
             const total = subtotal + delivery + tax + promo;
+            const isPickup = deliveryModeByTheme[theme] === 'pickup';
 
             const section = (id, title, icon, content, open = false) => `
                 <div style="background:${kv.cardBg};border-radius:${kv.cardRadius};margin-bottom:8px;box-shadow:${kv.cardShadow};border:${kv.cardBorder};${kv.glassBlur}overflow:hidden;">
@@ -8170,10 +8179,13 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                     <div id="acc-body-${id}-${theme}" style="padding:0 14px 14px;display:${open?'block':'none'};">${content}</div>
                 </div>`;
 
-            const addressContent = `
+            const addressContent = isPickup ? `
+                <div style="font-size:12px;color:${kv.textColor};font-weight:600;">Downtown NYC</div>
+                <div style="font-size:10px;color:${kv.subColor};">Open until 10 PM · 1.2 mi away</div>
+                <div onclick="openLocationSheet('${theme}')" style="font-size:10px;font-weight:700;color:${kv.accent};cursor:pointer;margin-top:8px;">Change branch</div>` : `
                 <div style="font-size:12px;color:${kv.textColor};font-weight:600;">921 Church St</div>
                 <div style="font-size:10px;color:${kv.subColor};">San Francisco, CA 94114 · Apt 4B</div>
-                <div onclick="navigateToPage('${theme}','add-location')" style="font-size:10px;font-weight:700;color:${kv.accent};cursor:pointer;margin-top:8px;">Change address</div>`;
+                <div onclick="openLocationSheet('${theme}')" style="font-size:10px;font-weight:700;color:${kv.accent};cursor:pointer;margin-top:8px;">Change address</div>`;
 
             const timeContent = `
                 <div style="display:flex;gap:6px;margin-bottom:8px;">
@@ -8207,12 +8219,12 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                     <span style="margin-left:auto;font-size:10px;color:${kv.subColor};font-weight:600;">2 of 3</span>
                 </div>
                 <div style="flex:1;overflow-y:auto;padding:10px 12px 120px;">
-                    ${section('address','Delivery Address','map-pin',addressContent,true)}
-                    ${section('time','Delivery Time','clock',timeContent)}
+                    ${section('address',isPickup ? 'Pickup Location' : 'Delivery Address','map-pin',addressContent,true)}
+                    ${section('time',isPickup ? 'Pickup Time' : 'Delivery Time','clock',timeContent)}
                     ${section('payment','Payment','credit-card',paymentContent)}
                     <div style="background:${kv.cardBg};border-radius:${kv.cardRadius};padding:12px 14px;box-shadow:${kv.cardShadow};border:${kv.cardBorder};${kv.glassBlur}margin-top:8px;">
                         <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.subColor};margin-bottom:3px;"><span>Subtotal</span><span style="color:${kv.textColor};">${formatPrice(subtotal)}</span></div>
-                        <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.subColor};margin-bottom:3px;"><span>Delivery</span><span style="color:${kv.textColor};">${formatPrice(delivery)}</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.subColor};margin-bottom:3px;"><span>${isPickup ? 'Service Fee' : 'Delivery'}</span><span style="color:${kv.textColor};">${formatPrice(delivery)}</span></div>
                         <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.subColor};margin-bottom:3px;"><span>Tax</span><span style="color:${kv.textColor};">${formatPrice(tax)}</span></div>
                         <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.isGlass?'#4CAF50':'#2e7d32'};margin-bottom:3px;"><span>Promo (SAVE3)</span><span>-${formatPrice(Math.abs(promo))}</span></div>
                         <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:800;color:${kv.accent};padding-top:6px;border-top:1px solid var(--border-color);margin-top:4px;"><span>Total</span><span>${formatPrice(total)}</span></div>
@@ -8228,6 +8240,7 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
         function drawCheckoutTimeline(theme, kv) {
             const subtotal = 25.97, delivery = 2.99, tax = 2.34, promo = -3.00;
             const total = subtotal + delivery + tax + promo;
+            const isPickup = deliveryModeByTheme[theme] === 'pickup';
 
             const stepCard = (step, title, subtitle, content) => `
                 <div style="position:relative;padding-left:28px;margin-bottom:16px;">
@@ -8241,11 +8254,16 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                     </div>
                 </div>`;
 
-            const addressContent = `
+            const addressContent = isPickup ? `
+                <div style="display:flex;align-items:start;gap:8px;">
+                    <span style="margin-top:2px;">${iconFA('store','font-size:14px;color:'+kv.accent+';')}</span>
+                    <div><div style="font-size:13px;font-weight:700;color:${kv.textColor};">Downtown NYC</div><div style="font-size:11px;color:${kv.subColor};">Open until 10 PM · 1.2 mi</div></div>
+                    <span onclick="openLocationSheet('${theme}')" style="margin-left:auto;font-size:10px;font-weight:700;color:${kv.accent};cursor:pointer;">Edit</span>
+                </div>` : `
                 <div style="display:flex;align-items:start;gap:8px;">
                     <span style="margin-top:2px;">${iconFA('map-pin','font-size:14px;color:'+kv.accent+';')}</span>
                     <div><div style="font-size:13px;font-weight:700;color:${kv.textColor};">921 Church St</div><div style="font-size:11px;color:${kv.subColor};">San Francisco, CA 94114</div></div>
-                    <span onclick="navigateToPage('${theme}','add-location')" style="margin-left:auto;font-size:10px;font-weight:700;color:${kv.accent};cursor:pointer;">Edit</span>
+                    <span onclick="openLocationSheet('${theme}')" style="margin-left:auto;font-size:10px;font-weight:700;color:${kv.accent};cursor:pointer;">Edit</span>
                 </div>`;
 
             const timeContent = `
@@ -8285,12 +8303,12 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                     </div>
                 </div>
                 <div style="flex:1;overflow-y:auto;padding:14px 16px 120px;">
-                    ${stepCard(1,'Address','Where should we deliver?',addressContent)}
+                    ${stepCard(1,isPickup ? 'Pickup Location' : 'Address',isPickup ? 'Where to pickup?' : 'Where should we deliver?',addressContent)}
                     ${stepCard(2,'Schedule','When do you want it?',timeContent)}
                     ${stepCard(3,'Payment','How would you like to pay?',paymentContent)}
                     <div style="background:${kv.cardBg};border:${kv.cardBorder};border-radius:${kv.cardRadius};padding:14px;box-shadow:${kv.cardShadow};${kv.glassBlur}margin-left:28px;">
                         <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.subColor};margin-bottom:3px;"><span>Subtotal</span><span style="color:${kv.textColor};">${formatPrice(subtotal)}</span></div>
-                        <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.subColor};margin-bottom:3px;"><span>Delivery</span><span style="color:${kv.textColor};">${formatPrice(delivery)}</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.subColor};margin-bottom:3px;"><span>${isPickup ? 'Service Fee' : 'Delivery'}</span><span style="color:${kv.textColor};">${formatPrice(delivery)}</span></div>
                         <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.subColor};margin-bottom:3px;"><span>Tax</span><span style="color:${kv.textColor};">${formatPrice(tax)}</span></div>
                         <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.isGlass?'#4CAF50':'#2e7d32'};margin-bottom:3px;"><span>Promo SAVE3</span><span>-${formatPrice(Math.abs(promo))}</span></div>
                         <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:900;color:${kv.accent};padding-top:6px;border-top:1px solid var(--border-color);margin-top:4px;"><span>Total</span><span>${formatPrice(total)}</span></div>
@@ -8298,7 +8316,7 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                 </div>
                 <div style="padding:10px 16px 80px;border-top:${kv.headerBorder};background:${kv.pageBg};">
                     <div onclick="placeOrder('${theme}')" style="width:100%;padding:14px;background:${kv.accent};color:#fff;text-align:center;border-radius:${kv.ctaRadius};font-size:14px;font-weight:700;cursor:pointer;border:${kv.ctaBorder};box-shadow:${kv.ctaShadow};margin-bottom:6px;">Place Order · ${formatPrice(total)}</div>
-                    <div style="text-align:center;font-size:9px;color:${kv.subColor};">Est. delivery 25–35 min</div>
+                    <div style="text-align:center;font-size:9px;color:${kv.subColor};">${isPickup ? 'Est. pickup 25–35 min' : 'Est. delivery 25–35 min'}</div>
                 </div>
             </div>`;
         }
