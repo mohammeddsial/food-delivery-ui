@@ -2915,8 +2915,8 @@
                 cartFab.style.display = 'none';
                 trackerFab.style.display = 'flex';
             } else if (phase === 'carted' || phase === 'checkout') {
-                var onCartPage = currentPageByTheme[theme] === 'cart-page';
-                cartFab.style.display = onCartPage ? 'none' : 'flex';
+                var isFeed = !currentPageByTheme[theme] || currentPageByTheme[theme] === 'feed';
+                cartFab.style.display = isFeed ? 'flex' : 'none';
                 trackerFab.style.display = 'none';
             } else {
                 cartFab.style.display = 'none';
