@@ -6961,6 +6961,9 @@ ${bOtherCats}
         function drawPDPClassicLayout(theme, item, kit) {
             const hero = item.img; const itemName = item.name; const itemDesc = item.desc;
             const itemPrice = item.price; const calories = item.calories || 430; const isGlass = theme === 'glassmorphism';
+            const allStats = [{label:'min',value:'25-30'},{label:'cal',value:calories},{label:'rating',value:'4.6'},{label:'protein',value:'32g'},{label:'carbs',value:'45g'},{label:'fat',value:'18g'},{label:'fiber',value:'4g'},{label:'sodium',value:'780mg'},{label:'sugar',value:'8g'}];
+            const statCount = theme==='neumorphism'?3:theme==='glassmorphism'?6:9;
+            const statsHtml = allStats.slice(0,statCount).map(s=>{const v=s.label==='rating'?'★ '+s.value:s.value;const u=s.label==='min'?'min':s.label==='rating'?'':s.label;return `<span style="padding:5px 12px;border-radius:9999px;font-size:10px;font-weight:700;background:${kit.pillBg};color:${kit.text};border:1px solid var(--border-color);white-space:nowrap;">${v}${u?' '+u:''}</span>`;}).join('');
             const checkIcon = '<span style="font-size:10px;color:' + kit.accent + ';">&#10003;</span>';
             const backBtn = `<div onclick="goBack('${theme}')" style="width:36px;height:36px;border-radius:4px;background:rgba(255,255,255,0.92);box-shadow:0 2px 8px rgba(0,0,0,0.12);display:flex;align-items:center;justify-content:center;cursor:pointer;position:absolute;top:16px;left:16px;z-index:5;">${iconFA('arrow-left', 'font-size:16px;color:#3D3229;')}</div>`;
             const heartBtn = `<div style="width:36px;height:36px;border-radius:4px;background:rgba(255,255,255,0.92);box-shadow:0 2px 8px rgba(0,0,0,0.12);display:flex;align-items:center;justify-content:center;cursor:pointer;position:absolute;top:16px;right:16px;z-index:5;">${iconFor(theme, 'heart', 'font-size:16px;color:' + kit.accent + ';')}</div>`;
@@ -6980,7 +6983,7 @@ ${bOtherCats}
 
             const variantPills = VARIANT_OPTIONS.map(v => `
                 <label onclick="window.pdpState=window.pdpState||{};window.pdpState['${theme}']=window.pdpState['${theme}']||{variants:[],sides:[],drinks:[]};var st=window.pdpState['${theme}'];var idx=st.variants.indexOf('${v.id}');var bx=this.querySelector('.pdpc-box');var ck=bx.querySelector('span');if(idx>-1){st.variants.splice(idx,1);bx.style.borderColor='${kit.rowBorderOff}';ck.style.display='none';this.style.background='${kit.rowBg}'}else{st.variants.push('${v.id}');bx.style.borderColor='${kit.selBorder}';ck.style.display='flex';this.style.background='${kit.selBg}'}updatePDPPrice('${theme}');var er=document.getElementById('pdp-var-err-${theme}');if(er){var c=st.variants.length;er.textContent=c>0?c+' selected':'None selected';er.style.color=c>0?'${kit.sub}':'#EF4444'}" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;${kit.row}transition:all 0.15s;">
-                    <div class="pdpc-box" style="width:18px;height:18px;border-radius:4px;border:2px solid ${kit.rowBorderOff};display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="display:none;display:none;:${kit.selBorder};"></span></div>
+                    <div class="pdpc-box" style="width:18px;height:18px;border-radius:4px;border:2px solid ${kit.rowBorderOff};display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="display:none;">${checkIcon}</span></div>
                     <span style="flex:1;font-size:12px;font-weight:700;color:${kit.text};">${v.name}</span>
                     ${v.price > 0 ? `<span style="font-size:11px;font-weight:700;color:${kit.accent};">+${formatPrice(v.price)}</span>` : ''}
                 </label>`).join('');
@@ -7015,13 +7018,7 @@ return `<div style="position:absolute;inset:0;background:${kit.pageBg};z-index:5
                         </div>
                     </div>
                     <div id="pdp-content-${theme}" style="position:relative;z-index:2;background:${kit.pageBg};border-radius:20px 20px 0 0;margin-top:-10px;padding:24px 16px 0;">
-                        <div style="display:flex;align-items:center;margin-bottom:20px;padding:14px 8px;${kit.card}">
-                            <div style="flex:1;text-align:center;"><div style="font-size:14px;font-weight:800;color:${kit.text};">25-30</div><div style="font-size:9px;color:${kit.sub};margin-top:2px;">min</div></div>
-                            <div style="width:1px;height:32px;background:${kit.divider};"></div>
-                            <div style="flex:1;text-align:center;"><div style="font-size:14px;font-weight:800;color:${kit.text};">${calories}</div><div style="font-size:9px;color:${kit.sub};margin-top:2px;">cal</div></div>
-                            <div style="width:1px;height:32px;background:${kit.divider};"></div>
-                            <div style="flex:1;text-align:center;"><div style="font-size:14px;font-weight:800;color:${kit.text};display:flex;align-items:center;justify-content:center;gap:3px;">${iconFor(theme, 'star', 'font-size:12px;color:#FFB800;')}4.6</div><div style="font-size:9px;color:${kit.sub};margin-top:2px;">rating</div></div>
-                        </div>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;padding:8px 0;">${statsHtml}</div>
                         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
                             <span style="padding:3px 8px;border-radius:6px;font-size:9px;font-weight:700;background:rgba(0,150,0,0.1);color:#2E7D32;border:1px solid rgba(46,125,50,0.2);">Halal</span>
                             <span style="padding:3px 8px;border-radius:6px;font-size:9px;font-weight:700;background:rgba(76,175,80,0.1);color:#388E3C;border:1px solid rgba(56,142,60,0.2);">Veg</span>
@@ -7127,6 +7124,9 @@ return `<div style="position:absolute;inset:0;background:${kit.pageBg};z-index:5
 
             const hero = item.img; const itemName = item.name; const itemDesc = item.desc;
             const itemPrice = item.price; const calories = item.calories || 430;
+            const allStats2 = [{label:'min',value:'25-30'},{label:'cal',value:calories},{label:'rating',value:'4.6'},{label:'protein',value:'32g'},{label:'carbs',value:'45g'},{label:'fat',value:'18g'},{label:'fiber',value:'4g'},{label:'sodium',value:'780mg'},{label:'sugar',value:'8g'}];
+            const statCount2 = theme==='neumorphism'?3:theme==='glassmorphism'?6:9;
+            const statsHtml2 = allStats2.slice(0,statCount2).map(s=>{const v=s.label==='rating'?'★ '+s.value:s.value;const u=s.label==='min'?'min':s.label==='rating'?'':s.label;return `<span style="padding:5px 12px;border-radius:9999px;font-size:10px;font-weight:700;background:${kit.pillBg};color:${kit.text};border:1px solid ${kit.pillBorder};white-space:nowrap;">${v}${u?' '+u:''}</span>`;}).join('');
             const checkIcon = '<span style="font-size:10px;color:' + kit.accent + ';">&#10003;</span>';
 
             const sectionHeading = (title, rightLabel, errId) => `
@@ -7144,7 +7144,7 @@ return `<div style="position:absolute;inset:0;background:${kit.pageBg};z-index:5
 
             const variantPills = VARIANT_OPTIONS.map(v => `
                 <label onclick="window.pdpState=window.pdpState||{};window.pdpState['${theme}']=window.pdpState['${theme}']||{variants:[],sides:[],drinks:[]};var st=window.pdpState['${theme}'];var idx=st.variants.indexOf('${v.id}');var bx=this.querySelector('.pdpc-box');var ck=bx.querySelector('span');if(idx>-1){st.variants.splice(idx,1);bx.style.borderColor='${kit.rowBorderOff}';ck.style.display='none';this.style.background='${kit.rowBg}'}else{st.variants.push('${v.id}');bx.style.borderColor='${kit.selBorder}';ck.style.display='flex';this.style.background='${kit.selBg}'}updatePDPPrice('${theme}');var er=document.getElementById('pdp-var-err-${theme}');if(er){var c=st.variants.length;er.textContent=c>0?c+' selected':'None selected';er.style.color=c>0?'${kit.sub}':'#EF4444'}" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;${kit.row}transition:all 0.15s;">
-                    <div class="pdpc-box" style="width:18px;height:18px;border-radius:4px;border:2px solid ${kit.rowBorderOff};display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="display:none;display:none;:${kit.selBorder};"></span></div>
+                    <div class="pdpc-box" style="width:18px;height:18px;border-radius:4px;border:2px solid ${kit.rowBorderOff};display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="display:none;">${checkIcon}</span></div>
                     <span style="flex:1;font-size:12px;font-weight:700;color:${kit.text};">${v.name}</span>
                     ${v.price > 0 ? `<span style="font-size:11px;font-weight:700;color:${kit.accent};">+${formatPrice(v.price)}</span>` : ''}
                 </label>`).join('');
@@ -7183,13 +7183,7 @@ return `<div style="position:absolute;inset:0;background:${kit.pageBg};z-index:5
                         </div>
                     </div>
                 <div style="position:relative;z-index:2;background:${kit.pageBg};border-radius:24px 24px 0 0;margin-top:-10px;padding:24px 16px 100px;">
-                    <div style="margin-top:0;position:relative;z-index:6;display:flex;align-items:center;padding:12px 8px;${kit.card}backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:9999px;box-shadow:0 4px 24px rgba(0,0,0,0.3);">
-                            <div style="flex:1;text-align:center;"><div style="font-size:14px;font-weight:800;color:#fff;">25-30</div><div style="font-size:9px;color:rgba(255,255,255,0.5);margin-top:2px;">min</div></div>
-                            <div style="width:1px;height:32px;background:${kit.divider};"></div>
-                            <div style="flex:1;text-align:center;"><div style="font-size:14px;font-weight:800;color:#fff;">${calories}</div><div style="font-size:9px;color:rgba(255,255,255,0.5);margin-top:2px;">cal</div></div>
-                            <div style="width:1px;height:32px;background:${kit.divider};"></div>
-                            <div style="flex:1;text-align:center;"><div style="font-size:14px;font-weight:800;color:#fff;display:flex;align-items:center;justify-content:center;gap:3px;">${iconFor(theme, 'star', 'font-size:12px;color:#FFB800;')}4.6</div><div style="font-size:9px;color:rgba(255,255,255,0.5);margin-top:2px;">rating</div></div>
-                        </div>
+<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;padding:8px 0;">${statsHtml2}</div>
                         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
                             <span style="padding:3px 8px;border-radius:6px;font-size:9px;font-weight:700;background:rgba(0,150,0,0.15);color:#66BB6A;border:1px solid rgba(102,187,106,0.2);">Halal</span>
                             <span style="padding:3px 8px;border-radius:6px;font-size:9px;font-weight:700;background:rgba(76,175,80,0.15);color:#81C784;border:1px solid rgba(129,199,132,0.2);">Veg</span>
@@ -7276,6 +7270,9 @@ return `<div style="position:absolute;inset:0;background:${kit.pageBg};z-index:5
             const textColor = 'var(--text-primary)'; const subColor = 'var(--text-secondary)';
             const accent = '#FF6B35'; const accentText = '#fff';
             const borderColor = 'var(--border-color)';
+            const allStats3 = [{label:'min',value:'25-30'},{label:'cal',value:calories},{label:'rating',value:'4.6'},{label:'protein',value:'32g'},{label:'carbs',value:'45g'},{label:'fat',value:'18g'},{label:'fiber',value:'4g'},{label:'sodium',value:'780mg'},{label:'sugar',value:'8g'}];
+            const statCount3 = theme==='neumorphism'?3:theme==='glassmorphism'?6:9;
+            const statsHtml3 = allStats3.slice(0,statCount3).map(s=>{const v=s.label==='rating'?'★ '+s.value:s.value;const u=s.label==='min'?'min':s.label==='rating'?'':s.label;return `<span style="padding:5px 12px;border-radius:9999px;font-size:10px;font-weight:700;background:var(--pill-bg);color:${textColor};border:1px solid var(--border-color);white-space:nowrap;">${v}${u?' '+u:''}</span>`;}).join('');
             const brutalRow = 'background:var(--card-bg);border:2px solid ' + borderColor + ';border-radius:8px;box-shadow:3px 3px 0 ' + borderColor + ';';
             const brutalCard = 'background:var(--card-bg);border:2px solid ' + borderColor + ';border-radius:12px;box-shadow:4px 4px 0 ' + borderColor + ';';
             const selBg = 'rgba(255,107,53,0.1)'; const selBorder = accent;
@@ -7299,7 +7296,7 @@ return `<div style="position:absolute;inset:0;background:${kit.pageBg};z-index:5
 
             const variantPills = VARIANT_OPTIONS.map(v => `
                 <label onclick="window.pdpState=window.pdpState||{};window.pdpState['${theme}']=window.pdpState['${theme}']||{variants:[],sides:[],drinks:[]};var st=window.pdpState['${theme}'];var idx=st.variants.indexOf('${v.id}');var bx=this.querySelector('.pdpc-box');var ck=bx.querySelector('span');if(idx>-1){st.variants.splice(idx,1);bx.style.borderColor='${borderColor}';ck.style.display='none';this.style.background='var(--card-bg)';this.style.transform='translate(0,0)';this.style.boxShadow='3px 3px 0 ${borderColor}'}else{st.variants.push('${v.id}');bx.style.borderColor='${selBorder}';ck.style.display='flex';this.style.background='${selBg}';this.style.transform='translate(3px,3px)';this.style.boxShadow='none'}updatePDPPrice('${theme}');var er=document.getElementById('pdp-var-err-${theme}');if(er){var c=st.variants.length;er.textContent=c>0?c+' selected':'None selected';er.style.color=c>0?'${subColor}':'#EF4444'}" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:12px 14px;${brutalRow}transition:all 0.1s;">
-                    <div class="pdpc-box" style="width:20px;height:20px;border-radius:4px;border:2.5px solid ${borderColor};display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="display:none;:${selBorder};"></span></div>
+                    <div class="pdpc-box" style="width:20px;height:20px;border-radius:4px;border:2.5px solid ${borderColor};display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="display:none;">${checkIcon}</span></div>
                     <span style="flex:1;font-size:12px;font-weight:700;color:${textColor};">${v.name}</span>
                     ${v.price > 0 ? `<span style="font-size:11px;font-weight:800;color:${accent};">+${formatPrice(v.price)}</span>` : ''}
                 </label>`).join('');
@@ -7340,13 +7337,7 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                 <div style="position:relative;z-index:2;background:var(--card-bg);border-radius:16px 16px 0 0;margin-top:-10px;padding:0 16px 100px;">
                     </div>
                     <div style="padding:16px 16px 0;">
-                        <div style="display:flex;align-items:center;padding:16px 4px 12px;border-bottom:2px solid ${borderColor};margin-bottom:20px;">
-                            <div style="flex:1;text-align:center;"><div style="font-size:16px;font-weight:900;color:${textColor};">25-30</div><div style="font-size:9px;font-weight:700;color:${subColor};text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;">min</div></div>
-                            <div style="width:2px;height:36px;background:${borderColor};"></div>
-                            <div style="flex:1;text-align:center;"><div style="font-size:16px;font-weight:900;color:${textColor};">${calories}</div><div style="font-size:9px;font-weight:700;color:${subColor};text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;">cal</div></div>
-                            <div style="width:2px;height:36px;background:${borderColor};"></div>
-                            <div style="flex:1;text-align:center;"><div style="font-size:16px;font-weight:900;color:${textColor};display:flex;align-items:center;justify-content:center;gap:3px;">${iconFor(theme, 'star', 'font-size:13px;color:#FFB800;')}4.6</div><div style="font-size:9px;font-weight:700;color:${subColor};text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;">rating</div></div>
-                        </div>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;padding:8px 0;">${statsHtml3}</div>
                         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
                             <span style="padding:3px 8px;border-radius:6px;font-size:9px;font-weight:700;background:rgba(0,150,0,0.1);color:#2E7D32;border:1.5px solid rgba(46,125,50,0.25);">Halal</span>
                             <span style="padding:3px 8px;border-radius:6px;font-size:9px;font-weight:700;background:rgba(76,175,80,0.1);color:#388E3C;border:1.5px solid rgba(56,142,60,0.25);">Veg</span>
