@@ -2119,6 +2119,14 @@
             box-shadow: 3px 3px 0 var(--border-color)
         }
 
+        /* Lucide renders its SVGs as display:block, so text-align:center on a card
+           wrapper can't center them (they left-align). inline-block lets centered
+           wrappers center the icon; flex-item icons are unaffected by this. */
+        svg.lucide {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
         .pano-viewer {
             position: relative;
             width: 100%;
@@ -2608,7 +2616,7 @@
         <div class="flex-1 flex gap-4 overflow-x-auto justify-start items-center pb-4">
 
             <!-- VIEWPORT 1: LIGHT · Lucide -->
-            <div class="flex flex-col items-center">
+            <div id="vp-wrapper-neumorphism" class="flex flex-col items-center">
                 <span class="text-xs font-bold text-emerald-400 mb-1 tracking-wider uppercase flex items-center gap-2">
                     <i data-lucide="cube"></i> Light <span
                         class="text-[8px] bg-slate-800 px-2 py-0.5 rounded-full text-emerald-400">Lucide</span>
@@ -2620,7 +2628,7 @@
             </div>
 
             <!-- VIEWPORT 2: DARK · Remix Icon -->
-            <div class="flex flex-col items-center">
+            <div id="vp-wrapper-glassmorphism" class="flex flex-col items-center">
                 <span class="text-xs font-bold text-indigo-400 mb-1 tracking-wider uppercase flex items-center gap-2">
                     <i class="ri-circle-line"></i> Dark <span
                         class="text-[8px] bg-slate-800 px-2 py-0.5 rounded-full text-indigo-400">Remix</span>
@@ -2632,7 +2640,7 @@
             </div>
 
             <!-- VIEWPORT 3: MODERN · Tabler -->
-            <div class="flex flex-col items-center">
+            <div id="vp-wrapper-neubrutalism" class="flex flex-col items-center">
                 <span class="text-xs font-bold text-orange-400 mb-1 tracking-wider uppercase flex items-center gap-2">
                     <i class="ti ti-cube"></i> Modern <span
                         class="text-[8px] bg-slate-800 px-2 py-0.5 rounded-full text-orange-400">Tabler</span>
@@ -3201,12 +3209,32 @@
                 btn.style.background = viewAllMode ? '#00615F' : 'transparent';
                 btn.style.color = viewAllMode ? '#fff' : '#888';
                 btn.style.borderColor = viewAllMode ? '#00615F' : '#333';
+                btn.textContent = viewAllMode ? 'Single View' : 'View All Viewports';
             }
+            updateViewportVisibility();
             renderPageViewPicker();
+        }
+
+        function updateViewportVisibility() {
+            const themes = ['neumorphism', 'glassmorphism', 'neubrutalism'];
+            themes.forEach(t => {
+                const wrapper = document.getElementById('vp-wrapper-' + t);
+                if (wrapper) {
+                    if (viewAllMode) {
+                        wrapper.style.display = '';
+                        wrapper.style.flex = '1';
+                        wrapper.style.minWidth = '0';
+                    } else {
+                        const isActive = t === activeViewTheme;
+                        wrapper.style.display = isActive ? '' : 'none';
+                    }
+                }
+            });
         }
 
         function switchView(theme) {
             activeViewTheme = theme;
+            updateViewportVisibility();
             renderViewSwitcher();
             renderTopBarStylePicker();
             renderBottomNavStylePicker();
@@ -3223,10 +3251,9 @@
             { id: 'product-detail-page', label: 'Product' },
             { id: 'cart-page', label: 'Cart' },
             { id: 'checkout-page', label: 'Checkout' },
+            { id: 'add-card-page', label: 'Add Card' },
             { id: 'order-success-page', label: 'Success' },
             { id: 'order-progress', label: 'Progress' },
-            { id: 'order-tracking', label: 'Tracking' },
-            { id: 'tracking-map', label: 'Map' },
             { id: 'reviews-page', label: 'Reviews' },
             { id: 'rewards-page', label: 'Rewards' },
             { id: 'upsell-page', label: 'Upsell' },
@@ -4065,7 +4092,7 @@
                         </div>`;
             }).join('')}
                 </div>
-                <button onclick="navigateToPage('${theme}','order-tracking');closeFabSheet('${theme}');" style="margin-top:20px;width:100%;background:${accentColor};color:#fff;font-size:13px;font-weight:700;padding:14px;border-radius:14px;border:none;cursor:pointer;">View Full Tracking</button>`;
+                <button onclick="navigateToPage('${theme}','reviews-page');closeFabSheet('${theme}');" style="margin-top:20px;width:100%;background:${accentColor};color:#fff;font-size:13px;font-weight:700;padding:14px;border-radius:14px;border:none;cursor:pointer;">Rate Your Order</button>`;
         }
 
         // ─── NOTIFICATION MODAL ──────────────────────────────────────────
@@ -4157,6 +4184,7 @@
         const pageHistoryByTheme = { neumorphism: [], glassmorphism: [], neubrutalism: [] };
         // ─── UTIL: navigateToPage ───
         function navigateToPage(theme, page, cat, itemId) {
+            if (orderCarouselTimer[theme]) { clearInterval(orderCarouselTimer[theme]); orderCarouselTimer[theme] = null; }
             if (currentPageByTheme[theme] !== page) {
                 pageHistoryByTheme[theme].push(currentPageByTheme[theme]);
             }
@@ -4201,9 +4229,7 @@
         }
 
         function trackOrder(theme) {
-            window.appState.orderPhase[theme] = 'tracking';
-            startTracking(theme);
-            navigateToPage(theme, 'order-tracking');
+            navigateToPage(theme, 'reviews-page');
         }
 
         function toggleHeart(theme) {
@@ -4297,6 +4323,94 @@
             renderPageViewPicker();
         }
 
+        // ─── BRANCH/ADDRESS CHANGE MODALS ─────────────────────────────────
+        function showBranchChangeModal(theme) {
+            const container = document.getElementById('viewport-' + theme);
+            if (!container) return;
+            const isGlass = theme === 'glassmorphism';
+            const isBrut = theme === 'neubrutalism';
+            const sheetBg = isGlass ? 'rgba(28,28,32,0.98)' : (isBrut ? '#FFFBF0' : 'var(--card-bg)');
+            const textColor = isGlass ? '#fff' : 'var(--text-primary)';
+            const subColor = isGlass ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
+            const accent = isBrut ? '#FF6B35' : 'var(--accent)';
+            const errorColor = '#EF4444';
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+            overlay.style.cssText = 'position:absolute;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;';
+            overlay.innerHTML = `
+                <div onclick="closeModal('${theme}')" style="position:absolute;inset:0;background:rgba(0,0,0,0.5);"></div>
+                <div style="position:relative;background:${sheetBg};border-radius:20px;padding:28px 24px;max-width:300px;width:90%;text-align:center;${isBrut ? 'border:2px solid var(--border-color);box-shadow:6px 6px 0 var(--border-color);' : isGlass ? 'backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);' : 'box-shadow:0 20px 60px rgba(0,0,0,0.15);'}">
+                    <div style="width:56px;height:56px;border-radius:50%;background:${errorColor}20;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                        ${isGlass ? iconMaterial('error-warning-line', 'font-size:28px;color:' + errorColor + ';') : isBrut ? iconBS('alert-triangle', 'font-size:28px;color:' + errorColor + ';') : iconFA('exclamation-triangle', 'font-size:28px;color:' + errorColor + ';')}
+                    </div>
+                    <div style="font-size:16px;font-weight:800;color:${textColor};margin-bottom:8px;">Your cart is empty</div>
+                    <div style="font-size:12px;color:${subColor};margin-bottom:20px;line-height:1.5;">Changing branch will clear your current cart. Items may not be available at the new branch.</div>
+                    <div onclick="closeModal('${theme}')" style="width:100%;padding:12px;background:${errorColor};color:#fff;border-radius:${isBrut ? '4px' : '12px'};font-size:13px;font-weight:700;cursor:pointer;${isBrut ? 'border:2px solid var(--border-color);box-shadow:3px 3px 0 var(--border-color);' : ''}">Got it</div>
+                </div>`;
+            container.appendChild(overlay);
+        }
+
+        function showAddressChangeModal(theme, oldFee, newFee) {
+            const container = document.getElementById('viewport-' + theme);
+            if (!container) return;
+            const isGlass = theme === 'glassmorphism';
+            const isBrut = theme === 'neubrutalism';
+            const sheetBg = isGlass ? 'rgba(28,28,32,0.98)' : (isBrut ? '#FFFBF0' : 'var(--card-bg)');
+            const textColor = isGlass ? '#fff' : 'var(--text-primary)';
+            const subColor = isGlass ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
+            const accent = isBrut ? '#FF6B35' : 'var(--accent)';
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+            overlay.style.cssText = 'position:absolute;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;';
+            const feeChange = newFee > oldFee ? 'increased' : 'decreased';
+            const diff = Math.abs(newFee - oldFee).toFixed(2);
+            overlay.innerHTML = `
+                <div onclick="closeModal('${theme}')" style="position:absolute;inset:0;background:rgba(0,0,0,0.5);"></div>
+                <div style="position:relative;background:${sheetBg};border-radius:20px;padding:28px 24px;max-width:300px;width:90%;text-align:center;${isBrut ? 'border:2px solid var(--border-color);box-shadow:6px 6px 0 var(--border-color);' : isGlass ? 'backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);' : 'box-shadow:0 20px 60px rgba(0,0,0,0.15);'}">
+                    <div style="width:56px;height:56px;border-radius:50%;background:${accent}20;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                        ${isGlass ? iconMaterial('money-dollar-circle-line', 'font-size:28px;color:' + accent + ';') : isBrut ? iconBS('cash', 'font-size:28px;color:' + accent + ';') : iconFA('dollar-sign', 'font-size:28px;color:' + accent + ';')}
+                    </div>
+                    <div style="font-size:16px;font-weight:800;color:${textColor};margin-bottom:8px;">Delivery Fee Updated</div>
+                    <div style="font-size:12px;color:${subColor};margin-bottom:6px;">Delivery fee has ${feeChange} by <span style="color:${accent};font-weight:700;">$${diff}</span></div>
+                    <div style="font-size:11px;color:${subColor};margin-bottom:20px;">${formatPrice(oldFee)} → ${formatPrice(newFee)}</div>
+                    <div onclick="closeModal('${theme}')" style="width:100%;padding:12px;background:${accent};color:#fff;border-radius:${isBrut ? '4px' : '12px'};font-size:13px;font-weight:700;cursor:pointer;${isBrut ? 'border:2px solid var(--border-color);box-shadow:3px 3px 0 var(--border-color);' : ''}">OK</div>
+                </div>`;
+            container.appendChild(overlay);
+        }
+
+        function showBranchWarningModal(theme, branchName) {
+            const container = document.getElementById('viewport-' + theme);
+            if (!container) return;
+            const isGlass = theme === 'glassmorphism';
+            const isBrut = theme === 'neubrutalism';
+            const sheetBg = isGlass ? 'rgba(28,28,32,0.98)' : (isBrut ? '#FFFBF0' : 'var(--card-bg)');
+            const textColor = isGlass ? '#fff' : 'var(--text-primary)';
+            const subColor = isGlass ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
+            const accent = isBrut ? '#FF6B35' : 'var(--accent)';
+            const warnColor = '#F59E0B';
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+            overlay.style.cssText = 'position:absolute;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;';
+            overlay.innerHTML = `
+                <div onclick="closeModal('${theme}')" style="position:absolute;inset:0;background:rgba(0,0,0,0.5);"></div>
+                <div style="position:relative;background:${sheetBg};border-radius:20px;padding:28px 24px;max-width:300px;width:90%;text-align:center;${isBrut ? 'border:2px solid var(--border-color);box-shadow:6px 6px 0 var(--border-color);' : isGlass ? 'backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);' : 'box-shadow:0 20px 60px rgba(0,0,0,0.15);'}">
+                    <div style="width:56px;height:56px;border-radius:50%;background:${warnColor}20;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                        ${isGlass ? iconMaterial('alert-line', 'font-size:28px;color:' + warnColor + ';') : isBrut ? iconBS('alert-square', 'font-size:28px;color:' + warnColor + ';') : iconFA('exclamation-circle', 'font-size:28px;color:' + warnColor + ';')}
+                    </div>
+                    <div style="font-size:16px;font-weight:800;color:${textColor};margin-bottom:8px;">Delivery Not Available</div>
+                    <div style="font-size:12px;color:${subColor};margin-bottom:20px;line-height:1.5;">We can't deliver to your area from ${branchName}. Please contact a branch that can proceed with your order.</div>
+                    <div onclick="closeModal('${theme}')" style="width:100%;padding:12px;background:${warnColor};color:#fff;border-radius:${isBrut ? '4px' : '12px'};font-size:13px;font-weight:700;cursor:pointer;${isBrut ? 'border:2px solid var(--border-color);box-shadow:3px 3px 0 var(--border-color);' : ''}">OK</div>
+                </div>`;
+            container.appendChild(overlay);
+        }
+
+        function closeModal(theme) {
+            const container = document.getElementById('viewport-' + theme);
+            if (!container) return;
+            const overlay = container.querySelector('.modal-overlay');
+            if (overlay) overlay.remove();
+        }
+
         let panoState = {};
         function togglePano(theme) {
             const staticImg = document.getElementById('panoStatic-' + theme);
@@ -4381,6 +4495,17 @@
             'Brooklyn Heights': '2.8 km'
         };
 
+        // ─── DELIVERY COVERAGE MATRIX ───────────────────────────────────
+        // Default = deliverable. Only these (address → blocked branches) pairs cannot deliver.
+        const NO_DELIVERY_BRANCHES = {
+            'Manhattan West, NY': ['Upper East Side', 'Financial District', 'Williamsburg'],
+            'Brooklyn Heights, NY': ['SoHo']
+        };
+        function canDeliver(branch, address) {
+            const blocked = NO_DELIVERY_BRANCHES[address] || [];
+            return !blocked.includes(branch);
+        }
+
         function ddArrowIcon(theme) {
             if (theme === 'glassmorphism') return iconMaterial('arrow-drop-down-line', 'color:var(--highlight);');
             if (theme === 'neubrutalism') return iconBS('chevron-down', 'text-[#00615F]');
@@ -4453,6 +4578,23 @@
             if (segDel) segDel.style.color = mode === 'delivery' ? '#fff' : 'var(--text-secondary)';
             if (segPick) segPick.style.color = mode === 'pickup' ? '#fff' : 'var(--text-secondary)';
             if (segInd) segInd.style.left = mode === 'delivery' ? '3px' : 'calc(50% + 1.5px)';
+            // Show/hide location selector
+            const locSelector = document.getElementById('locSelector-' + theme);
+            if (locSelector) locSelector.style.display = mode === 'delivery' ? 'flex' : 'none';
+            // Default header (pills): on pickup hide the "Deliver to" label and stretch pills full width
+            const isPickup = mode === 'pickup';
+            const deliverToLabel = document.getElementById('deliverToLabel-' + theme);
+            if (deliverToLabel) deliverToLabel.style.display = isPickup ? 'none' : 'block';
+            const pillsWrap = document.getElementById('pillsWrap-' + theme);
+            if (pillsWrap) pillsWrap.style.flex = isPickup ? '1' : '0 0 auto';
+            if (delBtn) delBtn.style.flex = isPickup ? '1' : '';
+            if (pickBtn) pickBtn.style.flex = isPickup ? '1' : '';
+            // Option 1 (toggle switch): stretch on pickup
+            const switchWrap = document.getElementById('switchWrap-' + theme);
+            if (switchWrap) { switchWrap.style.flex = isPickup ? '1' : ''; switchWrap.style.flexShrink = isPickup ? '' : '0'; }
+            // Option 2 (segmented control): stretch on pickup
+            const segWrap = document.getElementById('segWrap-' + theme);
+            if (segWrap) { segWrap.style.flex = isPickup ? '1' : ''; segWrap.style.flexShrink = isPickup ? '' : '0'; segWrap.style.width = isPickup ? 'auto' : '140px'; }
         }
         function selectBranch(theme, branch) {
             const dist = BRANCH_DISTANCES[branch] || '';
@@ -4470,6 +4612,21 @@
             }
             const branchDD = document.getElementById('pickupDropdown-' + theme);
             if (branchDD) branchDD.style.display = 'none';
+            const bv = document.getElementById('branchValue-' + theme);
+            if (bv) bv.innerHTML = branch;
+            if (!window.selectedLocation[theme]) window.selectedLocation[theme] = {};
+            const oldBranch = window.selectedLocation[theme].branch;
+            window.selectedLocation[theme].branch = branch;
+            // Clear cart on branch change
+            if (oldBranch && oldBranch !== branch) {
+                const cartCount = getCartCount(theme);
+                if (cartCount > 0) {
+                    window.appState.cart[theme] = [];
+                    window.appState.orderPhase[theme] = 'browsing';
+                    renderAllViewports();          // rebuild viewport first (wipes container)…
+                    showBranchChangeModal(theme);  // …then append the modal on top
+                }
+            }
         }
 
         // ─── LOCATION BOTTOM SHEET ──────────────────────────────────────
@@ -4584,6 +4741,7 @@
 
         function selectLocationAddress(theme, addr) {
             if (!window.selectedLocation[theme]) window.selectedLocation[theme] = {};
+            const oldAddr = window.selectedLocation[theme].address;
             window.selectedLocation[theme].address = addr;
             const el = document.getElementById('locValue-' + theme);
             if (el) {
@@ -4592,17 +4750,42 @@
                 const chevron = isGlass ? iconMaterial('arrow-drop-down-line', 'color:var(--text-secondary);') : isBrut ? iconBS('chevron-down', 'color:var(--text-secondary);') : iconFA('chevron-down', 'color:var(--text-secondary);');
                 el.innerHTML = addr + ' ' + chevron;
             }
+            // If the current branch can't deliver to the new address: warn, keep the cart.
+            // Otherwise fall back to the fee-change modal.
+            if (oldAddr && oldAddr !== addr) {
+                const branch = window.selectedLocation[theme].branch;
+                if (branch && !canDeliver(branch, addr)) {
+                    showBranchWarningModal(theme, branch);
+                    return;
+                }
+                const oldFee = 2.99;
+                const newFee = addr === 'Brooklyn Bridge, NY' ? 5.99 : addr === 'Central Park, NY' ? 4.49 : addr === 'Times Square, NY' ? 3.99 : 2.99;
+                if (oldFee !== newFee) {
+                    showAddressChangeModal(theme, oldFee, newFee);
+                }
+            }
         }
 
         function selectLocationBranch(theme, branch) {
             if (!window.selectedLocation[theme]) window.selectedLocation[theme] = {};
+            const oldBranch = window.selectedLocation[theme].branch;
             window.selectedLocation[theme].branch = branch;
+            const isGlass = theme === 'glassmorphism';
+            const isBrut = theme === 'neubrutalism';
+            const chevron = isGlass ? iconMaterial('arrow-drop-down-line', 'color:var(--text-secondary);') : isBrut ? iconBS('chevron-down', 'color:var(--text-secondary);') : iconFA('chevron-down', 'color:var(--text-secondary);');
             const el = document.getElementById('locValue-' + theme);
-            if (el) {
-                const isGlass = theme === 'glassmorphism';
-                const isBrut = theme === 'neubrutalism';
-                const chevron = isGlass ? iconMaterial('arrow-drop-down-line', 'color:var(--text-secondary);') : isBrut ? iconBS('chevron-down', 'color:var(--text-secondary);') : iconFA('chevron-down', 'color:var(--text-secondary);');
-                el.innerHTML = branch + ' ' + chevron;
+            if (el) el.innerHTML = branch + ' ' + chevron;
+            const bv = document.getElementById('branchValue-' + theme);
+            if (bv) bv.innerHTML = branch;
+            // Branch change: always clear the cart + show error (items may differ at the new branch)
+            if (oldBranch && oldBranch !== branch) {
+                const cartCount = getCartCount(theme);
+                if (cartCount > 0) {
+                    window.appState.cart[theme] = [];
+                    window.appState.orderPhase[theme] = 'browsing';
+                    renderAllViewports();          // rebuild viewport first (wipes container)…
+                    showBranchChangeModal(theme);  // …then append the modal on top
+                }
             }
         }
 
@@ -4619,106 +4802,94 @@
             }
         }
 
-        function openPaymentSheet(theme, type) {
-            const container = document.getElementById('viewport-' + theme);
-            if (!container) return;
-            const existing = container.querySelector('.payment-sheet-overlay');
-            if (existing) existing.remove();
+        // ─── BRANCH BOTTOM SHEET ──────────────────────────────────────
+        function openBranchSheet(theme) {
             const isGlass = theme === 'glassmorphism';
             const isBrut = theme === 'neubrutalism';
-            const sheetBg = isGlass ? 'rgba(28,28,32,0.98)' : (isBrut ? '#FFFBF0' : 'var(--card-bg)');
+
+            const sheetBg = isGlass ? 'rgba(26,26,26,0.98)' : 'var(--card-bg)';
             const textColor = isGlass ? '#fff' : 'var(--text-primary)';
             const subColor = isGlass ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
-            const accent = isBrut ? '#FF6B35' : (isGlass ? '#4CAF50' : 'var(--accent)');
-            const cardRadius = isBrut ? '4px' : (isGlass ? '12px' : '14px');
-            const borderColor = isGlass ? 'rgba(255,255,255,0.08)' : 'var(--border-color)';
-            const inputBg = isGlass ? 'rgba(255,255,255,0.04)' : 'var(--pill-bg)';
+            const inputBg = isGlass ? 'rgba(255,255,255,0.08)' : 'var(--pill-bg)';
+            const searchIcon = isGlass ? iconMaterial('search-line', 'color:var(--text-secondary);') : isBrut ? iconBS('search', 'color:var(--text-secondary);') : iconFA('search', 'color:var(--text-secondary);');
+            const storeIcon = isGlass ? iconMaterial('store-2-line', 'color:var(--accent);') : isBrut ? iconBS('shop', 'color:var(--accent);') : iconFA('store', 'color:var(--accent);');
+            const closeIcon = isGlass ? iconMaterial('close-line', 'color:var(--text-secondary);font-size:18px;') : isBrut ? iconBS('x', 'color:var(--text-secondary);font-size:18px;') : iconFA('x', 'color:var(--text-secondary);font-size:18px;');
 
-            let items = '';
-            if (type === 'card') {
-                items = `
-                    <div style="font-size:10px;font-weight:700;color:${subColor};text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Saved Cards</div>
-                    <div onclick="closePaymentSheet('${theme}')" style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--accent-light);border:1.5px solid ${accent};border-radius:${cardRadius};margin-bottom:8px;cursor:pointer;">
-                        <span style="font-size:22px;">💳</span>
-                        <div style="flex:1;">
-                            <div style="font-size:13px;font-weight:700;color:${textColor};">•••• 4242</div>
-                            <div style="font-size:10px;color:${subColor};margin-top:1px;">Visa · Exp 12/27</div>
-                        </div>
-                        <div style="width:20px;height:20px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;">
-                            <span style="font-size:10px;color:#fff;">✓</span>
-                        </div>
-                    </div>
-                    <div onclick="closePaymentSheet('${theme}')" style="display:flex;align-items:center;gap:12px;padding:14px;background:${inputBg};border:1px solid ${borderColor};border-radius:${cardRadius};margin-bottom:12px;cursor:pointer;">
-                        <span style="font-size:22px;">💳</span>
-                        <div style="flex:1;">
-                            <div style="font-size:13px;font-weight:700;color:${textColor};">•••• 8910</div>
-                            <div style="font-size:10px;color:${subColor};margin-top:1px;">Mastercard · Exp 03/26</div>
-                        </div>
-                        <div style="width:20px;height:20px;border-radius:50%;border:2px solid ${borderColor};"></div>
-                    </div>
-                    <div onclick="closePaymentSheet('${theme}')" style="display:flex;align-items:center;gap:12px;padding:14px;border:1.5px dashed ${borderColor};border-radius:${cardRadius};cursor:pointer;">
-                        <span style="font-size:16px;color:${accent};">+</span>
-                        <div style="font-size:13px;font-weight:600;color:${accent};">Add New Card</div>
-                    </div>`;
-            } else {
-                items = `
-                    <div style="font-size:10px;font-weight:700;color:${subColor};text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Saved Wallets</div>
-                    <div onclick="closePaymentSheet('${theme}')" style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--accent-light);border:1.5px solid ${accent};border-radius:${cardRadius};margin-bottom:8px;cursor:pointer;">
-                        <span style="font-size:22px;">📱</span>
-                        <div style="flex:1;">
-                            <div style="font-size:13px;font-weight:700;color:${textColor};">Google Pay</div>
-                            <div style="font-size:10px;color:${subColor};margin-top:1px;">john@gmail.com</div>
-                        </div>
-                        <div style="width:20px;height:20px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;">
-                            <span style="font-size:10px;color:#fff;">✓</span>
-                        </div>
-                    </div>
-                    <div onclick="closePaymentSheet('${theme}')" style="display:flex;align-items:center;gap:12px;padding:14px;background:${inputBg};border:1px solid ${borderColor};border-radius:${cardRadius};margin-bottom:12px;cursor:pointer;">
-                        <span style="font-size:22px;">🍎</span>
-                        <div style="flex:1;">
-                            <div style="font-size:13px;font-weight:700;color:${textColor};">Apple Pay</div>
-                            <div style="font-size:10px;color:${subColor};margin-top:1px;">john@icloud.com</div>
-                        </div>
-                        <div style="width:20px;height:20px;border-radius:50%;border:2px solid ${borderColor};"></div>
-                    </div>
-                    <div onclick="closePaymentSheet('${theme}')" style="display:flex;align-items:center;gap:12px;padding:14px;border:1.5px dashed ${borderColor};border-radius:${cardRadius};cursor:pointer;">
-                        <span style="font-size:16px;color:${accent};">+</span>
-                        <div style="font-size:13px;font-weight:600;color:${accent};">Add New Wallet</div>
-                    </div>`;
-            }
-
-            const title = type === 'card' ? 'Payment Cards' : 'Digital Wallets';
-            const overlay = document.createElement('div');
-            overlay.className = 'payment-sheet-overlay';
-            overlay.style.cssText = 'position:absolute;inset:0;z-index:100;display:flex;flex-direction:column;justify-content:flex-end;';
-            overlay.innerHTML = `
-                <div onclick="closePaymentSheet('${theme}')" style="flex:1;background:rgba(0,0,0,0.5);"></div>
-                <div class="payment-sheet-panel" style="background:${sheetBg};border-radius:18px 18px 0 0;padding:20px 16px 30px;max-height:70%;overflow-y:auto;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);">
-                    <div style="width:36px;height:4px;border-radius:2px;background:${isGlass ? 'rgba(255,255,255,0.15)' : '#ccc'};margin:0 auto 16px;"></div>
-                    <div style="font-size:16px;font-weight:800;color:${textColor};margin-bottom:16px;">${title}</div>
-                    ${items}
+            const searchBar = `
+                <div onclick="closeBranchSheet('${theme}');navigateToPage('${theme}','add-location')" style="display:flex;align-items:center;gap:8px;background:${inputBg};border:1px solid var(--border-color);border-radius:12px;padding:10px 14px;margin-bottom:16px;cursor:pointer;">
+                    ${searchIcon}
+                    <span style="font-size:12px;color:${subColor};">Search branch...</span>
                 </div>`;
-            container.style.position = 'relative';
-            container.appendChild(overlay);
+
+            const branches = [
+                { name: 'Downtown NYC', dist: '0.5 km', active: true },
+                { name: 'Midtown Manhattan', dist: '1.2 km', active: false },
+                { name: 'Brooklyn Heights', dist: '2.8 km', active: false },
+                { name: 'Upper East Side', dist: '3.4 km', active: false },
+                { name: 'SoHo', dist: '2.1 km', active: false },
+                { name: 'Chelsea Market', dist: '1.8 km', active: false },
+                { name: 'Financial District', dist: '3.9 km', active: false },
+                { name: 'Williamsburg', dist: '4.5 km', active: false }
+            ];
+
+            const content = `
+                ${searchBar}
+                <div style="font-size:10px;font-weight:700;color:${subColor};text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">8 Branches Near You</div>
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                    ${branches.map(b => `
+                        <div onclick="selectLocationBranch('${theme}','${b.name}');closeBranchSheet('${theme}')" style="display:flex;align-items:center;gap:12px;padding:12px;${b.active ? 'background:var(--accent-light);border:1px solid var(--accent);' : 'background:' + inputBg + ';border:1px solid var(--border-color);'}border-radius:12px;cursor:pointer;">
+                            ${storeIcon}
+                            <div style="flex:1;">
+                                <div style="font-size:12px;font-weight:${b.active ? '700' : '600'};color:${textColor};">${b.name}</div>
+                                <div style="font-size:9px;color:${subColor};">${b.dist}</div>
+                            </div>
+                            ${b.active ? `<div style="width:20px;height:20px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;"><div style="width:10px;height:10px;border-radius:50%;background:var(--accent);"></div></div>` : '<div style="width:20px;height:20px;border-radius:50%;border:2px solid var(--border-color);"></div>'}
+                        </div>
+                    `).join('')}
+                </div>`;
+
+            const container = document.getElementById('viewport-' + theme);
+            if (!container) return;
+
+            const existing = container.querySelector('.branch-sheet-overlay');
+            if (existing) existing.remove();
+
+            const sheetHTML = `
+                <div class="branch-sheet-overlay" style="position:absolute;inset:0;z-index:200;pointer-events:auto;">
+                    <div onclick="closeBranchSheet('${theme}')" style="position:absolute;inset:0;background:rgba(0,0,0,0.4);"></div>
+                    <div class="branch-sheet-panel" style="position:absolute;bottom:0;left:0;right:0;background:${sheetBg};border-radius:20px 20px 0 0;max-height:75%;overflow-y:auto;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);${isGlass ? 'backdrop-filter:blur(20px);border:1px solid var(--border-color);' : isBrut ? 'border:2px solid var(--border-color);box-shadow:0 -4px 0 var(--border-color);' : 'box-shadow:0 -8px 32px rgba(0,0,0,0.12);'}">
+                        <div style="padding:16px 16px 6px;display:flex;align-items:center;justify-content:space-between;">
+                            <div style="font-size:16px;font-weight:700;color:${textColor};">Choose Branch</div>
+                            <div onclick="closeBranchSheet('${theme}')" style="width:32px;height:32px;border-radius:50%;background:${inputBg};display:flex;align-items:center;justify-content:center;cursor:pointer;">${closeIcon}</div>
+                        </div>
+                        <div style="width:40px;height:4px;background:${isGlass ? 'rgba(255,255,255,0.15)' : 'var(--border-color)'};border-radius:2px;margin:0 auto 16px;"></div>
+                        <div style="padding:0 16px 24px;">
+                            ${content}
+                        </div>
+                    </div>
+                </div>`;
+
+            container.insertAdjacentHTML('beforeend', sheetHTML);
+
             requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    overlay.querySelector('.payment-sheet-panel').style.transform = 'translateY(0)';
-                });
+                const panel = container.querySelector('.branch-sheet-panel');
+                if (panel) panel.style.transform = 'translateY(0)';
             });
         }
 
-        function closePaymentSheet(theme) {
+        function closeBranchSheet(theme) {
             const container = document.getElementById('viewport-' + theme);
             if (!container) return;
-            const panel = container.querySelector('.payment-sheet-panel');
+            const panel = container.querySelector('.branch-sheet-panel');
             if (panel) {
                 panel.style.transform = 'translateY(100%)';
                 setTimeout(() => {
-                    const overlay = container.querySelector('.payment-sheet-overlay');
+                    const overlay = container.querySelector('.branch-sheet-overlay');
                     if (overlay) overlay.remove();
                 }, 350);
             }
         }
+
 
         // ═══════════════════════════════════════════════════
         // RENDER ENGINE — Renders all 3 viewports
@@ -4735,6 +4906,9 @@
             const views = ['neumorphism', 'glassmorphism', 'neubrutalism'];
             views.forEach(theme => {
                 const container = document.getElementById(`viewport-${theme}`);
+                if (!container) return;
+                const wrapper = document.getElementById('vp-wrapper-' + theme);
+                if (!viewAllMode && wrapper && wrapper.style.display === 'none') return;
                 container.innerHTML = '';
 
                 const isGlass = theme === 'glassmorphism';
@@ -4924,9 +5098,6 @@
                 // Bottom Bar – per-theme variants
                 const bottomNavStyle = bottomNavStyleByTheme[theme] || 'default';
                 container.innerHTML += generateBottomBar(theme, bottomNavStyle);
-                if (currentPageByTheme[theme] === 'order-tracking' || currentPageByTheme[theme] === 'tracking-map') {
-                    setTimeout(() => startMapCarousel(theme), 500);
-                }
 
                 // Cart Popup
                 const cartBg = theme === 'glassmorphism' ? 'rgba(30,30,30,0.95)' : '#fff';
@@ -5093,7 +5264,10 @@
                 // ─── FULL-PAGE OVERLAY (Page Router) ──────────────
                 const currentPage = currentPageByTheme[theme];
                 if (currentPage !== 'feed') {
-                    const pageStyle = (modulesConfig.find(m => m.id === currentPage)?.style) || 'default';
+                    // Registered pages carry a per-theme style; pages not in the module list
+                    // (e.g. order-progress) fall back to the theme's default variant so each
+                    // viewport still shows its own design instead of all rendering 'default'.
+                    const pageStyle = (modulesConfig.find(m => m.id === currentPage)?.style) || DEFAULT_STYLE_BY_THEME[theme] || 'default';
                     let pageHtml = '';
                     switch (currentPage) {
                         case 'order-tracking':
@@ -5110,6 +5284,9 @@
                             break;
                         case 'checkout-page':
                             pageHtml = drawCheckoutPage(theme, pageStyle);
+                            break;
+                        case 'add-card-page':
+                            pageHtml = drawAddCardPage(theme, pageStyle);
                             break;
                         case 'order-success-page':
                             pageHtml = drawOrderSuccessPage(theme, pageStyle);
@@ -5150,14 +5327,11 @@
                         case 'subscription-page':
                             pageHtml = drawSubscriptionPage(theme, pageStyle);
                             break;
-                        case 'live-map':
-                            pageHtml = drawLiveMapPage(theme, pageStyle);
-                            break;
                     }
                     container.innerHTML += `<div style="animation:pageSlideEnter 0.35s cubic-bezier(0.16,1,0.3,1);">${pageHtml}</div>`;
                     container.innerHTML += `<div style="animation:pageSlideEnter 0.35s cubic-bezier(0.16,1,0.3,1) 0.05s both;">${generateBottomBar(theme, bottomNavStyle).replace('z-index:30;', 'z-index:101;')}</div>`;
-                    if (currentPageByTheme[theme] === 'order-tracking' || currentPageByTheme[theme] === 'tracking-map' || currentPageByTheme[theme] === 'live-map') {
-                        setTimeout(() => startMapCarousel(theme), 500);
+                    if (currentPageByTheme[theme] === 'order-progress') {
+                        setTimeout(function() { startOrderCarousel(theme); }, 800);
                     }
                     if (currentPageByTheme[theme] === 'search-page') {
                         setTimeout(() => {
@@ -5614,7 +5788,7 @@
                 else if (item.icon === 'menu') clickHandler = `setActiveNav(1);navigateToPage('${theme}','menu-page')`;
                 else if (item.icon === 'gift') clickHandler = `setActiveNav(2);navigateToPage('${theme}','rewards-page')`;
                 else if (item.icon === 'mic') clickHandler = `navigateToPage('${theme}','search-page')`;
-                else if (item.icon === 'map') clickHandler = `setActiveNav(4);navigateToPage('${theme}','live-map')`;
+                else if (item.icon === 'map') clickHandler = `setActiveNav(4);navigateToPage('${theme}','reviews-page')`;
                 else if (item.icon === 'cart') clickHandler = `setActiveNav(5);navigateToPage('${theme}','cart-page')`;
                 else if (item.icon === 'user') clickHandler = `setActiveNav(6);navigateToPage('${theme}','profile-settings')`;
 
@@ -5852,13 +6026,13 @@
                 </div>`;
 
             const oldPills = `
-                <div style="display:flex;background:var(--pill-bg);border-radius:9999px;padding:3px;flex-shrink:0;">
-                    <div onclick="setDeliveryMode('${theme}','delivery')" id="deliveryBtn-${theme}" style="padding:8px 12px;text-align:center;border-radius:9999px;background:${isDelivery ? 'var(--accent)' : 'transparent'};color:${isDelivery ? '#fff' : 'var(--text-secondary)'};font-size:11px;font-weight:700;cursor:pointer;">Delivery</div>
-                    <div onclick="setDeliveryMode('${theme}','pickup')" id="pickupBtn-${theme}" style="padding:8px 12px;text-align:center;border-radius:9999px;background:${!isDelivery ? 'var(--accent)' : 'transparent'};color:${!isDelivery ? '#fff' : 'var(--text-secondary)'};font-size:11px;font-weight:500;cursor:pointer;">Pickup</div>
+                <div id="pillsWrap-${theme}" style="display:flex;background:var(--pill-bg);border-radius:9999px;padding:3px;${isDelivery ? 'flex:0 0 auto;' : 'flex:1;'}">
+                    <div onclick="setDeliveryMode('${theme}','delivery')" id="deliveryBtn-${theme}" style="${isDelivery ? '' : 'flex:1;'}padding:8px 12px;text-align:center;border-radius:9999px;background:${isDelivery ? 'var(--accent)' : 'transparent'};color:${isDelivery ? '#fff' : 'var(--text-secondary)'};font-size:11px;font-weight:700;cursor:pointer;">Delivery</div>
+                    <div onclick="setDeliveryMode('${theme}','pickup')" id="pickupBtn-${theme}" style="${isDelivery ? '' : 'flex:1;'}padding:8px 12px;text-align:center;border-radius:9999px;background:${!isDelivery ? 'var(--accent)' : 'transparent'};color:${!isDelivery ? '#fff' : 'var(--text-secondary)'};font-size:11px;font-weight:500;cursor:pointer;">Pickup</div>
                 </div>`;
 
             const bigSwitch = `
-                <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+                <div id="switchWrap-${theme}" style="display:flex;align-items:center;justify-content:center;gap:10px;${isDelivery ? 'flex-shrink:0;' : 'flex:1;'}">
                     <span style="font-size:11px;font-weight:700;color:${isDelivery ? 'var(--accent)' : 'var(--text-secondary)'};" id="deliveryLabel-${theme}">Delivery</span>
                     <div onclick="toggleDeliveryMode('${theme}')" style="width:44px;height:24px;border-radius:12px;background:${isDelivery ? 'var(--accent)' : 'var(--border-color)'};position:relative;cursor:pointer;transition:background 0.3s;" id="modeSwitch-${theme}">
                         <div style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:${isDelivery ? '22px' : '2px'};transition:left 0.3s;box-shadow:0 2px 6px rgba(0,0,0,0.25);"></div>
@@ -5867,7 +6041,7 @@
                 </div>`;
 
             const segControl = `
-                <div style="display:flex;background:var(--pill-bg);border:1px solid var(--border-color);border-radius:10px;padding:2px;position:relative;flex-shrink:0;width:140px;">
+                <div id="segWrap-${theme}" style="display:flex;background:var(--pill-bg);border:1px solid var(--border-color);border-radius:10px;padding:2px;position:relative;${isDelivery ? 'flex-shrink:0;width:140px;' : 'flex:1;width:auto;'}">
                     <div id="segDelivery-${theme}" onclick="setDeliveryMode('${theme}','delivery')" style="flex:1;text-align:center;padding:6px 0;font-size:9px;font-weight:700;border-radius:8px;cursor:pointer;z-index:1;transition:color 0.2s;color:${isDelivery ? '#fff' : 'var(--text-secondary)'};position:relative;">Delivery</div>
                     <div id="segPickup-${theme}" onclick="setDeliveryMode('${theme}','pickup')" style="flex:1;text-align:center;padding:6px 0;font-size:9px;font-weight:700;border-radius:8px;cursor:pointer;z-index:1;transition:color 0.2s;color:${!isDelivery ? '#fff' : 'var(--text-secondary)'};position:relative;">Pickup</div>
                     <div id="segIndicator-${theme}" style="position:absolute;top:2px;${isDelivery ? 'left:2px' : 'left:calc(50% + 1px)'};width:calc(50% - 2px);height:calc(100% - 4px);background:var(--accent);border-radius:8px;transition:left 0.3s;z-index:0;"></div>
@@ -5876,7 +6050,16 @@
             if (style === 'option 1') {
                 return `
                 <div style="padding:12px 16px;" id="brandHeader-${theme}">
-                    <div style="font-size:9px;font-weight:700;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">${selectorLabel}</div>
+                    <div style="font-size:9px;font-weight:700;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Choose Branch</div>
+                    <div onclick="openBranchSheet('${theme}')" style="display:flex;align-items:center;gap:8px;background:var(--pill-bg);border:1px solid var(--border-color);border-radius:12px;padding:8px 10px;cursor:pointer;margin-bottom:10px;" id="branchSelector-${theme}">
+                        ${ic.store}
+                        <div style="flex:1;min-width:0;">
+                            <div id="branchValue-${theme}" style="font-size:12px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${loc.branch || 'Downtown NYC'}</div>
+                        </div>
+                        ${ic.chevron}
+                    </div>
+                    
+                    <div id="deliverToLabel-${theme}" style="font-size:9px;font-weight:700;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;display:${isDelivery ? 'block' : 'none'};">${selectorLabel}</div>
                     <div style="display:flex;align-items:center;gap:8px;">
                         ${locationSelector}
                         ${bigSwitch}
@@ -5886,7 +6069,16 @@
             if (style === 'option 2') {
                 return `
                 <div style="padding:12px 16px;" id="brandHeader-${theme}">
-                    <div style="font-size:9px;font-weight:700;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">${selectorLabel}</div>
+                    <div style="font-size:9px;font-weight:700;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Choose Branch</div>
+                    <div onclick="openBranchSheet('${theme}')" style="display:flex;align-items:center;gap:8px;background:var(--pill-bg);border:1px solid var(--border-color);border-radius:12px;padding:8px 10px;cursor:pointer;margin-bottom:10px;" id="branchSelector-${theme}">
+                        ${ic.store}
+                        <div style="flex:1;min-width:0;">
+                            <div id="branchValue-${theme}" style="font-size:12px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${loc.branch || 'Downtown NYC'}</div>
+                        </div>
+                        ${ic.chevron}
+                    </div>
+                    
+                    <div id="deliverToLabel-${theme}" style="font-size:9px;font-weight:700;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;display:${isDelivery ? 'block' : 'none'};">${selectorLabel}</div>
                     <div style="display:flex;align-items:center;gap:8px;">
                         ${locationSelector}
                         ${segControl}
@@ -5896,7 +6088,16 @@
             // default
             return `
             <div style="padding:12px 16px;" id="brandHeader-${theme}">
-                <div style="font-size:9px;font-weight:700;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">${selectorLabel}</div>
+                <div style="font-size:9px;font-weight:700;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Choose Branch</div>
+                <div onclick="openBranchSheet('${theme}')" style="display:flex;align-items:center;gap:8px;background:var(--pill-bg);border:1px solid var(--border-color);border-radius:12px;padding:8px 10px;cursor:pointer;margin-bottom:10px;" id="branchSelector-${theme}">
+                    ${ic.store}
+                    <div style="flex:1;min-width:0;">
+                        <div id="branchValue-${theme}" style="font-size:12px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${loc.branch || 'Downtown NYC'}</div>
+                    </div>
+                    ${ic.chevron}
+                </div>
+                
+                <div id="deliverToLabel-${theme}" style="font-size:9px;font-weight:700;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;display:${isDelivery ? 'block' : 'none'};">${selectorLabel}</div>
                 <div style="display:flex;align-items:center;gap:8px;">
                     ${locationSelector}
                     ${oldPills}
@@ -6600,7 +6801,7 @@
                                 <div style="width:50%;height:100%;background:linear-gradient(90deg,${accent},${accent});border-radius:2px;"></div>
                             </div>
                         </div>
-                        <div onclick="" style="width:100%;padding:14px;background:${accent};color:#0A0A0A;text-align:center;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 0 24px rgba(212,165,116,0.35);">Track Order</div>
+                        <div onclick="" style="width:100%;padding:14px;background:${accent};color:#0A0A0A;text-align:center;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 0 24px rgba(212,165,116,0.35);">Rate Your Order</div>
                     </div>
                 </div>`;
             }
@@ -7848,8 +8049,8 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
             const itemBg = isGlass ? 'rgba(255,255,255,0.04)' : (isBrut ? 'var(--card-bg)' : 'var(--pill-bg)');
             const backBtn = `<div onclick="goBack('${theme}')" style="width:36px;height:36px;border-radius:50%;background:${isGlass?'rgba(255,255,255,0.1)':'var(--pill-bg)'};display:flex;align-items:center;justify-content:center;cursor:pointer;">${iconFA('arrow-left','font-size:16px;color:'+textColor+';')}</div>`;
 
-            if (style === 'option 1') { return drawCartCompact(theme, {textColor,subColor,accent,pageBg,btnStyle,cardBg,cardBorder,cardRadius,cardShadow,itemBg,backBtn,isGlass,isBrut}); }
-            if (style === 'option 2') { return drawCartBold(theme, {textColor,subColor,accent,pageBg,btnStyle,cardBg,cardBorder,cardRadius,cardShadow,itemBg,backBtn,isGlass,isBrut}); }
+            // All 3 views share View 1's full cart content (each keeps its own theme styling).
+            // drawCartCompact / drawCartBold retained below but no longer routed to.
 
             const cartItems = window.appState.cart[theme] || [];
             const subtotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
@@ -8129,6 +8330,7 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
             const subColor = isGlass ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
             const accent = isBrut ? '#FF6B35' : 'var(--accent)';
             const pageBg = isGlass ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
+            const inputBg = isGlass ? 'rgba(255,255,255,0.06)' : (isBrut ? '#f5f5f5' : '#fff');
 
             const isPickup = deliveryModeByTheme[theme] === 'pickup';
             const addressLabel = isPickup ? 'Pickup Location' : 'Delivery Address';
@@ -8161,8 +8363,7 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
 
             const kv = {textColor, subColor, accent, pageBg, cardBg, cardBorder, cardShadow, cardRadius, glassBlur, ctaRadius, ctaShadow, ctaBorder, chipActiveBg, chipActiveCl, chipActiveBorder, chipActiveShadow, chipInactiveBg, chipInactiveBorder, headerBorder, chipRadius, backBtn, isGlass, isBrut};
 
-            if (style === 'option 1') { return drawCheckoutAccordion(theme, kv); }
-            if (style === 'option 2') { return drawCheckoutTimeline(theme, kv); }
+
 
             const subtotal = 25.97;
             const delivery = 2.99;
@@ -8228,24 +8429,25 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
             var subtotalPaid = subtotal + promo;
 
             return `<div style="position:absolute;inset:0;background:${pageBg};z-index:5;display:flex;flex-direction:column;">
-                <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:${headerBorder};">
-                    ${backBtn}
-                    <div style="flex:1;display:flex;flex-direction:column;">
-                        <div style="font-size:16px;font-weight:700;color:${textColor};">Checkout</div>
-                        <div style="font-size:9px;font-weight:600;color:${subColor};">Step 2 of 3</div>
+                <div id="checkout-main-${theme}" style="display:flex;flex-direction:column;width:100%;height:100%;">
+                    <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:${headerBorder};">
+                        ${backBtn}
+                        <div style="flex:1;display:flex;flex-direction:column;">
+                            <div style="font-size:16px;font-weight:700;color:${textColor};">Checkout</div>
+                            <div style="font-size:9px;font-weight:600;color:${subColor};">Step 2 of 3</div>
+                        </div>
                     </div>
-                </div>
-                <div style="flex:1;overflow-y:auto;padding:12px 12px 120px;">
+                    <div style="flex:1;overflow-y:auto;padding:12px 12px 120px;">
                     <div style="background:${cardBg};border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow};border:${cardBorder};${glassBlur}">
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                            <div style="font-size:12px;font-weight:700;color:${textColor};">${iconFA(addressIcon, 'font-size:12px;margin-right:6px;')}${addressLabel}</div>
+                            <div style="font-size:12px;font-weight:700;color:${textColor};">${addressLabel}</div>
                             <div onclick="openLocationSheet('${theme}')" style="font-size:10px;font-weight:700;color:${accent};cursor:pointer;">Change</div>
                         </div>
                         <div style="font-size:12px;color:${textColor};">${addressText}</div>
                         <div style="font-size:10px;color:${subColor};">${addressSub}</div>
                     </div>
                     <div style="background:${cardBg};border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow};border:${cardBorder};${glassBlur}">
-                        <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:10px;">${iconFA('clock', 'font-size:12px;margin-right:6px;')}${timeLabel}</div>
+                        <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:10px;">${timeLabel}</div>
                         <div style="display:flex;gap:6px;margin-bottom:8px;">
                             <span style="padding:6px 14px;background:${accent};color:#fff;border-radius:${chipRadius};font-size:10px;font-weight:700;cursor:pointer;border:${chipActiveBorder};box-shadow:${chipActiveShadow};">Today</span>
                             <span style="padding:6px 14px;background:${chipInactiveBg};color:${textColor};border-radius:${chipRadius};font-size:10px;font-weight:600;cursor:pointer;border:${chipInactiveBorder};">Tomorrow</span>
@@ -8260,20 +8462,48 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                         <div style="display:flex;gap:6px;">${tipChipsHTML}${customChip}</div>
                     </div>
                     <div style="background:${cardBg};border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow};border:${cardBorder};${glassBlur}">
-                        <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:10px;">${iconFA('wallet', 'font-size:12px;margin-right:6px;')}Payment</div>
-                        <div id="pay-with-points-${theme}" style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:${accent}10;border:1.5px solid var(--border-color);border-radius:12px;margin-bottom:8px;cursor:pointer;" onclick="var chk=document.getElementById('points-chk-${theme}');var toggled=chk.dataset.on!=='1';chk.dataset.on=toggled?'1':'0';chk.style.background=toggled?'${accent}':'transparent';chk.style.borderColor=toggled?'${accent}':'var(--border-color)';chk.querySelector('span').style.display=toggled?'block':'none';var tot=document.getElementById('cta-total-${theme}');var pts=document.getElementById('pts-remain-${theme}');pts.textContent=toggled?'$${formatPrice(defaultTotal-8.20)}':'$${formatPrice(defaultTotal)}';tot.textContent=toggled?'${(defaultTotal-8.20).toFixed(2)}':'${defaultTotal.toFixed(2)}';var pl=document.getElementById('points-line-${theme}');if(pl)pl.style.display=toggled?'flex':'none';var tl=document.getElementById('summary-total-${theme}');if(tl)tl.textContent='${formatPrice(defaultTotal)}';if(tl&&toggled)tl.textContent='${formatPrice(defaultTotal-8.20)}'">
-                            <span style="font-size:18px;">⭐</span>
+                        <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:10px;">Payment</div>
+                        <div id="pay-with-points-${theme}" style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:${accent}10;border:1.5px solid var(--border-color);border-radius:12px;margin-bottom:12px;cursor:pointer;" onclick="var chk=document.getElementById('points-chk-${theme}');var toggled=chk.dataset.on!=='1';chk.dataset.on=toggled?'1':'0';chk.style.background=toggled?'${accent}':'transparent';chk.style.borderColor=toggled?'${accent}':'var(--border-color)';chk.querySelector('span').style.display=toggled?'block':'none';var tot=document.getElementById('cta-total-${theme}');var pts=document.getElementById('pts-remain-${theme}');pts.textContent=toggled?'$${formatPrice(defaultTotal-8.20)}':'$${formatPrice(defaultTotal)}';tot.textContent=toggled?'${(defaultTotal-8.20).toFixed(2)}':'${defaultTotal.toFixed(2)}';var pl=document.getElementById('points-line-${theme}');if(pl)pl.style.display=toggled?'flex':'none';var tl=document.getElementById('summary-total-${theme}');if(tl)tl.textContent='${formatPrice(defaultTotal)}';if(tl&&toggled)tl.textContent='${formatPrice(defaultTotal-8.20)}'">
                             <div style="flex:1;"><div style="font-size:12px;font-weight:700;color:${textColor};">Pay with Points</div><div style="font-size:10px;color:${subColor};">820 pts = $8.20 available</div></div>
                             <div id="pts-remain-${theme}" style="font-size:11px;font-weight:700;color:${subColor};">Save $8.20</div>
                             <div id="points-chk-${theme}" data-on="0" style="width:20px;height:20px;border-radius:50%;border:2px solid var(--border-color);transition:all 0.15s;display:flex;align-items:center;justify-content:center;"><span style="display:none;font-size:11px;color:#fff;">✓</span></div>
                         </div>
-                        <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                            <div onclick="openPaymentSheet('${theme}','card')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:${accent}15;border:2px solid ${accent};border-radius:999px;font-size:11px;font-weight:700;color:${textColor};cursor:pointer;"><span>💳</span>Card</div>
-                            <div onclick="openPaymentSheet('${theme}','wallet')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:${chipInactiveBg};border:1px solid var(--border-color);border-radius:999px;font-size:11px;font-weight:600;color:${textColor};cursor:pointer;"><span>📱</span>Wallet</div>
+                        <div style="font-size:10px;font-weight:700;color:${subColor};text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Saved Cards</div>
+                        <div style="display:flex;align-items:center;gap:12px;padding:14px;background:${accent}15;border:1.5px solid ${accent};border-radius:${cardRadius};margin-bottom:8px;cursor:pointer;">
+                            <div style="flex:1;">
+                                <div style="font-size:13px;font-weight:700;color:${textColor};">•••• 4242</div>
+                                <div style="font-size:10px;color:${subColor};margin-top:1px;">Visa · Exp 12/27</div>
+                            </div>
+                            <div style="width:20px;height:20px;border-radius:50%;background:${accent};display:flex;align-items:center;justify-content:center;">
+                                <span style="font-size:10px;color:#fff;">✓</span>
+                            </div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:12px;padding:14px;background:${inputBg};border:1px solid var(--border-color);border-radius:${cardRadius};margin-bottom:12px;cursor:pointer;">
+                            <div style="flex:1;">
+                                <div style="font-size:13px;font-weight:700;color:${textColor};">•••• 8910</div>
+                                <div style="font-size:10px;color:${subColor};margin-top:1px;">Mastercard · Exp 03/26</div>
+                            </div>
+                            <div style="width:20px;height:20px;border-radius:50%;border:2px solid var(--border-color);"></div>
+                        </div>
+                        <div onclick="document.getElementById('checkout-main-${theme}').style.display='none';document.getElementById('add-card-sheet-${theme}').style.display='flex';" style="font-size:10px;font-weight:700;color:${accent};text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;margin-top:4px;cursor:pointer;">+ Add New Card</div>
+                        <div style="font-size:10px;font-weight:700;color:${subColor};text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Wallet</div>
+                        <div style="display:flex;align-items:center;gap:12px;padding:14px;background:${inputBg};border:1px solid var(--border-color);border-radius:${cardRadius};margin-bottom:8px;cursor:pointer;">
+                            <div style="flex:1;">
+                                <div style="font-size:13px;font-weight:700;color:${textColor};">Google Pay</div>
+                                <div style="font-size:10px;color:${subColor};margin-top:1px;">john@gmail.com</div>
+                            </div>
+                            <div style="width:20px;height:20px;border-radius:50%;border:2px solid var(--border-color);"></div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:12px;padding:14px;background:${inputBg};border:1px solid var(--border-color);border-radius:${cardRadius};cursor:pointer;">
+                            <div style="flex:1;">
+                                <div style="font-size:13px;font-weight:700;color:${textColor};">Apple Pay</div>
+                                <div style="font-size:10px;color:${subColor};margin-top:1px;">john@icloud.com</div>
+                            </div>
+                            <div style="width:20px;height:20px;border-radius:50%;border:2px solid var(--border-color);"></div>
                         </div>
                     </div>
                     <div style="background:${cardBg};border-radius:${cardRadius};padding:14px;margin-bottom:10px;box-shadow:${cardShadow};border:${cardBorder};${glassBlur}">
-                        <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:8px;">${iconFA('receipt', 'font-size:12px;margin-right:6px;')}Order Summary</div>
+                        <div style="font-size:12px;font-weight:700;color:${textColor};margin-bottom:8px;">Order Summary</div>
                         <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>Subtotal</span><span style="color:${textColor};">${formatPrice(subtotal)}</span></div>
                         <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>${isPickup ? 'Service Fee' : 'Delivery Fee'}</span><span style="color:${textColor};">${formatPrice(delivery)}</span></div>
                         <div style="display:flex;justify-content:space-between;font-size:11px;color:${subColor};margin-bottom:3px;"><span>Tax</span><span style="color:${textColor};">${formatPrice(tax)}</span></div>
@@ -8284,196 +8514,108 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                         <div id="total-line-${theme}" style="display:flex;justify-content:space-between;font-size:15px;font-weight:800;color:${textColor};"><span>Total</span><span id="summary-total-${theme}" style="color:${accent};">${formatPrice(defaultTotal)}</span></div>
                     </div>
                 </div>
-                <div style="padding:10px 12px 80px;border-top:${headerBorder};background:${pageBg};">
-                    <div onclick="placeOrder('${theme}')" style="width:100%;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:${ctaRadius};font-size:14px;font-weight:700;cursor:pointer;border:${ctaBorder};box-shadow:${ctaShadow};margin-bottom:6px;">Place Order &middot; $<span id="cta-total-${theme}">${defaultTotal.toFixed(2)}</span></div>
-                    <div style="text-align:center;font-size:9px;color:${subColor};font-weight:600;">${isPickup ? 'Est. pickup 25&ndash;35 min' : 'Est. delivery 25&ndash;35 min'}</div>
+                    <div style="padding:10px 12px 80px;border-top:${headerBorder};background:${pageBg};">
+                        <div onclick="placeOrder('${theme}')" style="width:100%;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:${ctaRadius};font-size:14px;font-weight:700;cursor:pointer;border:${ctaBorder};box-shadow:${ctaShadow};margin-bottom:6px;">Place Order &middot; $<span id="cta-total-${theme}">${defaultTotal.toFixed(2)}</span></div>
+                        <div style="text-align:center;font-size:9px;color:${subColor};font-weight:600;">${isPickup ? 'Est. pickup 25&ndash;35 min' : 'Est. delivery 25&ndash;35 min'}</div>
+                    </div>
                 </div>
+                <div id="add-card-sheet-${theme}" style="display:none;flex-direction:column;width:100%;height:100%;">${addCardSheetInner(theme, `document.getElementById('checkout-main-${theme}').style.display='flex';document.getElementById('add-card-sheet-${theme}').style.display='none';`)}</div>
             </div>`;
         }
 
-        // ─── CHECKOUT DESIGN #2: accordion (option 1) ─────────────
-        function drawCheckoutAccordion(theme, kv) {
-            const subtotal = 25.97, delivery = 2.99, tax = 2.34, promo = -3.00;
-            const total = subtotal + delivery + tax + promo;
-            const isPickup = deliveryModeByTheme[theme] === 'pickup';
+        // ─── ADD NEW CARD (shared inner markup: used by checkout sheet + standalone page) ───
+        // Per-view UI: soft neumorphic insets (V1), frosted glass (V2), bold brutalist offsets (V3).
+        function addCardSheetInner(theme, backOnclick) {
+            const isGlass = theme === 'glassmorphism';
+            const isBrut = theme === 'neubrutalism';
+            const textColor = isGlass ? '#fff' : 'var(--text-primary)';
+            const subColor = isGlass ? 'rgba(255,255,255,0.5)' : 'var(--text-secondary)';
+            const accent = isBrut ? '#FF6B35' : 'var(--accent)';
+            const pageBg = isGlass ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
+            const headerBorder = isGlass ? '1px solid rgba(255,255,255,0.06)' : (isBrut ? '1.5px solid var(--border-color)' : '1px solid var(--border-color)');
+            const ctaRadius = isBrut ? '4px' : 'var(--btn-radius)';
+            const ctaShadow = isBrut ? '4px 4px 0 var(--border-color)' : '0 4px 16px ' + accent + '55';
+            const ctaBorder = isBrut ? '2px solid var(--border-color)' : 'none';
 
-            const section = (id, title, icon, content, open = false) => `
-                <div style="background:${kv.cardBg};border-radius:${kv.cardRadius};margin-bottom:8px;box-shadow:${kv.cardShadow};border:${kv.cardBorder};${kv.glassBlur}overflow:hidden;">
-                    <div onclick="var body=document.getElementById('acc-body-${id}-${theme}');var ico=document.getElementById('acc-ico-${id}-${theme}');body.style.display=body.style.display==='none'?'block':'none';ico.style.transform=body.style.display==='none'?'rotate(0deg)':'rotate(180deg)';" style="display:flex;align-items:center;gap:10px;padding:14px;cursor:pointer;">
-                        <span style="font-size:14px;color:${kv.accent};">${iconFA(icon,'font-size:12px;')}</span>
-                        <span style="flex:1;font-size:12px;font-weight:700;color:${kv.textColor};">${title}</span>
-                        <span id="acc-ico-${id}-${theme}" style="font-size:10px;color:${kv.subColor};transition:transform 0.2s;${open?'transform:rotate(180deg);':''}">▼</span>
+            // Per-theme input treatment
+            const inputBg = isGlass ? 'rgba(255,255,255,0.06)' : (isBrut ? '#fff' : 'var(--pill-bg)');
+            const inputBorder = isBrut ? '2px solid var(--border-color)' : (isGlass ? '1px solid rgba(255,255,255,0.14)' : '1px solid var(--border-color)');
+            const inputRadius = isBrut ? '4px' : '12px';
+            const inputExtra = isBrut ? 'box-shadow:3px 3px 0 var(--border-color);' : (isGlass ? 'backdrop-filter:blur(8px);' : 'box-shadow:inset 1px 1px 4px rgba(0,0,0,0.06);');
+            const labelStyle = `font-size:11px;font-weight:700;color:${subColor};margin-bottom:7px;${isBrut ? 'text-transform:uppercase;letter-spacing:0.5px;' : ''}`;
+            const inputStyle = `width:100%;padding:13px 14px;background:${inputBg};border:${inputBorder};border-radius:${inputRadius};font-size:14px;color:${textColor};box-sizing:border-box;outline:none;${inputExtra}`;
+
+            const backIcon = isGlass ? iconMaterial('arrow-left-line', 'font-size:16px;color:#fff;') : (isBrut ? iconBS('arrow-left', 'font-size:16px;color:var(--text-primary);') : iconFA('arrow-left', 'font-size:16px;color:var(--text-primary);'));
+
+            // Per-theme live card preview
+            const pvText = isBrut ? '#111' : '#fff';
+            const pvSub = isBrut ? 'rgba(0,0,0,0.55)' : 'rgba(255,255,255,0.7)';
+            const pvStyle = isGlass
+                ? 'background:linear-gradient(135deg,rgba(255,255,255,0.16),rgba(255,255,255,0.04));backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.16);box-shadow:0 8px 28px rgba(0,0,0,0.35);'
+                : isBrut
+                    ? 'background:' + accent + ';border:2.5px solid var(--border-color);box-shadow:6px 6px 0 var(--border-color);'
+                    : 'background:linear-gradient(135deg,' + accent + ' 0%,#12303a 130%);box-shadow:0 10px 26px ' + accent + '40;';
+            const pvRadius = isBrut ? '6px' : '18px';
+            const chipStyle = 'width:38px;height:27px;border-radius:5px;background:linear-gradient(135deg,#e9d27a,#c9a94a);' + (isBrut ? 'border:2px solid #111;' : '');
+
+            const cardPreview = `
+                <div style="width:100%;padding:18px 20px;margin-bottom:22px;border-radius:${pvRadius};position:relative;overflow:hidden;${pvStyle}">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px;">
+                        <div style="${chipStyle}"></div>
+                        <div style="font-size:15px;font-weight:800;font-style:italic;color:${pvText};letter-spacing:0.5px;">VISA</div>
                     </div>
-                    <div id="acc-body-${id}-${theme}" style="padding:0 14px 14px;display:${open?'block':'none'};">${content}</div>
-                </div>`;
-
-            const addressContent = isPickup ? `
-                <div style="font-size:12px;color:${kv.textColor};font-weight:600;">Downtown NYC</div>
-                <div style="font-size:10px;color:${kv.subColor};">Open until 10 PM · 1.2 mi away</div>
-                <div onclick="openLocationSheet('${theme}')" style="font-size:10px;font-weight:700;color:${kv.accent};cursor:pointer;margin-top:8px;">Change branch</div>` : `
-                <div style="font-size:12px;color:${kv.textColor};font-weight:600;">921 Church St</div>
-                <div style="font-size:10px;color:${kv.subColor};">San Francisco, CA 94114 · Apt 4B</div>
-                <div onclick="openLocationSheet('${theme}')" style="font-size:10px;font-weight:700;color:${kv.accent};cursor:pointer;margin-top:8px;">Change address</div>`;
-
-            const timeContent = `
-                <div style="display:flex;gap:6px;margin-bottom:8px;">
-                    <span style="padding:6px 14px;background:${kv.accent};color:#fff;border-radius:${kv.chipRadius};font-size:10px;font-weight:700;cursor:pointer;">Today</span>
-                    <span style="padding:6px 14px;background:${kv.chipInactiveBg};color:${kv.textColor};border-radius:${kv.chipRadius};font-size:10px;font-weight:600;cursor:pointer;border:${kv.chipInactiveBorder};">Tomorrow</span>
-                </div>
-                <div style="display:flex;gap:6px;">
-                    ${['10:00-10:30','10:30-11:00','11:00-11:30'].map((t,i) => `<span style="flex:1;padding:6px;text-align:center;background:${i===0?kv.accent:kv.chipInactiveBg};color:${i===0?'#fff':kv.textColor};border-radius:${kv.chipRadius};font-size:9px;font-weight:600;cursor:pointer;border:${i===0?kv.chipActiveBorder:kv.chipInactiveBorder};">${t}</span>`).join('')}
-                </div>`;
-
-            const paymentContent = `
-                <div onclick="var chk=document.getElementById('pts-ac-${theme}');var t=chk.dataset.on!=='1';chk.dataset.on=t?'1':'0';chk.style.background=t?'${kv.accent}':'transparent';chk.style.borderColor=t?'${kv.accent}':'var(--border-color)';chk.querySelector('span').style.display=t?'block':'none';var rem=document.getElementById('pts-rem-ac-${theme}');rem.textContent=t?'Save $8.20 (820 pts)':'820 pts = $8.20 available';var pl=document.getElementById('points-line-ac-${theme}');if(pl)pl.style.display=t?'flex':'none';var tl=document.getElementById('summary-total-ac-${theme}');if(tl)tl.textContent=t?'${formatPrice(total-8.20)}':'${formatPrice(total)}'" style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:${kv.accent}08;border-radius:8px;margin-bottom:8px;cursor:pointer;">
-                    <span style="font-size:14px;">⭐</span>
-                    <span style="flex:1;font-size:10px;font-weight:600;color:${kv.textColor};" id="pts-rem-ac-${theme}">820 pts = $8.20 available</span>
-                    <div id="pts-ac-${theme}" data-on="0" style="width:16px;height:16px;border-radius:50%;border:2px solid var(--border-color);transition:all 0.15s;display:flex;align-items:center;justify-content:center;"><span style="display:none;font-size:9px;color:#fff;">✓</span></div>
-                </div>
-                <div style="display:flex;gap:5px;margin-bottom:6px;">
-                    <span onclick="openPaymentSheet('${theme}','card')" style="padding:5px 10px;background:${kv.accent}15;border:1.5px solid ${kv.accent};border-radius:999px;font-size:9px;font-weight:700;color:${kv.textColor};cursor:pointer;">💳 Card</span>
-                    <span onclick="openPaymentSheet('${theme}','wallet')" style="padding:5px 10px;background:${kv.chipInactiveBg};border:1px solid var(--border-color);border-radius:999px;font-size:9px;font-weight:600;color:${kv.textColor};cursor:pointer;">📱 Wallet</span>
-                </div>
-                <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:${kv.isGlass?'rgba(76,175,80,0.1)':'var(--accent-light)'};border:1px solid ${kv.accent}40;border-radius:8px;">
-                    <span style="font-size:14px;">💳</span>
-                    <div style="flex:1;"><div style="font-size:10px;font-weight:700;color:${kv.textColor};">•••• 4242</div><div style="font-size:8px;color:${kv.subColor};">Visa · Exp 12/27</div></div>
-                    <span style="width:14px;height:14px;border-radius:50%;background:${kv.accent};display:inline-flex;align-items:center;justify-content:center;font-size:8px;color:#fff;">✓</span>
-                </div>`;
-
-            return `<div style="position:absolute;inset:0;background:${kv.pageBg};z-index:5;display:flex;flex-direction:column;">
-                <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:${kv.headerBorder};">
-                    ${kv.backBtn}
-                    <div style="font-size:15px;font-weight:700;color:${kv.textColor};">Checkout</div>
-                    <span style="margin-left:auto;font-size:10px;color:${kv.subColor};font-weight:600;">2 of 3</span>
-                </div>
-                <div style="flex:1;overflow-y:auto;padding:10px 12px 120px;">
-                    ${section('address',isPickup ? 'Pickup Location' : 'Delivery Address','map-pin',addressContent,true)}
-                    ${section('time',isPickup ? 'Pickup Time' : 'Delivery Time','clock',timeContent)}
-                    ${section('payment','Payment','credit-card',paymentContent)}
-                    <div style="background:${kv.cardBg};border-radius:${kv.cardRadius};padding:12px 14px;box-shadow:${kv.cardShadow};border:${kv.cardBorder};${kv.glassBlur}margin-top:8px;">
-                        <div style="font-size:11px;font-weight:700;color:${kv.textColor};margin-bottom:6px;">Promo Code</div>
-                        <div style="display:flex;gap:6px;margin-bottom:10px;">
-                            <input id="promo-input-${theme}" placeholder="Enter promo code" style="flex:1;padding:8px 12px;border-radius:8px;border:${kv.chipInactiveBorder};background:${kv.chipInactiveBg};color:${kv.textColor};font-size:11px;outline:none;">
-                            <span onclick="applyPromoCode('${theme}')" style="padding:8px 14px;background:${kv.accent};color:#fff;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;">Apply</span>
+                    <div id="acpv-num-${theme}" style="font-size:17px;font-weight:700;font-family:monospace;letter-spacing:2px;color:${pvText};margin-bottom:16px;">&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull;</div>
+                    <div style="display:flex;justify-content:space-between;align-items:flex-end;">
+                        <div>
+                            <div style="font-size:8px;font-weight:700;color:${pvSub};text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;">Card Holder</div>
+                            <div id="acpv-name-${theme}" style="font-size:12px;font-weight:700;color:${pvText};text-transform:uppercase;">CARDHOLDER NAME</div>
                         </div>
-                        <div style="font-size:11px;font-weight:700;color:${kv.textColor};margin-bottom:6px;">Order Preferences</div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;"><span style="font-size:10px;color:${kv.subColor};">Include cutlery</span><div style="display:inline-flex;gap:0;background:${kv.chipInactiveBg};border-radius:6px;overflow:hidden;border:${kv.chipInactiveBorder};"><span id="cutlery-${theme}-y" onclick="var p=this.parentElement;var n=p.querySelector('[id$=-n]');this.style.background='${kv.accent}';this.style.color='#fff';n.style.background='transparent';n.style.color='${kv.subColor}';" style="padding:2px 8px;font-size:9px;font-weight:700;cursor:pointer;background:${kv.accent};color:#fff;white-space:nowrap;">Yes</span><span id="cutlery-${theme}-n" onclick="var p=this.parentElement;var y=p.querySelector('[id$=-y]');this.style.background='${kv.accent}';this.style.color='#fff';y.style.background='transparent';y.style.color='${kv.subColor}';" style="padding:2px 8px;font-size:9px;font-weight:700;cursor:pointer;background:transparent;color:${kv.subColor};white-space:nowrap;">No</span></div></div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;"><span style="font-size:10px;color:${kv.subColor};">No-contact delivery</span><div style="display:inline-flex;gap:0;background:${kv.chipInactiveBg};border-radius:6px;overflow:hidden;border:${kv.chipInactiveBorder};"><span id="nocontact-${theme}-y" onclick="var p=this.parentElement;var n=p.querySelector('[id$=-n]');this.style.background='${kv.accent}';this.style.color='#fff';n.style.background='transparent';n.style.color='${kv.subColor}';" style="padding:2px 8px;font-size:9px;font-weight:700;cursor:pointer;background:${kv.accent};color:#fff;white-space:nowrap;">Yes</span><span id="nocontact-${theme}-n" onclick="var p=this.parentElement;var y=p.querySelector('[id$=-y]');this.style.background='${kv.accent}';this.style.color='#fff';y.style.background='transparent';y.style.color='${kv.subColor}';" style="padding:2px 8px;font-size:9px;font-weight:700;cursor:pointer;background:transparent;color:${kv.subColor};white-space:nowrap;">No</span></div></div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;"><span style="font-size:10px;color:${kv.subColor};">Leave at my door</span><div style="display:inline-flex;gap:0;background:${kv.chipInactiveBg};border-radius:6px;overflow:hidden;border:${kv.chipInactiveBorder};"><span id="leavedoor-${theme}-y" onclick="var p=this.parentElement;var n=p.querySelector('[id$=-n]');this.style.background='${kv.accent}';this.style.color='#fff';n.style.background='transparent';n.style.color='${kv.subColor}';" style="padding:2px 8px;font-size:9px;font-weight:700;cursor:pointer;background:transparent;color:${kv.subColor};white-space:nowrap;">Yes</span><span id="leavedoor-${theme}-n" onclick="var p=this.parentElement;var y=p.querySelector('[id$=-y]');this.style.background='${kv.accent}';this.style.color='#fff';y.style.background='transparent';y.style.color='${kv.subColor}';" style="padding:2px 8px;font-size:9px;font-weight:700;cursor:pointer;background:${kv.accent};color:#fff;white-space:nowrap;">No</span></div></div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;"><span style="font-size:10px;color:${kv.subColor};">Use reward points</span><div style="display:inline-flex;gap:0;background:${kv.chipInactiveBg};border-radius:6px;overflow:hidden;border:${kv.chipInactiveBorder};"><span id="rewards-${theme}-y" onclick="var p=this.parentElement;var n=p.querySelector('[id$=-n]');this.style.background='${kv.accent}';this.style.color='#fff';n.style.background='transparent';n.style.color='${kv.subColor}';window.cartRewards=window.cartRewards||{};window.cartRewards['${theme}']=true;" style="padding:2px 8px;font-size:9px;font-weight:700;cursor:pointer;background:transparent;color:${kv.subColor};white-space:nowrap;">Yes</span><span id="rewards-${theme}-n" onclick="var p=this.parentElement;var y=p.querySelector('[id$=-y]');this.style.background='${kv.accent}';this.style.color='#fff';y.style.background='transparent';y.style.color='${kv.subColor}';window.cartRewards=window.cartRewards||{};window.cartRewards['${theme}']=false;" style="padding:2px 8px;font-size:9px;font-weight:700;cursor:pointer;background:${kv.accent};color:#fff;white-space:nowrap;">No</span></div></div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;"><span style="font-size:10px;color:${kv.subColor};">This is a gift</span><div style="display:inline-flex;gap:0;background:${kv.chipInactiveBg};border-radius:6px;overflow:hidden;border:${kv.chipInactiveBorder};"><span id="gift-${theme}-y" onclick="var p=this.parentElement;var n=p.querySelector('[id$=-n]');this.style.background='${kv.accent}';this.style.color='#fff';n.style.background='transparent';n.style.color='${kv.subColor}';window.cartGift=window.cartGift||{};window.cartGift['${theme}']=true;" style="padding:2px 8px;font-size:9px;font-weight:700;cursor:pointer;background:transparent;color:${kv.subColor};white-space:nowrap;">Yes</span><span id="gift-${theme}-n" onclick="var p=this.parentElement;var y=p.querySelector('[id$=-y]');this.style.background='${kv.accent}';this.style.color='#fff';y.style.background='transparent';y.style.color='${kv.subColor}';window.cartGift=window.cartGift||{};window.cartGift['${theme}']=false;" style="padding:2px 8px;font-size:9px;font-weight:700;cursor:pointer;background:${kv.accent};color:#fff;white-space:nowrap;">No</span></div></div>
+                        <div style="text-align:right;">
+                            <div style="font-size:8px;font-weight:700;color:${pvSub};text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;">Expires</div>
+                            <div id="acpv-exp-${theme}" style="font-size:12px;font-weight:700;color:${pvText};">MM/YY</div>
+                        </div>
                     </div>
-                    <div style="background:${kv.cardBg};border-radius:${kv.cardRadius};padding:12px 14px;box-shadow:${kv.cardShadow};border:${kv.cardBorder};${kv.glassBlur}margin-top:8px;">
-                        <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.subColor};margin-bottom:3px;"><span>Subtotal</span><span style="color:${kv.textColor};">${formatPrice(subtotal)}</span></div>
-                        <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.subColor};margin-bottom:3px;"><span>${isPickup ? 'Service Fee' : 'Delivery'}</span><span style="color:${kv.textColor};">${formatPrice(delivery)}</span></div>
-                        <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.subColor};margin-bottom:3px;"><span>Tax</span><span style="color:${kv.textColor};">${formatPrice(tax)}</span></div>
-                        <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.accent};margin-bottom:3px;"><span>Promo (SAVE3)</span><span>-${formatPrice(Math.abs(promo))}</span></div>
-                        <div id="points-line-ac-${theme}" style="display:none;justify-content:space-between;font-size:10px;color:${kv.accent};margin-bottom:3px;"><span>⭐ Points (820 pts)</span><span>-$8.20</span></div>
-                        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:800;color:${kv.accent};padding-top:6px;border-top:1px solid var(--border-color);margin-top:4px;"><span>Total</span><span id="summary-total-ac-${theme}">${formatPrice(total)}</span></div>
+                </div>`;
+
+            return `
+                <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:${headerBorder};">
+                    <div onclick="${backOnclick}" style="width:36px;height:36px;border-radius:${isBrut ? '8px' : '50%'};background:${isGlass ? 'rgba(255,255,255,0.1)' : 'var(--pill-bg)'};${isBrut ? 'border:1.5px solid var(--border-color);' : ''}display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">${backIcon}</div>
+                    <div style="flex:1;display:flex;flex-direction:column;">
+                        <div style="font-size:16px;font-weight:700;color:${textColor};${isBrut ? 'text-transform:uppercase;' : ''}">Add New Card</div>
+                        <div style="font-size:10px;font-weight:600;color:${subColor};">Enter your card details</div>
                     </div>
                 </div>
-                <div style="padding:8px 12px 80px;border-top:${kv.headerBorder};background:${kv.pageBg};">
-                    <div onclick="placeOrder('${theme}')" style="width:100%;padding:13px;background:${kv.accent};color:#fff;text-align:center;border-radius:${kv.ctaRadius};font-size:13px;font-weight:700;cursor:pointer;border:${kv.ctaBorder};box-shadow:${kv.ctaShadow};">Place Order · ${formatPrice(total)}</div>
+                <div style="flex:1;overflow-y:auto;padding:18px 16px;display:flex;flex-direction:column;">
+                    ${cardPreview}
+                    <div style="margin-bottom:14px;">
+                        <div style="${labelStyle}">Card Number</div>
+                        <input type="text" inputmode="numeric" placeholder="1234 5678 9012 3456" oninput="var v=this.value.replace(/\\D/g,'').slice(0,16).replace(/(\\d{4})(?=\\d)/g,'$1 ');this.value=v;document.getElementById('acpv-num-${theme}').textContent=v||'&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull;';" style="${inputStyle}font-family:monospace;letter-spacing:1px;"/>
+                    </div>
+                    <div style="display:flex;gap:12px;margin-bottom:14px;">
+                        <div style="flex:1;">
+                            <div style="${labelStyle}">Expiry</div>
+                            <input type="text" inputmode="numeric" placeholder="MM/YY" oninput="var v=this.value.replace(/\\D/g,'').slice(0,4);if(v.length>2){v=v.slice(0,2)+'/'+v.slice(2);}this.value=v;document.getElementById('acpv-exp-${theme}').textContent=v||'MM/YY';" style="${inputStyle}"/>
+                        </div>
+                        <div style="flex:1;">
+                            <div style="${labelStyle}">CVC</div>
+                            <input type="text" inputmode="numeric" placeholder="123" oninput="this.value=this.value.replace(/\\D/g,'').slice(0,4);" style="${inputStyle}"/>
+                        </div>
+                    </div>
+                    <div style="margin-bottom:4px;">
+                        <div style="${labelStyle}">Cardholder Name</div>
+                        <input type="text" placeholder="John Doe" oninput="document.getElementById('acpv-name-${theme}').textContent=(this.value||'CARDHOLDER NAME').toUpperCase();" style="${inputStyle}"/>
+                    </div>
                 </div>
-            </div>`;
+                <div style="padding:16px 16px 80px;border-top:${headerBorder};background:${pageBg};">
+                    <div style="width:100%;padding:15px;background:${accent};color:#fff;text-align:center;border-radius:${ctaRadius};font-size:14px;font-weight:800;cursor:pointer;border:${ctaBorder};box-shadow:${ctaShadow};${isBrut ? 'text-transform:uppercase;letter-spacing:0.5px;' : ''}">Save Card</div>
+                </div>`;
         }
 
-        // ─── CHECKOUT DESIGN #3: timeline stack (option 2) ────────
-        function drawCheckoutTimeline(theme, kv) {
-            const subtotal = 25.97, delivery = 2.99, tax = 2.34, promo = -3.00;
-            const total = subtotal + delivery + tax + promo;
-            const isPickup = deliveryModeByTheme[theme] === 'pickup';
-
-            const stepCard = (step, title, subtitle, content) => `
-                <div style="position:relative;padding-left:28px;margin-bottom:16px;">
-                    <div style="position:absolute;left:0;top:0;bottom:${step===3?'0':' -16px'};width:2px;background:${step<=2?kv.accent:'var(--border-color)'};border-radius:1px;"></div>
-                    <div style="position:absolute;left:-5px;top:2px;width:12px;height:12px;border-radius:50%;background:${step<=2?kv.accent:'var(--pill-bg)'};border:${step<=2?'none':'2px solid var(--border-color)'};${step<=2?'box-shadow:0 0 0 3px '+kv.accent+'30;':''}"></div>
-                    <div style="font-size:10px;font-weight:700;color:${kv.accent};text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;">Step ${step}</div>
-                    <div style="font-size:14px;font-weight:700;color:${kv.textColor};margin-bottom:2px;">${title}</div>
-                    <div style="font-size:11px;color:${kv.subColor};margin-bottom:8px;">${subtitle}</div>
-                    <div style="background:${kv.cardBg};border:${kv.cardBorder};border-radius:${kv.cardRadius};padding:14px;box-shadow:${kv.cardShadow};${kv.glassBlur}">
-                        ${content}
-                    </div>
-                </div>`;
-
-            const addressContent = isPickup ? `
-                <div style="display:flex;align-items:start;gap:8px;">
-                    <span style="margin-top:2px;">${iconFA('store','font-size:14px;color:'+kv.accent+';')}</span>
-                    <div><div style="font-size:13px;font-weight:700;color:${kv.textColor};">Downtown NYC</div><div style="font-size:11px;color:${kv.subColor};">Open until 10 PM · 1.2 mi</div></div>
-                    <span onclick="openLocationSheet('${theme}')" style="margin-left:auto;font-size:10px;font-weight:700;color:${kv.accent};cursor:pointer;">Edit</span>
-                </div>` : `
-                <div style="display:flex;align-items:start;gap:8px;">
-                    <span style="margin-top:2px;">${iconFA('map-pin','font-size:14px;color:'+kv.accent+';')}</span>
-                    <div><div style="font-size:13px;font-weight:700;color:${kv.textColor};">921 Church St</div><div style="font-size:11px;color:${kv.subColor};">San Francisco, CA 94114</div></div>
-                    <span onclick="openLocationSheet('${theme}')" style="margin-left:auto;font-size:10px;font-weight:700;color:${kv.accent};cursor:pointer;">Edit</span>
-                </div>`;
-
-            const timeContent = `
-                <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                    <span style="padding:6px 12px;background:${kv.accent};color:#fff;border-radius:${kv.chipRadius};font-size:10px;font-weight:700;cursor:pointer;">Today</span>
-                    <span style="padding:6px 12px;background:${kv.chipInactiveBg};color:${kv.textColor};border-radius:${kv.chipRadius};font-size:10px;font-weight:600;cursor:pointer;border:${kv.chipInactiveBorder};">Tomorrow</span>
-                </div>
-                <div style="display:flex;gap:6px;margin-top:8px;">
-                    ${['10:00','10:30','11:00'].map((t,i) => `<span style="padding:5px 10px;text-align:center;background:${i===0?kv.accent:kv.chipInactiveBg};color:${i===0?'#fff':kv.textColor};border-radius:${kv.chipRadius};font-size:9px;font-weight:600;cursor:pointer;border:${i===0?kv.chipActiveBorder:kv.chipInactiveBorder};">${t}</span>`).join('')}
-                </div>`;
-
-            const paymentContent = `
-                <div onclick="var chk=document.getElementById('pts-tl-${theme}');var t=chk.dataset.on!=='1';chk.dataset.on=t?'1':'0';chk.style.background=t?'${kv.accent}':'transparent';chk.style.borderColor=t?'${kv.accent}':'var(--border-color)';chk.querySelector('span').style.display=t?'block':'none';var pl=document.getElementById('points-line-tl-${theme}');if(pl)pl.style.display=t?'flex':'none';var tl=document.getElementById('summary-total-tl-${theme}');if(tl)tl.textContent=t?'${formatPrice(total-8.20)}':'${formatPrice(total)}'" style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:${kv.accent}08;border-radius:8px;margin-bottom:8px;cursor:pointer;">
-                    <span style="font-size:14px;">⭐</span>
-                    <span style="flex:1;font-size:10px;font-weight:600;color:${kv.textColor};">Pay with Points · 820 pts ($8.20)</span>
-                    <div id="pts-tl-${theme}" data-on="0" style="width:16px;height:16px;border-radius:50%;border:2px solid var(--border-color);transition:all 0.15s;display:flex;align-items:center;justify-content:center;"><span style="display:none;font-size:9px;color:#fff;">✓</span></div>
-                </div>
-                <div style="display:flex;gap:5px;margin-bottom:8px;">
-                    <span onclick="openPaymentSheet('${theme}','card')" style="padding:5px 10px;background:${kv.accent}15;border:1.5px solid ${kv.accent};border-radius:999px;font-size:9px;font-weight:700;color:${kv.textColor};cursor:pointer;">💳 Card</span>
-                    <span onclick="openPaymentSheet('${theme}','wallet')" style="padding:5px 10px;background:${kv.chipInactiveBg};border:1px solid var(--border-color);border-radius:999px;font-size:9px;font-weight:600;color:${kv.textColor};cursor:pointer;">📱 Wallet</span>
-                </div>
-                <div style="display:flex;align-items:center;gap:8px;">
-                    <span style="font-size:20px;">💳</span>
-                    <div style="flex:1;"><div style="font-size:12px;font-weight:700;color:${kv.textColor};">•••• 4242</div><div style="font-size:10px;color:${kv.subColor};">Visa exp 12/27</div></div>
-                    <span style="width:20px;height:20px;border-radius:50%;background:${kv.accent};display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:10px;">✓</span>
-                </div>`;
-
-            return `<div style="position:absolute;inset:0;background:${kv.pageBg};z-index:5;display:flex;flex-direction:column;">
-                <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:${kv.headerBorder};">
-                    ${kv.backBtn}
-                    <div style="flex:1;display:flex;align-items:center;gap:16px;">
-                        <div style="font-size:15px;font-weight:700;color:${kv.textColor};">Checkout</div>
-                        <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:${kv.subColor};">
-                            <span style="color:${kv.accent};font-weight:700;">Step 2</span> of 3
-                        </div>
-                    </div>
-                </div>
-                <div style="flex:1;overflow-y:auto;padding:14px 16px 120px;">
-                    ${stepCard(1,isPickup ? 'Pickup Location' : 'Address',isPickup ? 'Where to pickup?' : 'Where should we deliver?',addressContent)}
-                    ${stepCard(2,'Schedule','When do you want it?',timeContent)}
-                    ${stepCard(3,'Payment','How would you like to pay?',paymentContent)}
-                    <div style="background:${kv.cardBg};border:${kv.cardBorder};border-radius:${kv.cardRadius};padding:14px;box-shadow:${kv.cardShadow};${kv.glassBlur}margin-left:28px;margin-bottom:12px;">
-                        <div style="font-size:11px;font-weight:700;color:${kv.textColor};margin-bottom:6px;">Promo Code</div>
-                        <div style="display:flex;gap:6px;margin-bottom:10px;">
-                            <input id="promo-input-${theme}" placeholder="Enter promo code" style="flex:1;padding:8px 12px;border-radius:8px;border:${kv.chipInactiveBorder};background:${kv.chipInactiveBg};color:${kv.textColor};font-size:11px;outline:none;">
-                            <span onclick="applyPromoCode('${theme}')" style="padding:8px 14px;background:${kv.accent};color:#fff;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;">Apply</span>
-                        </div>
-                        <div style="font-size:11px;font-weight:700;color:${kv.textColor};margin-bottom:6px;">Order Preferences</div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;"><span style="font-size:10px;color:${kv.subColor};">Include cutlery</span><div style="display:inline-flex;gap:0;background:${kv.chipInactiveBg};border-radius:6px;overflow:hidden;border:${kv.chipInactiveBorder};"><span id="cutlery-${theme}-y" onclick="var p=this.parentElement;var n=p.querySelector('[id$=-n]');this.style.background='${kv.accent}';this.style.color='#fff';n.style.background='transparent';n.style.color='${kv.subColor}';" style="padding:2px 8px;font-size:9px;font-weight:700;cursor:pointer;background:${kv.accent};color:#fff;white-space:nowrap;">Yes</span><span id="cutlery-${theme}-n" onclick="var p=this.parentElement;var y=p.querySelector('[id$=-y]');this.style.background='${kv.accent}';this.style.color='#fff';y.style.background='transparent';y.style.color='${kv.subColor}';" style="padding:2px 8px;font-size:9px;font-weight:700;cursor:pointer;background:transparent;color:${kv.subColor};white-space:nowrap;">No</span></div></div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;"><span style="font-size:10px;color:${kv.subColor};">No-contact delivery</span><div style="display:inline-flex;gap:0;background:${kv.chipInactiveBg};border-radius:6px;overflow:hidden;border:${kv.chipInactiveBorder};"><span id="nocontact-${theme}-y" onclick="var p=this.parentElement;var n=p.querySelector('[id$=-n]');this.style.background='${kv.accent}';this.style.color='#fff';n.style.background='transparent';n.style.color='${kv.subColor}';" style="padding:2px 8px;font-size:9px;font-weight:700;cursor:pointer;background:${kv.accent};color:#fff;white-space:nowrap;">Yes</span><span id="nocontact-${theme}-n" onclick="var p=this.parentElement;var y=p.querySelector('[id$=-y]');this.style.background='${kv.accent}';this.style.color='#fff';y.style.background='transparent';y.style.color='${kv.subColor}';" style="padding:2px 8px;font-size:9px;font-weight:700;cursor:pointer;background:transparent;color:${kv.subColor};white-space:nowrap;">No</span></div></div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;"><span style="font-size:10px;color:${kv.subColor};">Leave at my door</span><div style="display:inline-flex;gap:0;background:${kv.chipInactiveBg};border-radius:6px;overflow:hidden;border:${kv.chipInactiveBorder};"><span id="leavedoor-${theme}-y" onclick="var p=this.parentElement;var n=p.querySelector('[id$=-n]');this.style.background='${kv.accent}';this.style.color='#fff';n.style.background='transparent';n.style.color='${kv.subColor}';" style="padding:2px 8px;font-size:9px;font-weight:700;cursor:pointer;background:transparent;color:${kv.subColor};white-space:nowrap;">Yes</span><span id="leavedoor-${theme}-n" onclick="var p=this.parentElement;var y=p.querySelector('[id$=-y]');this.style.background='${kv.accent}';this.style.color='#fff';y.style.background='transparent';y.style.color='${kv.subColor}';" style="padding:2px 8px;font-size:9px;font-weight:700;cursor:pointer;background:${kv.accent};color:#fff;white-space:nowrap;">No</span></div></div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;"><span style="font-size:10px;color:${kv.subColor};">Use reward points</span><div style="display:inline-flex;gap:0;background:${kv.chipInactiveBg};border-radius:6px;overflow:hidden;border:${kv.chipInactiveBorder};"><span id="rewards-${theme}-y" onclick="var p=this.parentElement;var n=p.querySelector('[id$=-n]');this.style.background='${kv.accent}';this.style.color='#fff';n.style.background='transparent';n.style.color='${kv.subColor}';window.cartRewards=window.cartRewards||{};window.cartRewards['${theme}']=true;" style="padding:2px 8px;font-size:9px;font-weight:700;cursor:pointer;background:transparent;color:${kv.subColor};white-space:nowrap;">Yes</span><span id="rewards-${theme}-n" onclick="var p=this.parentElement;var y=p.querySelector('[id$=-y]');this.style.background='${kv.accent}';this.style.color='#fff';y.style.background='transparent';y.style.color='${kv.subColor}';window.cartRewards=window.cartRewards||{};window.cartRewards['${theme}']=false;" style="padding:2px 8px;font-size:9px;font-weight:700;cursor:pointer;background:${kv.accent};color:#fff;white-space:nowrap;">No</span></div></div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;"><span style="font-size:10px;color:${kv.subColor};">This is a gift</span><div style="display:inline-flex;gap:0;background:${kv.chipInactiveBg};border-radius:6px;overflow:hidden;border:${kv.chipInactiveBorder};"><span id="gift-${theme}-y" onclick="var p=this.parentElement;var n=p.querySelector('[id$=-n]');this.style.background='${kv.accent}';this.style.color='#fff';n.style.background='transparent';n.style.color='${kv.subColor}';window.cartGift=window.cartGift||{};window.cartGift['${theme}']=true;" style="padding:2px 8px;font-size:9px;font-weight:700;cursor:pointer;background:transparent;color:${kv.subColor};white-space:nowrap;">Yes</span><span id="gift-${theme}-n" onclick="var p=this.parentElement;var y=p.querySelector('[id$=-y]');this.style.background='${kv.accent}';this.style.color='#fff';y.style.background='transparent';y.style.color='${kv.subColor}';window.cartGift=window.cartGift||{};window.cartGift['${theme}']=false;" style="padding:2px 8px;font-size:9px;font-weight:700;cursor:pointer;background:${kv.accent};color:#fff;white-space:nowrap;">No</span></div></div>
-                    </div>
-                    <div style="background:${kv.cardBg};border:${kv.cardBorder};border-radius:${kv.cardRadius};padding:14px;box-shadow:${kv.cardShadow};${kv.glassBlur}margin-left:28px;">
-                        <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.subColor};margin-bottom:3px;"><span>Subtotal</span><span style="color:${kv.textColor};">${formatPrice(subtotal)}</span></div>
-                        <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.subColor};margin-bottom:3px;"><span>${isPickup ? 'Service Fee' : 'Delivery'}</span><span style="color:${kv.textColor};">${formatPrice(delivery)}</span></div>
-                        <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.subColor};margin-bottom:3px;"><span>Tax</span><span style="color:${kv.textColor};">${formatPrice(tax)}</span></div>
-                        <div style="display:flex;justify-content:space-between;font-size:10px;color:${kv.accent};margin-bottom:3px;"><span>Promo SAVE3</span><span>-${formatPrice(Math.abs(promo))}</span></div>
-                        <div id="points-line-tl-${theme}" style="display:none;justify-content:space-between;font-size:10px;color:${kv.accent};margin-bottom:3px;"><span>⭐ Points (820 pts)</span><span>-$8.20</span></div>
-                        <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:900;color:${kv.accent};padding-top:6px;border-top:1px solid var(--border-color);margin-top:4px;"><span>Total</span><span id="summary-total-tl-${theme}">${formatPrice(total)}</span></div>
-                    </div>
-                </div>
-                <div style="padding:10px 16px 80px;border-top:${kv.headerBorder};background:${kv.pageBg};">
-                    <div onclick="placeOrder('${theme}')" style="width:100%;padding:14px;background:${kv.accent};color:#fff;text-align:center;border-radius:${kv.ctaRadius};font-size:14px;font-weight:700;cursor:pointer;border:${kv.ctaBorder};box-shadow:${kv.ctaShadow};margin-bottom:6px;">Place Order · ${formatPrice(total)}</div>
-                    <div style="text-align:center;font-size:9px;color:${kv.subColor};">${isPickup ? 'Est. pickup 25–35 min' : 'Est. delivery 25–35 min'}</div>
-                </div>
-            </div>`;
+        // ─── PAGE: ADD NEW CARD (standalone, reachable from left-panel picker) ───
+        function drawAddCardPage(theme, style = 'default') {
+            const isGlass = theme === 'glassmorphism';
+            const pageBg = isGlass ? 'rgba(20,20,20,0.98)' : 'var(--card-bg)';
+            return `<div style="position:absolute;inset:0;background:${pageBg};z-index:5;display:flex;flex-direction:column;">${addCardSheetInner(theme, `goBack('${theme}')`)}</div>`;
         }
 
         // ─── PAGE: ORDER SUCCESS (drawOrderSuccessPage) ───
@@ -8492,8 +8634,8 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
             const copyIcon = isGlass ? iconMaterial('file-copy-line', 'font-size:11px;opacity:0.6;') : (isBrut ? iconBS('copy', 'font-size:11px;opacity:0.6;') : iconFA('copy', 'font-size:11px;opacity:0.6;'));
             const chevronIcon = isGlass ? iconMaterial('arrow-drop-down-line', '') : (isBrut ? iconBS('chevron-down', '') : iconFA('chevron-down', ''));
 
-            if (style === 'option 1') { return drawOrderSuccessReceipt(theme, {textColor,subColor,accent,pageBg,cardBg,cardBorder,cardShadow,btnShadow,isGlass,isBrut}); }
-            if (style === 'option 2') { return drawOrderSuccessMinimal(theme, {textColor,subColor,accent,pageBg,cardShadow,btnShadow,isGlass,isBrut}); }
+            // All 3 views share View 1's full success content (each keeps its own theme styling).
+            // drawOrderSuccessReceipt / drawOrderSuccessMinimal retained below but no longer routed to.
 
             return `<div style="position:absolute;inset:0;background:${pageBg};z-index:5;display:flex;flex-direction:column;">
                 <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;align-items:center;padding:32px 24px 24px;">
@@ -8521,7 +8663,7 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                             <div style="border-top:1px solid ${cardBorder};margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;font-size:14px;font-weight:800;color:${textColor};"><span>Total</span><span style="color:${accent};">${formatPrice(28.96)}</span></div>
                         </div>
                     </div>
-                    <div onclick="trackOrder('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;margin-bottom:12px;${btnShadow}">Track Order</div>
+                    <div onclick="trackOrder('${theme}')" style="width:100%;padding:16px;background:${accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:15px;font-weight:700;cursor:pointer;margin-bottom:12px;${btnShadow}">Rate Your Order</div>
                     <div onclick="goBack('${theme}')" style="font-size:13px;color:${subColor};cursor:pointer;text-decoration:underline;padding:8px;">Continue Shopping</div>
                 </div>
             </div>`;
@@ -8567,7 +8709,7 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                     </div>
                 </div>
                 <div style="padding:12px 20px 80px;display:flex;flex-direction:column;gap:8px;">
-                    <div onclick="trackOrder('${theme}')" style="width:100%;padding:14px;background:${v.accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;${v.btnShadow}">Track Order</div>
+                    <div onclick="trackOrder('${theme}')" style="width:100%;padding:14px;background:${v.accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;${v.btnShadow}">Rate Your Order</div>
                     <div onclick="goBack('${theme}')" style="text-align:center;font-size:12px;color:${v.subColor};cursor:pointer;padding:6px;">Continue Shopping</div>
                 </div>
             </div>`;
@@ -8587,7 +8729,7 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                     <div style="display:flex;justify-content:space-between;font-size:11px;color:${v.subColor};margin-bottom:3px;"><span>Restaurant</span><span style="color:${v.textColor};font-weight:600;">Eaterny Kitchen</span></div>
                     <div style="display:flex;justify-content:space-between;font-size:11px;color:${v.subColor};"><span>Total</span><span style="color:${v.accent};font-weight:700;">${formatPrice(28.96)}</span></div>
                 </div>
-                <div onclick="trackOrder('${theme}')" style="width:100%;padding:16px;background:${v.accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;${v.btnShadow}">Track Order</div>
+                <div onclick="trackOrder('${theme}')" style="width:100%;padding:16px;background:${v.accent};color:#fff;text-align:center;border-radius:var(--btn-radius);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;${v.btnShadow}">Rate Your Order</div>
                 <div onclick="showToast('Receipt downloaded')" style="font-size:12px;color:${v.subColor};cursor:pointer;text-decoration:underline;margin-bottom:8px;">Download Receipt</div>
                 <div onclick="goBack('${theme}')" style="font-size:12px;color:${v.subColor};cursor:pointer;">← Back to Home</div>
             </div>`;
@@ -8624,13 +8766,13 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
             const stageRow = (s, i) => `
                 <div style="display:flex;gap:12px;position:relative;">
                     <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:24px;">
-                        <div style="width:${s.done||s.current?'24px':'12px'};height:${s.done||s.current?'24px':'12px'};border-radius:50%;background:${s.done?accent:s.current?accent:(isGlass?'rgba(255,255,255,0.1)':'var(--pill-bg)')};border:${s.done||s.current?'none':'2px solid var(--border-color)'};display:flex;align-items:center;justify-content:center;${s.current?'animation:pulse 2s ease-in-out infinite;':''}">
+                        <div id="opDot-${theme}-${i}" data-sz="24" style="width:${s.done||s.current?'24px':'12px'};height:${s.done||s.current?'24px':'12px'};border-radius:50%;background:${s.done?accent:s.current?accent:(isGlass?'rgba(255,255,255,0.1)':'var(--pill-bg)')};border:${s.done||s.current?'none':'2px solid var(--border-color)'};display:flex;align-items:center;justify-content:center;${s.current?'animation:pulse 2s ease-in-out infinite;':''}">
                             ${s.done?'<span style="color:#fff;font-size:11px;">✓</span>':s.current?'<span style="width:8px;height:8px;border-radius:50%;background:#fff;"></span>':''}
                         </div>
-                        ${i < stages.length-1 ? `<div style="width:2px;flex:1;min-height:28px;background:${s.done?accent:'var(--border-color)'};margin:4px 0;"></div>` : ''}
+                        ${i < stages.length-1 ? `<div id="opLine-${theme}-${i}" style="width:2px;flex:1;min-height:28px;background:${s.done?accent:'var(--border-color)'};margin:4px 0;"></div>` : ''}
                     </div>
                     <div style="padding-bottom:${i < stages.length-1?'14px':'0'};">
-                        <div style="font-size:13px;font-weight:${s.current?'800':'600'};color:${s.current?accent:textColor};">${s.label}</div>
+                        <div id="opLabel-${theme}-${i}" style="font-size:13px;font-weight:${s.current?'800':'600'};color:${s.current?accent:textColor};">${s.label}</div>
                         ${s.time ? `<div style="font-size:10px;color:${subColor};margin-top:1px;">${s.time}</div>` : ''}
                     </div>
                 </div>`;
@@ -8643,22 +8785,22 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                 </div>
                 <div style="flex:1;overflow-y:auto;padding:14px 16px 0;">
                     <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:${accent}10;border:1px solid ${accent}30;border-radius:14px;margin-bottom:16px;">
-                        <span style="font-size:24px;">🍳</span>
+                        ${isGlass ? iconMaterial('restaurant-line', 'font-size:24px;') : isBrut ? iconBS('chef-hat', 'font-size:24px;') : iconFA('utensils', 'font-size:24px;')}
                         <div style="flex:1;"><div style="font-size:12px;font-weight:700;color:${textColor};">Eaterny Kitchen</div><div style="font-size:10px;color:${subColor};">Preparing your order</div></div>
                         <div style="text-align:right;"><div style="font-size:16px;font-weight:900;color:${accent};">25-35</div><div style="font-size:9px;color:${subColor};">min</div></div>
                     </div>
                     <div style="padding-left:4px;">${stages.map(stageRow).join('')}</div>
                     <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px;">
                         <div onclick="showToast('Chat opened with Eaterny Kitchen')" style="display:flex;align-items:center;gap:10px;padding:14px;background:${cardBg};border:1px solid ${cardBorder};border-radius:14px;cursor:pointer;box-shadow:${cardShadow};">
-                            <span style="font-size:18px;">💬</span>
+                            ${isGlass ? iconMaterial('chat-1-line', 'font-size:18px;') : isBrut ? iconBS('message', 'font-size:18px;') : iconFA('comment', 'font-size:18px;')}
                             <div style="flex:1;"><div style="font-size:12px;font-weight:700;color:${textColor};">Chat with Restaurant</div><div style="font-size:10px;color:${subColor};">Ask about your order</div></div>
                             <span style="color:${subColor};">→</span>
                         </div>
                     </div>
                 </div>
                 <div style="padding:12px 16px 80px;display:flex;gap:10px;">
-                    <div onclick="showToast('Calling Eaterny Kitchen...')" style="flex:1;padding:14px;background:${isGlass?'rgba(255,255,255,0.06)':'var(--pill-bg)'};color:${textColor};text-align:center;border-radius:14px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--border-color);">📞 Call</div>
-                    <div onclick="trackOrder('${theme}')" style="flex:2;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:14px;font-size:13px;font-weight:700;cursor:pointer;${btnShadow}">Track Order</div>
+                    <div onclick="showToast('Calling Eaterny Kitchen...')" style="flex:1;padding:14px;background:${isGlass?'rgba(255,255,255,0.06)':'var(--pill-bg)'};color:${textColor};text-align:center;border-radius:14px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--border-color);">${isGlass ? iconMaterial('phone-line', 'font-size:14px;') : isBrut ? iconBS('phone', 'font-size:14px;') : iconFA('phone', 'font-size:14px;')} Call</div>
+                    <div onclick="trackOrder('${theme}')" style="flex:2;padding:14px;background:${accent};color:#fff;text-align:center;border-radius:14px;font-size:13px;font-weight:700;cursor:pointer;${btnShadow}">Rate Your Order</div>
                 </div>
             </div>`;
         }
@@ -8667,12 +8809,23 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
         function drawOrderProgressDriver(theme, v) {
             const driver = { name: 'Michael R.', photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80', rating: '4.9', vehicle: 'Toyota Camry · Silver', plate: 'ABC 1234' };
 
+            var opNames = ['Accepted','Preparing','Ready','On Way','Delivered'];
+            var opDots = opNames.map(function(n, i) {
+                var done = i === 0, active = i === 1;
+                var line = i > 0 ? '<div id="opLine-'+theme+'-'+(i-1)+'" style="flex:1;height:3px;background:'+(i<=1?v.accent:(v.isGlass?'rgba(255,255,255,0.1)':'var(--border-color)'))+';border-radius:2px;"></div>' : '';
+                return line + '<div id="opDot-'+theme+'-'+i+'" data-sz="12" style="width:12px;height:12px;border-radius:50%;background:'+(done||active?v.accent:(v.isGlass?'rgba(255,255,255,0.1)':'var(--pill-bg)'))+';border:'+(done||active?'none':'2px solid '+v.cardBorder)+';display:flex;align-items:center;justify-content:center;flex-shrink:0;'+(active?'animation:pulse 2s ease-in-out infinite;':'')+'">'+(done?'<span style="color:#fff;font-size:7px;font-weight:800;">✓</span>':active?'<span style="width:4px;height:4px;border-radius:50%;background:#fff;display:block;"></span>':'')+'</div>';
+            }).join('');
+            var opLabels = opNames.map(function(n, i) {
+                return '<span id="opLabel-'+theme+'-'+i+'" style="font-size:7px;font-weight:'+(i===1?'700':'500')+';color:'+(i===1?v.accent:v.subColor)+';text-align:center;">'+n+'</span>';
+            }).join('');
+            var progressBar = '<div style="margin-top:14px;padding-top:14px;border-top:1px solid '+v.cardBorder+';"><div style="display:flex;align-items:center;">'+opDots+'</div><div style="display:flex;justify-content:space-between;margin-top:4px;">'+opLabels+'</div></div>';
+
             return `<div style="position:absolute;inset:0;background:${v.pageBg};z-index:5;display:flex;flex-direction:column;">
                 <div style="position:relative;height:200px;flex-shrink:0;overflow:hidden;">
                     <div style="width:100%;height:100%;background:linear-gradient(135deg,${v.accent}40,${v.accent}10);display:flex;align-items:center;justify-content:center;position:relative;">
                         <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 20px,rgba(255,255,255,0.03) 20px,rgba(255,255,255,0.03) 40px),repeating-linear-gradient(90deg,transparent,transparent 20px,rgba(255,255,255,0.03) 20px,rgba(255,255,255,0.03) 40px);"></div>
                         <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
-                            <div style="width:36px;height:36px;border-radius:50%;background:${v.accent};display:inline-flex;align-items:center;justify-content:center;box-shadow:0 0 20px ${v.accent}60;">📍</div>
+                            <div style="width:36px;height:36px;border-radius:50%;background:${v.accent};display:inline-flex;align-items:center;justify-content:center;box-shadow:0 0 20px ${v.accent}60;">${v.isGlass ? iconMaterial('map-pin-2-line', 'font-size:18px;color:#fff;') : v.isBrut ? iconBS('map-pin', 'font-size:18px;color:#fff;') : iconFA('map-pin', 'font-size:18px;color:#fff;')}</div>
                             <div style="font-size:14px;font-weight:800;color:${v.accent};margin-top:4px;">921 Church St</div>
                         </div>
                     </div>
@@ -8702,6 +8855,7 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                                 <div style="font-size:8px;color:${v.subColor};">mi</div>
                             </div>
                         </div>
+                        ${progressBar}
                     </div>
                     <div style="background:${v.cardBg};border:1px solid ${v.cardBorder};border-radius:16px;padding:16px;margin-top:12px;box-shadow:${v.cardShadow};">
                         <div style="font-size:11px;font-weight:700;color:${v.textColor};margin-bottom:10px;">Your Driver</div>
@@ -8716,11 +8870,11 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                     </div>
                     <div style="display:flex;gap:8px;margin-top:12px;">
                         <div onclick="showToast('Chatting with Michael...')" style="flex:1;padding:12px;background:${v.cardBg};border:1px solid ${v.cardBorder};border-radius:12px;text-align:center;cursor:pointer;box-shadow:${v.cardShadow};">
-                            <span style="font-size:18px;">💬</span>
+                            ${v.isGlass ? iconMaterial('chat-1-line', 'font-size:18px;') : v.isBrut ? iconBS('message', 'font-size:18px;') : iconFA('comment', 'font-size:18px;')}
                             <div style="font-size:10px;font-weight:700;color:${v.textColor};margin-top:4px;">Chat</div>
                         </div>
                         <div onclick="showToast('Calling Michael...')" style="flex:1;padding:12px;background:${v.cardBg};border:1px solid ${v.cardBorder};border-radius:12px;text-align:center;cursor:pointer;box-shadow:${v.cardShadow};">
-                            <span style="font-size:18px;">📞</span>
+                            ${v.isGlass ? iconMaterial('phone-line', 'font-size:18px;') : v.isBrut ? iconBS('phone', 'font-size:18px;') : iconFA('phone', 'font-size:18px;')}
                             <div style="font-size:10px;font-weight:700;color:${v.textColor};margin-top:4px;">Call</div>
                         </div>
                         <div onclick="showToast('Help request sent')" style="flex:1;padding:12px;background:${v.isGlass?'rgba(239,68,68,0.15)':'#FEE2E2'};border:1px solid ${v.isGlass?'rgba(239,68,68,0.3)':'#EF4444'};border-radius:12px;text-align:center;cursor:pointer;">
@@ -8730,7 +8884,7 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                     </div>
                 </div>
                 <div style="padding:10px 16px 80px;">
-                    <div onclick="trackOrder('${theme}')" style="width:100%;padding:14px;background:${v.accent};color:#fff;text-align:center;border-radius:14px;font-size:13px;font-weight:700;cursor:pointer;${v.btnShadow}">Track Live Location</div>
+                    <div onclick="trackOrder('${theme}')" style="width:100%;padding:14px;background:${v.accent};color:#fff;text-align:center;border-radius:14px;font-size:13px;font-weight:700;cursor:pointer;${v.btnShadow}">Rate Your Order</div>
                 </div>
             </div>`;
         }
@@ -8738,11 +8892,11 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
         // ─── ORDER PROGRESS DESIGN #3: bold stack (option 2) ───
         function drawOrderProgressBold(theme, v) {
             const steps = [
-                { num: 1, label: 'Accepted', time: '7:42 PM', done: true },
-                { num: 2, label: 'Preparing', time: '7:45 PM', done: true },
-                { num: 3, label: 'Ready', time: '~7:55 PM', done: false },
-                { num: 4, label: 'On the Way', time: '', done: false },
-                { num: 5, label: 'Delivered', time: '~8:10 PM', done: false }
+                { num: 1, label: 'Accepted', time: '7:42 PM', done: true, current: false },
+                { num: 2, label: 'Preparing', time: '7:45 PM', done: false, current: true },
+                { num: 3, label: 'Ready', time: '~7:55 PM', done: false, current: false },
+                { num: 4, label: 'On the Way', time: '', done: false, current: false },
+                { num: 5, label: 'Delivered', time: '~8:10 PM', done: false, current: false }
             ];
 
             return `<div style="position:absolute;inset:0;background:${v.pageBg};z-index:5;display:flex;flex-direction:column;">
@@ -8760,8 +8914,8 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                         </div>
                         ${steps.map((s,i) => `
                         <div style="display:flex;align-items:center;gap:10px;padding:8px 0;${i<steps.length-1?'border-bottom:1px solid var(--border-color);':''}">
-                            <div style="width:28px;height:28px;border-radius:${v.isBrut?'6px':'50%'};background:${s.done?v.accent:v.isGlass?'rgba(255,255,255,0.06)':'var(--pill-bg)'};border:${s.done?'none':'2px solid var(--border-color)'};display:flex;align-items:center;justify-content:center;flex-shrink:0;${!s.done&&i===2?'animation:pulse 2s infinite;':''}">${s.done?'<span style="color:#fff;font-size:11px;font-weight:800;">✓</span>':'<span style="font-size:10px;font-weight:700;color:'+v.textColor+';">'+s.num+'</span>'}</div>
-                            <span style="flex:1;font-size:12px;font-weight:${s.done||i===2?'700':'500'};color:${s.done||i===2?v.textColor:v.subColor};">${s.label}</span>
+                            <div id="opDot-${theme}-${i}" data-sz="28" style="width:28px;height:28px;border-radius:${v.isBrut?'6px':'50%'};background:${s.done||s.current?v.accent:v.isGlass?'rgba(255,255,255,0.06)':'var(--pill-bg)'};border:${s.done||s.current?'none':'2px solid var(--border-color)'};display:flex;align-items:center;justify-content:center;flex-shrink:0;${s.current?'animation:pulse 2s ease-in-out infinite;':''}">${s.done?'<span style="color:#fff;font-size:11px;font-weight:800;">✓</span>':s.current?'<span style="width:8px;height:8px;border-radius:50%;background:#fff;display:block;"></span>':'<span style="font-size:10px;font-weight:700;color:'+v.textColor+';">'+s.num+'</span>'}</div>
+                            <span id="opLabel-${theme}-${i}" style="flex:1;font-size:12px;font-weight:${s.done||s.current?'700':'500'};color:${s.done||s.current?v.textColor:v.subColor};">${s.label}</span>
                             ${s.time?'<span style="font-size:10px;color:'+v.subColor+';">'+s.time+'</span>':''}
                         </div>`).join('')}
                     </div>
@@ -8781,9 +8935,48 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                     </div>
                 </div>
                 <div style="padding:10px 16px 80px;">
-                    <div onclick="trackOrder('${theme}')" style="width:100%;padding:14px;background:${v.accent};color:#fff;text-align:center;border-radius:${v.isBrut?'8px':'14px'};font-size:13px;font-weight:700;cursor:pointer;${v.btnShadow}">View Live Map</div>
+                    <div onclick="trackOrder('${theme}')" style="width:100%;padding:14px;background:${v.accent};color:#fff;text-align:center;border-radius:${v.isBrut?'8px':'14px'};font-size:13px;font-weight:700;cursor:pointer;${v.btnShadow}">Rate Your Order</div>
                 </div>
             </div>`;
+        }
+
+        var orderCarouselTimer = {};
+        function startOrderCarousel(theme) {
+            if (orderCarouselTimer[theme]) clearInterval(orderCarouselTimer[theme]);
+            var step = 2, total = 5;
+            var accent = theme === 'neubrutalism' ? '#FF6B35' : 'var(--accent)';
+            var txtPri = theme === 'glassmorphism' ? '#fff' : 'var(--text-primary)';
+            orderCarouselTimer[theme] = setInterval(function() {
+                var prev = step - 1;
+                var pDot = document.getElementById('opDot-' + theme + '-' + prev);
+                var pLine = document.getElementById('opLine-' + theme + '-' + prev);
+                var pLbl = document.getElementById('opLabel-' + theme + '-' + prev);
+                if (pDot) {
+                    var sz = (pDot.dataset.sz || '24') + 'px';
+                    pDot.style.width = sz; pDot.style.height = sz;
+                    pDot.style.background = accent; pDot.style.border = 'none'; pDot.style.animation = 'none';
+                    pDot.innerHTML = '<span style="color:#fff;font-size:' + (parseInt(pDot.dataset.sz || 24) < 20 ? '7' : '11') + 'px;font-weight:800;">✓</span>';
+                }
+                if (pLine) pLine.style.background = accent;
+                if (pLbl) { pLbl.style.fontWeight = '600'; pLbl.style.color = txtPri; }
+                if (step >= total) {
+                    clearInterval(orderCarouselTimer[theme]); orderCarouselTimer[theme] = null;
+                    setTimeout(function() { trackOrder(theme); }, 1500);
+                    return;
+                }
+                var nDot = document.getElementById('opDot-' + theme + '-' + step);
+                var nLbl = document.getElementById('opLabel-' + theme + '-' + step);
+                if (nDot) {
+                    var nsz = (nDot.dataset.sz || '24') + 'px';
+                    var inner = Math.round(parseInt(nDot.dataset.sz || 24) / 3);
+                    nDot.style.width = nsz; nDot.style.height = nsz;
+                    nDot.style.background = accent; nDot.style.border = 'none';
+                    nDot.style.animation = 'pulse 2s ease-in-out infinite';
+                    nDot.innerHTML = '<span style="width:' + inner + 'px;height:' + inner + 'px;border-radius:50%;background:#fff;display:block;"></span>';
+                }
+                if (nLbl) { nLbl.style.fontWeight = '800'; nLbl.style.color = accent; }
+                step++;
+            }, 2500);
         }
 
         // ─── PAGE: REVIEWS (drawReviewsPage) ───
@@ -8929,7 +9122,7 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                         <div style="font-size:16px;font-weight:700;color:${textColor};">Rewards</div>
                     </div>
                     <div style="flex:1;overflow-y:auto;padding:16px 16px 80px;">
-                        <div style="background:linear-gradient(135deg,${accent},${accent}88);border-radius:var(--card-radius);padding:20px;color:#fff;margin-bottom:16px;">
+                        <div style="background:linear-gradient(135deg,${accent},color-mix(in srgb,${accent} 53%,transparent));border-radius:var(--card-radius);padding:20px;color:#fff;margin-bottom:16px;">
                             <div style="font-size:9px;opacity:0.8;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;">Your Balance</div>
                             <div style="font-size:42px;font-weight:900;margin:4px 0;">820</div>
                             <div style="font-size:12px;opacity:0.9;">points = $8.20 value</div>
@@ -9398,7 +9591,7 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
 
             if (style === 'option 1') {
                 const bgEmojis = ['🍕', '🍔', '🌮', '🥗', '🍣', '🍝', '🥨', '🍩', '🥤', '🧁', '🍟', '🌯'];
-                return `<div style="position:absolute;inset:0;background:linear-gradient(135deg,${accent},${accent}88);z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;">
+                return `<div style="position:absolute;inset:0;background:linear-gradient(135deg,${accent},color-mix(in srgb,${accent} 53%,transparent));z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;">
                     <div style="position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:40px 20px;opacity:0.15;font-size:32px;transform:rotate(-15deg) scale(1.3);">${bgEmojis.map(e => `<span style="text-align:center;">${e}</span>`).join('')}</div>
                     <div style="position:relative;z-index:1;text-align:center;animation:fadeInSplash 1s ease-out;">
                         <style>@keyframes fadeInSplash{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}</style>
@@ -9704,6 +9897,80 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
 
         // ─── PAGE: DEALS (drawDealsPage) ───
         // ─── DEALS & PROMOTIONS PAGE ──────────────────────────────────
+        // ─── DEALS TABS: shared state + data + render helpers ───────────
+        window.dealsTabByTheme = window.dealsTabByTheme || { neumorphism: 'Active', glassmorphism: 'Active', neubrutalism: 'Active' };
+        function setDealsTab(theme, tab) {
+            window.dealsTabByTheme[theme] = tab;
+            renderAllViewports();
+        }
+        function getDealsByTab() {
+            return {
+                Active: [
+                    { title: 'Welcome Deal', badge: '30% OFF', meta: 'Expires in 6 days', progress: 40 },
+                    { title: 'Combo Special', badge: 'BOGO', meta: 'Expires in 2 days', progress: 75 },
+                    { title: 'Flash Sale', badge: 'SAVE $5', meta: 'Expires in 3 hours', progress: 90 }
+                ],
+                Upcoming: [
+                    { title: 'Weekend Brunch', badge: '20% OFF', meta: 'Starts Sat, 8am', progress: 0 },
+                    { title: 'Double Points', badge: '2X PTS', meta: 'Starts in 3 days', progress: 0 },
+                    { title: 'Free Dessert', badge: 'FREEBIE', meta: 'Next Friday', progress: 0 }
+                ],
+                Used: [
+                    { title: 'First Order', badge: 'USED', meta: 'Redeemed Mar 12', progress: 100 },
+                    { title: 'Birthday Treat', badge: 'USED', meta: 'Redeemed Feb 28', progress: 100 }
+                ]
+            };
+        }
+        function dealsCurrentTab(theme) {
+            return (window.dealsTabByTheme && window.dealsTabByTheme[theme]) || 'Active';
+        }
+        function dealsTabBar(theme, dv) {
+            const current = dealsCurrentTab(theme);
+            const tabs = ['Active', 'Upcoming', 'Used'];
+            if (dv.isBrut) {
+                return `<div style="display:flex;gap:4px;margin-bottom:14px;border:2px solid var(--border-color);border-radius:10px;padding:3px;background:var(--pill-bg);">
+                    ${tabs.map(t => { const on = t === current; return `<div onclick="setDealsTab('${theme}','${t}')" style="flex:1;text-align:center;padding:8px;font-size:11px;font-weight:800;cursor:pointer;border-radius:7px;background:${on ? dv.accent : 'transparent'};color:${on ? '#fff' : dv.subColor};">${t}</div>`; }).join('')}
+                </div>`;
+            }
+            return `<div style="display:flex;margin-bottom:14px;border-bottom:1px solid var(--border-color);">
+                ${tabs.map(t => { const on = t === current; return `<div onclick="setDealsTab('${theme}','${t}')" style="flex:1;text-align:center;padding:10px;font-size:11px;font-weight:700;cursor:pointer;color:${on ? dv.accent : dv.subColor};border-bottom:2px solid ${on ? dv.accent : 'transparent'};margin-bottom:-1px;">${t}</div>`; }).join('')}
+            </div>`;
+        }
+        function dealsTabList(theme, dv) {
+            const current = dealsCurrentTab(theme);
+            const data = getDealsByTab()[current] || [];
+            if (!data.length) {
+                return `<div style="text-align:center;padding:36px 16px;color:${dv.subColor};font-size:12px;">No ${current.toLowerCase()} deals right now.</div>`;
+            }
+            const dim = current === 'Used';
+            return data.map(d => `
+                <div style="background:${dv.cardBg};border:${dv.cardBorder};border-radius:${dv.cardRadius};padding:16px;margin-bottom:12px;${dv.cardShadow}${dim ? 'opacity:0.65;' : ''}">
+                    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;">
+                        <div>
+                            <div style="font-size:13px;font-weight:700;color:${dv.textColor};">${d.title}</div>
+                            <div style="font-size:10px;color:${dv.subColor};margin-top:2px;">${d.meta}</div>
+                        </div>
+                        <span style="padding:4px 10px;background:${current === 'Used' ? dv.subColor : dv.accent};color:#fff;border-radius:6px;font-size:10px;font-weight:800;white-space:nowrap;${dv.isBrut ? 'border:1.5px solid var(--border-color);box-shadow:2px 2px 0 var(--border-color);' : ''}">${d.badge}</span>
+                    </div>
+                    ${current === 'Active' ? `
+                    <div style="height:4px;background:${dv.isGlass ? 'rgba(255,255,255,0.06)' : 'var(--pill-bg)'};border-radius:2px;overflow:hidden;margin-bottom:8px;">
+                        <div style="height:100%;width:${d.progress}%;background:${dv.accent};border-radius:2px;"></div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <span style="font-size:9px;color:${dv.subColor};">${d.progress}% used</span>
+                        <span onclick="navigateToPage('${theme}','menu-page')" style="font-size:10px;font-weight:700;color:${dv.accent};cursor:pointer;">Use Now →</span>
+                    </div>` : current === 'Upcoming' ? `
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <span style="font-size:9px;color:${dv.subColor};">Not yet available</span>
+                        <span onclick="showToast('Reminder set!')" style="font-size:10px;font-weight:700;color:${dv.accent};cursor:pointer;">Remind me →</span>
+                    </div>` : `
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <span style="font-size:9px;color:${dv.subColor};">Redeemed</span>
+                        <span onclick="navigateToPage('${theme}','menu-page')" style="font-size:10px;font-weight:700;color:${dv.accent};cursor:pointer;">Order again →</span>
+                    </div>`}
+                </div>`).join('');
+        }
+
         function drawDealsPage(theme, style = 'default') {
             const isGlass = theme === 'glassmorphism';
             const isBrut = theme === 'neubrutalism';
@@ -9764,8 +10031,9 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                 </div>
                 <div style="flex:1;overflow-y:auto;padding:16px;">
                     ${offersCarousel}
-                    <div style="font-size:14px;font-weight:800;color:${textColor};margin-bottom:12px;">Today's Best Deals</div>
-                    ${dealCards}
+                    <div style="font-size:14px;font-weight:800;color:${textColor};margin-bottom:12px;">Your Deals</div>
+                    ${dealsTabBar(theme, dv)}
+                    ${dealsTabList(theme, dv)}
                     <div style="font-size:14px;font-weight:800;color:${textColor};margin-bottom:12px;margin-top:20px;">Available Coupons</div>
                     <div style="display:flex;gap:8px;margin-bottom:14px;">
                         <input id="promo-input-${theme}" placeholder="Enter coupon code" style="flex:1;padding:10px 14px;border-radius:8px;border:1px solid ${inputBorder};background:${inputBg};color:${textColor};font-size:12px;outline:none;">
@@ -9802,17 +10070,10 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
                                 <div onclick="navigateToPage('${theme}','menu-page')" style="margin-top:14px;display:inline-block;padding:10px 24px;background:#fff;color:${dv.accent};border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;">Claim Offer</div>
                             </div>
                         </div>
-                        <div style="font-size:12px;font-weight:700;color:${dv.textColor};margin-bottom:10px;">More Offers</div>
-                        <div style="display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory;margin-bottom:20px;">
-                            ${offers.map(o => `
-                            <div style="flex-shrink:0;width:160px;background:${dv.cardBg};border:${dv.cardBorder};border-radius:14px;padding:14px;${dv.cardShadow}scroll-snap-align:start;">
-                                <div style="font-size:24px;margin-bottom:8px;">${o.emoji}</div>
-                                <div style="display:inline-block;padding:2px 8px;background:${o.color}20;color:${o.color};border-radius:4px;font-size:9px;font-weight:800;margin-bottom:6px;">${o.badge}</div>
-                                <div style="font-size:12px;font-weight:700;color:${dv.textColor};margin-bottom:3px;">${o.title}</div>
-                                <div style="font-size:10px;color:${dv.subColor};">${o.desc}</div>
-                            </div>`).join('')}
-                        </div>
-                        <div style="font-size:12px;font-weight:700;color:${dv.textColor};margin-bottom:10px;">Coupons</div>
+                        <div style="font-size:12px;font-weight:700;color:${dv.textColor};margin-bottom:10px;">Your Deals</div>
+                        ${dealsTabBar(theme, dv)}
+                        ${dealsTabList(theme, dv)}
+                        <div style="font-size:12px;font-weight:700;color:${dv.textColor};margin:20px 0 10px;">Coupons</div>
                         ${coupons.map(c => `
                         <div style="display:flex;align-items:center;gap:10px;padding:12px;background:${dv.cardBg};border:${dv.cardBorder};border-radius:14px;margin-bottom:8px;${dv.cardShadow}">
                             <div style="padding:8px 10px;background:${dv.accent}15;border-radius:8px;font-size:10px;font-weight:800;color:${dv.accent};border:1px dashed ${dv.accent};">${c.label}</div>
@@ -9826,40 +10087,14 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
 
         // ─── DEALS DESIGN #3: tab-based deals (option 2) ───
         function drawDealsTabs(theme, dv) {
-            const tabs = ['Active', 'Upcoming', 'Used'];
-            const activeDeals = [
-                { title: 'Welcome Deal', badge: '30% OFF', expires: 'Expires in 6 days', progress: 40 },
-                { title: 'Combo Special', badge: 'BOGO', expires: 'Expires in 2 days', progress: 75 },
-                { title: 'Flash Sale', badge: 'SAVE $5', expires: 'Expires in 3 hours', progress: 90 }
-            ];
-
             return `<div style="position:absolute;inset:0;background:${dv.pageBg};z-index:5;display:flex;flex-direction:column;">
                 <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:${dv.isBrut?'2px solid var(--border-color)':'1px solid var(--border-color)'};">
                     ${dv.backBtn}
                     <div style="font-size:15px;font-weight:700;color:${dv.textColor};">Deals</div>
                 </div>
-                <div style="display:flex;border-bottom:1px solid var(--border-color);">
-                    ${tabs.map((t,i) => `<div style="flex:1;text-align:center;padding:12px;font-size:11px;font-weight:700;cursor:pointer;color:${i===0?dv.accent:dv.subColor};border-bottom:2px solid ${i===0?dv.accent:'transparent'};">${t}</div>`).join('')}
-                </div>
-                <div style="flex:1;overflow-y:auto;padding:16px 16px 80px;">
-                    ${activeDeals.map(d => `
-                    <div style="background:${dv.cardBg};border:${dv.cardBorder};border-radius:${dv.cardRadius};padding:16px;margin-bottom:12px;${dv.cardShadow}">
-                        <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
-                            <div>
-                                <div style="font-size:13px;font-weight:700;color:${dv.textColor};">${d.title}</div>
-                                <div style="font-size:10px;color:${dv.subColor};">${d.expires}</div>
-                            </div>
-                            <span style="padding:4px 10px;background:${dv.accent};color:#fff;border-radius:6px;font-size:10px;font-weight:800;${dv.isBrut?'border:1.5px solid var(--border-color);box-shadow:2px 2px 0 var(--border-color);':''}">${d.badge}</span>
-                        </div>
-                        <div style="height:4px;background:${dv.isGlass?'rgba(255,255,255,0.06)':'var(--pill-bg)'};border-radius:2px;overflow:hidden;margin-bottom:8px;">
-                            <div style="height:100%;width:${d.progress}%;background:${dv.accent};border-radius:2px;"></div>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;align-items:center;">
-                            <span style="font-size:9px;color:${dv.subColor};">${d.progress}% used</span>
-                            <span onclick="navigateToPage('${theme}','menu-page')" style="font-size:10px;font-weight:700;color:${dv.accent};cursor:pointer;">Use Now →</span>
-                        </div>
-                    </div>`).join('')}
-                    <div style="text-align:center;padding:20px;font-size:11px;color:${dv.subColor};">Swipe to see Upcoming & Used deals</div>
+                <div style="padding:8px 16px 0;">${dealsTabBar(theme, dv)}</div>
+                <div style="flex:1;overflow-y:auto;padding:4px 16px 80px;">
+                    ${dealsTabList(theme, dv)}
                 </div>
             </div>`;
         }
@@ -12965,6 +13200,7 @@ return `<div style="position:absolute;inset:0;background:var(--card-bg);z-index:
             renderPaletteEditor();
             if (activeCardPropsId) openCardProperties(activeCardPropsId);
             applyAllPalettes();
+            updateViewportVisibility();
         };
     </script>
 </body>

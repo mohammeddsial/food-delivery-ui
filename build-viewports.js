@@ -20,11 +20,11 @@ THEMES.forEach(t => {
 
     // 2. Find and replace the left panel + viewport grid with single viewport
     const leftPanelStart = html.indexOf('<!-- LEFT PANEL: Controller + Palette Editor -->');
-    const designPickerStart = html.indexOf('<!-- DESIGN PICKER MODAL');
+    const scriptStart = html.indexOf('    <script>');
 
-    if (leftPanelStart !== -1 && designPickerStart !== -1) {
+    if (leftPanelStart !== -1 && scriptStart !== -1) {
         const before = html.substring(0, leftPanelStart);
-        const after = html.substring(designPickerStart);
+        const after = html.substring(scriptStart);
 
         const viewportHtml = `
     <!-- STANDALONE VIEWPORT: ${t.label.toUpperCase()} -->
